@@ -1,4 +1,4 @@
-//https://cdn.jsdelivr.net/gh/sohamtest/ik@main/webinar-timer-us.v1.1.js
+https://interviewkickstart.albiorixtech.in/ep-webinar-us-site.v2.0.js
 var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL, hybrid;
 $(document).ready(function () {
   var int_phone3;
@@ -777,6 +777,11 @@ $(document).ready(function () {
         cta_url: $(".cta_page_url").val(),
         USUserId: $(".user_id").val(),
         landing_page_url: $(".l_page_url").val(),
+        UTM_Campaign: $(".utm_campaign").val(),
+        UTM_Source: $(".utm_source").val(),
+        UTM_Medium: $(".utm_medium").val(),
+        UTM_Term: $(".utm_term").val(),
+        UTM_Content: $(".utm_content").val(),
       };
       var jsonData = JSON.stringify(previousData);
       console.log(jsonData);
