@@ -1,4 +1,5 @@
 // https://interviewkickstart.albiorixtech.in/ep-webinar-learn.stage.js
+
 /**
  * Minified by jsDelivr using Terser v5.19.2.
  * Original file: /gh/kothinti/ik@master/ep-webinar-learn-v1.5.3.js
@@ -109,9 +110,15 @@ $(document).ready((function () {
       var o = (new Date).toString().match(/\((.+)\)/);
       o[1].includes(" ") && (o = o[1].split(" ").map((([e]) => e)).join("")), e.onload = function () {
         if (200 == this.status) {
-
           let e = JSON.parse(this.response);
-          0 == e.length ? registration_type = "calendly" : registration_type = "byecalendly", e = "SWITCH_UP" == webinarType ? e.map((e => ({
+          if (0 == e.length) {
+            registration_type = "calendly";
+            webinarType = "REGULAR"
+            createWebinarSlot(webinarType);
+          } else {
+            registration_type = "byecalendly";
+          }
+          e = "SWITCH_UP" == webinarType ? e.map((e => ({
             ...e,
             webinar_lead_type: "SWITCH_UP"
           }))) : "CAREER_SESSION" == webinarType ? e.map((e => ({
@@ -121,34 +128,38 @@ $(document).ready((function () {
             ...e,
             webinar_lead_type: "REGULAR"
           }))), n(e)
-        } else registration_type = "calendly"
+        }
+        else registration_type = "calendly"
       }, e.onerror = function () {
         registration_type = "calendly"
       }, e.send()
-    } else interviewPrepURL = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" + r + "&type=REGULAR",
-      switchUpURL = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" + r + "&type=SWITCH_UP", async function () {
-        // console.log("else", interviewPrepURL);
-        try {
-          let e = await a(interviewPrepURL),
-            t = await a(switchUpURL);
-          e = e.map((e => ({
-            ...e,
-            webinar_lead_type: "REGULAR"
-          }))), t = t.map((e => ({
-            ...e,
-            webinar_lead_type: "SWITCH_UP"
-          })));
-          const n = [...e];
-          for (const e of t) {
-            const t = n.findIndex((t => t.day === e.day)); - 1 !== t && n.splice(t, 1), n.push(e)
+    } else {
+      let r = v_timezone.replace("+", "%2B");
+      interviewPrepURL = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" + r + "&type=REGULAR",
+        switchUpURL = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" + r + "&type=SWITCH_UP", async function () {
+          try {
+            let e = await a(interviewPrepURL),
+              t = await a(switchUpURL);
+            e = e.map((e => ({
+              ...e,
+              webinar_lead_type: "REGULAR"
+            }))), t = t.map((e => ({
+              ...e,
+              webinar_lead_type: "SWITCH_UP"
+            })));
+            const n = [...e];
+            for (const e of t) {
+              const t = n.findIndex((t => t.day === e.day)); - 1 !== t && n.splice(t, 1), n.push(e)
+            }
+            return n.sort(((e, t) => new Date(e.start_time) - new Date(t.start_time))), n
+          } catch (e) {
+            console.error("Error:", e)
           }
-          return n.sort(((e, t) => new Date(e.start_time) - new Date(t.start_time))), n
-        } catch (e) {
-          console.error("Error:", e)
-        }
-      }().then((e => {
-        console.log(e), n(e)
-      }));
+        }().then((e => {
+          console.log('e', e);
+          console.log(e), n(e)
+        }));
+    }
   }, 2000);
 
   function createWebinarSlot(webinarType) {
@@ -275,7 +286,6 @@ $(document).ready((function () {
     }), 200)) : $(".phone-error").removeClass("hide") : $(".last-name-error").removeClass("hide") : $(".first-name-error").removeClass("hide"), $("input:radio[name='start-date']:first").attr("checked", !0), $(".wr__event-start-time").val($("input:radio[name='start-date']:first").val()), $(".wr__event-end-time").val($("input:radio[name='start-date']:first").data("endtime")), $(".wr__invitee-start-time").val($("input:radio[name='start-date']:first").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input:radio[name='start-date']:first").data("invitee_endtime")), $(".webinar-lead-type").val($("input:radio[name='start-date']:first").data("webinar_lead_type"))
   })), $(".bc__btn-select-webinar-slot").click((function (t) {
     t.preventDefault(), setHiddenFields();
-    console.log('heere');
     let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
     $("input[name='phone_number[intphone_full]'").val(a), $(".tno1").val(a), $(".first-name, .last-name, .phone, .email").keypress((function () {
       $(".first-name-error, .last-name-error,.email-id-error,.phone-error").addClass("hide")
@@ -389,7 +399,6 @@ $(document).ready((function () {
       }
     }
   }),
-    console.log("registration_type", registration_type),
     $(".bc__btn-select-webinar-slot-v2").click((function (t) {
       t.preventDefault(), setHiddenFields();
       let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
@@ -459,18 +468,25 @@ $(document).ready((function () {
         var utparams = queryString.toString();
         console.log(utparams);
 
-        var currentUrl = "https://learn.interviewkickstart.com/course/machine-learning-course-v8";
-        var utmUrl = "https://learn.interviewkickstart.com/course/machine-learning-course-v8" + utparams;
-        var newUrl = "https://iklearn.webflow.io/home-v16"
+        // var currentUrl = "https://learn.interviewkickstart.com/course/machine-learning-course-v8";
+        // var utmUrl = "https://learn.interviewkickstart.com/course/machine-learning-course-v8" + utparams;
+        var newUrl = "https://iklearn.webflow.io/home-v16";
 
-        if (window.location.href == currentUrl || window.location.href == utmUrl) {
-          d = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://www.interviewkickstart.com/signup-final-step-v8" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i, $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
-            location.href = d
-          }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
-        } else if (window.location.href == newUrl) {
+        // if (window.location.href == currentUrl || window.location.href == utmUrl) {
+        //   d = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://www.interviewkickstart.com/signup-final-step-v8" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i, $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
+        //     location.href = d
+        //   }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
+        // } 
+
+        if (window.location.href == newUrl) {
           d = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://ikdev.webflow.io/signup-final-step-v9" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i, $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/14138759/3w3s428/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
             location.href = d
           }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
+        } else if (paRegistered == true && paRegistered !== 'undefined') {
+          d = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://ikdev.webflow.io/signup-final-step" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + $(".wr__email").val() + "&salesforce_uuid=" + i, $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/14138759/3w3s428/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
+            location.href = d
+          }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
+
         } else {
           e = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://ikdev.webflow.io/signup-final-step" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i,
             $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
@@ -499,8 +515,8 @@ $(document).ready((function () {
       var jsonData = JSON.stringify(previousData);
       var cookieName = "previousData";
       var cookieValue = encodeURIComponent(jsonData);
-      var expirationTime = new Date(new Date().getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
 
+      var expirationTime = new Date(new Date().getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
       var currentHostname = window.location.hostname;
       var hostnameParts = currentHostname.split('.');
       if (hostnameParts.length > 1) {
@@ -634,6 +650,7 @@ $(document).ready((function () {
       }
     });
   }, "3000");
+
   $('input[name="webinar-type"]').change(function () {
     let webinarType1 = $("input[name='webinar-type']:checked").attr("webinar-type");
     console.log(webinarType1);
