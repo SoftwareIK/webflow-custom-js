@@ -42,5 +42,5 @@ function generateScheduleForDaysOfWeek(startDate, endDate) {
 }
 
 // Generate unique dates for a period
-const startDate = "01/01/2024";
-const endDate = "06/01/2024";
+const startDate = "01/01/2024"; //MM-DD-YYYY
+const endDate = "11/30/2024"; //MM-DD-YYYY
