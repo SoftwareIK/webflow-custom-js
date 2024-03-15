@@ -15,22 +15,22 @@ function generateScheduleForDaysOfWeek(startDate, endDate) {
     let time;
     switch (date.getDay()) {
       case 0: // Sunday
-        time = "07:30:00 PM";
+        time = "08:30:00 PM";
         break;
       case 1: // Monday
-        time = "06:30:00 PM";
+        time = "07:30:00 PM";
         break;
       case 2: // Tuesday
-        time = "07:30:00 PM";
+        time = "08:30:00 PM";
         break;
       case 3: // Wednesday
-        time = "06:30:00 PM";
-        break;
-      case 4: // Thursday
         time = "07:30:00 PM";
         break;
+      case 4: // Thursday
+        time = "8:30:00 PM";
+        break;
       case 5: // Friday
-        time = "06:30:00 PM";
+        time = "07:30:00 PM";
         break;
     }
     return {
