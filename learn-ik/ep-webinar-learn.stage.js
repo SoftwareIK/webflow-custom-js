@@ -680,7 +680,7 @@ $(document).ready((function () {
 
   $('input[name="webinar-type"]').change(function () {
     let webinarType1 = $("input[name='webinar-type']:checked").attr("webinar-type");
-    console.log("webinarType1", webinarType1);
+    //console.log("webinarType1", webinarType1);
     $(".webinar-type").val(webinarType1);
     localStorage.setItem('WebinarType1', webinarType1);
     $("html, body").animate({ scrollTop: 0 }, "slow");
