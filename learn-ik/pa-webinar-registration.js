@@ -122,7 +122,7 @@ $(document).ready(function () {
             webinar_Type: $(".webinar-type").val(),
           }
           var cookieValue = encodeURIComponent(JSON.stringify(paDetails));
-          console.log("Pa Data", decodeURIComponent(cookieValue));
+          // console.log("Pa Data", decodeURIComponent(cookieValue));
           let expirationTime = new Date(new Date().getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
           let hostnameParts = window.location.hostname.split('.');
           if (hostnameParts.length > 1) {
