@@ -15,8 +15,7 @@ function leadScoreService(params, callback) {
     webinar_date: $('.event_start_time').val(),
     device: $(".wr__device").val(),
 
-    // TODO: confirm this.
-    leads_stats: isSwitchUp ? "SU" : "Others",
+    leads_stats: isSwitchUp !== "No" ? "SU" : "Others",
     sale_date: null,
     alumni_stats: "New_Lead",
   });
