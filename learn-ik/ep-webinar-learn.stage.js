@@ -323,6 +323,7 @@ $(document).ready((function () {
     }), 200)) : $(".phone-error").removeClass("hide") : $(".last-name-error").removeClass("hide") : $(".first-name-error").removeClass("hide"), $("input:radio[name='start-date']:first").attr("checked", !0), $(".wr__event-start-time").val($("input:radio[name='start-date']:first").val()), $(".wr__event-end-time").val($("input:radio[name='start-date']:first").data("endtime")), $(".wr__invitee-start-time").val($("input:radio[name='start-date']:first").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input:radio[name='start-date']:first").data("invitee_endtime")), $(".webinar-lead-type").val($("input:radio[name='start-date']:first").data("webinar_lead_type"))
   })), $(".bc__btn-select-webinar-slot").click((function (t) {
     t.preventDefault(), setHiddenFields();
+    paRegistered();
     let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
     $("input[name='phone_number[intphone_full]'").val(a), $(".tno1").val(a), $(".first-name, .last-name, .phone, .email").keypress((function () {
       $(".first-name-error, .last-name-error,.email-id-error,.phone-error").addClass("hide")
@@ -493,6 +494,7 @@ $(document).ready((function () {
       }), 200)) : $(".email-id-error").removeClass("hide") : $(".phone-error").removeClass("hide") : $(".last-name-error").removeClass("hide") : $(".first-name-error").removeClass("hide")
     })), $(".bc__btn-2nd-step").click((function (e) {
       if (e.preventDefault(), $("input:radio[name='start-date']").is(":checked")) {
+        paRegistered();
         let e, t = $('input[name="start-date"]:checked').val(),
           a = $('input[name="start-date"]:checked').data("endtime"),
           n = visitor_id + ":" + v_country,
@@ -694,4 +696,18 @@ $(document).ready((function () {
       $('input[name="Event Name"]').val("How to Nail your next Technical Interview");
     }
   });
+  function paRegistered() {
+    if (typeof paRegistered !== 'undefined') {
+      var yourCookieValue = getCookie("Pa Data");
+      if (yourCookieValue !== null) {
+        var decodedData = decodeURIComponent(yourCookieValue);
+        var decodedObject = JSON.parse(decodedData);
+        $('.utm_source').val(decodedObject.utm_source);
+        $('.webinar-type').val(decodedObject.webinar_Type);
+        console.log('Pa Data', decodedObject);
+      } else {
+        console.log("Cookie not found");
+      }
+    }
+  }
 }));
