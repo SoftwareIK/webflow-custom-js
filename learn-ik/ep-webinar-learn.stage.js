@@ -162,7 +162,7 @@ $(document).ready((function () {
 
   setTimeout(() => {
     createWebinarSlot(webinarType);
-  }, 2000);
+  }, 1000);
 
   function callAPI(url) {
     let e = new XMLHttpRequest;
@@ -281,8 +281,8 @@ $(document).ready((function () {
       "Invitee End Time": $(".wr__invitee-end-time").val(),
       "Work Experience": $(".gql-work-experience").val(),
       "Domain or Role": $(".gql-role-domain").val(),
-      "pa_Name": $(".wr__pa-name").val(),
-      "pa_Email": $(".wr__pa-email").val(),
+      "Pa Name": $(".wr__pa-name").val(),
+      "Pa Email": $(".wr__pa-email").val(),
     };
     console.log(t);
     $.ajax({
@@ -704,8 +704,10 @@ $(document).ready((function () {
     $(".webinar-type").val(webinarType1);
     localStorage.setItem('WebinarType1', webinarType1);
     $("html, body").animate({ scrollTop: 0 }, "slow");
-    $('.webinar__slots').empty();
-    createWebinarSlot(webinarType1);
+    setTimeout(() => {
+      $('.webinar__slots').empty();
+      createWebinarSlot(webinarType1);
+    }, 2000);
     if (webinarType1 == "SWITCH_UP") {
       $('.webinar__lightbox-title').text("Future-proof your career with AI/ ML, Data Science");
       $('input[name="Event Name"]').val("Future-proof your career with AI/ ML, Data Science");
