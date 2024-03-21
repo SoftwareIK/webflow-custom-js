@@ -105,7 +105,7 @@ $(document).ready(function () {
         }
         else {
           fetchUserInfo(accessToken);
-          $(' .webinar__loadingbar').css("display", "flex");
+          $(' .webinar__loadingbar.first').css("display", "flex");
           dataLayer.push({
             'event': 'pa_new_webinar_registration_form_submitted',
             'webinar_name': $('.webinar__lightbox-title').html(),
@@ -136,7 +136,7 @@ $(document).ready(function () {
           $('.webinar__lightbox-card-pa').hide();
           setInterval(function () {
             $('.webinar__lightbox-card').removeClass("hide");
-            $('.webinar__loadingbar').hide();
+            $('.webinar__loadingbar.first').hide();
           }, 300);
         }
         localStorage.removeItem("WebinarType1");
