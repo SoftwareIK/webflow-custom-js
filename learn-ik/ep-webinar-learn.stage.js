@@ -191,7 +191,6 @@ $(document).ready((function () {
       o[1].includes(" ") && (o = o[1].split(" ").map((([e]) => e)).join("")), e.onload = function () {
         if (200 == this.status) {
           let e = JSON.parse(this.response);
-          console.log("repsonese", JSON.parse(this.response))
           // 0 == e.length ? registration_type = "calendly" : registration_type = "byecalendly",
           if (e.length == 0) {
             registration_type = "calendly";
@@ -214,8 +213,7 @@ $(document).ready((function () {
       }, e.onerror = function () {
         registration_type = "calendly"
       }, e.send()
-    }
-    else {
+    } else {
       let r = v_timezone.replace("+", "%2B");
       interviewPrepURL = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" + r + "&type=REGULAR",
         switchUpURL = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" + r + "&type=SWITCH_UP", async function () {
@@ -284,7 +282,6 @@ $(document).ready((function () {
       "Pa Name": $(".wr__pa-name").val(),
       "Pa Email": $(".wr__pa-email").val(),
     };
-    console.log(t);
     $.ajax({
       type: "POST",
       url: e,
@@ -700,7 +697,6 @@ $(document).ready((function () {
 
   $('input[name="webinar-type"]').change(function () {
     let webinarType1 = $("input[name='webinar-type']:checked").attr("webinar-type");
-    //console.log("webinarType1", webinarType1);
     $(".webinar-type").val(webinarType1);
     localStorage.setItem('WebinarType1', webinarType1);
     $("html, body").animate({ scrollTop: 0 }, "slow");
