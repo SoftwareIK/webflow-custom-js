@@ -120,7 +120,6 @@ $(document).ready(function () {
             webinar_Type: $(".webinar-type").val(),
           }
           var cookieValue = encodeURIComponent(JSON.stringify(paDetails));
-          // console.log("Pa Data", decodeURIComponent(cookieValue));
           let expirationTime = new Date(new Date().getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
           let hostnameParts = window.location.hostname.split('.');
           if (hostnameParts.length > 1) {
@@ -129,7 +128,6 @@ $(document).ready(function () {
           let domain = hostnameParts.join('.');
           console.log('---SET COOKIES---', domain);
           document.cookie = "Pa Data" + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
-          console.log(cookieValue);
           $('.webinar__registration-form-pa').submit();
           $('.webinar__lightbox-card-pa').hide();
           setInterval(function () {
