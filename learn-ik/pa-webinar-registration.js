@@ -93,7 +93,6 @@ $(document).ready(function () {
         const accessToken = getAccessTokenFromUrl();
         if ($('input[name="webinar-type"]:checked').length == 0 && !accessToken) {
           $('.pa-radio-error, .signin-btn-error').removeClass('hide');
-          console.log("if");
         }
         else if (!accessToken) {
           $(".signin-btn-error").removeClass('hide');
@@ -101,7 +100,6 @@ $(document).ready(function () {
         }
         else if ($('input[name="webinar-type"]:checked').length == 0) {
           $('.pa-radio-error').removeClass('hide');
-          console.log("else if");
         }
         else {
           fetchUserInfo(accessToken);
@@ -140,8 +138,7 @@ $(document).ready(function () {
           }, 300);
         }
         localStorage.removeItem("WebinarType1");
-      })
-
+      });
     }
   }
   function handleUserInfoError(xhr, status, error) {
@@ -151,18 +148,4 @@ $(document).ready(function () {
     history.replaceState(null, document.title, window.location.pathname);
     window.location.href = "https://iklearn.webflow.io/pa-webinar-registration";
   }
-  // $(".bc__btn-select-webinar-slot, .bc__btn-2nd-step").click(function () {
-  //   if (typeof paRegistered !== 'undefined') {
-  //     var yourCookieValue = getCookie("Pa Data");
-  //     if (yourCookieValue !== null) {
-  //       var decodedData = decodeURIComponent(yourCookieValue);
-  //       var decodedObject = JSON.parse(decodedData);
-  //       $('.utm_source').val(decodedObject.utm_source);
-  //       $('.webinar-type').val(decodedObject.webinar_Type);
-  //       console.log('Pa Data', decodedObject);
-  //     } else {
-  //       console.log("Cookie not found");
-  //     }
-  //   }
-  // });
 });
