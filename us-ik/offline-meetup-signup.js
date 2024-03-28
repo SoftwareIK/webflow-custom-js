@@ -55,7 +55,7 @@ $('.bc__alumni-meet-submit').click(function (e) {
       name,
       email,
     }
-    console.log(payload);
+
     $('.webinar__loadingbar').css("display", "flex");
     $.ajax({
       type: "POST",
