@@ -632,7 +632,7 @@ $(document).ready((function () {
     });
   }, "3000");
 
-  //This code using webinar button on click change API Call and set webinar Type
+  //Whenever we click the button the api call happens and the webinar type is set. 
   $('input[name="webinar-type"]').change(function () {
     let webinarType1 = $("input[name='webinar-type']:checked").attr("webinar-type");
     $(".webinar-type").val(webinarType1);
