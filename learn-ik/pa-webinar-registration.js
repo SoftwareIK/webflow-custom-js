@@ -93,7 +93,6 @@ $(document).ready(function () {
         const accessToken = getAccessTokenFromUrl();
         if ($('input[name="webinar-type"]:checked').length == 0 && !accessToken) {
           $('.pa-radio-error, .signin-btn-error').removeClass('hide');
-          console.log("if");
         }
         else if (!accessToken) {
           $(".signin-btn-error").removeClass('hide');
@@ -101,11 +100,10 @@ $(document).ready(function () {
         }
         else if ($('input[name="webinar-type"]:checked').length == 0) {
           $('.pa-radio-error').removeClass('hide');
-          console.log("else if");
         }
         else {
           fetchUserInfo(accessToken);
-          $(' .webinar__loadingbar').css("display", "flex");
+          $(' .webinar__loadingbar.first').css("display", "flex");
           dataLayer.push({
             'event': 'pa_new_webinar_registration_form_submitted',
             'webinar_name': $('.webinar__lightbox-title').html(),
@@ -122,7 +120,6 @@ $(document).ready(function () {
             webinar_Type: $(".webinar-type").val(),
           }
           var cookieValue = encodeURIComponent(JSON.stringify(paDetails));
-          // console.log("Pa Data", decodeURIComponent(cookieValue));
           let expirationTime = new Date(new Date().getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
           let hostnameParts = window.location.hostname.split('.');
           if (hostnameParts.length > 1) {
@@ -131,17 +128,15 @@ $(document).ready(function () {
           let domain = hostnameParts.join('.');
           console.log('---SET COOKIES---', domain);
           document.cookie = "Pa Data" + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
-          console.log(cookieValue);
           $('.webinar__registration-form-pa').submit();
           $('.webinar__lightbox-card-pa').hide();
           setInterval(function () {
             $('.webinar__lightbox-card').removeClass("hide");
-            $('.webinar__loadingbar').hide();
+            $('.webinar__loadingbar.first').hide();
           }, 300);
         }
         localStorage.removeItem("WebinarType1");
-      })
-
+      });
     }
   }
   function handleUserInfoError(xhr, status, error) {
@@ -149,20 +144,6 @@ $(document).ready(function () {
   }
   function removeTokenFromUrl() {
     history.replaceState(null, document.title, window.location.pathname);
-    window.location.href = "https://iklearn.webflow.io/pa-webinar-registration";
+    window.location.href = "https://" + window.location.hostname + "/pa-webinar-registration";
   }
-  $(".bc__btn-select-webinar-slot, .bc__btn-2nd-step").click(function () {
-    if (typeof paRegistered !== 'undefined') {
-      var yourCookieValue = getCookie("Pa Data");
-      if (yourCookieValue !== null) {
-        var decodedData = decodeURIComponent(yourCookieValue);
-        var decodedObject = JSON.parse(decodedData);
-        $('.utm_source').val(decodedObject.utm_source);
-        $('.webinar-type').val(decodedObject.webinar_Type);
-        console.log('Pa Data', decodedObject);
-      } else {
-        console.log("Cookie not found");
-      }
-    }
-  });
 });
