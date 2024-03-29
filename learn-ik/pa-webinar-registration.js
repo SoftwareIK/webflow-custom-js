@@ -144,6 +144,6 @@ $(document).ready(function () {
   }
   function removeTokenFromUrl() {
     history.replaceState(null, document.title, window.location.pathname);
-    window.location.href = "https://iklearn.webflow.io/pa-webinar-registration";
+    window.location.href = "https://" + window.location.hostname + "/pa-webinar-registration";
   }
 });
