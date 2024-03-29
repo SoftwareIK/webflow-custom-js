@@ -457,9 +457,6 @@ $(document).ready((function () {
           i = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage-v2"),
           r = "?utm_source=" + $(".utm_source").val() + "&assigned_to=Interview Kickstart&invitee_first_name=" + $(".wr__firstname").val() + "&invitee_last_name=" + $(".wr__lastname").val() + "&invitee_email=" + $(".wr__email").val() + "&answer_1=" + $(".wr__phone").val() + "&event_start_time=" + t + "&event_end_time=" + a + "&utm_medium=" + n + "&salesforce_uuid=" + i;
 
-        // const queryString = window.location.search;
-        // var utparams = queryString.toString();
-        // console.log(utparams);
 
         var newUrl = "https://learn.interviewkickstart.com/home-v16";
 
@@ -635,6 +632,7 @@ $(document).ready((function () {
     });
   }, "3000");
 
+  //This code using webinar button on click change API Call and set webinar Type
   $('input[name="webinar-type"]').change(function () {
     let webinarType1 = $("input[name='webinar-type']:checked").attr("webinar-type");
     $(".webinar-type").val(webinarType1);
@@ -652,15 +650,16 @@ $(document).ready((function () {
       $('input[name="Event Name"]').val("How to Nail your next Technical Interview");
     }
   });
+
+  //Set PA cookies Data 
   function paRegisteredCookie() {
     if (typeof paRegistered !== 'undefined') {
-      var yourCookieValue = getCookie("Pa Data");
-      if (yourCookieValue !== null) {
-        var decodedData = decodeURIComponent(yourCookieValue);
+      var paCookieValue = getCookie("Pa Data");
+      if (paCookieValue !== null) {
+        var decodedData = decodeURIComponent(paCookieValue);
         var decodedObject = JSON.parse(decodedData);
         $('.utm_source').val(decodedObject.utm_source);
         $('.webinar-type').val(decodedObject.webinar_Type);
-        console.log('Pa Data', decodedObject);
       } else {
         console.log("Cookie not found");
       }
