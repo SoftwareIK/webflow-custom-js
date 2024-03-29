@@ -99,66 +99,6 @@ $(document).ready((function () {
   })), $(".bc-popup-cta2").click((function (e) {
     $(".webinar__lightbox-card").css("display", "flex"), $(".webinar__lightbox-exit-intent").css("display", "none"), $(".webinar__lightbox").css("display", "none"), $("body").css("overflow", "auto")
   }));
-  // setTimeout(() => {
-  //   let r = v_timezone.replace("+", "%2B");
-  //   l = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" + r + "&type=" + webinarType;
-  //   if ("No" == isSwitchUp) {
-  //     let e = new XMLHttpRequest;
-  //     e.open("GET", l, !0), e.setRequestHeader("Authorization", "1Cgx6oYXkOlWkNDn7_tXO");
-  //     var o = (new Date).toString().match(/\((.+)\)/);
-  //     o[1].includes(" ") && (o = o[1].split(" ").map((([e]) => e)).join("")), e.onload = function () {
-  //       if (200 == this.status) {
-  //         let e = JSON.parse(this.response);
-  //         if (0 == e.length) {
-  //           registration_type = "calendly";
-  //           webinarType = "REGULAR"
-  //           createWebinarSlot(webinarType);
-  //         } else {
-  //           registration_type = "byecalendly";
-  //         }
-  //         e = "SWITCH_UP" == webinarType ? e.map((e => ({
-  //           ...e,
-  //           webinar_lead_type: "SWITCH_UP"
-  //         }))) : "CAREER_SESSION" == webinarType ? e.map((e => ({
-  //           ...e,
-  //           webinar_lead_type: "CAREER_SESSION"
-  //         }))) : e.map((e => ({
-  //           ...e,
-  //           webinar_lead_type: "REGULAR"
-  //         }))), n(e)
-  //       }
-  //       else registration_type = "calendly"
-  //     }, e.onerror = function () {
-  //       registration_type = "calendly"
-  //     }, e.send()
-  //   } else {
-  //     let r = v_timezone.replace("+", "%2B");
-  //     interviewPrepURL = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" + r + "&type=REGULAR",
-  //       switchUpURL = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" + r + "&type=SWITCH_UP", async function () {
-  //         try {
-  //           let e = await a(interviewPrepURL),
-  //             t = await a(switchUpURL);
-  //           e = e.map((e => ({
-  //             ...e,
-  //             webinar_lead_type: "REGULAR"
-  //           }))), t = t.map((e => ({
-  //             ...e,
-  //             webinar_lead_type: "SWITCH_UP"
-  //           })));
-  //           const n = [...e];
-  //           for (const e of t) {
-  //             const t = n.findIndex((t => t.day === e.day)); - 1 !== t && n.splice(t, 1), n.push(e)
-  //           }
-  //           return n.sort(((e, t) => new Date(e.start_time) - new Date(t.start_time))), n
-  //         } catch (e) {
-  //           console.error("Error:", e)
-  //         }
-  //       }().then((e => {
-  //         console.log('e', e);
-  //         console.log(e), n(e)
-  //       }));
-  //   }
-  // }, 2000);
 
   setTimeout(() => {
     createWebinarSlot(webinarType);
@@ -517,9 +457,6 @@ $(document).ready((function () {
           i = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage-v2"),
           r = "?utm_source=" + $(".utm_source").val() + "&assigned_to=Interview Kickstart&invitee_first_name=" + $(".wr__firstname").val() + "&invitee_last_name=" + $(".wr__lastname").val() + "&invitee_email=" + $(".wr__email").val() + "&answer_1=" + $(".wr__phone").val() + "&event_start_time=" + t + "&event_end_time=" + a + "&utm_medium=" + n + "&salesforce_uuid=" + i;
 
-        // const queryString = window.location.search;
-        // var utparams = queryString.toString();
-        // console.log(utparams);
 
         var newUrl = "https://learn.interviewkickstart.com/home-v16";
 
@@ -695,6 +632,7 @@ $(document).ready((function () {
     });
   }, "3000");
 
+  //This code using webinar button on click change API Call and set webinar Type
   $('input[name="webinar-type"]').change(function () {
     let webinarType1 = $("input[name='webinar-type']:checked").attr("webinar-type");
     $(".webinar-type").val(webinarType1);
@@ -712,15 +650,16 @@ $(document).ready((function () {
       $('input[name="Event Name"]').val("How to Nail your next Technical Interview");
     }
   });
+
+  //Set PA cookies Data 
   function paRegisteredCookie() {
     if (typeof paRegistered !== 'undefined') {
-      var yourCookieValue = getCookie("Pa Data");
-      if (yourCookieValue !== null) {
-        var decodedData = decodeURIComponent(yourCookieValue);
+      var paCookieValue = getCookie("Pa Data");
+      if (paCookieValue !== null) {
+        var decodedData = decodeURIComponent(paCookieValue);
         var decodedObject = JSON.parse(decodedData);
         $('.utm_source').val(decodedObject.utm_source);
         $('.webinar-type').val(decodedObject.webinar_Type);
-        console.log('Pa Data', decodedObject);
       } else {
         console.log("Cookie not found");
       }
