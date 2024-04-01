@@ -62,12 +62,12 @@ $('.bc__alumni-meet-submit').click(function (e) {
       url: "https://hooks.zapier.com/hooks/catch/11068981/3xpg0lq/",
       data: payload,
       success: function (e) {
-        $('.webinar__registration-form1-block-s2').hide();
+        $('.alumni__registration-step2').hide();
         $('.webinar__loadingbar').css("display", "none");
         $('.meetup-form-success').show();
       },
       error: function (e) {
-        $('.webinar__registration-form1-block-s2').show();
+        $('.alumni__registration-step2').show();
         $('.webinar__loadingbar').css("display", "none");
         $('.meetup-form-error').show();
       }
