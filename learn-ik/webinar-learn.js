@@ -34,19 +34,20 @@ $(document).ready((function () {
         r = `<div class="webinar-event-date" bis_skin_checked="1" data-starttime="${e[0].start_time}" data-endtime="${e[0].end_time}" data-invitee_starttime="${e[0].invitee_start_time}"  data-invitee_endtime="${e[0].invitee_end_time}" data-name="${e[0].start_time}" data-webinar_lead_type="${e[0].webinar_lead_type}">  ${n} </div>`;
       $(".webinar__slots").append($(r));
 
-      // function updateUTMParameters() {
-      //   if (!localStorage.getItem('utmParametersSet')) {
-      //     var currentUrl = window.location.href;
-      //     var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
-      //     var event = "Data Science in Practice: OTT Personalized Content Recommendations";
-      //     var newUrl = currentUrl + separator +
-      //       'event=' + encodeURIComponent(event) +
-      //       '&eventDate=' + e[0].start_time;
-      //     window.history.replaceState({}, document.title, newUrl);
-      //     localStorage.setItem('utmParametersSet', 'true');
-      //   }
-      // }
-      // updateUTMParameters();
+      function updateUTMParameters() {
+        if (!localStorage.getItem('utmParametersSet')) {
+          var currentUrl = window.location.href;
+          var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
+          var event = "Data Science in Practice: OTT Personalized Content Recommendations";
+          var newUrl = currentUrl + separator +
+            'webinarType' + webinarType +
+            '&event=' + encodeURIComponent(event) +
+            '&eventDate=' + e[0].start_time;
+          window.history.replaceState({}, document.title, newUrl);
+          localStorage.setItem('utmParametersSet', 'true');
+        }
+      }
+      updateUTMParameters();
     } else {
       for (i = 0; i < a; i++) {
         var n = e[i].weekday + ", " + e[i].day + " " + t[parseInt(e[i].month) - 1] + " " + e[i].year + " | " + e[i].hour + ":" + e[i].minute + " " + e[i].am_or_pm,
@@ -478,6 +479,40 @@ $(document).ready((function () {
             }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         }
       }
+      // const previousData = {
+      //   firstName: $(".wr__firstname").val(),
+      //   lastName: $(".wr__lastname").val(),
+      //   email: $(".wr__email").val(),
+      //   phone: $(".wr__phone").val(),
+      //   city: $(".wr__city").val(),
+      //   device: $(".wr__device").val(),
+      //   region: $(".wr__region").val(),
+      //   referrer: $(".wr__referrer").val(),
+      //   site_url: $(".site_url").val(),
+      //   eventStartTime: $(".wr__event-start-time").val(),
+      //   eventEndTime: $(".wr__event-end-time").val(),
+      //   inviteeStartTime: $(".wr__invitee-start-time").val(),
+      //   inviteeEndTime: $(".wr__invitee-end-time").val(),
+      //   learnUserId: $(".user_id").val(),
+      //   event_name: eventName,
+      //   cta_url: "learn.ik" + window.location.pathname,
+      // };
+      // var jsonData = JSON.stringify(previousData);
+      // var cookieName = "previousData";
+      // var cookieValue = encodeURIComponent(jsonData);
+
+      // var expirationTime = new Date(new Date().getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
+      // var currentHostname = window.location.hostname;
+      // var hostnameParts = currentHostname.split('.');
+      // if (hostnameParts.length > 1) {
+      //   hostnameParts.shift();
+      // }
+      // var domain = hostnameParts.join('.');
+      // setTimeout(() => {
+      //   console.log('---SET COOKIES---', domain);
+      //   document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
+      // }, 500);
+
       gqlFormCookieData();
 
       //lead LeadCreatedTime
