@@ -40,7 +40,7 @@ $(document).ready((function () {
           var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
           var event = "Data Science in Practice: OTT Personalized Content Recommendations";
           var newUrl = currentUrl + separator +
-            'webinarType' + webinarType +
+            'webinarType=' + webinarType +
             '&event=' + encodeURIComponent(event) +
             '&eventDate=' + e[0].start_time;
           window.history.replaceState({}, document.title, newUrl);
