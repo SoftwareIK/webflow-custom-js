@@ -34,19 +34,20 @@ $(document).ready((function () {
         r = `<div class="webinar-event-date" bis_skin_checked="1" data-starttime="${e[0].start_time}" data-endtime="${e[0].end_time}" data-invitee_starttime="${e[0].invitee_start_time}"  data-invitee_endtime="${e[0].invitee_end_time}" data-name="${e[0].start_time}" data-webinar_lead_type="${e[0].webinar_lead_type}">  ${n} </div>`;
       $(".webinar__slots").append($(r));
 
-      // function updateUTMParameters() {
-      //   if (!localStorage.getItem('utmParametersSet')) {
-      //     var currentUrl = window.location.href;
-      //     var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
-      //     var event = "Data Science in Practice: OTT Personalized Content Recommendations";
-      //     var newUrl = currentUrl + separator +
-      //       'event=' + encodeURIComponent(event) +
-      //       '&eventDate=' + e[0].start_time;
-      //     window.history.replaceState({}, document.title, newUrl);
-      //     localStorage.setItem('utmParametersSet', 'true');
-      //   }
-      // }
-      // updateUTMParameters();
+      function updateUTMParameters() {
+        if (!localStorage.getItem('utmParametersSet')) {
+          var currentUrl = window.location.href;
+          var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
+          var event = "Data Science in Practice: OTT Personalized Content Recommendations";
+          var newUrl = currentUrl + separator +
+            'webinarType' + webinarType +
+            '&event=' + encodeURIComponent(event) +
+            '&eventDate=' + e[0].start_time;
+          window.history.replaceState({}, document.title, newUrl);
+          localStorage.setItem('utmParametersSet', 'true');
+        }
+      }
+      updateUTMParameters();
     } else {
       for (i = 0; i < a; i++) {
         var n = e[i].weekday + ", " + e[i].day + " " + t[parseInt(e[i].month) - 1] + " " + e[i].year + " | " + e[i].hour + ":" + e[i].minute + " " + e[i].am_or_pm,
