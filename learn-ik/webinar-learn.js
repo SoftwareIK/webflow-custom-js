@@ -3,7 +3,7 @@
  * Original file: /gh/kothinti/ik@master/ep-webinar-learn-v1.5.3.js
  * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
  */
-var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL;
+var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL, eventUpsightDate, webinarSlotDate;
 
 function getDeviceType() {
   var e = navigator.userAgent;
@@ -19,7 +19,6 @@ $(document).ready((function () {
       }
     });
   }
-
   function n(e) {
     const t = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     0 == e.length ? registration_type = "calendly" : registration_type = "byecalendly";
@@ -31,9 +30,25 @@ $(document).ready((function () {
     // }
     if (typeof isUpsightReg !== 'undefined') {
       var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm,
-        r = `<div class="webinar-event-date" bis_skin_checked="1" data-starttime="${e[0].start_time}" data-endtime="${e[0].end_time}" data-invitee_starttime="${e[0].invitee_start_time}"  data-invitee_endtime="${e[0].invitee_end_time}" data-name="${e[0].start_time}" data-webinar_lead_type="${e[0].webinar_lead_type}">  ${n} </div>`;
-      $(".webinar__slots").append($(r));
+        webinarSlotDate = `<div class="webinar-event-date" bis_skin_checked="1"  data-starttime="${e[0].start_time}" data-endtime="${e[0].end_time}" data-invitee_starttime="${e[0].invitee_start_time}"  data-invitee_endtime="${e[0].invitee_end_time}" data-name="${e[0].start_time}" data-webinar_lead_type="${e[0].webinar_lead_type}">  ${n} </div>`;
+      $(".webinar__slots").append($(webinarSlotDate));
 
+      var apiResponse = {
+        "apidata": e,
+        "startDate": e[0].start_time,
+        "endDate": e[0].end_time,
+        "invitee_start_time": e[0].invitee_start_time,
+        "invitee_end_time": e[0].invitee_end_time,
+        "webinar_lead_type": e[0].webinar_lead_type,
+
+        "startDate_1": e[1].start_time,
+        "endDate_1": e[1].end_time,
+        "invitee_start_time_1": e[1].invitee_start_time,
+        "invitee_end_time_1": e[1].invitee_end_time,
+        "webinar_lead_type_1": e[1].webinar_lead_type,
+      }
+      //console.log("apiResponse", apiResponse);
+      eventUpsightDate = apiResponse;
       function updateUTMParameters() {
         if (!localStorage.getItem('utmParametersSet')) {
           var currentUrl = window.location.href;
@@ -45,6 +60,7 @@ $(document).ready((function () {
             '&eventDate=' + e[0].start_time;
           window.history.replaceState({}, document.title, newUrl);
           localStorage.setItem('utmParametersSet', 'true');
+          $(".webinar__lightbox-title").text(decodeURIComponent(event))
         }
       }
       updateUTMParameters();
@@ -479,42 +495,7 @@ $(document).ready((function () {
             }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         }
       }
-      // const previousData = {
-      //   firstName: $(".wr__firstname").val(),
-      //   lastName: $(".wr__lastname").val(),
-      //   email: $(".wr__email").val(),
-      //   phone: $(".wr__phone").val(),
-      //   city: $(".wr__city").val(),
-      //   device: $(".wr__device").val(),
-      //   region: $(".wr__region").val(),
-      //   referrer: $(".wr__referrer").val(),
-      //   site_url: $(".site_url").val(),
-      //   eventStartTime: $(".wr__event-start-time").val(),
-      //   eventEndTime: $(".wr__event-end-time").val(),
-      //   inviteeStartTime: $(".wr__invitee-start-time").val(),
-      //   inviteeEndTime: $(".wr__invitee-end-time").val(),
-      //   learnUserId: $(".user_id").val(),
-      //   event_name: eventName,
-      //   cta_url: "learn.ik" + window.location.pathname,
-      // };
-      // var jsonData = JSON.stringify(previousData);
-      // var cookieName = "previousData";
-      // var cookieValue = encodeURIComponent(jsonData);
-
-      // var expirationTime = new Date(new Date().getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
-      // var currentHostname = window.location.hostname;
-      // var hostnameParts = currentHostname.split('.');
-      // if (hostnameParts.length > 1) {
-      //   hostnameParts.shift();
-      // }
-      // var domain = hostnameParts.join('.');
-      // setTimeout(() => {
-      //   console.log('---SET COOKIES---', domain);
-      //   document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
-      // }, 500);
-
       gqlFormCookieData();
-
       //lead LeadCreatedTime
       const currentDateTime = new Date();
       const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
