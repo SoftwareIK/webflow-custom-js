@@ -3,12 +3,17 @@
  * Original file: /gh/kothinti/ik@master/ep-webinar-learn-v1.5.3.js
  * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
  */
-var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL;
+var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL, eventUpsightDate, webinarSlotDate;
 
 function getDeviceType() {
   var e = navigator.userAgent;
   return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
 }
+
+function formattedWebinarDate(webinarData, webinarFormat) {
+  return `<div class="webinar-event-date" bis_skin_checked="1"  data-starttime="${webinarData.startDate}" data-endtime="${webinarData.endDate}" data-invitee_starttime="${webinarData.invitee_start_time}"  data-invitee_endtime="${webinarData.invitee_end_time}" data-name="${webinarData.startDate}" data-webinar_lead_type="${webinarData.webinar_lead_type}">  ${webinarFormat} </div>`
+}
+
 $(document).ready((function () {
   var e;
   let t = getAllUrlParams();
@@ -19,7 +24,6 @@ $(document).ready((function () {
       }
     });
   }
-
   function n(e) {
     const t = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     0 == e.length ? registration_type = "calendly" : registration_type = "byecalendly";
@@ -30,10 +34,10 @@ $(document).ready((function () {
     //   $(".webinar__slots").append($(r))
     // }
     if (typeof isUpsightReg !== 'undefined') {
-      var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm,
-        r = `<div class="webinar-event-date" bis_skin_checked="1" data-starttime="${e[0].start_time}" data-endtime="${e[0].end_time}" data-invitee_starttime="${e[0].invitee_start_time}"  data-invitee_endtime="${e[0].invitee_end_time}" data-name="${e[0].start_time}" data-webinar_lead_type="${e[0].webinar_lead_type}">  ${n} </div>`;
-      $(".webinar__slots").append($(r));
-
+      var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
+      webinarSlotDate = formattedWebinarDate(e[0], n);
+      $(".webinar__slots").append($(webinarSlotDate));
+      eventUpsightDate = e;
       function updateUTMParameters() {
         if (!localStorage.getItem('utmParametersSet')) {
           var currentUrl = window.location.href;
@@ -45,6 +49,7 @@ $(document).ready((function () {
             '&eventDate=' + e[0].start_time;
           window.history.replaceState({}, document.title, newUrl);
           localStorage.setItem('utmParametersSet', 'true');
+          $(".webinar__lightbox-title").text(decodeURIComponent(event))
         }
       }
       updateUTMParameters();
@@ -672,5 +677,44 @@ $(document).ready((function () {
       console.log('---SET COOKIES---', domain);
       document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
     }, 500);
+  }
+
+  /**
+   * Registering on click event handlers for the 'Register Now'. 
+   */
+  $('.calendly-upsight').on('click', function () {
+    if (registration_type == "byecalendly") {
+      $('body').css('overflow', 'hidden');
+      $('.upsight-session').css('display', 'flex');
+    } else {
+      showCalendly("v1");
+    }
+    $(".webinar__slots .webinar-event-date").remove();
+    if (eventUpsightDate.length === 2) {
+      closestBoundaryInRange(eventUpsightDate[0].start_time, eventUpsightDate[1].start_time);
+    } else {
+      $(".webinar__slots").append($(webinarSlotDate));
+    }
+  });
+
+  /**
+   * Check for the range difference in the dates and set the nearest date accordingly. 
+   * @param {*} rangeStart - indicates start date
+   * @param {*} rangeEnd - indicates end data
+   */
+  function closestBoundaryInRange(rangeStart, rangeEnd) {
+    const eventDate = getAllUrlParams()?.eventdate;
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const diffToStart = Math.abs(new Date(eventDate) - new Date(rangeStart));
+    const diffToEnd = Math.abs(new Date(eventDate) - new Date(rangeEnd));
+
+    if ((diffToStart <= diffToEnd || diffToStart >= diffToEnd)) {
+      const eventUpsightData = diffToStart <= diffToEnd ? eventUpsightDate[0] : eventUpsightDate[1];
+      const eventSightUpformat = eventUpsightData.weekday + ", " + eventUpsightData.day + " " + months[parseInt(eventUpsightData.month) - 1] + " " + eventUpsightData.year + " | " + eventUpsightData.hour + ":" + eventUpsightData.minute + " " + eventUpsightData.am_or_pm;
+      const webinarDate = formattedWebinarDate(eventUpsightData, eventSightUpformat);
+      $(".webinar__slots").append($(webinarDate));
+    } else {
+      $(".webinar__slots").append($(webinarSlotDate));
+    }
   }
 }));
