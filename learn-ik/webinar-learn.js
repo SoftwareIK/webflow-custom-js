@@ -3,12 +3,17 @@
  * Original file: /gh/kothinti/ik@master/ep-webinar-learn-v1.5.3.js
  * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
  */
-var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL;
+var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL, eventUpsightDate, webinarSlotDate;
 
 function getDeviceType() {
   var e = navigator.userAgent;
   return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
 }
+
+function formattedWebinarDate(webinarData, webinarFormat) {
+  return `<div class="webinar-event-date" bis_skin_checked="1"  data-starttime="${webinarData.startDate}" data-endtime="${webinarData.endDate}" data-invitee_starttime="${webinarData.invitee_start_time}"  data-invitee_endtime="${webinarData.invitee_end_time}" data-name="${webinarData.startDate}" data-webinar_lead_type="${webinarData.webinar_lead_type}">  ${webinarFormat} </div>`
+}
+
 $(document).ready((function () {
   var e;
   let t = getAllUrlParams();
@@ -19,7 +24,6 @@ $(document).ready((function () {
       }
     });
   }
-
   function n(e) {
     const t = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     0 == e.length ? registration_type = "calendly" : registration_type = "byecalendly";
@@ -30,20 +34,22 @@ $(document).ready((function () {
     //   $(".webinar__slots").append($(r))
     // }
     if (typeof isUpsightReg !== 'undefined') {
-      var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm,
-        r = `<div class="webinar-event-date" bis_skin_checked="1" data-starttime="${e[0].start_time}" data-endtime="${e[0].end_time}" data-invitee_starttime="${e[0].invitee_start_time}"  data-invitee_endtime="${e[0].invitee_end_time}" data-name="${e[0].start_time}" data-webinar_lead_type="${e[0].webinar_lead_type}">  ${n} </div>`;
-      $(".webinar__slots").append($(r));
-
+      var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
+      webinarSlotDate = formattedWebinarDate(e[0], n);
+      $(".webinar__slots").append($(webinarSlotDate));
+      eventUpsightDate = e;
       function updateUTMParameters() {
         if (!localStorage.getItem('utmParametersSet')) {
           var currentUrl = window.location.href;
           var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
-          var event = "Seize the AI Advantage: Strengthen Your Resume";
+          var event = "Data Science in Practice: OTT Personalized Content Recommendations";
           var newUrl = currentUrl + separator +
-            'event=' + encodeURIComponent(event) +
-            '&eventDate=' + encodeURIComponent(e[0].start_time);
+            'webinarType=' + webinarType +
+            '&event=' + encodeURIComponent(event) +
+            '&eventDate=' + e[0].start_time;
           window.history.replaceState({}, document.title, newUrl);
           localStorage.setItem('utmParametersSet', 'true');
+          $(".webinar__lightbox-title").text(decodeURIComponent(event))
         }
       }
       updateUTMParameters();
@@ -144,6 +150,7 @@ $(document).ready((function () {
             webinar_lead_type: "SWITCH_UP"
           }))) : "CAREER_SESSION" == webinarType ? e.map((e => ({
             ...e,
+
             webinar_lead_type: "CAREER_SESSION"
           }))) : e.map((e => ({
             ...e,
@@ -350,8 +357,10 @@ $(document).ready((function () {
       a = $(".webinar-event-date").data("endtime");
       n = visitor_id + ":" + v_country;
       i = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage-v2");
-      r = "?utm_source=" + $(".utm_source").val() + "&assigned_to=Interview Kickstart&invitee_first_name=" + $(".wr__firstname").val() + "&invitee_last_name=" + $(".wr__lastname").val() + "&invitee_email=" + $(".wr__email").val() + "&answer_1=" + $(".wr__phone").val() + "&event_start_time=" + t + "&event_end_time=" + a + "&utm_medium=" + n + "&salesforce_uuid=" + i;
-      var redirectUrl = "https://learn.interviewkickstart.com/reviews" + r;
+      // r = "?utm_source=" + $(".utm_source").val() + "&webinarType=" + webinarType + "&event=" + eventName + "&invitee_last_name=" + "&event_start_time=" + t + "&invitee_first_name=" + $(".wr__firstname").val() + $(".wr__lastname").val() + "&invitee_email=" + $(".wr__email").val() + "&answer_1=" + $(".wr__phone").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i;
+      r = "?utm_source=" + $(".utm_source").val() + "&webinarType=" + webinarType + "&event=" + eventName + "&event_start_time=" + t + "&utm_medium=" + n + "&salesforce_uuid=" + i;
+      var redirectUrl = "https://www.interviewkickstart.com/signup-final-step" + r;
+      gqlFormCookieData();
       dataLayer.push({
         event: "new_webinar_registration_form_submitted",
         webinar_name: document.querySelector(".webinar__lightbox-title").innerHTML
@@ -475,39 +484,7 @@ $(document).ready((function () {
             }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         }
       }
-      const previousData = {
-        firstName: $(".wr__firstname").val(),
-        lastName: $(".wr__lastname").val(),
-        email: $(".wr__email").val(),
-        phone: $(".wr__phone").val(),
-        city: $(".wr__city").val(),
-        device: $(".wr__device").val(),
-        region: $(".wr__region").val(),
-        referrer: $(".wr__referrer").val(),
-        site_url: $(".site_url").val(),
-        eventStartTime: $(".wr__event-start-time").val(),
-        eventEndTime: $(".wr__event-end-time").val(),
-        inviteeStartTime: $(".wr__invitee-start-time").val(),
-        inviteeEndTime: $(".wr__invitee-end-time").val(),
-        learnUserId: $(".user_id").val(),
-        event_name: eventName,
-        cta_url: "learn.ik" + window.location.pathname,
-      };
-      var jsonData = JSON.stringify(previousData);
-      var cookieName = "previousData";
-      var cookieValue = encodeURIComponent(jsonData);
-
-      var expirationTime = new Date(new Date().getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
-      var currentHostname = window.location.hostname;
-      var hostnameParts = currentHostname.split('.');
-      if (hostnameParts.length > 1) {
-        hostnameParts.shift();
-      }
-      var domain = hostnameParts.join('.');
-      setTimeout(() => {
-        console.log('---SET COOKIES---', domain);
-        document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
-      }, 500)
+      gqlFormCookieData();
 
       //lead LeadCreatedTime
       const currentDateTime = new Date();
@@ -665,4 +642,41 @@ $(document).ready((function () {
       }
     }
   }
+  //Set GQL form cookies Data 
+  function gqlFormCookieData() {
+    const previousData = {
+      firstName: $(".wr__firstname").val(),
+      lastName: $(".wr__lastname").val(),
+      email: $(".wr__email").val(),
+      phone: $(".wr__phone").val(),
+      city: $(".wr__city").val(),
+      device: $(".wr__device").val(),
+      region: $(".wr__region").val(),
+      referrer: $(".wr__referrer").val(),
+      site_url: $(".site_url").val(),
+      eventStartTime: $(".wr__event-start-time").val(),
+      eventEndTime: $(".wr__event-end-time").val(),
+      inviteeStartTime: $(".wr__invitee-start-time").val(),
+      inviteeEndTime: $(".wr__invitee-end-time").val(),
+      learnUserId: $(".user_id").val(),
+      event_name: eventName,
+      cta_url: "learn.ik" + window.location.pathname,
+    };
+    var jsonData = JSON.stringify(previousData);
+    var cookieName = "previousData";
+    var cookieValue = encodeURIComponent(jsonData);
+
+    var expirationTime = new Date(new Date().getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
+    var currentHostname = window.location.hostname;
+    var hostnameParts = currentHostname.split('.');
+    if (hostnameParts.length > 1) {
+      hostnameParts.shift();
+    }
+    var domain = hostnameParts.join('.');
+    setTimeout(() => {
+      document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
+    }, 500);
+  }
+
+
 }));
