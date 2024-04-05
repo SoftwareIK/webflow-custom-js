@@ -9,6 +9,11 @@ function getDeviceType() {
   var e = navigator.userAgent;
   return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
 }
+
+function formattedWebinarDate(webinarData, webinarFormat) {
+  return `<div class="webinar-event-date" bis_skin_checked="1"  data-starttime="${webinarData.startDate}" data-endtime="${webinarData.endDate}" data-invitee_starttime="${webinarData.invitee_start_time}"  data-invitee_endtime="${webinarData.invitee_end_time}" data-name="${webinarData.startDate}" data-webinar_lead_type="${webinarData.webinar_lead_type}">  ${webinarFormat} </div>`
+}
+
 $(document).ready((function () {
   var e;
   let t = getAllUrlParams();
@@ -29,26 +34,15 @@ $(document).ready((function () {
     //   $(".webinar__slots").append($(r))
     // }
     if (typeof isUpsightReg !== 'undefined') {
-      var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm,
-        webinarSlotDate = `<div class="webinar-event-date" bis_skin_checked="1"  data-starttime="${e[0].start_time}" data-endtime="${e[0].end_time}" data-invitee_starttime="${e[0].invitee_start_time}"  data-invitee_endtime="${e[0].invitee_end_time}" data-name="${e[0].start_time}" data-webinar_lead_type="${e[0].webinar_lead_type}">  ${n} </div>`;
+      var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
+
+      webinarSlotDate = formattedWebinarDate(e[0], n);
+
       $(".webinar__slots").append($(webinarSlotDate));
+      eventUpsightDate = e;
+      console.log("apiResponse", eventUpsightDate);
 
-      var apiResponse = {
-        "apidata": e,
-        "startDate": e[0].start_time,
-        "endDate": e[0].end_time,
-        "invitee_start_time": e[0].invitee_start_time,
-        "invitee_end_time": e[0].invitee_end_time,
-        "webinar_lead_type": e[0].webinar_lead_type,
 
-        "startDate_1": e[1].start_time,
-        "endDate_1": e[1].end_time,
-        "invitee_start_time_1": e[1].invitee_start_time,
-        "invitee_end_time_1": e[1].invitee_end_time,
-        "webinar_lead_type_1": e[1].webinar_lead_type,
-      }
-      //console.log("apiResponse", apiResponse);
-      eventUpsightDate = apiResponse;
       function updateUTMParameters() {
         if (!localStorage.getItem('utmParametersSet')) {
           var currentUrl = window.location.href;
@@ -495,7 +489,9 @@ $(document).ready((function () {
             }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         }
       }
+
       gqlFormCookieData();
+
       //lead LeadCreatedTime
       const currentDateTime = new Date();
       const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
@@ -687,5 +683,44 @@ $(document).ready((function () {
       console.log('---SET COOKIES---', domain);
       document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
     }, 500);
+  }
+
+  /**
+   * Registering on click event handlers for the 'Register Now'. 
+   */
+  $('.calendly-upsight').on('click', function () {
+    if (registration_type == "byecalendly") {
+      $('body').css('overflow', 'hidden');
+      $('.upsight-session').css('display', 'flex');
+    } else {
+      showCalendly("v1");
+    }
+    $(".webinar__slots .webinar-event-date").remove();
+    if (eventUpsightDate.length === 2) {
+      closestBoundaryInRange(eventUpsightDate[0].start_time, eventUpsightDate[1].start_time);
+    } else {
+      $(".webinar__slots").append($(webinarSlotDate));
+    }
+  });
+
+  /**
+   * Check for the range difference in the dates and set the nearest date accordingly. 
+   * @param {*} rangeStart - indicates start date
+   * @param {*} rangeEnd - indicates end data
+   */
+  function closestBoundaryInRange(rangeStart, rangeEnd) {
+    const eventDate = getAllUrlParams()?.eventdate;
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const diffToStart = Math.abs(new Date(eventDate) - new Date(rangeStart));
+    const diffToEnd = Math.abs(new Date(eventDate) - new Date(rangeEnd));
+
+    if ((diffToStart <= diffToEnd || diffToStart >= diffToEnd)) {
+      const eventUpsightData = diffToStart <= diffToEnd ? eventUpsightDate[0] : eventUpsightDate[1];
+      const eventSightUpformat = eventUpsightData.weekday + ", " + eventUpsightData.day + " " + months[parseInt(eventUpsightData.month) - 1] + " " + eventUpsightData.year + " | " + eventUpsightData.hour + ":" + eventUpsightData.minute + " " + eventUpsightData.am_or_pm;
+      const webinarDate = formattedWebinarDate(eventUpsightData, eventSightUpformat);
+      $(".webinar__slots").append($(webinarDate));
+    } else {
+      $(".webinar__slots").append($(webinarSlotDate));
+    }
   }
 }));
