@@ -678,42 +678,5 @@ $(document).ready((function () {
     }, 500);
   }
 
-  /**
-   * Registering on click event handlers for the 'Register Now'. 
-   */
-  $('.calendly-upsight').on('click', function () {
-    if (registration_type == "byecalendly") {
-      $('body').css('overflow', 'hidden');
-      $('.upsight-session').css('display', 'flex');
-    } else {
-      showCalendly("v1");
-    }
-    $(".webinar__slots .webinar-event-date").remove();
-    if (eventUpsightDate.length === 2) {
-      closestBoundaryInRange(eventUpsightDate[0].start_time, eventUpsightDate[1].start_time);
-    } else {
-      $(".webinar__slots").append($(webinarSlotDate));
-    }
-  });
 
-  /**
-   * Check for the range difference in the dates and set the nearest date accordingly. 
-   * @param {*} rangeStart - indicates start date
-   * @param {*} rangeEnd - indicates end data
-   */
-  function closestBoundaryInRange(rangeStart, rangeEnd) {
-    const eventDate = getAllUrlParams()?.eventdate;
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const diffToStart = Math.abs(new Date(eventDate) - new Date(rangeStart));
-    const diffToEnd = Math.abs(new Date(eventDate) - new Date(rangeEnd));
-
-    if ((diffToStart <= diffToEnd || diffToStart >= diffToEnd)) {
-      const eventUpsightData = diffToStart <= diffToEnd ? eventUpsightDate[0] : eventUpsightDate[1];
-      const eventSightUpformat = eventUpsightData.weekday + ", " + eventUpsightData.day + " " + months[parseInt(eventUpsightData.month) - 1] + " " + eventUpsightData.year + " | " + eventUpsightData.hour + ":" + eventUpsightData.minute + " " + eventUpsightData.am_or_pm;
-      const webinarDate = formattedWebinarDate(eventUpsightData, eventSightUpformat);
-      $(".webinar__slots").append($(webinarDate));
-    } else {
-      $(".webinar__slots").append($(webinarSlotDate));
-    }
-  }
 }));
