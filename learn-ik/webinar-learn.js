@@ -11,7 +11,7 @@ function getDeviceType() {
 }
 
 function formattedWebinarDate(webinarData, webinarFormat) {
-  return `<div class="webinar-event-date" bis_skin_checked="1"  data-starttime="${webinarData.startDate}" data-endtime="${webinarData.endDate}" data-invitee_starttime="${webinarData.invitee_start_time}"  data-invitee_endtime="${webinarData.invitee_end_time}" data-name="${webinarData.startDate}" data-webinar_lead_type="${webinarData.webinar_lead_type}">  ${webinarFormat} </div>`
+  return `<div class="webinar-event-date" bis_skin_checked="1"  data-starttime="${webinarData.start_time}" data-endtime="${webinarData.end_time}" data-invitee_starttime="${webinarData.invitee_start_time}"  data-invitee_endtime="${webinarData.invitee_end_time}" data-name="${webinarData.startDate}" data-webinar_lead_type="${webinarData.webinar_lead_type}">  ${webinarFormat} </div>`
 }
 
 $(document).ready((function () {
@@ -677,6 +677,4 @@ $(document).ready((function () {
       document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
     }, 500);
   }
-
-
 }));
