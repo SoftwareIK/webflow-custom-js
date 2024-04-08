@@ -359,7 +359,7 @@ $(document).ready((function () {
       i = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage-v2");
       // r = "?utm_source=" + $(".utm_source").val() + "&webinarType=" + webinarType + "&event=" + eventName + "&invitee_last_name=" + "&event_start_time=" + t + "&invitee_first_name=" + $(".wr__firstname").val() + $(".wr__lastname").val() + "&invitee_email=" + $(".wr__email").val() + "&answer_1=" + $(".wr__phone").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i;
       r = "?utm_source=" + $(".utm_source").val() + "&webinarType=" + webinarType + "&event=" + eventName + "&event_start_time=" + t + "&utm_medium=" + n + "&salesforce_uuid=" + i;
-      var redirectUrl = "https://ikdev.webflow.io/signup-final-step" + r;
+      var redirectUrl = "https://www.interviewkickstart.com/signup-final-step" + r;
       gqlFormCookieData();
       dataLayer.push({
         event: "new_webinar_registration_form_submitted",
