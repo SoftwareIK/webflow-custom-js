@@ -315,19 +315,19 @@ $(document).ready(function () {
   });
 
   function pushToEndPoint(endpoint) {
-    let eventName;
+    //let eventName;
     if (v_timezone_formatted == 'Asia/Kolkata') {
       webinarType = "REGULAR";
     } else {
       webinarType == "SWITCH_UP"
     }
-    if (webinarType == "SWITCH_UP") {
-      eventName = "Future-proof your career with AI/ ML, Data Science";
-    } else if (webinarType == "CAREER_SESSION") {
-      eventName = "AI Advantage: Strategies to secure more interviews";
-    } else {
-      eventName = "How to Nail your next Technical Interview";
-    }
+    // if (webinarType == "SWITCH_UP") {
+    //   eventName = "Future-proof your career with AI/ ML, Data Science";
+    // } else if (webinarType == "CAREER_SESSION") {
+    //   eventName = "AI Advantage: Strategies to secure more interviews";
+    // } else {
+    //   eventName = "How to Nail your next Technical Interview";
+    // }
 
     var formData = {
       "First Name": $('.wr__firstname').val(),
@@ -355,7 +355,7 @@ $(document).ready(function () {
 
       "cta_page_url": $('.cta_page_url').val(),
       "landing_page_url": $('.l_page_url').val(),
-      "event_name": eventName,
+      "event_name": $('input[name="Event Name"]').val(),
       "user_timezone": $('.user_timezone').val(),
       "page_url": $('.page_url').val(),
       "site_url": $('.site_url').val(),
