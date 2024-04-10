@@ -315,20 +315,11 @@ $(document).ready(function () {
   });
 
   function pushToEndPoint(endpoint) {
-    //let eventName;
     if (v_timezone_formatted == 'Asia/Kolkata') {
       webinarType = "REGULAR";
     } else {
       webinarType == "SWITCH_UP"
     }
-    // if (webinarType == "SWITCH_UP") {
-    //   eventName = "Future-proof your career with AI/ ML, Data Science";
-    // } else if (webinarType == "CAREER_SESSION") {
-    //   eventName = "AI Advantage: Strategies to secure more interviews";
-    // } else {
-    //   eventName = "How to Nail your next Technical Interview";
-    // }
-
     var formData = {
       "First Name": $('.wr__firstname').val(),
       "Last Name": $('.wr__lastname').val(),
