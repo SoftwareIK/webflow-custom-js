@@ -55,7 +55,6 @@ $(document).ready((function () {
             'webinarType=' + webinarType +
             '&event=' + encodeURIComponent(event) +
             '&eventDate=' + e[0].start_time;
-
           // Update URL and set webinar title
           window.history.replaceState({}, document.title, newUrl);
           $(".webinar__lightbox-title").text(decodeURIComponent(event));
