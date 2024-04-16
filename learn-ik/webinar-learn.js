@@ -39,18 +39,37 @@ $(document).ready((function () {
       $(".webinar__slots").append($(webinarSlotDate));*/
       eventUpsightDate = e;
       function updateUTMParameters() {
-        if (!localStorage.getItem('utmParametersSet')) {
-          var currentUrl = window.location.href;
-          var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
-          var event = "Data Science in Practice: OTT Personalized Content Recommendations";
+        //   if (!localStorage.getItem('utmParametersSet')) {
+        //     var currentUrl = window.location.href;
+        //     var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
+        //     var event = "Data Science in Practice: OTT Personalized Content Recommendations";
+        //     var newUrl = currentUrl + separator +
+        //       'webinarType=' + webinarType +
+        //       '&event=' + encodeURIComponent(event) +
+        //       '&eventDate=' + e[0].start_time;
+        //     window.history.replaceState({}, document.title, newUrl);
+        //     localStorage.setItem('utmParametersSet', 'true');
+        //     $(".webinar__lightbox-title").text(decodeURIComponent(event))
+        //   }
+        var currentUrl = window.location.href;
+        var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
+        var event = "Data Science in Practice: OTT Personalized Content Recommendations";
+
+        // Check if the URL already contains the parameters
+        var paramsAlreadySet = currentUrl.includes('webinarType=') &&
+          currentUrl.includes('event=') &&
+          currentUrl.includes('eventDate=');
+
+        // If parameters are not set, add them to the URL
+        if (!paramsAlreadySet) {
           var newUrl = currentUrl + separator +
             'webinarType=' + webinarType +
             '&event=' + encodeURIComponent(event) +
             '&eventDate=' + e[0].start_time;
           window.history.replaceState({}, document.title, newUrl);
-          localStorage.setItem('utmParametersSet', 'true');
-          $(".webinar__lightbox-title").text(decodeURIComponent(event))
+          $(".webinar__lightbox-title").text(decodeURIComponent(event));
         }
+
       }
       updateUTMParameters();
     } else {
