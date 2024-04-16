@@ -37,39 +37,29 @@ $(document).ready((function () {
       /*  var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
         webinarSlotDate = formattedWebinarDate(e[0], n);
       $(".webinar__slots").append($(webinarSlotDate));*/
+
       eventUpsightDate = e;
       function updateUTMParameters() {
-        //   if (!localStorage.getItem('utmParametersSet')) {
-        //     var currentUrl = window.location.href;
-        //     var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
-        //     var event = "Data Science in Practice: OTT Personalized Content Recommendations";
-        //     var newUrl = currentUrl + separator +
-        //       'webinarType=' + webinarType +
-        //       '&event=' + encodeURIComponent(event) +
-        //       '&eventDate=' + e[0].start_time;
-        //     window.history.replaceState({}, document.title, newUrl);
-        //     localStorage.setItem('utmParametersSet', 'true');
-        //     $(".webinar__lightbox-title").text(decodeURIComponent(event))
-        //   }
-        var currentUrl = window.location.href;
-        var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
-        var event = "Data Science in Practice: OTT Personalized Content Recommendations";
-
-        // Check if the URL already contains the parameters
-        var paramsAlreadySet = currentUrl.includes('webinarType=') &&
-          currentUrl.includes('event=') &&
-          currentUrl.includes('eventDate=');
-
-        // If parameters are not set, add them to the URL
-        if (!paramsAlreadySet) {
+        // Function to check if UTM parameters exist in the URL
+        function utmParamsExist(url) {
+          return url.includes('webinarType=') &&
+            url.includes('event=') &&
+            url.includes('eventDate=');
+        }
+        // Check if UTM parameters already exist in the URL
+        if (!utmParamsExist(window.location.href)) {
+          var currentUrl = window.location.href;
+          var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
+          var event = "NewsBot Workshop: Crafting Your Custom AI News Aggregator using LLMs";
           var newUrl = currentUrl + separator +
             'webinarType=' + webinarType +
             '&event=' + encodeURIComponent(event) +
             '&eventDate=' + e[0].start_time;
+
+          // Update URL and set webinar title
           window.history.replaceState({}, document.title, newUrl);
           $(".webinar__lightbox-title").text(decodeURIComponent(event));
         }
-
       }
       updateUTMParameters();
     } else {
