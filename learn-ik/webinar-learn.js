@@ -35,8 +35,8 @@ $(document).ready((function () {
     // }
     if (typeof isUpsightReg !== 'undefined') {
       /*  var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
-        webinarSlotDate = formattedWebinarDate(e[0], n);*/
-      $(".webinar__slots").append($(webinarSlotDate));
+        webinarSlotDate = formattedWebinarDate(e[0], n);
+      $(".webinar__slots").append($(webinarSlotDate));*/
       eventUpsightDate = e;
       function updateUTMParameters() {
         if (!localStorage.getItem('utmParametersSet')) {
