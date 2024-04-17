@@ -34,23 +34,30 @@ $(document).ready((function () {
     //   $(".webinar__slots").append($(r))
     // }
     if (typeof isUpsightReg !== 'undefined') {
+      /*  var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
+        webinarSlotDate = formattedWebinarDate(e[0], n);
+      $(".webinar__slots").append($(webinarSlotDate));*/
+
       eventUpsightDate = e;
-      console.log(eventUpsightDate);
-      var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
-      webinarSlotDate = formattedWebinarDate(e[0], n);
-      $(".webinar__slots").append($(webinarSlotDate));
       function updateUTMParameters() {
-        if (!localStorage.getItem('utmParametersSet')) {
+        // Function to check if UTM parameters exist in the URL
+        function utmParamsExist(url) {
+          return url.includes('webinarType=') &&
+            url.includes('event=') &&
+            url.includes('eventDate=');
+        }
+        // Check if UTM parameters already exist in the URL
+        if (!utmParamsExist(window.location.href)) {
           var currentUrl = window.location.href;
           var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
-          var event = "Data Science in Practice: OTT Personalized Content Recommendations";
+          var event = "NewsBot Workshop: Crafting Your Custom AI News Aggregator using LLMs";
           var newUrl = currentUrl + separator +
             'webinarType=' + webinarType +
             '&event=' + encodeURIComponent(event) +
             '&eventDate=' + e[0].start_time;
+          // Update URL and set webinar title
           window.history.replaceState({}, document.title, newUrl);
-          localStorage.setItem('utmParametersSet', 'true');
-          $(".webinar__lightbox-title").text(decodeURIComponent(event))
+          $(".webinar__lightbox-title").text(decodeURIComponent(event));
         }
       }
       updateUTMParameters();
@@ -360,7 +367,7 @@ $(document).ready((function () {
       i = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage-v2");
       // r = "?utm_source=" + $(".utm_source").val() + "&webinarType=" + webinarType + "&event=" + eventName + "&invitee_last_name=" + "&event_start_time=" + t + "&invitee_first_name=" + $(".wr__firstname").val() + $(".wr__lastname").val() + "&invitee_email=" + $(".wr__email").val() + "&answer_1=" + $(".wr__phone").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i;
       r = "?utm_source=" + $(".utm_source").val() + "&webinarType=" + webinarType + "&event=" + eventName + "&event_start_time=" + t + "&utm_medium=" + n + "&salesforce_uuid=" + i;
-      var redirectUrl = "https://ikdev.webflow.io/signup-final-step" + r;
+      var redirectUrl = "https://www.interviewkickstart.com/signup-final-step" + r;
       gqlFormCookieData();
       dataLayer.push({
         event: "new_webinar_registration_form_submitted",
@@ -475,17 +482,16 @@ $(document).ready((function () {
             location.href = d
           }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         } else if (typeof paRegistered !== 'undefined') {
-          d = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://ikdev.webflow.io/signup-final-step" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + $(".wr__email").val() + "&salesforce_uuid=" + i, $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/307qti9/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
+          d = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://www.interviewkickstart.com/signup-final-step" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + $(".wr__email").val() + "&salesforce_uuid=" + i, $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/307qti9/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
             location.href = d
           }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         } else {
-          e = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://ikdev.webflow.io/signup-final-step" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i,
+          e = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://www.interviewkickstart.com/signup-final-step" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i,
             $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
               location.href = e
             }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         }
       }
-
       gqlFormCookieData();
 
       //lead LeadCreatedTime
@@ -676,47 +682,7 @@ $(document).ready((function () {
     }
     var domain = hostnameParts.join('.');
     setTimeout(() => {
-      console.log('---SET COOKIES---', domain);
       document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
     }, 500);
-  }
-
-  /**
-   * Registering on click event handlers for the 'Register Now'. 
-   */
-  $('.calendly-upsight').on('click', function () {
-    if (registration_type == "byecalendly") {
-      $('body').css('overflow', 'hidden');
-      $('.upsight-session').css('display', 'flex');
-    } else {
-      showCalendly("v1");
-    }
-    $(".webinar__slots .webinar-event-date").remove();
-    if (eventUpsightDate.length === 2) {
-      closestBoundaryInRange(eventUpsightDate[0].start_time, eventUpsightDate[1].start_time);
-    } else {
-      $(".webinar__slots").append($(webinarSlotDate));
-    }
-  });
-
-  /**
-   * Check for the range difference in the dates and set the nearest date accordingly. 
-   * @param {*} rangeStart - indicates start date
-   * @param {*} rangeEnd - indicates end data
-   */
-  function closestBoundaryInRange(rangeStart, rangeEnd) {
-    const eventDate = getAllUrlParams()?.eventdate;
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const diffToStart = Math.abs(new Date(eventDate) - new Date(rangeStart));
-    const diffToEnd = Math.abs(new Date(eventDate) - new Date(rangeEnd));
-
-    if ((diffToStart <= diffToEnd || diffToStart >= diffToEnd)) {
-      const eventUpsightData = diffToStart <= diffToEnd ? eventUpsightDate[0] : eventUpsightDate[1];
-      const eventSightUpformat = eventUpsightData.weekday + ", " + eventUpsightData.day + " " + months[parseInt(eventUpsightData.month) - 1] + " " + eventUpsightData.year + " | " + eventUpsightData.hour + ":" + eventUpsightData.minute + " " + eventUpsightData.am_or_pm;
-      const webinarDate = formattedWebinarDate(eventUpsightData, eventSightUpformat);
-      $(".webinar__slots").append($(webinarDate));
-    } else {
-      $(".webinar__slots").append($(webinarSlotDate));
-    }
   }
 }));
