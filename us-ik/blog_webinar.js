@@ -154,7 +154,7 @@ $(document).ready(function () {
       registration_type = "byecalendly";
     }
     let noslots = (resobj.length > 6) ? 6 : resobj.length;
-    $(".article_webinar__slots").empty();
+    $(".webinar__slots").empty();
     for (i = 0; i < noslots; i++) {
       var available_slots = ((Number(resobj[i].day) * 10007) % 50) + ((daysUntil(resobj[i].start_time) * 10007) % 50) * 3;
       let slotstr = resobj[i].invitee_end_time.substring(0, 7);
@@ -166,8 +166,8 @@ $(document).ready(function () {
       var radiohtmlv2 = '<div class="ws-card"><div class="ws-card__day">' + resobj[i].weekday.substring(0, 3) + '</div><div class="slot-status-grid"><div class="ws-card__date">' + resobj[i].day + '</div><div class="ws-almost-full">Almost full!</div></div><div class="form-slot-block"><label class="form-radio-btn-block-slot w-radio"><div class="w-form-formradioinput w-form-formradioinput--inputType-custom ws-card__time-card w-radio-input"></div><input style="opacity:0;position:absolute;z-index:-1" type="radio" name="start-date" value="' + resobj[i].start_time + '" data-endtime="' + resobj[i].end_time + '" data-invitee_starttime="' + resobj[i].invitee_start_time + '" data-invitee_endtime="' + resobj[i].invitee_end_time + '" data-name="' + resobj[i].start_time + '" data-webinar_lead_type="' + resobj[i].webinar_lead_type + '"><span class="slod-text-hide w-form-label" for="radio-10">' + resobj[i].invitee_start_time.substring(0, 7) + '-' + resobj[i].invitee_end_time.substring(0, 7) + '</span></label><div class="slot-time-block"><div class="ws-time">' + resobj[i].invitee_start_time.substring(0, 5) + ' - ' + newSlotStr + '</div><div class="slot-available-grid"><div>Available Slots -</div><div class="ws-available-slots red">' + available_slots + '</div></div></div></div></div>';
 
       if (webinarUI == "v2") {
-        $('.article_webinar__slots').append($(radiohtmlv2));
-        $('.article_webinar__slots').addClass('slot-grid');
+        $('.webinar__slots').append($(radiohtmlv2));
+        $('.webinar__slots').addClass('slot-grid');
         $('.ws-available-slots').css("color", "#0E9F1C");
         $('.ws-card:first-child').find('.ws-available-slots').css("color", "#D14040");
         $('.ws-card:nth-child(2)').find('.ws-available-slots').css("color", "#ED7735");
@@ -177,7 +177,7 @@ $(document).ready(function () {
         $('.ws-card:nth-child(2)').find('.ws-almost-full').text("Filling fast!").addClass('ws-filling-fast');
         $('.ws-filling-fast').css("display", "block");
       } else {
-        $('.article_webinar__slots').append($(radiohtml));
+        $('.webinar__slots').append($(radiohtml));
       }
     }
   }
@@ -240,7 +240,7 @@ $(document).ready(function () {
     }
     // let slotscountrycode = (v_country == "India") ? "IND" : "USA";
     $("html, body").animate({ scrollTop: 0 }, "slow");
-    $('.article_webinar__slots').empty();
+    $('.webinar__slots').empty();
     createWebinarSlotsList(slotscountrycode, v_timezone);
     // $(".webinar-type").val(webinarType)
   });
@@ -253,7 +253,7 @@ $(document).ready(function () {
     }
     let slotscountrycode = (v_country == "India") ? "IND" : "USA";
     $("html, body").animate({ scrollTop: 0 }, "slow");
-    $('.article_webinar__slots').empty();
+    $('.webinar__slots').empty();
     //$(".webinar-type").val(webinarType);
     createWebinarSlotsList(slotscountrycode, v_timezone);
   });
