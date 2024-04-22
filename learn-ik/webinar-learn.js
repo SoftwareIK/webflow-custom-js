@@ -33,8 +33,8 @@ $(document).ready((function () {
     //     r = '<label class="select-webinar-slot w-radio"><input type="radio" name="start-date" value="' + e[i].start_time + '" data-endtime="' + e[i].end_time + '" data-invitee_starttime="' + e[i].invitee_start_time + '" data-invitee_endtime="' + e[i].invitee_end_time + '" data-name="' + e[i].start_time + '" class="w-form-formradioinput select-webinar-radio-btn w-radio-input" data-webinar_lead_type="' + e[i].webinar_lead_type + '"><span class="w-form-label" for="start-date-' + i + '">' + n + "</span></label>";
     //   $(".webinar__slots").append($(r))
     // }
-    eventUpsightDate = e;
     if (typeof isUpsightReg !== 'undefined') {
+      eventUpsightDate = e;
       var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
       webinarSlotDate = formattedWebinarDate(e[0], n);
       $(".webinar__slots").append($(webinarSlotDate));
