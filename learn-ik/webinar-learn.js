@@ -24,6 +24,7 @@ $(document).ready((function () {
       }
     });
   }
+
   function n(e) {
     const t = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     0 == e.length ? registration_type = "calendly" : registration_type = "byecalendly";
@@ -33,11 +34,41 @@ $(document).ready((function () {
     //     r = '<label class="select-webinar-slot w-radio"><input type="radio" name="start-date" value="' + e[i].start_time + '" data-endtime="' + e[i].end_time + '" data-invitee_starttime="' + e[i].invitee_start_time + '" data-invitee_endtime="' + e[i].invitee_end_time + '" data-name="' + e[i].start_time + '" class="w-form-formradioinput select-webinar-radio-btn w-radio-input" data-webinar_lead_type="' + e[i].webinar_lead_type + '"><span class="w-form-label" for="start-date-' + i + '">' + n + "</span></label>";
     //   $(".webinar__slots").append($(r))
     // }
+
     if (typeof isUpsightReg !== 'undefined') {
       eventUpsightDate = e;
-      var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
-      webinarSlotDate = formattedWebinarDate(e[0], n);
-      $(".webinar__slots").append($(webinarSlotDate));
+      console.log("eventUpsightDate", eventUpsightDate);
+      function setWebinarFirstTimeSlot() {
+        var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
+        webinarSlotDate = formattedWebinarDate(e[0], n);
+        $(".webinar__slots").append($(webinarSlotDate));
+      }
+      if (eventUpsightDate.length === 2) {
+        closestBoundaryInRange(eventUpsightDate[0].start_time, eventUpsightDate[1].start_time);
+      }
+      else {
+        setWebinarFirstTimeSlot();
+      }
+      /**
+       * Check for the range difference in the dates and set the nearest date accordingly. 
+       * @param {*} rangeStart - indicates start date
+       * @param {*} rangeEnd - indicates end data
+       */
+      function closestBoundaryInRange(rangeStart, rangeEnd) {
+        const eventDate = getAllUrlParams()?.eventdate;
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const diffToStart = Math.abs(new Date(eventDate) - new Date(rangeStart));
+        const diffToEnd = Math.abs(new Date(eventDate) - new Date(rangeEnd));
+        if ((diffToStart <= diffToEnd || diffToStart >= diffToEnd)) {
+          const eventUpsightData = diffToStart <= diffToEnd ? eventUpsightDate[0] : eventUpsightDate[1];
+          const eventSightUpformat = eventUpsightData.weekday + ", " + eventUpsightData.day + " " + months[parseInt(eventUpsightData.month) - 1] + " " + eventUpsightData.year + " | " + eventUpsightData.hour + ":" + eventUpsightData.minute + " " + eventUpsightData.am_or_pm;
+          const webinarDate = formattedWebinarDate(eventUpsightData, eventSightUpformat);
+          $(".webinar__slots").append($(webinarDate));
+        } else {
+          setWebinarFirstTimeSlot();
+        }
+      }
+
       function updateUTMParameters() {
         // Function to check if UTM parameters exist in the URL
         function utmParamsExist(url) {
@@ -67,8 +98,8 @@ $(document).ready((function () {
         $(".webinar__slots").append($(r))
       }
     }
-  }
 
+  }
   "CAREER_SESSION" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Seize the AI Advantage: Strengthen Your Resume"), $('input[name="Event Name"]').val("Seize the AI Advantage: Strengthen Your Resume"), eventName = "Seize the AI Advantage: Strengthen Your Resume") : "SWITCH_UP" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Future-proof your career with AI/ ML, Data Science"), $('input[name="Event Name"]').val("Future-proof your career with AI/ ML, Data Science"), eventName = "Future-proof your career with AI/ ML, Data Science") : null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("How to Nail your next Technical Interview"), $('input[name="Event Name"]').val("How to Nail your next Technical Interview"), eventName = "How to Nail your next Technical Interview"), $(".webinar-lightbox-close").click((function (e) {
     "ExitIntent" == experiment_type ? ($(".webinar__lightbox-card").css("display", "none"), $(".webinar__lightbox-exit-intent").css("display", "block")) : 1 == exitintent_freecourse ? ($(".webinar__lightbox-card").css("display", "none"), $(".webinar__lightbox-free-course").css("display", "block"), $(".exitintent-fc-email").val($(".email").val()), dataLayer.push({
       event: "exit_intent",
