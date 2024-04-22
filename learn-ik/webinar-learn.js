@@ -3,7 +3,7 @@
  * Original file: /gh/kothinti/ik@master/ep-webinar-learn-v1.5.3.js
  * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
  */
-var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL, eventUpsightDate, webinarSlotDate;
+var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL, eventUpsightDate, webinarSlotDate, webinarSlotTimeFormat;
 
 function getDeviceType() {
   var e = navigator.userAgent;
@@ -35,8 +35,9 @@ $(document).ready((function () {
     // }
     if (typeof isUpsightReg !== 'undefined') {
       eventUpsightDate = e;
-      var n = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
-      webinarSlotDate = formattedWebinarDate(e[0], n);
+      console.log("eventUpsightDate", eventUpsightDate);
+      webinarSlotTimeFormat = e[0].weekday + ", " + e[0].day + " " + t[parseInt(e[0].month) - 1] + " " + e[0].year + " | " + e[0].hour + ":" + e[0].minute + " " + e[0].am_or_pm;
+      webinarSlotDate = formattedWebinarDate(e[0], webinarSlotTimeFormat);
       $(".webinar__slots").append($(webinarSlotDate));
       function updateUTMParameters() {
         // Function to check if UTM parameters exist in the URL
