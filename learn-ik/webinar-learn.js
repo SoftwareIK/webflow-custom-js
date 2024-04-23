@@ -10,6 +10,13 @@ function getDeviceType() {
   return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
 }
 
+function getLearnGQLLink() {
+  if(webinarType == "SWITCH_UP") {
+    return "https://www.interviewkickstart.com/signup-final-step-switchup";
+  }
+  return "https://www.interviewkickstart.com/signup-final-step";
+}
+
 function formattedWebinarDate(webinarData, webinarFormat) {
   return `<div class="webinar-event-date" bis_skin_checked="1"  data-starttime="${webinarData.start_time}" data-endtime="${webinarData.end_time}" data-invitee_starttime="${webinarData.invitee_start_time}"  data-invitee_endtime="${webinarData.invitee_end_time}" data-name="${webinarData.start_time}" data-webinar_lead_type="${webinarData.webinar_lead_type}">  ${webinarFormat} </div>`
 }
@@ -390,7 +397,7 @@ $(document).ready((function () {
       i = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage-v2");
       // r = "?utm_source=" + $(".utm_source").val() + "&webinarType=" + webinarType + "&event=" + eventName + "&invitee_last_name=" + "&event_start_time=" + t + "&invitee_first_name=" + $(".wr__firstname").val() + $(".wr__lastname").val() + "&invitee_email=" + $(".wr__email").val() + "&answer_1=" + $(".wr__phone").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i;
       r = "?utm_source=" + $(".utm_source").val() + "&webinarType=" + webinarType + "&event=" + eventName + "&event_start_time=" + t + "&utm_medium=" + n + "&salesforce_uuid=" + i;
-      var redirectUrl = "https://www.interviewkickstart.com/signup-final-step" + r;
+      var redirectUrl = getLearnGQLLink() + r;
       gqlFormCookieData();
       dataLayer.push({
         event: "new_webinar_registration_form_submitted",
@@ -505,11 +512,11 @@ $(document).ready((function () {
             location.href = d
           }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         } else if (typeof paRegistered !== 'undefined') {
-          d = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://www.interviewkickstart.com/signup-final-step" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + $(".wr__email").val() + "&salesforce_uuid=" + i, $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/307qti9/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
+          d = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : getLearnGQLLink() + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + $(".wr__email").val() + "&salesforce_uuid=" + i, $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/307qti9/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
             location.href = d
           }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         } else {
-          e = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://www.interviewkickstart.com/signup-final-step" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i,
+          e = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : getLearnGQLLink() + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i,
             $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
               location.href = e
             }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
