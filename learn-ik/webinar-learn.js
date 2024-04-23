@@ -9,12 +9,16 @@ function getDeviceType() {
   var e = navigator.userAgent;
   return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
 }
+function isDev() {
+  return location?.host?.includes("webflow");
+}
 
 function getLearnGQLLink() {
+  const host = isDev() ? "https://ikdev.webflow.io" : "https://www.interviewkickstart.com";
   if(webinarType == "SWITCH_UP") {
-    return "https://www.interviewkickstart.com/signup-final-step-switchup";
+    return `${host}/signup-final-step-switchup`;
   }
-  return "https://www.interviewkickstart.com/signup-final-step";
+  return `${host}/signup-final-step`;
 }
 
 function formattedWebinarDate(webinarData, webinarFormat) {
