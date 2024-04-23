@@ -187,33 +187,30 @@ $(document).ready(function () {
           success: function (e) {
             if (e.status == "success") {
               console.log("Form submitted successfully!");
-              $(".gql-form-block").css("display", "none");
-              $(".domain-switch-form-el").css("display", "block");
+              $(".webinar-signup-laststep-form").css("display", "none");
+              $(".success-message-4 ").css("display", "block");
             }
           },
         });
       }
       if (typeof leadScoreService === "function") {
-        leadScoreService(
-          {
-            api: "https://ajoably4nhpvq73kbzfkxmfnuu0eixdq.lambda-url.us-west-1.on.aws",
-            data: {
-              email: $(".invitee_email").val(),
-              formatted_date: $(".event_start_time").val(),
-              lead_email: $(".invitee_email").val(),
-              channel: decodeURIComponent(utmparams?.["utm_source"]),
-              role_domain: $(".role_domain").val(),
-              work_ex: $(".work_experience").val(),
-              interview_start_time: $(".int_start_time").val(),
-              time_zone_2: v_timezone,
-              webinar_date: $(".event_start_time").val(),
-              device: $(".wr__device").val(),
-              sale_date: null,
-              alumni_stats: "New_Lead",
-            },
+        leadScoreService({
+          api: "https://ajoably4nhpvq73kbzfkxmfnuu0eixdq.lambda-url.us-west-1.on.aws",
+          data: {
+            email: $(".invitee_email").val(),
+            formatted_date: $(".event_start_time").val(),
+            lead_email: $(".invitee_email").val(),
+            channel: decodeURIComponent(utmparams?.["utm_source"]),
+            role_domain: $(".role_domain").val(),
+            work_ex: $(".work_experience").val(),
+            interview_start_time: $(".int_start_time").val(),
+            time_zone_2: v_timezone,
+            webinar_date: $(".event_start_time").val(),
+            device: $(".wr__device").val(),
+            sale_date: null,
+            alumni_stats: "New_Lead",
           },
-          GQLCall
-        );
+        }, GQLCall);
       } else {
         GQLCall();
       }
