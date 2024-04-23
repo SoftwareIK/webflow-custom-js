@@ -160,3 +160,4 @@ $(".complete-registration").click(function (e) {
     }
   }
 });
+
