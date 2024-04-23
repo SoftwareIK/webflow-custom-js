@@ -308,10 +308,10 @@ $(document).ready(function () {
     }
   }
   $('.btn-back-to-step1').click(function (e) {
-    $('.webinar__registration-form1').show();
+    $('.article_webinar__registration-form1').show();
     $('.webinar__registration-success').hide();
-    $('.webinar__registration-form1-block').show();
-    $('.webinar__registration-form2-block').hide();
+    $('.article_webinar__registration-form1-block').show();
+    $('.article_webinar__registration-form2-block').hide();
   });
 
   function pushToEndPoint(endpoint) {
@@ -372,7 +372,7 @@ $(document).ready(function () {
     });
   }
 
-  $('.bc__btn-select-webinar-slot-v2').click(function (e) {
+  $('.bc__btn-select-webinar-slot-v3').click(function (e) {
     e.preventDefault();
     setHiddenFields();
 
@@ -380,11 +380,11 @@ $(document).ready(function () {
     // $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
     //$(".tno1").val(fullphonenumber3);
 
-    $(".first-name, .last-name, .email").keypress(function () {
+    $(".article_first-name, .article_last-name, .article_email").keypress(function () {
       $('.first-name-error, .last-name-error,.email-id-error').addClass('hide');
     });
 
-    $(".first-name, .last-name, .email").focus(function () {
+    $(".article_first-name, .article_last-name, .article_email").focus(function () {
       $('.first-name-error, .last-name-error,.email-id-error').addClass('hide');
     });
 
@@ -393,22 +393,22 @@ $(document).ready(function () {
     let email_regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     //let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm;
 
-    if (($(".first-name").val().length == 0) &&
-      ($(".last-name").val().length == 0) &&
-      ($(".email").val().length == 0)) {
+    if (($(".article_first-name").val().length == 0) &&
+      ($(".article_last-name").val().length == 0) &&
+      ($(".article_email").val().length == 0)) {
       $('.first-name-error, .last-name-error,.email-id-error').removeClass('hide');
     }
-    else if (!name_regex.test($(".first-name").val()) || $(".first-name").val().length == 0) {
+    else if (!name_regex.test($(".article_first-name").val()) || $(".article_first-name").val().length == 0) {
       $('.first-name-error').removeClass('hide');
-    } else if (!name_regex.test($(".last-name").val()) || $(".last-name").val().length == 0) {
+    } else if (!name_regex.test($(".article_last-name").val()) || $(".article_last-name").val().length == 0) {
       $('.last-name-error').removeClass('hide');
-    } else if (!email_regex.test($(".email").val()) || $(".email").val().length == 0) {
+    } else if (!email_regex.test($(".article_email").val()) || $(".article_email").val().length == 0) {
       $('.email-id-error').removeClass('hide');
     } else {
       $('.webinar__loadingbar').css("display", "flex");
-      $('.wr__firstname').val($(".first-name").val());
-      $('.wr__lastname').val($(".last-name").val());
-      $('.wr__email').val($(".email").val());
+      $('.wr__firstname').val($(".article_first-name").val());
+      $('.wr__lastname').val($(".article_last-name").val());
+      $('.wr__email').val($(".article_email").val());
 
       dataLayer.push({
         'event': 'new_webinar_registration_form_submitted',
@@ -434,9 +434,9 @@ $(document).ready(function () {
       }
       pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34c9jjz/");
       //$('.webinar__registration-form1').submit();
-      $('.webinar__registration-form1-block').hide();
+      $('.article_webinar__registration-form1-block').hide();
       setTimeout(function () {
-        $('.webinar__registration-form2-block').show();
+        $('.article_webinar__registration-form2-block').show();
         $('.webinar__loadingbar').hide();
       }, 200);
 
@@ -487,11 +487,11 @@ $(document).ready(function () {
     $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
     $(".tno1").val(fullphonenumber3);
 
-    $(".first-name, .last-name, .phone").keypress(function () {
+    $(".article_first-name, .article_last-name, .phone").keypress(function () {
       $('.first-name-error, .last-name-error,.phone-error').addClass('hide');
     });
 
-    $(".first-name, .last-name, .phone").focus(function () {
+    $(".article_first-name, .article_last-name, .article_phone").focus(function () {
       $('.first-name-error, .last-name-error,.phone-error').addClass('hide');
     });
 
@@ -500,22 +500,22 @@ $(document).ready(function () {
     let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm;
 
     if (
-      ($(".first-name").val().length == 0) &&
-      ($(".last-name").val().length == 0) &&
+      ($(".article_first-name").val().length == 0) &&
+      ($(".article_last-name").val().length == 0) &&
       ($(".phone").val().length == 0)) {
       $('.first-name-error, .last-name-error,.phone-error').removeClass('hide');
     }
-    else if (!name_regex.test($(".first-name").val()) || $(".first-name").val().length == 0) {
+    else if (!name_regex.test($(".article_first-name").val()) || $(".article_first-name").val().length == 0) {
       $('.first-name-error').removeClass('hide');
-    } else if (!name_regex.test($(".last-name").val()) || $(".last-name").val().length == 0) {
+    } else if (!name_regex.test($(".article_last-name").val()) || $(".last-name").val().length == 0) {
       $('.last-name-error').removeClass('hide');
     } else if (!phone_regex.test($(".phone").val()) || $(".phone").val().length == 0) {
       $('.phone-error').removeClass('hide');
     } else {
       $('.webinar__loadingbar').css("display", "flex");
-      $('.wr__firstname').val($(".first-name").val());
-      $('.wr__lastname').val($(".last-name").val());
-      $('.wr__email').val($(".email").val());
+      $('.wr__firstname').val($(".article_first-name").val());
+      $('.wr__lastname').val($(".article_last-name").val());
+      $('.wr__email').val($(".article_email").val());
       $('.wr__phone').val(fullphonenumber3);
 
       dataLayer.push({
@@ -546,7 +546,7 @@ $(document).ready(function () {
       //$('.webinar__registration-form1').submit();
       $('.webinar__registration-form1-block').hide();
       setTimeout(function () {
-        $('.webinar__registration-form2-block').show();
+        $('.article_webinar__registration-form2-block').show();
         $('.webinar__loadingbar').hide();
       }, 200);
 
@@ -628,9 +628,9 @@ $(document).ready(function () {
       }
 
       //$('.webinar__registration-form1').submit();
-      $('.webinar__registration-form1-block').hide();
+      $('.article_webinar__registration-form1-block').hide();
       setTimeout(function () {
-        $('.webinar__registration-form2-block').show();
+        $('.article_webinar__registration-form2-block').show();
         $('.webinar__loadingbar').hide();
       }, 200);
 
@@ -655,8 +655,8 @@ $(document).ready(function () {
     } else {
       $('.gql-work-experience').val(expSelected);
       $('.gql-role-domain').val(domainSelected);
-      $('.webinar__registration-form1-block-s1').hide();
-      $('.webinar__registration-form1-block-s2').show();
+      $('.article_webinar__registration-form1-block-s1').hide();
+      $('.article_webinar__registration-form1-block-s2').show();
     }
   });
   $('.bc__upworth-step2').click(function (e) {
@@ -669,11 +669,11 @@ $(document).ready(function () {
     $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
     $(".tno1").val(fullphonenumber3);*/
 
-    $(".first-name, .last-name, .email").keypress(function () {
+    $(".article_first-name, .last-name, .email").keypress(function () {
       $('.first-name-error, .last-name-error,.email-id-error').addClass('hide');
     });
 
-    $(".first-name, .last-name, .email").focus(function () {
+    $(".article_first-name, .article_last-name, .article_email").focus(function () {
       $('.first-name-error, .last-name-error,.email-id-error').addClass('hide');
     });
 
@@ -683,12 +683,12 @@ $(document).ready(function () {
     //let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm;
 
     if (
-      ($(".first-name").val().length == 0) &&
-      ($(".last-name").val().length == 0) &&
+      ($(".article_first-name").val().length == 0) &&
+      ($(".article_last-name").val().length == 0) &&
       ($(".email").val().length == 0)) {
-      $('.first-name-error, .last-name-error,.email-id-error').removeClass('hide');
+      $('.article_first-name-error, .last-name-error,.email-id-error').removeClass('hide');
     }
-    else if (!name_regex.test($(".first-name").val()) || $(".first-name").val().length == 0) {
+    else if (!name_regex.test($(".article_first-name").val()) || $(".article_first-name").val().length == 0) {
       $('.first-name-error').removeClass('hide');
     } else if (!name_regex.test($(".last-name").val()) || $(".last-name").val().length == 0) {
       $('.last-name-error').removeClass('hide');
@@ -705,7 +705,7 @@ $(document).ready(function () {
       pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/3hp515j/");
       //$('.profile-analysis-step1').submit();
       setTimeout(function () {
-        location.href = "/upworth-profile-analysis?domain=" + domainSelected + "&workexp=" + expSelected + "&email=" + $('.email').val() + "&fname=" + $('.first-name').val() + "&lname=" + $('.last-name').val();
+        location.href = "/upworth-profile-analysis?domain=" + domainSelected + "&workexp=" + expSelected + "&email=" + $('.article_email').val() + "&fname=" + $('.article_first-name').val() + "&lname=" + $('.article_last-name').val();
       }, 200);
 
     }
@@ -752,7 +752,7 @@ $(document).ready(function () {
         }, 800);
       } else {
         $('.webinar__loadingbar').hide();
-        $('.webinar__registration-form2-block').hide();
+        $('.article_webinar__registration-form2-block').hide();
         $('.webinar__registration-form3-block').show();
       }
 
