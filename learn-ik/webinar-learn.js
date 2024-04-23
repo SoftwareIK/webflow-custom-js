@@ -77,7 +77,7 @@ $(document).ready((function () {
       }
     }
     if (typeof isUpsightReg !== 'undefined') {
-      //eventUpsightDate = e;
+      eventUpsightDate = e;
       updateUTMParameters();
       if (e.length === 2) {
         closestBoundaryInRange(e[0].start_time, e[1].start_time);
