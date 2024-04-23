@@ -1,9 +1,3 @@
-$(document).ready(function () {
-  $(".hear-about-ik").select2({
-    multiple: !0,
-    placeholder: "Select all that apply",
-  });
-});
 let leadScoreReponse = {};
 bcExitIntentOnBrowserTab = "false";
 $(document).ready(function () {
@@ -16,9 +10,9 @@ $(document).ready(function () {
       phone_number: decodeURIComponent(utmparams.answer_1),
     },
   });
-  var yourCookieValue = getCookie("previousData");
-  if (yourCookieValue !== null) {
-    var decodedData = decodeURIComponent(yourCookieValue);
+  var previousData = getCookie("previousData");
+  if (previousData !== null) {
+    var decodedData = decodeURIComponent(previousData);
     var decodedObject = JSON.parse(decodedData);
     console.log("previousData", decodedObject);
     $(".invitee_first_name").val(decodedObject.firstName);
@@ -40,81 +34,21 @@ $(document).ready(function () {
   };
   console.log("enhancedUserData", enhancedUserData);
 });
+
 var hasInteracted = !1;
 $("#Experience").change(function () {
   hasInteracted = !0;
   let e = $(this).val();
-  hasInteracted &&
-    (e ? $(".error-msg-exp").hide() : $(".error-msg-exp").show());
-}),
-  $("#domain-role").change(function () {
-    hasInteracted = !0;
-    let e = $(this).val();
-    hasInteracted &&
-      (e ? $(".error-msg-domain").hide() : $(".error-msg-domain").show());
-  }),
-  $("#Start-Interviewing").change(function () {
-    hasInteracted = !0;
-    let e = $(this).val();
-    hasInteracted &&
-      (e ? $(".error-msg-start").hide() : $(".error-msg-start").show());
-  }),
-  $("#domain-switch").change(function () {
-    hasInteracted = !0;
-    let e = $(this).val();
-    hasInteracted &&
-      (e ? $(".error-msg-start").hide() : $(".error-msg-start").show());
-  });
-$(".gql-step2-cta").click(function (e) {
-  e.preventDefault();
-  if ($(".gql-switch-domain").val() == "") {
-    $(".error-msg-switchdomain").removeClass("hide");
-  } else {
-    $(".switch_domain").val($(".gql-switch-domain").val());
-    $(".error-msg-switchdomain").addClass("hide");
-  }
-  if ($(".gql-switch-domain").val() != "") {
-    let utmparams = getAllUrlParams();
-    var GQLformData = {
-      "First Name": $(".invitee_first_name").val(),
-      "Last Name": $(".invitee_last_name").val(),
-      "Email Address": $(".invitee_email").val(),
-      utm_source: decodeURIComponent(utmparams.utm_source),
-      utm_medium: decodeURIComponent(utmparams.utm_medium),
-      utm_campaign: decodeURIComponent(utmparams.utm_campaign),
-      utm_term: decodeURIComponent(utmparams.utm_term),
-      gclid: decodeURIComponent(utmparams.gclid),
-      msclkid: decodeURIComponent(utmparams.msclkid),
-      fbclid: decodeURIComponent(utmparams.fbclid),
-      user_id: $(".user_id").val(),
-      user_timezone: v_timezone,
-      v_country: v_country,
-      phone_number_full: $(".answer_1").first().val(),
-      "Event Start Time": $(".event_start_time").val(),
-      "Event End Time": $(".event_end_time").val(),
-      "Work Experience": $(".work_experience").val(),
-      "Role Domain": $(".gql-domain-select").val(),
-      "Interview Start Time": $(".gql-starttime-select").val(),
-      "Laid Off": $("#laidoff-flag").is(":checked"),
-      "Is Student": $("#is-student").is(":checked"),
-      "Domain Switch": $(".gql-switch-domain").val(),
-      "Ryan Video": $(".ryan_video").val(),
-      salesforce_uuid: decodeURIComponent(utmparams.salesforce_uuid),
-    };
-    $.ajax({
-      type: "POST",
-      url: "https://hooks.zapier.com/hooks/catch/11068981/340rvpf/",
-      data: GQLformData,
-      success: function (e) {
-        if (e.status == "success") {
-          $(".domain-switch-form-el").css("display", "none");
-          $(".social-network-form-el").css("display", "block");
-          console.log("Form submitted successfully step4!");
-        }
-      },
-    });
-  }
+  hasInteracted && (e ? $(".error-msg-exp").hide() : $(".error-msg-exp").show());
 });
+
+$("#domain-role").change(function () {
+  hasInteracted = !0;
+  let e = $(this).val();
+  hasInteracted &&
+    (e ? $(".error-msg-domain").hide() : $(".error-msg-domain").show());
+});
+
 $(".complete-registration").click(function (e) {
   e.preventDefault();
   let utmparams = getAllUrlParams();
@@ -178,7 +112,9 @@ $(".complete-registration").click(function (e) {
         priority: leadScoreData?.priority,
         lead_score: leadScoreData?.lead_score,
         expected_revenue: leadScoreData?.expected_revenue
-          ? parseFloat(leadScoreData?.expected_revenue?.replace(/[^\d.-]/g, ""))
+          ? parseFloat(
+            leadScoreData?.expected_revenue?.replace(/[^\d.-]/g, "")
+          )
           : undefined,
       });
     }
@@ -195,81 +131,32 @@ $(".complete-registration").click(function (e) {
         success: function (e) {
           if (e.status == "success") {
             console.log("Form submitted successfully step3!");
-            $(".gql-form-block").css("display", "none");
-            $(".domain-switch-form-el").css("display", "block");
-            $(".social-network-form-el").css("display", "none");
+            $(".webinar-signup-laststep-form").css("display", "none");
+            $(".success-message-4 ").css("display", "block");
           }
         },
       });
     }
     if (typeof leadScoreService === "function") {
-      leadScoreService(
-        {
-          api: "https://ajoably4nhpvq73kbzfkxmfnuu0eixdq.lambda-url.us-west-1.on.aws",
-          data: {
-            email: $(".invitee_email").val(),
-            formatted_date: $(".event_start_time").val(),
-            lead_email: $(".invitee_email").val(),
-            channel: decodeURIComponent(utmparams?.["utm_source"]),
-            role_domain: $(".role_domain").val(),
-            work_ex: $(".work_experience").val(),
-            interview_start_time: $(".int_start_time").val(),
-            time_zone_2: v_timezone,
-            webinar_date: $(".event_start_time").val(),
-            device: $(".wr__device").val(),
-            sale_date: null,
-            alumni_stats: "New_Lead",
-          },
+      leadScoreService({
+        api: "https://ajoably4nhpvq73kbzfkxmfnuu0eixdq.lambda-url.us-west-1.on.aws",
+        data: {
+          email: $(".invitee_email").val(),
+          formatted_date: $(".event_start_time").val(),
+          lead_email: $(".invitee_email").val(),
+          channel: decodeURIComponent(utmparams?.["utm_source"]),
+          role_domain: $(".role_domain").val(),
+          work_ex: $(".work_experience").val(),
+          interview_start_time: $(".int_start_time").val(),
+          time_zone_2: v_timezone,
+          webinar_date: $(".event_start_time").val(),
+          device: $(".wr__device").val(),
+          sale_date: null,
+          alumni_stats: "New_Lead",
         },
-        GQLCall
-      );
+      }, GQLCall);
     } else {
       GQLCall();
     }
   }
-});
-$(".social-network-form").submit(function (e) {
-  e.preventDefault();
-  let utmparams = getAllUrlParams();
-  var GQLformData = {
-    "First Name": $(".invitee_first_name").val(),
-    "Last Name": $(".invitee_last_name").val(),
-    "Email Address": $(".invitee_email").val(),
-    utm_source: decodeURIComponent(utmparams.utm_source),
-    utm_medium: decodeURIComponent(utmparams.utm_medium),
-    utm_campaign: decodeURIComponent(utmparams.utm_campaign),
-    utm_term: decodeURIComponent(utmparams.utm_term),
-    gclid: decodeURIComponent(utmparams.gclid),
-    msclkid: decodeURIComponent(utmparams.msclkid),
-    fbclid: decodeURIComponent(utmparams.fbclid),
-    user_id: $(".user_id").val(),
-    user_timezone: v_timezone,
-    v_country: v_country,
-    phone_number_full: $(".answer_1").val(),
-    "Event Start Time": $(".event_start_time").val(),
-    "Event End Time": $(".event_end_time").val(),
-    "Work Experience": $(".work_experience").val(),
-    "Role Domain": $(".gql-domain-select").val(),
-    "Interview Start Time": $(".gql-starttime-select").val(),
-    "Laid Off": $("#laidoff-flag").is(":checked"),
-    "Is Student": $("#is-student").is(":checked"),
-    "Domain Switch": $(".gql-switch-domain").val(),
-    "hear about IK": $(".hear-about-ik").val(),
-    "Ryan Video": $(".ryan_video").val(),
-    salesforce_uuid: decodeURIComponent(utmparams.salesforce_uuid),
-  };
-  $.ajax({
-    type: "POST",
-    url: "https://hooks.zapier.com/hooks/catch/11068981/3sxtz40/",
-    data: GQLformData,
-    success: function (e) {
-      if (e.status == "success") {
-        setTimeout(function () {
-          $(".success-message-6").css("display", "block");
-        }, 2000);
-        $(".domain-switch-form-el").css("display", "none");
-        console.log("Form submitted successfully step5!");
-      }
-    },
-  });
 });
