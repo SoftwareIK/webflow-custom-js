@@ -17,7 +17,7 @@ $(document).ready(function () {
     var timestamp = new Date().getTime();
     const trackingObj = {
       "page_value_url": window.location.href,
-      "student_uuid": vgid,
+      "student_uuid": generatedUserId,
       "timestamp": timestamp,
       "ClickID": clickID,
     }
