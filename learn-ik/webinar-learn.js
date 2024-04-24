@@ -89,6 +89,21 @@ $(document).ready((function () {
         $(".webinar__slots").append($(r))
       }
     }
+
+    $('.calendly-upsight').on('click', function () {
+      if (registration_type == "byecalendly") {
+        $('body').css('overflow', 'hidden');
+        $('.upsight-session').css('display', 'flex');
+      } else {
+        showCalendly("v1");
+      }
+      $(".webinar__slots .webinar-event-date").remove();
+      if (eventUpsightDate.length === 2) {
+        closestBoundaryInRange(eventUpsightDate[0].start_time, eventUpsightDate[1].start_time);
+      } else {
+      setWebinarFirstTimeSlot();
+      }
+    });
   }
   "CAREER_SESSION" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Seize the AI Advantage: Strengthen Your Resume"), $('input[name="Event Name"]').val("Seize the AI Advantage: Strengthen Your Resume"), eventName = "Seize the AI Advantage: Strengthen Your Resume") : "SWITCH_UP" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Future-proof your career with AI/ ML, Data Science"), $('input[name="Event Name"]').val("Future-proof your career with AI/ ML, Data Science"), eventName = "Future-proof your career with AI/ ML, Data Science") : null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("How to Nail your next Technical Interview"), $('input[name="Event Name"]').val("How to Nail your next Technical Interview"), eventName = "How to Nail your next Technical Interview"), $(".webinar-lightbox-close").click((function (e) {
     "ExitIntent" == experiment_type ? ($(".webinar__lightbox-card").css("display", "none"), $(".webinar__lightbox-exit-intent").css("display", "block")) : 1 == exitintent_freecourse ? ($(".webinar__lightbox-card").css("display", "none"), $(".webinar__lightbox-free-course").css("display", "block"), $(".exitintent-fc-email").val($(".email").val()), dataLayer.push({
