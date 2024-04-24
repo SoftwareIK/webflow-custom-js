@@ -54,7 +54,7 @@ $(document).ready((function () {
           '&eventDate=' + e[0].start_time;
         // Update URL and set webinar title
         window.history.replaceState({}, document.title, newUrl);
-        $(".webinar__lightbox-title").text(decodeURIComponent(event));
+        //$(".webinar__lightbox-title").text(decodeURIComponent(event));
       }
     }
     /**
