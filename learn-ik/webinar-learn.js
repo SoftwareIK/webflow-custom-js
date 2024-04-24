@@ -40,17 +40,17 @@ $(document).ready((function () {
       // Function to check if UTM parameters exist in the URL
       function utmParamsExist(url) {
         return url.includes('webinarType=') &&
-          url.includes('event=') &&
+          //url.includes('event=') &&
           url.includes('eventDate=');
       }
       // Check if UTM parameters already exist in the URL
       if (!utmParamsExist(window.location.href)) {
         var currentUrl = window.location.href;
         var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
-        var event = "NewsBot Workshop: Crafting Your Custom AI News Aggregator using LLMs";
+        //var event = "NewsBot Workshop: Crafting Your Custom AI News Aggregator using LLMs";
         var newUrl = currentUrl + separator +
           'webinarType=' + webinarType +
-          '&event=' + encodeURIComponent(event) +
+          //'&event=' + encodeURIComponent(event) +
           '&eventDate=' + e[0].start_time;
         // Update URL and set webinar title
         window.history.replaceState({}, document.title, newUrl);
