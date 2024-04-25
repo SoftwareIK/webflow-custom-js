@@ -21,7 +21,30 @@ $(document).ready(function () {
       "timestamp": timestamp,
       "ClickID": clickID,
     }
-    var trackingData = JSON.stringify(trackingObj);
+    let trackingData = JSON.stringify(trackingObj);
     console.log("trackingData:", trackingData);
+
+    $.ajax({
+      url: 'https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod',
+      method: 'POST',
+      headers: {
+        'x-api-key': 'fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN',
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify({
+        dataset_id: "Marketing_data_new_logic",
+        table_id: "all_clickstream_data",
+        data: trackingData,
+      }),
+      success: function (e) {
+        console.log("Success Response:", e);
+        console.log("Click_history-data:", trackingData);
+      },
+      error: function (xhr, status, error) {
+        console.log("Error Response:", xhr.responseText);
+        console.log("Status:", status);
+        console.log("Error:", error);
+      }
+    });
   });
 });
