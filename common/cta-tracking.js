@@ -10,6 +10,7 @@ $(document).ready(function () {
   addIdToElement('.eng-role-link-v2', "course-list_course-");
   addIdToElement('.indian-footer-links', "footer-");
   addIdToElement('.new-footer-link', "footer-");
+  addIdToElement('.footer-link', "footer-");
 
   $("a").on("click", function () {
     var clickID = $(this).attr('id');
