@@ -11,6 +11,7 @@ $(document).ready(function () {
   addIdToElement('.indian-footer-links', "footer-");
   addIdToElement('.new-footer-link', "footer-");
   addIdToElement('.footer-link', "footer-");
+  addIdToElement('.footer-nav-link', "footer-");
 
   $("a").on("click", function () {
     var clickID = $(this).attr('id');
