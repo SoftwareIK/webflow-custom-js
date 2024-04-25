@@ -19,7 +19,7 @@ $(document).ready(function () {
     // const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
     let trackingObj = [{
       "page_value_url": window.location.href,
-      "student_uuid": generatedUserId,
+      "student_uuid": $(".user_id").val(),
       "timestamp": timestamp,
       "ClickID": clickID,
     }]
