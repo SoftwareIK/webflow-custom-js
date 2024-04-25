@@ -15,7 +15,7 @@ $(document).ready(function () {
   $("a").on("click", function () {
     var clickID = $(this).attr('id');
     var timestamp = new Date().getTime();
-    const trackingObj = {
+    let trackingObj = {
       "page_value_url": window.location.href,
       "student_uuid": generatedUserId,
       "timestamp": timestamp,
@@ -34,7 +34,7 @@ $(document).ready(function () {
       data: JSON.stringify({
         dataset_id: "Marketing_data_new_logic",
         table_id: "all_clickstream_data",
-        data: trackingData,
+        data: trackingObj,
       }),
       success: function (e) {
         console.log("Success Response:", e);
