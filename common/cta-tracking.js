@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
   function addIdToElement(selectorPrefix, textPrefix) {
     $(selectorPrefix).each(function () {
       let linkText = $(this).text().trim().toLowerCase();
@@ -12,17 +11,20 @@ $(document).ready(function () {
   addIdToElement('.indian-footer-links', "footer-");
   addIdToElement('.new-footer-link', "footer-");
 
+
   $("a").on("click", function () {
     var clickID = $(this).attr('id');
     var timestamp = new Date().getTime();
-    let trackingObj = {
+    // const currentDateTime = new Date();
+    // const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
+    let trackingObj = [{
       "page_value_url": window.location.href,
       "student_uuid": generatedUserId,
       "timestamp": timestamp,
       "ClickID": clickID,
-    }
-    let trackingData = JSON.stringify(trackingObj);
-    console.log("trackingData:", trackingData);
+    }]
+    // let trackingData = JSON.stringify(trackingObj);
+    // console.log("trackingData:", trackingData);
 
     $.ajax({
       url: 'https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod',
@@ -38,7 +40,7 @@ $(document).ready(function () {
       }),
       success: function (e) {
         console.log("Success Response:", e);
-        console.log("Click_history-data:", trackingData);
+        console.log("Click_CTA_Tracking-data:", trackingObj);
       },
       error: function (xhr, status, error) {
         console.log("Error Response:", xhr.responseText);
