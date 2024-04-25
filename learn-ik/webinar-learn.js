@@ -51,7 +51,7 @@ $(document).ready((function () {
           '&eventDate=' + e[0].start_time;
         // Update URL and set webinar title
         window.location.href = newUrl;
-       // $(".webinar__lightbox-title").text(decodeURIComponent(event));
+        //$(".webinar__lightbox-title").text(decodeURIComponent(event));
       }
     }
     /**
@@ -73,15 +73,30 @@ $(document).ready((function () {
         setWebinarFirstTimeSlot();
       }
     }
+
+    function updateWebinarTimeSlots(eventArray) {
+      if (eventArray.length === 2) {
+        closestBoundaryInRange(eventArray[0].start_time, eventArray[1].start_time);
+      } else {
+        setWebinarFirstTimeSlot();
+      }
+    }
     if (typeof isUpsightReg !== 'undefined') {
       eventUpsightDate = e;
       updateUTMParameters();
-      if (e.length === 2) {
-        closestBoundaryInRange(e[0].start_time, e[1].start_time);
-      }
-      else {
-        setWebinarFirstTimeSlot();
-      }
+      updateWebinarTimeSlots(eventUpsightDate);
+
+      /* Below code use for event upsight sessions pages */
+      $('.calendly-upsight').on('click', function () {
+        if (registration_type == "byecalendly") {
+          $('body').css('overflow', 'hidden');
+          $('.upsight-session').css('display', 'flex');
+        } else {
+          showCalendly("v1");
+        }
+        $(".webinar__slots .webinar-event-date").remove();
+        updateWebinarTimeSlots(eventUpsightDate);
+      });
     } else {
       for (i = 0; i < a; i++) {
         var n = e[i].weekday + ", " + e[i].day + " " + t[parseInt(e[i].month) - 1] + " " + e[i].year + " | " + e[i].hour + ":" + e[i].minute + " " + e[i].am_or_pm,
@@ -89,21 +104,7 @@ $(document).ready((function () {
         $(".webinar__slots").append($(r))
       }
     }
-    $('.calendly-upsight').on('click', function () {
-      if (registration_type == "byecalendly") {
-        $('body').css('overflow', 'hidden');
-        $('.upsight-session').css('display', 'flex');
-      } else {
-        showCalendly("v1");
-      }
-      $(".webinar__slots .webinar-event-date").remove();
-      if (eventUpsightDate.length === 2) {
-        closestBoundaryInRange(eventUpsightDate[0].start_time, eventUpsightDate[1].start_time);
-      } else {
-      setWebinarFirstTimeSlot();
-      }
-    });
-    
+
   }
   "CAREER_SESSION" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Seize the AI Advantage: Strengthen Your Resume"), $('input[name="Event Name"]').val("Seize the AI Advantage: Strengthen Your Resume"), eventName = "Seize the AI Advantage: Strengthen Your Resume") : "SWITCH_UP" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Future-proof your career with AI/ ML, Data Science"), $('input[name="Event Name"]').val("Future-proof your career with AI/ ML, Data Science"), eventName = "Future-proof your career with AI/ ML, Data Science") : null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("How to Nail your next Technical Interview"), $('input[name="Event Name"]').val("How to Nail your next Technical Interview"), eventName = "How to Nail your next Technical Interview"), $(".webinar-lightbox-close").click((function (e) {
     "ExitIntent" == experiment_type ? ($(".webinar__lightbox-card").css("display", "none"), $(".webinar__lightbox-exit-intent").css("display", "block")) : 1 == exitintent_freecourse ? ($(".webinar__lightbox-card").css("display", "none"), $(".webinar__lightbox-free-course").css("display", "block"), $(".exitintent-fc-email").val($(".email").val()), dataLayer.push({
