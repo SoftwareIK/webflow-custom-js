@@ -11,7 +11,6 @@ $(document).ready(function () {
   addIdToElement('.indian-footer-links', "footer-");
   addIdToElement('.new-footer-link', "footer-");
 
-
   $("a").on("click", function () {
     var clickID = $(this).attr('id');
     var timestamp = new Date().getTime();
