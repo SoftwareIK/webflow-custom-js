@@ -40,21 +40,18 @@ $(document).ready((function () {
       // Function to check if UTM parameters exist in the URL
       function utmParamsExist(url) {
         return url.includes('webinarType=') &&
-          url.includes('event=') &&
           url.includes('eventDate=');
       }
       // Check if UTM parameters already exist in the URL
       if (!utmParamsExist(window.location.href)) {
         var currentUrl = window.location.href;
         var separator = (currentUrl.indexOf('?') !== -1) ? '&' : '?';
-        var event = "NewsBot Workshop: Crafting Your Custom AI News Aggregator using LLMs";
         var newUrl = currentUrl + separator +
           'webinarType=' + webinarType +
-          '&event=' + encodeURIComponent(event) +
           '&eventDate=' + e[0].start_time;
         // Update URL and set webinar title
-        window.history.replaceState({}, document.title, newUrl);
-        $(".webinar__lightbox-title").text(decodeURIComponent(event));
+        window.location.href = newUrl;
+       // $(".webinar__lightbox-title").text(decodeURIComponent(event));
       }
     }
     /**
@@ -92,6 +89,7 @@ $(document).ready((function () {
         $(".webinar__slots").append($(r))
       }
     }
+    
   }
   "CAREER_SESSION" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Seize the AI Advantage: Strengthen Your Resume"), $('input[name="Event Name"]').val("Seize the AI Advantage: Strengthen Your Resume"), eventName = "Seize the AI Advantage: Strengthen Your Resume") : "SWITCH_UP" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Future-proof your career with AI/ ML, Data Science"), $('input[name="Event Name"]').val("Future-proof your career with AI/ ML, Data Science"), eventName = "Future-proof your career with AI/ ML, Data Science") : null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("How to Nail your next Technical Interview"), $('input[name="Event Name"]').val("How to Nail your next Technical Interview"), eventName = "How to Nail your next Technical Interview"), $(".webinar-lightbox-close").click((function (e) {
     "ExitIntent" == experiment_type ? ($(".webinar__lightbox-card").css("display", "none"), $(".webinar__lightbox-exit-intent").css("display", "block")) : 1 == exitintent_freecourse ? ($(".webinar__lightbox-card").css("display", "none"), $(".webinar__lightbox-free-course").css("display", "block"), $(".exitintent-fc-email").val($(".email").val()), dataLayer.push({
