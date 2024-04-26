@@ -30,7 +30,8 @@ $(document).ready(function () {
           "data": [
             {
               "page_value_url": window.location.href,
-              "student_uuid": encodeURIComponent($(".user_id").val()),
+              //"student_uuid": encodeURIComponent($(".user_id").val()),
+              "student_uuid": visitor_id,
               "timestamp": timestamp,
               "ClickID": clickID,
             }
@@ -45,6 +46,6 @@ $(document).ready(function () {
           console.log("Error:", error);
         }
       });
-    }, 2000);
+    }, 1000);
   });
 });
