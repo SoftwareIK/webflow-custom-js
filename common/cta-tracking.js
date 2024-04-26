@@ -13,7 +13,7 @@ $(document).ready(function () {
   addIdToElement('.footer-link', "footer-");
   addIdToElement('.footer-nav-link', "footer-");
 
-  $("a").on("click", function () {
+  $("a, input[type='submit']").on("click", function () {
     var clickID = $(this).attr('id');
     var timestamp = new Date().getTime();
     // const currentDateTime = new Date();
