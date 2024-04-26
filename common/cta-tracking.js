@@ -16,74 +16,34 @@ $(document).ready(function () {
   $("a, input[type='submit']").on("click", function () {
     var clickID = $(this).attr('id');
     var timestamp = new Date().getTime();
-    // const currentDateTime = new Date();
-    // const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
-    // let trackingObj = [
-    //   {
-    //     "page_value_url": window.location.href,
-    //     "student_uuid": encodeURIComponent($(".user_id").val()),
-    //     "timestamp": timestamp,
-    //     "ClickID": clickID,
-    //   }
-    // ]
-    // let trackingData = JSON.stringify(trackingObj);
-    // console.log("trackingData:", trackingData);
-
-    $.ajax(
-
-      //   {
-      //   url: 'https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod',
-      //   method: 'POST',
-      //   headers: {
-      //     'x-api-key': 'fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN',
-      //     'Content-Type': 'application/json',
-      //   },
-      //   data: JSON.stringify({
-      //     dataset_id: "Marketing_data_new_logic",
-      //     table_id: "all_clickstream_data",
-      //     data: trackingObj,
-      //   }),
-      //   success: function (e) {
-      //     console.log("Success Response:", e);
-      //     console.log("Click_CTA_Tracking-data:", trackingObj);
-      //   },
-      //   error: function (xhr, status, error) {
-      //     console.log("Error Response:", xhr.responseText);
-      //     console.log("Status:", status);
-      //     console.log("Error:", error);
-      //   }
-      // }
-
-      {
-        "url": "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
-        "method": "POST",
-        "headers": {
-          "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
-          "Content-Type": "application/json"
-        },
-        "data": JSON.stringify({
-          "dataset_id": "Marketing_data_new_logic",
-          "table_id": "all_clickstream_data",
-          "data": [
-            {
-              "page_value_url": window.location.href,
-              "student_uuid": encodeURIComponent($(".user_id").val()),
-              "timestamp": timestamp,
-              "ClickID": clickID,
-            }
-          ]
-        }),
-        success: function (e) {
-          console.log("Success Response:", e);
-          // console.log("Click_CTA_Tracking-data:", trackingObj);
-        },
-        error: function (xhr, status, error) {
-          console.log("Error Response:", xhr.responseText);
-          console.log("Status:", status);
-          console.log("Error:", error);
-        }
+    $.ajax({
+      "url": "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
+      "method": "POST",
+      "headers": {
+        "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
+        "Content-Type": "application/json"
+      },
+      "data": JSON.stringify({
+        "dataset_id": "Marketing_data_new_logic",
+        "table_id": "all_clickstream_data",
+        "data": [
+          {
+            "page_value_url": window.location.href,
+            "student_uuid": encodeURIComponent($(".user_id").val()),
+            "timestamp": timestamp,
+            "ClickID": clickID,
+          }
+        ]
+      }),
+      success: function (e) {
+        console.log("Success Response:", e);
+      },
+      error: function (xhr, status, error) {
+        console.log("Error Response:", xhr.responseText);
+        console.log("Status:", status);
+        console.log("Error:", error);
       }
-    );
+    });
   });
 });
 
