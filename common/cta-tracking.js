@@ -12,6 +12,7 @@ $(document).ready(function () {
   addIdToElement('.new-footer-link', "footer-");
   addIdToElement('.footer-link', "footer-");
   addIdToElement('.footer-nav-link', "footer-");
+  addIdToElement('.dropdown-link-v1', "course-card_");
 
   $("a, input[type='submit']").on("click", function () {
     setTimeout(() => {
