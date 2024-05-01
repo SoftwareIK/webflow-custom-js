@@ -9,6 +9,17 @@ function getDeviceType() {
   var e = navigator.userAgent;
   return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
 }
+function isDev() {
+  return location?.host?.includes("webflow");
+}
+
+function getLearnGQLLink() {
+  const host = isDev() ? "https://ikdev.webflow.io" : "https://www.interviewkickstart.com";
+  if (webinarType == "SWITCH_UP") {
+    return `${host}/signup-final-step-switchup`;
+  }
+  return `${host}/signup-final-step`;
+}
 
 function formattedWebinarDate(webinarData, webinarFormat) {
   return `<div class="webinar-event-date" bis_skin_checked="1"  data-starttime="${webinarData.start_time}" data-endtime="${webinarData.end_time}" data-invitee_starttime="${webinarData.invitee_start_time}"  data-invitee_endtime="${webinarData.invitee_end_time}" data-name="${webinarData.start_time}" data-webinar_lead_type="${webinarData.webinar_lead_type}">  ${webinarFormat} </div>`
@@ -106,7 +117,7 @@ $(document).ready((function () {
     }
 
   }
-  "CAREER_SESSION" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Seize the AI Advantage: Strengthen Your Resume"), $('input[name="Event Name"]').val("Seize the AI Advantage: Strengthen Your Resume"), eventName = "Seize the AI Advantage: Strengthen Your Resume") : "SWITCH_UP" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Future-proof your career with AI/ ML, Data Science"), $('input[name="Event Name"]').val("Future-proof your career with AI/ ML, Data Science"), eventName = "Future-proof your career with AI/ ML, Data Science") : null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("How to Nail your next Technical Interview"), $('input[name="Event Name"]').val("How to Nail your next Technical Interview"), eventName = "How to Nail your next Technical Interview"), $(".webinar-lightbox-close").click((function (e) {
+  "CAREER_SESSION" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Seize the AI Advantage: Strengthen Your Resume"), $('input[name="Event Name"]').val("Seize the AI Advantage: Strengthen Your Resume"), eventName = "Seize the AI Advantage: Strengthen Your Resume") : "SWITCH_UP" == webinarType ? null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("Uplevel your career with AI/ML/GenAI"), $('input[name="Event Name"]').val("Uplevel your career with AI/ML/GenAI"), eventName = "Uplevel your career with AI/ML/GenAI") : null != t.event ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)), $('input[name="Event Name"]').val(decodeURIComponent(t.event)), eventName = decodeURIComponent(t.event)) : ($(".webinar__lightbox-title").text("How to Nail your next Technical Interview"), $('input[name="Event Name"]').val("How to Nail your next Technical Interview"), eventName = "How to Nail your next Technical Interview"), $(".webinar-lightbox-close").click((function (e) {
     "ExitIntent" == experiment_type ? ($(".webinar__lightbox-card").css("display", "none"), $(".webinar__lightbox-exit-intent").css("display", "block")) : 1 == exitintent_freecourse ? ($(".webinar__lightbox-card").css("display", "none"), $(".webinar__lightbox-free-course").css("display", "block"), $(".exitintent-fc-email").val($(".email").val()), dataLayer.push({
       event: "exit_intent",
       eventCategory: "exit_intent_free_course",
@@ -403,7 +414,7 @@ $(document).ready((function () {
       i = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage-v2");
       // r = "?utm_source=" + $(".utm_source").val() + "&webinarType=" + webinarType + "&event=" + eventName + "&invitee_last_name=" + "&event_start_time=" + t + "&invitee_first_name=" + $(".wr__firstname").val() + $(".wr__lastname").val() + "&invitee_email=" + $(".wr__email").val() + "&answer_1=" + $(".wr__phone").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i;
       r = "?utm_source=" + $(".utm_source").val() + "&webinarType=" + webinarType + "&event=" + eventName + "&event_start_time=" + t + "&utm_medium=" + n + "&salesforce_uuid=" + i;
-      var redirectUrl = "https://www.interviewkickstart.com/signup-final-step" + r;
+      var redirectUrl = getLearnGQLLink() + r;
       gqlFormCookieData();
       dataLayer.push({
         event: "new_webinar_registration_form_submitted",
@@ -518,11 +529,11 @@ $(document).ready((function () {
             location.href = d
           }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         } else if (typeof paRegistered !== 'undefined') {
-          d = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://www.interviewkickstart.com/signup-final-step" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + $(".wr__email").val() + "&salesforce_uuid=" + i, $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/307qti9/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
+          d = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : getLearnGQLLink() + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + $(".wr__email").val() + "&salesforce_uuid=" + i, $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/307qti9/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
             location.href = d
           }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
         } else {
-          e = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : "https://www.interviewkickstart.com/signup-final-step" + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i,
+          e = "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val() ? "https://www.interviewkickstart.com/signup-final-step-v6" + r : getLearnGQLLink() + "?utm_source=" + $(".utm_source").val() + "&utm_medium=" + n + "&salesforce_uuid=" + i,
             $(".wr__event-start-time").val(t), $(".wr__event-end-time").val(a), $(".wr__invitee-start-time").val($("input[name='start-date']:checked").data("invitee_starttime")), $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime")), $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type")), $(".webinar__loadingbar").show(), s("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/"), $(".webinar__registration-form2").submit(), bake_cookie("v_history", ""), bake_cookie("v_latest", ""), 1 != singlesignup ? setTimeout((function () {
               location.href = e
             }), 800) : ($(".webinar__loadingbar").hide(), $(".webinar__registration-form2-block").hide(), $(".webinar__registration-form3-block").show())
@@ -664,8 +675,8 @@ $(document).ready((function () {
       createWebinarSlot(webinarType1);
     }, 2000);
     if (webinarType1 == "SWITCH_UP") {
-      $('.webinar__lightbox-title').text("Future-proof your career with AI/ ML, Data Science");
-      $('input[name="Event Name"]').val("Future-proof your career with AI/ ML, Data Science");
+      $('.webinar__lightbox-title').text("Uplevel your career with AI/ML/GenAI");
+      $('input[name="Event Name"]').val("Uplevel your career with AI/ML/GenAI");
     } else if ((webinarType1 == "REGULAR") || (webinarType1 == undefined)) {
       $('.webinar__lightbox-title').text("How to Nail your next Technical Interview");
       $('input[name="Event Name"]').val("How to Nail your next Technical Interview");
