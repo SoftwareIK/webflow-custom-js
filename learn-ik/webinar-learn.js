@@ -723,11 +723,14 @@ $(document).ready((function () {
 
     var expirationTime = new Date(new Date().getTime() + 10 * 365 * 24 * 60 * 60 * 1000);
     var currentHostname = window.location.hostname;
+    console.log(currentHostname);
     var hostnameParts = currentHostname.split('.');
+    console.log(hostnameParts);
     if (hostnameParts.length > 1) {
       hostnameParts.shift();
     }
     var domain = hostnameParts.join('.');
+    console.log(domain);
     setTimeout(() => {
       document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
     }, 500);
