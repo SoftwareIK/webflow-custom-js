@@ -16,7 +16,7 @@ $(document).ready(function () {
 
   $("a, input[type='submit']").on("click", function () {
     setTimeout(() => {
-      let clickID = $(this).attr('id');
+      let clickID = $(this).attr('data-click-id') || $(this).attr('id');
       let timestamp = new Date().getTime();
       $.ajax({
         "url": "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
