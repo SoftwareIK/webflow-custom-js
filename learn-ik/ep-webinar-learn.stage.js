@@ -3,6 +3,12 @@
  * Original file: /gh/kothinti/ik@master/ep-webinar-learn-v1.5.3.js
  * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
  */
+
+/**
+ * 
+ * Use this file only for testing. NEVER EVER merge this file with prod file (webinar-learn.js)
+ * 
+ */
 var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL;
 
 function getDeviceType() {

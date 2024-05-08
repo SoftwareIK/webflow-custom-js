@@ -1,5 +1,18 @@
 //https://interviewkickstart.albiorixtech.in/ep-webinar-us-site.v2.0.js
 var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL, hybrid;
+
+function isDev() {
+  return location?.host?.includes("webflow");
+}
+
+function getLearnGQLLink() {
+  const host = isDev() ? "https://ikdev.webflow.io" : "https://www.interviewkickstart.com";
+  if(webinarType == "SWITCH_UP") {
+    return `${host}/signup-final-step-switchup-v6`;
+  }
+  return `${host}/signup-final-step-v6`;
+}
+
 $(document).ready(function () {
   var int_phone3;
   $('.webinar-lightbox-close').click(function (e) {
@@ -727,7 +740,7 @@ $(document).ready(function () {
 
       let finalurl;
       if ($('.bye-calendly-type').val() == "NoPhoneInTheFirstStep") {
-        finalurl = "https://www.interviewkickstart.com/signup-final-step-v6" + utmstring;
+        finalurl = getLearnGQLLink() + utmstring;
       } else {
         finalurl = "https://www.interviewkickstart.com/signup-final-step" + utmstring;
       }
