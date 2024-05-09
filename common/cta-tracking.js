@@ -4,15 +4,17 @@ $(document).ready(function () {
       let linkText = $(this).text().trim().toLowerCase();
       let hyphenatedText = linkText.split(' ').join('-');
       let linkID = textPrefix + hyphenatedText + "-link_redirect-new-page";
-      $(this).attr('id', linkID);
+      $(this).attr('data-click-id', linkID);
     });
   }
   addIdToElement('.eng-role-link-v2', "course-list_course-");
   addIdToElement('.indian-footer-links', "footer-");
   addIdToElement('.new-footer-link', "footer-");
+  addIdToElement('.footer-link-new', "footer-");
   addIdToElement('.footer-link', "footer-");
   addIdToElement('.footer-nav-link', "footer-");
   addIdToElement('.dropdown-link-v1', "course-card_");
+
 
   $("a, input[type='submit']").on("click", function () {
     setTimeout(() => {
