@@ -3,7 +3,7 @@ $(document).ready(function () {
     $(selectorPrefix).each(function () {
       let linkText = $(this).text().trim().toLowerCase();
       let hyphenatedText = linkText.split(' ').join('-');
-      let linkID = textPrefix + hyphenatedText + "-link_redirect-new-page";
+      let linkID = textPrefix + hyphenatedText + "_link_redirect-new-page";
       $(this).attr('data-click-id', linkID);
     });
   }
@@ -14,6 +14,7 @@ $(document).ready(function () {
   addIdToElement('.footer-link', "footer-");
   addIdToElement('.footer-nav-link', "footer-");
   addIdToElement('.dropdown-link-v1', "course-card_");
+  addIdToElement('.course__sections-menu-link', "course-sec-menu");
 
 
   $("a, input[type='submit']").on("click", function () {
