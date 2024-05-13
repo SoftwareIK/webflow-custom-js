@@ -66,8 +66,8 @@ function formatDate(date1) {
   const year = date1.getFullYear();
   return `${month}/${day}/${year}`;
 }
-// Generate unique dates for a 6 month period (from 02/27/2024 to 11/30/2024)
-const startDate = "02/27/2024";
+// Generate unique dates for a 6 month period (from 05/01/2024 to 11/30/2024)
+const startDate = "05/01/2024";
 const endDate = "11/30/2024";
 const webinarScheduleIndia = generateScheduleINDForDaysOfWeek(startDate, endDate);
 console.log("india", webinarScheduleIndia);
