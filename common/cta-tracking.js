@@ -16,6 +16,12 @@ $(document).ready(function () {
   addIdToElement('.dropdown-link-v1', "course-card_");
   addIdToElement('.course__sections-menu-link', "course-sec-menu-");
   addIdToElement('.course__sections-menu-link-2', "course-sec-menu-");
+  $(".tpc-offer-slider .course__offer-slider-left").attr("data-click-id", "tpc-offer-slider-arrow-right");
+  $(".tpc-offer-slider .course__offer-slider-right").attr("data-click-id", "tpc-offer-slider-arrow-left");
+  $(".tpc-career-slide .course__offer-slider-left").attr("data-click-id", "tpc-career-slider-arrow-right");
+  $(".tpc-career-slide .course__offer-slider-right").attr("data-click-id", "tpc-career-slider-arrow-left");
+  $(".tpc-instructor-slider-right").attr("data-click-id", "tpc-instructor-slider-arrow-left");
+  $(".tpc-instructor-slider-left").attr("data-click-id", "tpc-instructor-slider-arrow-right");
 
   $("a, input[type='submit']").on("click", function () {
     setTimeout(() => {
