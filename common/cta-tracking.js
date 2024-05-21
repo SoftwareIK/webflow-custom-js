@@ -1,10 +1,10 @@
 $(document).ready(function () {
-  $(".tpc-offer-slider .course__offer-slider-left").attr("data-click-id", "tpc-offer-slider-arrow-right");
-  $(".tpc-offer-slider .course__offer-slider-right").attr("data-click-id", "tpc-offer-slider-arrow-left");
-  $(".tpc-career-slide .course__offer-slider-left").attr("data-click-id", "tpc-career-slider-arrow-right");
-  $(".tpc-career-slide .course__offer-slider-right").attr("data-click-id", "tpc-career-slider-arrow-left");
-  $(".tpc-instructor-slider-right").attr("data-click-id", "tpc-instructor-slider-arrow-left");
-  $(".tpc-instructor-slider-left").attr("data-click-id", "tpc-instructor-slider-arrow-right");
+  $(".tpc-offer-slider .course__offer-slider-left").attr("data-click-id", "tpc-offer_slider_arrow-right");
+  $(".tpc-offer-slider .course__offer-slider-right").attr("data-click-id", "tpc-offer_slider_arrow-left");
+  $(".tpc-career-slide .course__offer-slider-left").attr("data-click-id", "tpc-career_slider_arrow-right");
+  $(".tpc-career-slide .course__offer-slider-right").attr("data-click-id", "tpc-career_slider_arrow-left");
+  $(".tpc-instructor-slider-right").attr("data-click-id", "tpc-instructor_slider_arrow-left");
+  $(".tpc-instructor-slider-left").attr("data-click-id", "tpc-instructor_slider_arrow-right");
   function addIdToElement(selectorPrefix, textPrefix) {
     $(selectorPrefix).each(function () {
       let linkText = $(this).text().trim().toLowerCase();
