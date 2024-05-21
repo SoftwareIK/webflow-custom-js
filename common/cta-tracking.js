@@ -22,6 +22,7 @@ $(document).ready(function () {
   addIdToElement('.dropdown-link-v1', "course-card_");
   addIdToElement('.course__sections-menu-link', "course-sec-menu-");
   addIdToElement('.course__sections-menu-link-2', "course-sec-menu-");
+  addIdToElement('.blog-post-body > p > a', "blog-post-");
 
 
   $("a, input[type='submit']").on("click", function () {
