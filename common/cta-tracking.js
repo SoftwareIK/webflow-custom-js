@@ -6,6 +6,9 @@ $(document).ready(function () {
   $(".tpc-instructor-slider-right, .tpc-instructor-slider .course__offer-slider-right-v1 ").attr("data-click-id", "tpc-instructor_slider_arrow-left");
   $(".tpc-instructor-slider-left , .tpc-instructor-slider .course__offer-slider-left-v1 ").attr("data-click-id", "tpc-instructor_slider_arrow-right");
 
+  $(".student-swiper-block-v1 .slider-prev-btn-v3").attr("data-click-id", "success-stories_slider_arrow-right");
+  $(".student-swiper-block-v1 .slider-prev-btn-v4").attr("data-click-id", "success-stories_slider_arrow-left");
+
   function addIdToElement(selectorPrefix, textPrefix) {
     $(selectorPrefix).each(function () {
       let linkText = $(this).text().trim().toLowerCase();
