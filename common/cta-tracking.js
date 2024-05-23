@@ -9,6 +9,11 @@ $(document).ready(function () {
   $(".student-swiper-block-v1 .slider-prev-btn-v3").attr("data-click-id", "success-stories_slider_arrow-right");
   $(".student-swiper-block-v1 .slider-prev-btn-v4").attr("data-click-id", "success-stories_slider_arrow-left");
 
+  $(".tech-lead-block .left-slide").attr("data-click-id", "tech-lead_slider_arrow-left");
+  $(".tech-lead-block .right-slide,").attr("data-click-id", "tech-lead_slider_arrow-right");
+  $(".interview-course-block .left-slide2").attr("data-click-id", "alumni-slider_slider_arrow-left");
+  $(".interview-course-block .right-slide-2,").attr("data-click-id", "alumni-slider_slider_arrow-right");
+
   function addIdToElement(selectorPrefix, textPrefix) {
     $(selectorPrefix).each(function () {
       let linkText = $(this).text().trim().toLowerCase();
