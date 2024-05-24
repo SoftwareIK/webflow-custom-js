@@ -3,11 +3,14 @@ $(document).ready(function () {
   $(".tpc-offer-slider .course__offer-slider-right").attr("data-click-id", "tpc-offer_slider_arrow-left");
   $(".tpc-career-slide .course__offer-slider-left").attr("data-click-id", "tpc-career_slider_arrow-right");
   $(".tpc-career-slide .course__offer-slider-right").attr("data-click-id", "tpc-career_slider_arrow-left");
-  $(".tpc-instructor-slider-right, .tpc-instructor-slider .course__offer-slider-right-v1 ").attr("data-click-id", "tpc-instructor_slider_arrow-left");
-  $(".tpc-instructor-slider-left , .tpc-instructor-slider .course__offer-slider-left-v1 ").attr("data-click-id", "tpc-instructor_slider_arrow-right");
+  $(".tpc-instructor-slider-right, .tpc-instructor-slider .course__offer-slider-right-v1").attr("data-click-id", "tpc-instructor_slider_arrow-left");
+  $(".tpc-instructor-slider-left, .tpc-instructor-slider .course__offer-slider-left-v1").attr("data-click-id", "tpc-instructor_slider_arrow-right");
 
   $(".student-swiper-block-v1 .slider-prev-btn-v3").attr("data-click-id", "success-stories_slider_arrow-right");
   $(".student-swiper-block-v1 .slider-prev-btn-v4").attr("data-click-id", "success-stories_slider_arrow-left");
+
+  $(".student-swiper-block .slider-next-btn").attr("data-click-id", "success-stories_slider_arrow-right");
+  $(".student-swiper-block .slider-prev-btn").attr("data-click-id", "success-stories_slider_arrow-left");
 
   $(".tech-lead-block .left-slide").attr("data-click-id", "tech-lead_slider_arrow-left");
   $(".tech-lead-block .right-slide").attr("data-click-id", "tech-lead_slider_arrow-right");
@@ -32,7 +35,7 @@ $(document).ready(function () {
   addIdToElement('.course__sections-menu-link', "course-sec-menu-");
   addIdToElement('.course__sections-menu-link-2', "course-sec-menu-");
   addIdToElement('.blog-post-body a', "blog-post-");
-
+  addIdToElement('.nav-link', "header-nav-link-");
 
   $("a, input[type='submit']").on("click", function () {
     setTimeout(() => {
