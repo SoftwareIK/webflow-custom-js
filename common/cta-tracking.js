@@ -35,7 +35,9 @@ $(document).ready(function () {
   addIdToElement('.course__sections-menu-link', "course-sec-menu-");
   addIdToElement('.course__sections-menu-link-2', "course-sec-menu-");
   addIdToElement('.blog-post-body a', "blog-post-");
-  addIdToElement('.nav-link', "header-nav-link-");
+  addIdToElement('.nav-link', 'header-nav-link-');
+  addIdToElement('.link_privacy_policy', 'webinar-modal-popup-');
+
 
   $("a, input[type='submit']").on("click", function () {
     setTimeout(() => {
