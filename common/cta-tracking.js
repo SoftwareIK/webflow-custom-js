@@ -12,6 +12,9 @@ $(document).ready(function () {
   $(".student-swiper-block .slider-next-btn").attr("data-click-id", "success-stories_slider_arrow-right");
   $(".student-swiper-block .slider-prev-btn").attr("data-click-id", "success-stories_slider_arrow-left");
 
+  $("logo-slider-2 .prev-logo-slide").attr("data-click-id", "in-ik-logo_slider_arrow-left");
+  $("logo-slider-2 .next-logo-slide").attr("data-click-id", "in-ik-logo_slider_arrow-right");
+
   $(".tech-lead-block .left-slide").attr("data-click-id", "tech-lead_slider_arrow-left");
   $(".tech-lead-block .right-slide").attr("data-click-id", "tech-lead_slider_arrow-right");
   $(".interview-course-block .left-slide2").attr("data-click-id", "alumni-slider_slider_arrow-left");
@@ -25,6 +28,7 @@ $(document).ready(function () {
       $(this).attr('data-click-id', linkID);
     });
   }
+
   addIdToElement('.eng-role-link-v2', "course-list_course-");
   addIdToElement('.indian-footer-links', "footer-");
   addIdToElement('.new-footer-link', "footer-");
