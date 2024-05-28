@@ -1,25 +1,25 @@
 $(document).ready(function () {
-  $(".tpc-offer-slider .course__offer-slider-left").attr("data-click-id", "tpc-offer_slider_arrow-right");
-  $(".tpc-offer-slider .course__offer-slider-right").attr("data-click-id", "tpc-offer_slider_arrow-left");
-  $(".tpc-career-slide .course__offer-slider-left").attr("data-click-id", "tpc-career_slider_arrow-right");
-  $(".tpc-career-slide .course__offer-slider-right").attr("data-click-id", "tpc-career_slider_arrow-left");
-  $(".tpc-instructor-slider-right, .tpc-instructor-slider .course__offer-slider-right-v1").attr("data-click-id", "tpc-instructor_slider_arrow-left");
-  $(".tpc-instructor-slider-left, .tpc-instructor-slider .course__offer-slider-left-v1").attr("data-click-id", "tpc-instructor_slider_arrow-right");
-
-  $(".student-swiper-block-v1 .slider-prev-btn-v3").attr("data-click-id", "success-stories_slider_arrow-right");
-  $(".student-swiper-block-v1 .slider-prev-btn-v4").attr("data-click-id", "success-stories_slider_arrow-left");
-
-  $(".student-swiper-block .slider-next-btn").attr("data-click-id", "success-stories_slider_arrow-right");
-  $(".student-swiper-block .slider-prev-btn").attr("data-click-id", "success-stories_slider_arrow-left");
-
-  $(".logo-slider-2 .prev-logo-slide").attr("data-click-id", "in-ik-logo_slider_arrow-left");
-  $(".logo-slider-2 .next-logo-slide").attr("data-click-id", "in-ik-logo_slider_arrow-right");
-
-  $(".tech-lead-block .left-slide").attr("data-click-id", "tech-lead_slider_arrow-left");
-  $(".tech-lead-block .right-slide").attr("data-click-id", "tech-lead_slider_arrow-right");
-
-  $(".interview-course-block .left-slide2").attr("data-click-id", "alumni-slider_slider_arrow-left");
-  $(".interview-course-block .right-slide-2").attr("data-click-id", "alumni-slider_slider_arrow-right");
+  const sliders = [
+    { selector: ".tpc-offer-slider .course__offer-slider-left", id: "tpc-offer_slider_arrow-right" },
+    { selector: ".tpc-offer-slider .course__offer-slider-right", id: "tpc-offer_slider_arrow-left" },
+    { selector: ".tpc-career-slide .course__offer-slider-left", id: "tpc-career_slider_arrow-right" },
+    { selector: ".tpc-career-slide .course__offer-slider-right", id: "tpc-career_slider_arrow-left" },
+    { selector: ".tpc-instructor-slider-right, .tpc-instructor-slider .course__offer-slider-right-v1", id: "tpc-instructor_slider_arrow-left" },
+    { selector: ".tpc-instructor-slider-left, .tpc-instructor-slider .course__offer-slider-left-v1", id: "tpc-instructor_slider_arrow-right" },
+    { selector: ".student-swiper-block-v1 .slider-prev-btn-v3", id: "success-stories_slider_arrow-right" },
+    { selector: ".student-swiper-block-v1 .slider-prev-btn-v4", id: "success-stories_slider_arrow-left" },
+    { selector: ".student-swiper-block .slider-next-btn", id: "success-stories_slider_arrow-right" },
+    { selector: ".student-swiper-block .slider-prev-btn", id: "success-stories_slider_arrow-left" },
+    { selector: ".logo-slider-2 .prev-logo-slide", id: "in-ik-logo_slider_arrow-left" },
+    { selector: ".logo-slider-2 .next-logo-slide", id: "in-ik-logo_slider_arrow-right" },
+    { selector: ".tech-lead-block .left-slide", id: "tech-lead_slider_arrow-left" },
+    { selector: ".tech-lead-block .right-slide", id: "tech-lead_slider_arrow-right" },
+    { selector: ".interview-course-block .left-slide2", id: "alumni-slider_slider_arrow-left" },
+    { selector: ".interview-course-block .right-slide-2", id: "alumni-slider_slider_arrow-right" }
+  ];
+  sliders.forEach(item => {
+    $(item.selector).attr("data-click-id", item.id);
+  });
 
   function addIdToElement(selectorPrefix, textPrefix) {
     $(selectorPrefix).each(function () {
