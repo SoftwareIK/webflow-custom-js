@@ -21,6 +21,16 @@ $(document).ready(function () {
     $(item.selector).attr("data-click-id", item.id);
   });
 
+  //social icon CTA link 
+  // function addCtaIdToElement(selectorPrefix) {
+  //   $(selectorPrefix).each(function () {
+  //     var linkedInUserName = $(this).attr("href").split("/").splice(4, 1, 0);
+  //     $(this).attr('data-click-id', "linkedin-social-icon_" + linkedInUserName + "_redirect-linkedIn-page");
+  //   });
+  // }
+  // addCtaIdToElement('.linkedin-profile-link, .course__instructor-linkedin, .course__instructor-linkedin-2');
+
+
   function addIdToElement(selectorPrefix, textPrefix) {
     $(selectorPrefix).each(function () {
       let linkText = $(this).text().trim().toLowerCase();
@@ -39,10 +49,9 @@ $(document).ready(function () {
   addIdToElement('.dropdown-link-v1', "course-card_");
   addIdToElement('.course__sections-menu-link', "course-sec-menu-");
   addIdToElement('.course__sections-menu-link-2', "course-sec-menu-");
-  addIdToElement('.blog-post-body a', "blog-post-");
+  addIdToElement('.blog-post-body a, .blog-post-body-2 a', "blog-post-");
   addIdToElement('.nav-link', 'header-nav-link-');
   addIdToElement('.link_privacy_policy', 'webinar-modal-popup-');
-
 
   $("a, input[type='submit']").on("click", function () {
     setTimeout(() => {
