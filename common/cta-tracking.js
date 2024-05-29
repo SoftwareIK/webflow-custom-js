@@ -44,6 +44,7 @@ $(document).ready(function () {
   addIdToElement('.indian-footer-links', "footer-");
   addIdToElement('.new-footer-link', "footer-");
   addIdToElement('.footer-link-new', "footer-");
+  addIdToElement('.jk-footer-link', "footer-");
   addIdToElement('.footer-link', "footer-");
   addIdToElement('.footer-nav-link', "footer-");
   addIdToElement('.dropdown-link-v1', "course-card_");
