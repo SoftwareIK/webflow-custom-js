@@ -35,7 +35,12 @@ $(document).ready(function () {
     $(selectorPrefix).each(function () {
       let linkText = $(this).text().trim().toLowerCase();
       let hyphenatedText = linkText.split(' ').join('-');
-      let linkID = textPrefix + hyphenatedText + "_link_redirect-new-page";
+      let linkID = `${textPrefix}${hyphenatedText}_link_redirect-new-page`;
+
+      // Specific class-based customizations
+      if ($(this).hasClass('.course__sections-menu-link, .course__sections-menu-link-2')) {
+        linkID = `${textPrefix}_${hyphenatedText}_link_redirect-section`;
+      }
       $(this).attr('data-click-id', linkID);
     });
   }
@@ -73,7 +78,6 @@ $(document).ready(function () {
             {
               "page_value_url": window.location.href,
               "student_uuid": encodeURIComponent($(".user_id").val()),
-              //"student_uuid": visitor_id,
               "timestamp": timestamp,
               "ClickID": clickID,
             }
