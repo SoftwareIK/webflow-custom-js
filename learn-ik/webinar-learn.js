@@ -15,7 +15,7 @@ function isDev() {
 
 function getLearnGQLLink() {
   const host = isDev() ? "https://ikdev.webflow.io" : "https://www.interviewkickstart.com";
-  if(webinarType == "SWITCH_UP") {
+  if (webinarType == "SWITCH_UP") {
     return `${host}/signup-final-step-switchup`;
   }
   return `${host}/signup-final-step`;
