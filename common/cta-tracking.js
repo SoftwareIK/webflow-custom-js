@@ -32,6 +32,7 @@ $(document).ready(function () {
   addCtaIdToElement('.linkedin-profile-link, .course__instructor-linkedin, .course__instructor-linkedin-2');
 
 
+  //Function to add a data-click-id attribute to elements  
   function addIdToElement(selectorPrefix, textPrefix) {
     $(selectorPrefix).each(function () {
       let linkText = $(this).text().trim().toLowerCase();
@@ -56,10 +57,15 @@ $(document).ready(function () {
   addIdToElement('.nav-link', 'header-nav-link-');
   addIdToElement('.link_privacy_policy', 'webinar-modal-popup-');
 
+
+  // Bind a click event to all anchor elements and input elements of type 'submit'
   $("a, input[type='submit']").on("click", function () {
     setTimeout(() => {
+      // Get the 'data-click-id' attribute of the clicked element or its 'id' attribute
       let clickID = $(this).attr('data-click-id') || $(this).attr('id');
+      // Generate a timestamp of the current time
       let timestamp = new Date().getTime();
+      // Make an AJAX POST request to the specified API endpoint
       $.ajax({
         "url": "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
         "method": "POST",
