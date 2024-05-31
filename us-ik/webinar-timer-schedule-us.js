@@ -70,6 +70,4 @@ function formatDate(date1) {
 const startDate = "05/01/2024";
 const endDate = "11/30/2024";
 const webinarScheduleIndia = generateScheduleINDForDaysOfWeek(startDate, endDate);
-console.log("india", webinarScheduleIndia);
 const webinarScheduleUSA = generateScheduleUSAForDaysOfWeek(startDate, endDate);
-console.log("USA", webinarScheduleUSA);
