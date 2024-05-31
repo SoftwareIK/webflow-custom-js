@@ -37,10 +37,6 @@ $(document).ready(function () {
       let hyphenatedText = linkText.split(' ').join('-');
       let linkID = `${textPrefix}${hyphenatedText}_link_redirect-new-page`;
 
-      // Specific class-based customizations
-      if ($(this).hasClass('.course__sections-menu-link, .course__sections-menu-link-2')) {
-        linkID = `${textPrefix}_${hyphenatedText}_link_redirect-section`;
-      }
       $(this).attr('data-click-id', linkID);
     });
   }
@@ -62,7 +58,6 @@ $(document).ready(function () {
   $("a, input[type='submit']").on("click", function () {
     setTimeout(() => {
       let clickID = $(this).attr('data-click-id') || $(this).attr('id');
-      console.log(clickID);
       let timestamp = new Date().getTime();
       $.ajax({
         "url": "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
