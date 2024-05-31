@@ -24,8 +24,9 @@ $(document).ready(function () {
   //social icon CTA link 
   function addCtaIdToElement(selectorPrefix) {
     $(selectorPrefix).each(function () {
-      var linkedInUserName = $(this).attr("href").split("/").splice(4, 1, 0);
-      $(this).attr('data-click-id', "linkedin-social-icon_" + linkedInUserName + "_redirect-linkedIn-page");
+      let linkedInUserName = $(this).attr("href").split("/").splice(4, 1, 0);
+      let linkDataID = `linkedin-social-icon_${linkedInUserName}_redirect-linkedIn-page`;
+      $(this).attr('data-click-id', linkDataID);
     });
   }
   addCtaIdToElement('.linkedin-profile-link, .course__instructor-linkedin, .course__instructor-linkedin-2');
