@@ -1,5 +1,18 @@
 //https://interviewkickstart.albiorixtech.in/ep-webinar-us-site.v2.0.js
 var experiment_type, exitintent_freecourse, v_timezone_formatted, interviewPrepURL, switchUpURL, hybrid;
+
+function isDev() {
+  return location?.host?.includes("webflow");
+}
+
+function getLearnGQLLink() {
+  const host = isDev() ? "https://ikdev.webflow.io" : "https://www.interviewkickstart.com";
+  if(webinarType == "SWITCH_UP") {
+    return `${host}/signup-final-step-switchup-v6`;
+  }
+  return `${host}/signup-final-step-v6`;
+}
+
 $(document).ready(function () {
   var int_phone3;
   $('.webinar-lightbox-close').click(function (e) {
@@ -185,6 +198,12 @@ $(document).ready(function () {
   function createWebinarSlotsList(country, timezone) {
     v_timezone_formatted = timezone.replace("+", "%2B");
     webinarType = (webinarType == undefined || webinarType == "REGULAR") ? "REGULAR" : "SWITCH_UP";
+    if(typeof(isSwitchUpHomePage) !== 'undefined' && isSwitchUpHomePage) {
+      var getUtmParam = getAllUrlParams();
+      if (v_timezone_formatted == "Asia/Kolkata" && !getUtmParam.forceuswebinar) {
+        webinarType = "REGULAR";
+      }
+    }
     if (isSwitchUp == "No") {
       let api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=" + country + "&program=Backend&timezone=" + v_timezone_formatted + "&type=" + webinarType;
       let xhr = new XMLHttpRequest();
@@ -223,39 +242,12 @@ $(document).ready(function () {
     }
   }
 
-  $('.tab-switchup').click(function () {
-    webinarType = "SWITCH_UP";
-    var getUtmParam = getAllUrlParams();
-    if (v_timezone_formatted == "Asia/Kolkata" && !getUtmParam.forceuswebinar) {
-      webinarType = "REGULAR";
-    }
-    else {
-      webinarType = "SWITCH_UP";
-    }
-    if (v_country == "India" && !getUtmParam.forceuswebinar) {
-      slotscountrycode = "IND"
-    }
-    else {
-      slotscountrycode = "USA"
-    }
-    // let slotscountrycode = (v_country == "India") ? "IND" : "USA";
-    $("html, body").animate({ scrollTop: 0 }, "slow");
-    $('.webinar__slots').empty();
-    createWebinarSlotsList(slotscountrycode, v_timezone);
-    // $(".webinar-type").val(webinarType)
-  });
-
-  $('.tab-regular').click(function () {
-    webinarType = "REGULAR"
-    var getUtmParam = getAllUrlParams();
-    if (getUtmParam.forceuswebinar) {
-      webinarType = "REGULAR"
-    }
-    let slotscountrycode = (v_country == "India") ? "IND" : "USA";
-    $("html, body").animate({ scrollTop: 0 }, "slow");
-    $('.webinar__slots').empty();
-    //$(".webinar-type").val(webinarType);
-    createWebinarSlotsList(slotscountrycode, v_timezone);
+  $('#ip-tab, #switchup-tab').click(function (e) {
+    e.preventDefault();
+    var queryParams = window.location.search;
+    var destinationURL = $(this).attr('href');
+    var redirectURL = destinationURL + queryParams;
+    window.location.href = redirectURL;
   });
 
   // Function to fetch data from an API
@@ -727,7 +719,7 @@ $(document).ready(function () {
 
       let finalurl;
       if ($('.bye-calendly-type').val() == "NoPhoneInTheFirstStep") {
-        finalurl = "https://www.interviewkickstart.com/signup-final-step-v6" + utmstring;
+        finalurl = getLearnGQLLink() + utmstring;
       } else {
         finalurl = "https://www.interviewkickstart.com/signup-final-step" + utmstring;
       }
