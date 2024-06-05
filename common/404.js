@@ -16,9 +16,9 @@
 
   // Function to handle redirection based on the path
   function redirectPage() {
-    if (hasQueryParameter('redirected')) {
-      return; // Do not run the redirection function
-    }
+    // if (hasQueryParameter('redirected')) {
+    //   return; // Do not run the redirection function
+    // }
 
     var currentPath = window.location.pathname;
     var redirected = false;
@@ -35,7 +35,7 @@
       if (matches !== null) {
         // Generate the new path using the captured group and target path
         var newPath = targetPath.replace('$1', matches[1]);
-        newPath += '?redirected';
+        // newPath += '?redirected';
 
         // Redirect to the new path
         if (newPath !== currentPath && !redirected) {
