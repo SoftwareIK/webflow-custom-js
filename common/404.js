@@ -39,7 +39,7 @@
 
         // Redirect to the new path
         if (newPath !== currentPath && !redirected) {
-          window.location.href = newPath;
+          return newPath;
           redirected = true;
         }
         return; // Stop further processing
@@ -48,7 +48,15 @@
   }
 
   // Call the redirection function when the page loads
-  window.onload = function () {
-    redirectPage();
-  };
+  $(document).ready(function () {
+    const newUrl = redirectPage();
+    let fullpageurl = window.location.href;
+    let host_name1 = window.location.hostname + "/su/";
+    if (fullpageurl.indexOf(host_name1) == -1 && !newUrl) {
+      $('.loadingbar-page').hide();
+    }
+    if(newUrl) {
+      window.location.href = newPath;
+    }
+  });
 })();
