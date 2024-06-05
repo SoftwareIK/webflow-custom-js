@@ -56,7 +56,7 @@
       $('.loadingbar-page').hide();
     }
     if(newUrl) {
-      window.location.href = newPath;
+      window.location.href = newUrl;
     }
   });
 })();
