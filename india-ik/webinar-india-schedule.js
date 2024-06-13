@@ -1,5 +1,3 @@
-// https://cdn.jsdelivr.net/gh/kothinti/ik/in-webinar-schedule-v2.js
-
 const timerState = {
   currentDate: '',
   nextDate: '',
@@ -7,14 +5,43 @@ const timerState = {
   nextDateSec: '',
 };
 
-function nextWebinar(currentDate, currentWebTime) {
+// This function will be in use when upcoming-slots api fails.
+function fallbackTimerDate() {
+  const currentDate = new Date();
+  const dayOfWeek = currentDate.getDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
+  const dateString = currentDate.toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata', month: '2-digit', day: '2-digit', year: 'numeric' });
+  let timeString;
+
+  if (dayOfWeek === 6) {
+    // Saturday
+    timeString = "11:00:00 PM";
+  } else if (dayOfWeek === 0) {
+    // Sunday
+    return ""; // Skip on Sunday
+  } else {
+    timeString = "06:00:00 PM";
+  }
+
+  return `${dateString}, ${timeString}`
+}
+
+function nextWebinar(currentDate, currentWebTime, slots) {
   let nextWebinarDate = '';
-  for (let idx = 0; idx < webinarSchedule.length; idx++) {
-    if (webinarSchedule[idx]) {
-      const currentDateWeb = Date.parse(new Date(`${webinarSchedule[idx].date}, ${webinarSchedule[idx].time}`));
+  if (!slots) {
+    return fallbackTimerDate()
+  }
+
+  const formattedSlots = (slots || [])?.map((slot = {}) => ({
+    date: `${slot.month}/${slot.day}/${slot.year}`, //"06/12/2024"
+    time: `${slot.hour}:${slot.minute}:${slot.second} ${slot.am_or_pm}`, //"07:30:00 PM"
+  }))
+
+  for (let idx = 0; idx < formattedSlots.length; idx++) {
+    if (formattedSlots[idx]) {
+      const currentDateWeb = Date.parse(new Date(`${formattedSlots[idx].date}, ${formattedSlots[idx].time}`));
       if (currentDateWeb > currentWebTime) {
-        //console.log('Webinar Date', webinarSchedule[idx].date, webinarSchedule[idx].time);
-        nextWebinarDate = `${webinarSchedule[idx].date}, ${webinarSchedule[idx].time}`;
+        //console.log('Webinar Date', formattedSlots[idx].date, formattedSlots[idx].time);
+        nextWebinarDate = `${formattedSlots[idx].date}, ${formattedSlots[idx].time}`;
         break;
       }
     }
@@ -23,10 +50,10 @@ function nextWebinar(currentDate, currentWebTime) {
   return nextWebinarDate;
 };
 
-function initStates() {
+function initStates(slots) {
   timerState.currentDate = new Date().toLocaleString('en-US', { timeZone: 'IST' });
   timerState.currentDateSec = Date.parse(timerState.currentDate);
-  timerState.nextDate = nextWebinar(timerState.currentDate.split(',')[0], timerState.currentDateSec);
+  timerState.nextDate = nextWebinar(timerState.currentDate.split(',')[0], timerState.currentDateSec, slots);
   if (timerState.nextDate !== '') {
     timerState.nextDateSec = Date.parse(timerState.nextDate);
   }
@@ -78,9 +105,9 @@ function updateTimerUI(day, hrs, min, sec) {
   unitaryCountHandler();
 };
 
-function TimerHandler() {
+function TimerHandler(slots) {
   // initialize states
-  initStates();
+  initStates(slots);
 
   // start timer
   const webinarTimer = setInterval(() => {
@@ -110,7 +137,7 @@ function TimerHandler() {
 
     if (distanceCount <= 0) {
       // move timer to next date if reached 0
-      initStates();
+      initStates(slots);
 
       if (timerState.nextDate === '') {
         clearInterval(webinarTimer);
@@ -122,9 +149,6 @@ function TimerHandler() {
   }, 1000);
 };
 
-$(document).ready(function () {
-  TimerHandler();
-});
 
 
 //  scroll function which displays the timer in the sticky header

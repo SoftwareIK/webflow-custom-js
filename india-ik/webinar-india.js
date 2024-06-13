@@ -66,13 +66,16 @@ $(document).ready(function () {
         // else {
         //   resobj = resobj.map(item => ({ ...item, webinar_lead_type: "SWITCH_UP" }));
         // }
+        TimerHandler(resobj);
         populateWebinarSlots(resobj);
       } else {
+        TimerHandler(null);
         console.error("P0: The Uplevel Webinar Slots API Failed.");
         registration_type = "calendly";
       }
     }
     xhr.onerror = function () {
+      TimerHandler(null);
       console.error("P0: The Uplevel Webinar Slots API Failed.");
       registration_type = "calendly";
     }
@@ -82,6 +85,9 @@ $(document).ready(function () {
     // switchUpURL = 'https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=' + v_timezone + '&type=SWITCH_UP';
     combineResponses().then((data) => {
       populateWebinarSlots(data);
+      TimerHandler(data);
+    }).catch(() => {
+      TimerHandler(null);
     });
   }
 });

@@ -114,19 +114,22 @@ $(document).ready(function () {
   $.getJSON("https://get.geojs.io/v1/ip/geo.json", function (t) { }).done(function (t) {
     let forceUSwebinarFlag = getAllUrlParams();
     if ((t.country_code3 == "IND") && (forceUSwebinarFlag['forceuswebinar'] == undefined)) {
-      TimerHandler('IST');
-      createWebinarSlotsList("IND", t.timezone);
+      createWebinarSlotsList("IND", t.timezone, (slots) => {
+        TimerHandler('IST', slots)
+      });
     } else if (forceUSwebinarFlag['forceuswebinar'] == "true") {
-      TimerHandler('America/New_York');
-      createWebinarSlotsList("USA", "US/Pacific");
+      createWebinarSlotsList("USA", "US/Pacific", (slots) => {
+        TimerHandler('America/New_York', slots)
+      });
     } else {
-      TimerHandler('America/New_York');
-      createWebinarSlotsList("USA", t.timezone);
+      createWebinarSlotsList("USA", t.timezone, (slots) => {
+        TimerHandler('America/New_York', slots)
+      });
     }
-
   }).fail(function (t) {
-    TimerHandler('America/New_York');
-    createWebinarSlotsList("USA", "US/Pacific");
+    createWebinarSlotsList("USA", "US/Pacific", (slots) => {
+      TimerHandler('America/New_York', slots)
+    });
   });
 
   function getItemsByDateRange(startDate, endDate, data) {
@@ -182,7 +185,7 @@ $(document).ready(function () {
     }
   }
 
-  function createWebinarSlotsList(country, timezone) {
+  function createWebinarSlotsList(country, timezone, callback = () => {}) {
     v_timezone_formatted = timezone.replace("+", "%2B");
     webinarType = (webinarType == undefined || webinarType == "REGULAR") ? "REGULAR" : "SWITCH_UP";
     if (isSwitchUp == "No") {
@@ -205,12 +208,15 @@ $(document).ready(function () {
           } else {
             resobj = resobj.map(item => ({ ...item, webinar_lead_type: "REGULAR" }));
           }
+          callback(resobj);
           populateWebinarSlots(resobj);
         } else {
+          callback(null);
           registration_type = "calendly";
         }
       }
       xhr.onerror = function () {
+        callback(null);
         registration_type = "calendly";
       }
       xhr.send();
@@ -219,6 +225,7 @@ $(document).ready(function () {
       switchUpURL = 'https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=' + country + '&program=Backend&timezone=' + v_timezone_formatted + '&type=SWITCH_UP';
       combineResponses().then((data) => {
         populateWebinarSlots(data);
+        callback(data);
       });
     }
   }

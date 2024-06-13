@@ -210,9 +210,16 @@ $(document).ready((function () {
           }))) : e.map((e => ({
             ...e,
             webinar_lead_type: "REGULAR"
-          }))), n(e)
-        } else registration_type = "calendly"
+          }))), (function(){
+            TimerHandler(e);
+            n(e);
+          })()
+        } else {
+          TimerHandler(null);
+          registration_type = "calendly"
+        }
       }, e.onerror = function () {
+        TimerHandler(null);
         registration_type = "calendly"
       }, e.send()
     } else {
@@ -235,11 +242,12 @@ $(document).ready((function () {
             }
             return n.sort(((e, t) => new Date(e.start_time) - new Date(t.start_time))), n
           } catch (e) {
+            TimerHandler(null);
             console.error("Error:", e)
           }
         }().then((e => {
-          console.log('e', e);
-          console.log(e), n(e)
+          TimerHandler(e);
+          n(e);
         }));
     }
   }
