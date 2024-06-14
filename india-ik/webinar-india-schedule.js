@@ -40,7 +40,6 @@ function nextWebinar(currentDate, currentWebTime, slots) {
     if (formattedSlots[idx]) {
       const currentDateWeb = Date.parse(new Date(`${formattedSlots[idx].date}, ${formattedSlots[idx].time}`));
       if (currentDateWeb > currentWebTime) {
-        //console.log('Webinar Date', formattedSlots[idx].date, formattedSlots[idx].time);
         nextWebinarDate = `${formattedSlots[idx].date}, ${formattedSlots[idx].time}`;
         break;
       }
@@ -118,7 +117,6 @@ function TimerHandler(slots) {
     timerState.currentDateSec = Date.parse(timerState.currentDate);
 
     const distanceCount = timerState.nextDateSec - timerState.currentDateSec;
-    // console.log(distanceCount);
 
     const day = Math.floor(distanceCount / (1000 * 60 * 60 * 24));
     const hrs = Math.floor((distanceCount % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
