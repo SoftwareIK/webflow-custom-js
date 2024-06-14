@@ -738,7 +738,7 @@ $(document).ready((function () {
     var domain = hostnameParts.join('.');
     setTimeout(() => {
       if(isDev()){
-        document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=ikdev.webflow.io";
+        document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=iklearn.webflow.io";
       } else {
         document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
       }
