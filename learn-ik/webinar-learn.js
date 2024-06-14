@@ -737,7 +737,11 @@ $(document).ready((function () {
     }
     var domain = hostnameParts.join('.');
     setTimeout(() => {
-      document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
+      if(isDev()){
+        document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=ikdev.webflow.io";
+      } else {
+        document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
+      }
     }, 500);
   }
 }));

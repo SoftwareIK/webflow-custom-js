@@ -788,7 +788,11 @@ $(document).ready(function () {
       var domain = hostnameParts.join('.');
       setTimeout(() => {
         console.log('---SET COOKIES---', domain);
-        document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
+        if(isDev()){
+          document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=ikdev.webflow.io";
+        } else {
+          document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;
+        }
       }, 500)
 
       //lead LeadCreatedTime
