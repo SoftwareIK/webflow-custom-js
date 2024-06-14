@@ -226,6 +226,8 @@ $(document).ready(function () {
       combineResponses().then((data) => {
         populateWebinarSlots(data);
         callback(data);
+      }).catch(() => {
+        callback(null);
       });
     }
   }

@@ -246,7 +246,7 @@ $(document).ready(function () {
         populateWebinarSlots(data);
         callback(data);
       }).catch(() => {
-        TimerHandler(null);
+        callback(null);
       });
     }
   }
