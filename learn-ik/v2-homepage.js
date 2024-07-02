@@ -204,7 +204,7 @@ $(document).ready(function () {
     $("#v2-success-date").html(SELECTED_SLOT.date);
     $("#v2-success-day").html(SELECTED_SLOT.day);
     $("#v2-success-month").html(SELECTED_SLOT.month)
-    $("#v2-success-time").html()
+    $("#v2-success-time").html(SELECTED_SLOT.time)
     $(".form-submitted-div").css("display", "block");
   }
 
