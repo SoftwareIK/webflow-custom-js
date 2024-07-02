@@ -226,14 +226,17 @@ $(document).ready((function () {
             webinar_lead_type: "REGULAR"
           }))), (function () {
             TimerHandler(e);
+            typeof fillWebinarSlots === "function" && fillWebinarSlots(e);
             n(e);
           })()
         } else {
           TimerHandler(null);
+          typeof fillWebinarSlots === "function" && fillWebinarSlots(null);
           registration_type = "calendly"
         }
       }, e.onerror = function () {
         TimerHandler(null);
+        typeof fillWebinarSlots === "function" && fillWebinarSlots(null);
         registration_type = "calendly"
       }, e.send()
     } else {
@@ -257,10 +260,12 @@ $(document).ready((function () {
             return n.sort(((e, t) => new Date(e.start_time) - new Date(t.start_time))), n
           } catch (e) {
             TimerHandler(null);
+            typeof fillWebinarSlots === "function" && fillWebinarSlots(null);
             console.error("Error:", e)
           }
         }().then((e => {
           TimerHandler(e);
+          typeof fillWebinarSlots === "function" && fillWebinarSlots(e);
           n(e);
         }));
     }
