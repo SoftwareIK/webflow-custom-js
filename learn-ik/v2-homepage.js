@@ -1,3 +1,26 @@
+let upcomingWebinar;
+
+function findNextWebinar(webinars) {
+  const now = new Date();
+  return webinars
+    .map(webinar => new Date(webinar.utc_start_time))
+    .filter(startTime => startTime > now)
+    .sort((a, b) => a - b)[0];
+}
+
+function fillNextWebinarTimer() {
+  const countdownElement = $('#v2-webinar-countdown');
+  const miniCountDownElement = $(".v2-next-webinar-in")
+  const now = new Date();
+  const timeDifference = upcomingWebinar - now;
+  const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+  const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+
+  countdownElement.html(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} Hrs`);
+  miniCountDownElement.html(`${hours.toString().padStart(2, '0')} hrs`)
+  setTimeout(fillNextWebinarTimer, 60000);
+}
+
 function fillWebinarSlots(data) {
   if (!data) {
     $(".v2-form-wrapper").hide();
@@ -5,11 +28,14 @@ function fillWebinarSlots(data) {
     return;
   }
 
+  upcomingWebinar = findNextWebinar(data);
+  fillNextWebinarTimer();
   function generateSlotMarkup({
     day,
     dayfull,
     date,
     time,
+    month,
     datetime,
     endDateTime,
     alert,
@@ -28,6 +54,7 @@ function fillWebinarSlots(data) {
           data-day="${dayfull}"
           data-date="${date}"
           data-time="${time}"
+          data-month="${month}"
           data-invitee_starttime="${invitee_start_time}" 
           data-invitee_endtime="${invitee_end_time}" 
           data-name="${datetime}"
@@ -205,6 +232,7 @@ $(document).ready(function () {
     $("#v2-success-day").html(SELECTED_SLOT.day);
     $("#v2-success-month").html(SELECTED_SLOT.month)
     $("#v2-success-time").html(SELECTED_SLOT.time)
+    $('.form-info').hide();
     $(".form-submitted-div").css("display", "block");
   }
 
@@ -232,6 +260,14 @@ $(document).ready(function () {
 
     // var checkboxValue = $(this).val();
     // alert('Checkbox value: ' + checkboxValue);
+  });
+
+  $("#v2-form-2nd-back").click(function (e) {
+    adjustFormStep("#form-step-2", "#form-step-1");
+  });
+
+  $("#v2-form-3rd-back").click(function (e) {
+    adjustFormStep("#form-step-3", "#form-step-2");
   });
 
   $('#v2-form-1st-submit').click(function (e) {
