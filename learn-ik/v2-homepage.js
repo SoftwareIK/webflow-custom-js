@@ -198,11 +198,6 @@ $(document).ready(function () {
       "Domain or Role": $('.gql-role-domain').val(),
     };
 
-    console.log("API_CALL", {
-      api: endpoint,
-      data: formData
-    })
-
     $.ajax({
       type: "POST",
       url: endpoint,
@@ -514,7 +509,6 @@ $(document).ready(function () {
       email: data.email,
       phone_number: data.phone,
     };
-    console.log("enhancedUserData", enhancedUserData);
   }
 
   $('#v2-form-3rd-submit').click(function (e) {
@@ -630,7 +624,6 @@ $(document).ready(function () {
           },
           success: function (e) {
             if (e.status == "success") {
-              console.log("Form submitted successfully step3!");
               $(".v2-form-container").css("display", "none");
               showFormSuccessSection();
             }
