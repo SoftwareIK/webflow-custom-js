@@ -24,6 +24,20 @@ function getLearnGQLLink() {
 function formattedWebinarDate(webinarData, webinarFormat) {
   return `<div class="webinar-event-date" bis_skin_checked="1"  data-starttime="${webinarData.start_time}" data-endtime="${webinarData.end_time}" data-invitee_starttime="${webinarData.invitee_start_time}"  data-invitee_endtime="${webinarData.invitee_end_time}" data-name="${webinarData.start_time}" data-webinar_lead_type="${webinarData.webinar_lead_type}">  ${webinarFormat} </div>`
 }
+//Set PA cookies Data 
+function paRegisteredCookie() {
+  if (typeof paRegistered !== 'undefined') {
+    var paCookieValue = getCookie("Pa Data");
+    if (paCookieValue !== null) {
+      var decodedData = decodeURIComponent(paCookieValue);
+      var decodedObject = JSON.parse(decodedData);
+      $('.utm_source').val(decodedObject.utm_source);
+      $('.webinar-type').val(decodedObject.webinar_Type);
+    } else {
+      console.log("Cookie not found");
+    }
+  }
+}
 
 $(document).ready((function () {
   var e;
@@ -210,16 +224,19 @@ $(document).ready((function () {
           }))) : e.map((e => ({
             ...e,
             webinar_lead_type: "REGULAR"
-          }))), (function(){
+          }))), (function () {
             TimerHandler(e);
+            typeof fillWebinarSlots === "function" && fillWebinarSlots(e);
             n(e);
           })()
         } else {
           TimerHandler(null);
+          typeof fillWebinarSlots === "function" && fillWebinarSlots(null);
           registration_type = "calendly"
         }
       }, e.onerror = function () {
         TimerHandler(null);
+        typeof fillWebinarSlots === "function" && fillWebinarSlots(null);
         registration_type = "calendly"
       }, e.send()
     } else {
@@ -243,10 +260,12 @@ $(document).ready((function () {
             return n.sort(((e, t) => new Date(e.start_time) - new Date(t.start_time))), n
           } catch (e) {
             TimerHandler(null);
+            typeof fillWebinarSlots === "function" && fillWebinarSlots(null);
             console.error("Error:", e)
           }
         }().then((e => {
           TimerHandler(e);
+          typeof fillWebinarSlots === "function" && fillWebinarSlots(e);
           n(e);
         }));
     }
@@ -693,20 +712,6 @@ $(document).ready((function () {
     }
   });
 
-  //Set PA cookies Data 
-  function paRegisteredCookie() {
-    if (typeof paRegistered !== 'undefined') {
-      var paCookieValue = getCookie("Pa Data");
-      if (paCookieValue !== null) {
-        var decodedData = decodeURIComponent(paCookieValue);
-        var decodedObject = JSON.parse(decodedData);
-        $('.utm_source').val(decodedObject.utm_source);
-        $('.webinar-type').val(decodedObject.webinar_Type);
-      } else {
-        console.log("Cookie not found");
-      }
-    }
-  }
   //Set GQL form cookies Data 
   function gqlFormCookieData() {
     const previousData = {
@@ -739,7 +744,7 @@ $(document).ready((function () {
     }
     var domain = hostnameParts.join('.');
     setTimeout(() => {
-      if(isDev()){
+      if (isDev()) {
         document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=iklearn.webflow.io";
       } else {
         document.cookie = cookieName + "=" + cookieValue + "; expires=" + expirationTime + "; path=/; domain=" + domain;

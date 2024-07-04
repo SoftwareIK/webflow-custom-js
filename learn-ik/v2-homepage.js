@@ -198,11 +198,6 @@ $(document).ready(function () {
       "Domain or Role": $('.gql-role-domain').val(),
     };
 
-    console.log("API_CALL", {
-      api: endpoint,
-      data: formData
-    })
-
     $.ajax({
       type: "POST",
       url: endpoint,
@@ -250,16 +245,12 @@ $(document).ready(function () {
   }
 
   $(document).on('click', '.slot-radiobutton', function () {
-    // Your event handling logic here
     $('.time-slot-wrapper').removeClass('selected-slot');
     $(this).siblings('.time-slot-wrapper').addClass('selected-slot');
     SELECTED_SLOT['day'] = $(this).data('day');
     SELECTED_SLOT['date'] = $(this).data('date');
     SELECTED_SLOT['time'] = $(this).data('time');
     SELECTED_SLOT['month'] = getMonthName($(this).data('month'));
-
-    // var checkboxValue = $(this).val();
-    // alert('Checkbox value: ' + checkboxValue);
   });
 
   $("#v2-form-2nd-back").click(function (e) {
@@ -515,7 +506,6 @@ $(document).ready(function () {
       email: data.email,
       phone_number: data.phone,
     };
-    console.log("enhancedUserData", enhancedUserData);
   }
 
   $('#v2-form-3rd-submit').click(function (e) {
@@ -631,7 +621,6 @@ $(document).ready(function () {
           },
           success: function (e) {
             if (e.status == "success") {
-              console.log("Form submitted successfully step3!");
               $(".v2-form-container").css("display", "none");
               showFormSuccessSection();
             }
