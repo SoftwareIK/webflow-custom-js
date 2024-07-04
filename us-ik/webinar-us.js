@@ -843,6 +843,7 @@ $(document).ready(function () {
         "Click_History": "",
         "City": $(".wr__city").val(),
         "Device": $(".wr__device").val(),
+        "User_Agent" : encodeURIComponent(navigator?.userAgent || ""),
         "Refferer": encodeURIComponent($(".wr__referrer").val()),
         "Region": $(".wr__region").val()
       }];
@@ -905,6 +906,7 @@ $(document).ready(function () {
       "Click_History": "",
       "City": encodeURIComponent($(".wr__city").val()),
       "Device": encodeURIComponent($(".wr__device").val()),
+      "User_Agent" : encodeURIComponent(navigator?.userAgent || ""),
       "Refferer": encodeURIComponent($(".wr__referrer").val()),
       "Region": encodeURIComponent($(".wr__region").val()),
       "New_Lead_Created_Time": encodeURIComponent(newDate),
