@@ -245,16 +245,12 @@ $(document).ready(function () {
   }
 
   $(document).on('click', '.slot-radiobutton', function () {
-    // Your event handling logic here
     $('.time-slot-wrapper').removeClass('selected-slot');
     $(this).siblings('.time-slot-wrapper').addClass('selected-slot');
     SELECTED_SLOT['day'] = $(this).data('day');
     SELECTED_SLOT['date'] = $(this).data('date');
     SELECTED_SLOT['time'] = $(this).data('time');
     SELECTED_SLOT['month'] = getMonthName($(this).data('month'));
-
-    // var checkboxValue = $(this).val();
-    // alert('Checkbox value: ' + checkboxValue);
   });
 
   $("#v2-form-2nd-back").click(function (e) {
