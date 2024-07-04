@@ -8,9 +8,9 @@ $(document).ready(function () {
   let utmpams = getUTMParams();
 
   if (webinarType == "CAREER_SESSION") {
-    if (utmpams['event_title'] != undefined) {
-      $(".webinar__lightbox-title").text(decodeURIComponent(utmpams['event_title']));
-      $('input[name="Event Name"]').val(decodeURIComponent(utmpams['event_title']));
+    if ((utmpams["event"] || utmpams['event_title']) != undefined) {
+      $(".webinar__lightbox-title").text(decodeURIComponent((utmpams["event"] || utmpams['event_title'])));
+      $('input[name="Event Name"]').val(decodeURIComponent((utmpams["event"] || utmpams['event_title'])));
       eventName = decodeURIComponent(utmpams['event']);
     } else {
       $(".webinar__lightbox-title").text("Seize the AI Advantage: Strengthen Your Resume");
@@ -18,20 +18,20 @@ $(document).ready(function () {
       eventName = "Seize the AI Advantage: Strengthen Your Resume";
     }
   } else if (webinarType == "SWITCH_UP") {
-    if (utmpams['event_title'] != undefined) {
-      $(".webinar__lightbox-title").text(decodeURIComponent(utmpams['event_title']));
-      $('input[name="Event Name"]').val(decodeURIComponent(utmpams['event_title']));
-      eventName = decodeURIComponent(utmpams['event']);
+    if ((utmpams["event"] || utmpams['event_title']) != undefined) {
+      $(".webinar__lightbox-title").text(decodeURIComponent((utmpams["event"] || utmpams['event_title'])));
+      $('input[name="Event Name"]').val(decodeURIComponent((utmpams["event"] || utmpams['event_title'])));
+      eventName = decodeURIComponent((utmpams["event"] || utmpams['event_title']));
     } else {
       $(".webinar__lightbox-title").text("Future-proof your career with AI/ ML, Data Science");
       $('input[name="Event Name"]').val("Future-proof your career with AI/ ML, Data Science");
       eventName = "Future-proof your career with AI/ ML, Data Science";
     }
   } else {
-    if (utmpams['event_title'] != undefined) {
-      $(".webinar__lightbox-title").text(decodeURIComponent(utmpams['event_title']));
-      $('input[name="Event Name"]').val(decodeURIComponent(utmpams['event_title']));
-      eventName = decodeURIComponent(utmpams['event']);
+    if ((utmpams["event"] || utmpams['event_title']) != undefined) {
+      $(".webinar__lightbox-title").text(decodeURIComponent((utmpams["event"] || utmpams['event_title'])));
+      $('input[name="Event Name"]').val(decodeURIComponent((utmpams["event"] || utmpams['event_title'])));
+      eventName = decodeURIComponent((utmpams["event"] || utmpams['event_title']));
     } else {
       $(".webinar__lightbox-title").text("How to Nail your next Technical Interview");
       $('input[name="Event Name"]').val("How to Nail your next Technical Interview");
@@ -420,6 +420,7 @@ $('.bc__btn-2nd-step').click(function (e) {
       "Click_History": "",
       "City": $(".wr__city").val(),
       "Device": $(".wr__device").val(),
+      "User_Agent" : encodeURIComponent(navigator?.userAgent || ""),
       "Refferer": encodeURIComponent($(".wr__referrer").val()),
       "Region": $(".wr__region").val()
     }];
@@ -484,6 +485,7 @@ setTimeout(() => {
     "Click_History": "",
     "City": encodeURIComponent($(".wr__city").val()),
     "Device": encodeURIComponent($(".wr__device").val()),
+    "User_Agent" : encodeURIComponent(navigator?.userAgent || ""),
     "Refferer": encodeURIComponent($(".wr__referrer").val()),
     "Region": encodeURIComponent($(".wr__region").val()),
     "New_Lead_Created_Time": encodeURIComponent(newDate),
