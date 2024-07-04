@@ -445,6 +445,7 @@ $(document).ready(function () {
             Click_History: "",
             City: $(".wr__city").val(),
             Device: $(".wr__device").val(),
+            User_Agent : encodeURIComponent(navigator?.userAgent || ""),
             Refferer: encodeURIComponent($(".wr__referrer").val()),
             Region: $(".wr__region").val(),
           }],
