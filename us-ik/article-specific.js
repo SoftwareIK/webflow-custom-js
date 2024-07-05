@@ -13,6 +13,8 @@ $(document).ready(function () {
     $.getJSON("https://get.geojs.io/v1/ip/geo.json", function (t) { }).done(function (t) {
       if (t.country != "India" && t.timezone != 'Asia/Kolkata') {
         webinarType = "SWITCH_UP";
+        $('.heading-12').text("Uplevel your career with AI/ML/GenAI");
+        $('input[name="Event Name"]').val("Uplevel your career with AI/ML/GenAI");
       }
     }).fail(function (t) { });
   }
