@@ -231,17 +231,52 @@ $(document).ready(function () {
     $(".form-submitted-div").css("display", "block");
   }
 
-  function adjustFormStep(currentStep, nextStep) {
+  function adjustFormStep(currentStep, nextStep, isBack) {
     const currentStepContainer = $(currentStep);
-    currentStepContainer.removeClass(".active-step");
+    currentStepContainer.removeClass("active-step");
     currentStepContainer.children(".v2-step-count").removeClass("active-step-count");
     currentStepContainer.children(".v2-step-name").removeClass("active-step-name");
 
+    if (isBack) {
+      currentStepContainer.children(".v2-step-checked").addClass("hide");
+      currentStepContainer.children(".v2-step-count").show();
+    } else {
+      currentStepContainer.children(".v2-step-checked").removeClass("hide");
+      currentStepContainer.children(".v2-step-count").hide();
+    }
+
     const nextStepContainer = $(nextStep);
-    nextStepContainer.addClass(".active-step");
+    nextStepContainer.addClass("active-step");
+    nextStepContainer.children(".v2-step-checked").addClass("hide");
     nextStepContainer.children(".v2-step-count").addClass("active-step-count");
     nextStepContainer.children(".v2-step-name").addClass("active-step-name");
+    nextStepContainer.children(".v2-step-count").show();
+  }
 
+  if (window.MutationObserver) {
+    // Function to handle mutation
+    function handleMutation(mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          var target = $(mutation.target);
+          if (target.css('display') === 'none') {
+            target.css('display', 'block');
+            $('.v2-form-error-message').css('display', 'none');
+            $('.v2-form-success-message').css('display', 'none');
+          }
+        }
+      });
+    }
+    // Create an observer instance
+    var observer = new MutationObserver(handleMutation);
+
+    // Configuration of the observer
+    var config = { attributes: true, attributeFilter: ['style'] };
+
+    // Observe all forms under .v2-form-container
+    $('.v2-form-container form').each(function () {
+      observer.observe(this, config);
+    });
   }
 
   $(document).on('click', '.slot-radiobutton', function () {
@@ -254,11 +289,15 @@ $(document).ready(function () {
   });
 
   $("#v2-form-2nd-back").click(function (e) {
-    adjustFormStep("#form-step-2", "#form-step-1");
+    $(".v2-second-form-block").hide();
+    $(".v2-first-form-block").show();
+    adjustFormStep("#form-step-2", "#form-step-1", true);
   });
 
   $("#v2-form-3rd-back").click(function (e) {
-    adjustFormStep("#form-step-3", "#form-step-2");
+    $(".v2-third-form-block").hide();
+    $(".v2-second-form-block").show();
+    adjustFormStep("#form-step-3", "#form-step-2", true);
   });
 
   $('#v2-form-1st-submit').click(function (e) {
@@ -445,7 +484,7 @@ $(document).ready(function () {
             Click_History: "",
             City: $(".wr__city").val(),
             Device: $(".wr__device").val(),
-            User_Agent : encodeURIComponent(navigator?.userAgent || ""),
+            User_Agent: encodeURIComponent(navigator?.userAgent || ""),
             Refferer: encodeURIComponent($(".wr__referrer").val()),
             Region: $(".wr__region").val(),
           }],
