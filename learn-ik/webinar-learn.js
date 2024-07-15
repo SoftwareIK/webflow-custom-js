@@ -540,6 +540,14 @@ $(document).ready((function () {
         location.href = "/upworth" + window.location.search + "&domain=" + n + "&workexp=" + a + "&email=" + $(".email").val() + "&fname=" + $(".first-name").val() + "&lname=" + $(".last-name").val() + "&phone=" + $(".phone").val()
       }), 200)) : $(".email-id-error").removeClass("hide") : $(".phone-error").removeClass("hide") : $(".last-name-error").removeClass("hide") : $(".first-name-error").removeClass("hide")
     })), $(".bc__btn-2nd-step").click((function (e) {
+      try {
+        window.VWO = window.VWO || [];
+        VWO.event = VWO.event || function () { VWO.push(["event"].concat([].slice.call(arguments))) };
+        VWO.event("gqlFormCompleted", {
+          "gqlFormCompleted": true
+        });
+      } catch (e) { console.error(e) }
+
       if (e.preventDefault(), $("input:radio[name='start-date']").is(":checked")) {
         paRegisteredCookie();
         let e, t = $('input[name="start-date"]:checked').val(),

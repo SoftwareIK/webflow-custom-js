@@ -153,6 +153,9 @@ function getMonthName(monthNumber) {
 }
 $(document).ready(function () {
   const SELECTED_SLOT = {};
+  window.VWO = window.VWO || [];
+  VWO.event = VWO.event || function () { VWO.push(["event"].concat([].slice.call(arguments))) };
+  
   function pushToZap(endpoint) {
     //Zap end point for step 1
     var formData = {
@@ -433,7 +436,7 @@ $(document).ready(function () {
 
     }
 
-    gqlFormCookieData();
+    try { gqlFormCookieData(); } catch (e) { console.error(e) }
 
     // Lead Creation Time
     const currentDateTime = new Date();
@@ -661,6 +664,9 @@ $(document).ready(function () {
           success: function (e) {
             if (e.status == "success") {
               $(".v2-form-container").css("display", "none");
+              VWO.event("gqlFormCompleted", {
+                "gqlFormCompleted": true
+              });
               showFormSuccessSection();
             }
           },
