@@ -57,6 +57,36 @@ $(document).ready(function () {
   addIdToElement('.nav-link', 'header-nav-link-');
   addIdToElement('.link_privacy_policy', 'webinar-modal-popup-');
 
+  function callAPI(clickID, timestamp) {
+    $.ajax({
+      "url": "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
+      "method": "POST",
+      "headers": {
+        "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
+        "Content-Type": "application/json"
+      },
+      "data": JSON.stringify({
+        "dataset_id": "Marketing_data_new_logic",
+        "table_id": "all_clickstream_data",
+        "data": [
+          {
+            "page_value_url": window.location.href,
+            "student_uuid": encodeURIComponent($(".user_id").val()),
+            "timestamp": timestamp,
+            "ClickID": clickID,
+          }
+        ]
+      }),
+      success: function (e) {
+        console.log("Success Response:", e);
+      },
+      error: function (xhr, status, error) {
+        console.log("Error Response:", xhr.responseText);
+        console.log("Status:", status);
+        console.log("Error:", error);
+      }
+    });
+  }
 
   // Bind a click event to all anchor elements and input elements of type 'submit'
   $("a, input[type='submit']").on("click", function () {
@@ -66,34 +96,31 @@ $(document).ready(function () {
       // Generate a timestamp of the current time
       let timestamp = new Date().getTime();
       // Make an AJAX POST request to the specified API endpoint
-      $.ajax({
-        "url": "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
-        "method": "POST",
-        "headers": {
-          "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
-          "Content-Type": "application/json"
-        },
-        "data": JSON.stringify({
-          "dataset_id": "Marketing_data_new_logic",
-          "table_id": "all_clickstream_data",
-          "data": [
-            {
-              "page_value_url": window.location.href,
-              "student_uuid": encodeURIComponent($(".user_id").val()),
-              "timestamp": timestamp,
-              "ClickID": clickID,
-            }
-          ]
-        }),
-        success: function (e) {
-          console.log("Success Response:", e);
-        },
-        error: function (xhr, status, error) {
-          console.log("Error Response:", xhr.responseText);
-          console.log("Status:", status);
-          console.log("Error:", error);
-        }
-      });
+      callAPI(clickID, timestamp)
     }, 1000);
+  });
+
+  // Bind a click event to all FAQs
+  $(".course__faq-question, .course__faq-question-2").on("click", function () {
+    try {
+      setTimeout(() => {
+        let parentDiv = $(this).closest('div');
+        let firstChildDiv = parentDiv.children('div:first');
+        let clickID = firstChildDiv.text().trim().toLowerCase().replace(/\s+/g, '_');
+
+        if (!clickID) {
+          console.error("ClickID is empty.");
+          return;
+        }
+
+        let isExpanded = $(this).attr('aria-expanded') === 'true';
+        let prefix = isExpanded ? "footer_faq__open__" : "footer_faq__close__";
+        clickID = prefix + clickID;
+
+        let timestamp = new Date().getTime();
+        callAPI(clickID, timestamp);
+      }, 1000);
+    } catch (error) { console.error(error); }
+
   });
 });
