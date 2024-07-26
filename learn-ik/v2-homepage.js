@@ -426,6 +426,12 @@ $(document).ready(function () {
       bake_cookie("v_latest", "");
 
       $('#wf-webinar-2-step-v2').submit();
+
+      // For A/B testing
+      VWO.event("gqlFormCompleted", {
+        "gqlFormCompleted": true
+      });
+
       $(".v2-second-form-block").hide();
       adjustFormStep("#form-step-2", "#form-step-3");
       setTimeout(function () {
@@ -664,9 +670,6 @@ $(document).ready(function () {
           success: function (e) {
             if (e.status == "success") {
               $(".v2-form-container").css("display", "none");
-              VWO.event("gqlFormCompleted", {
-                "gqlFormCompleted": true
-              });
               showFormSuccessSection();
             }
           },
