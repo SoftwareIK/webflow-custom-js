@@ -1,3 +1,21 @@
+function isBot(userAgent) {
+  try {
+    userAgent = userAgent || navigator.userAgent;
+    const botUserAgents = [
+      /bot/i, /crawl/i, /slurp/i, /spider/i, /mediapartners/i, /googlebot/i, 
+      /adsbot/i, /bingbot/i, /msnbot/i, /baiduspider/i, /duckduckbot/i, 
+      /yandexbot/i, /sogou/i, /exabot/i, /facebot/i, /ia_archiver/i, 
+      /telegrambot/i, /whatsapp/i, /twitterbot/i, /pinterest/i, 
+      /skypeuripsniffer/i, /slackbot/i, /vkshare/i, /discordbot/i
+    ];
+  
+    return botUserAgents.some(botRegex => botRegex.test(userAgent));
+  } catch (error) {
+    return false;
+  }
+
+}
+
 $(document).ready(function () {
   const sliders = [
     { selector: ".tpc-offer-slider .course__offer-slider-left", id: "tpc-offer_slider_arrow-right" },
@@ -119,6 +137,9 @@ $(document).ready(function () {
   }
 
   function callAPI(clickID, timestamp) {
+    if(isBot()) {
+      return;
+    }
     $.ajax({
       "url": "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
       "method": "POST",
