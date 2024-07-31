@@ -115,7 +115,7 @@ $(document).ready(function () {
       if (hrefAttr) {
         clickID = processHref(hrefAttr);
         if (clickID) {
-          clickID = `href__${clickID.replace(/\s+/g, '_').substring(0, 20)}`;
+          clickID = `href__${clickID.replace(/\s+/g, '_').substring(0, 50)}`;
         }
       }
   
@@ -126,7 +126,7 @@ $(document).ready(function () {
   
       // Use text content if neither href nor class is available
       if (!clickID && textContent) {
-        clickID = `text__${textContent.toLowerCase().replace(/\s+/g, '_').substring(0, 20)}`;
+        clickID = `text__${textContent.toLowerCase().replace(/\s+/g, '_').substring(0, 50)}`;
       }
   
       return clickID;
