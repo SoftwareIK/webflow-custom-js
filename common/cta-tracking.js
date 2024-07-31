@@ -33,11 +33,11 @@ $(document).ready(function () {
 
 
   //Function to add a data-click-id attribute to elements  
-  function addIdToElement(selectorPrefix, textPrefix) {
+  function addIdToElement(selectorPrefix, textPrefix, postfix = '_link_redirect-new-page') {
     $(selectorPrefix).each(function () {
       let linkText = $(this).text().trim().toLowerCase();
       let hyphenatedText = linkText.split(' ').join('-');
-      let linkID = `${textPrefix}${hyphenatedText}_link_redirect-new-page`;
+      let linkID = `${textPrefix}${hyphenatedText}${postfix}`;
 
       $(this).attr('data-click-id', linkID);
     });
@@ -56,6 +56,67 @@ $(document).ready(function () {
   addIdToElement('.blog-post-body a, .blog-post-body-2 a', "blog-post-");
   addIdToElement('.nav-link', 'header-nav-link-');
   addIdToElement('.link_privacy_policy', 'webinar-modal-popup-');
+  addIdToElement('.w-tab-link', 'tabs-', '_in-page');
+  addIdToElement('.brand', 'logo_', '_clicked_redirect');
+
+
+  function fallbackClickID(element) {
+    try {
+      let clickID = null;
+      const hrefAttr = $(element).attr('href');
+      const classAttr = $(element).attr('class');
+      const textContent = $(element).text().trim();
+      const targetAttr = $(element).attr('target-tab');
+  
+      // Helper function to process href link
+      function processHref(href) {
+        if (href === '#') {
+          return null;
+        }
+        if (href.startsWith('#')) {
+          return `internal__${href.substring(1).replace(/\s+/g, '_')}`;
+        }
+        const url = new URL(href, window.location.origin); // Create URL relative to the current origin
+        let hostname = url.hostname.replace(/^www\./, '');
+        let pathname = url.pathname.split('/').filter(Boolean);
+  
+        if (pathname.length > 2) {
+          pathname = pathname.slice(-3).join('_');
+        } else {
+          pathname = pathname.join('_');
+        }
+  
+        return `${hostname}_${pathname}`;
+      }
+
+      if(targetAttr) {
+        clickID = `section__${targetAttr.split(" ")[0].replace(/\s+/g, '_')}`;
+      }
+  
+      // Use href link if available and not "#"
+      if (hrefAttr) {
+        clickID = processHref(hrefAttr);
+        if (clickID) {
+          clickID = `href__${clickID.replace(/\s+/g, '_').substring(0, 20)}`;
+        }
+      }
+  
+      // Use class attribute if href is not available or is "#"
+      if (!clickID && classAttr) {
+        clickID = `class__${classAttr.split(" ")[0].replace(/\s+/g, '_')}`;
+      }
+  
+      // Use text content if neither href nor class is available
+      if (!clickID && textContent) {
+        clickID = `text__${textContent.toLowerCase().replace(/\s+/g, '_').substring(0, 20)}`;
+      }
+  
+      return clickID;
+    } catch (error) {
+      console.error(error)
+      return null;
+    }
+  }
 
   function callAPI(clickID, timestamp) {
     $.ajax({
@@ -92,11 +153,15 @@ $(document).ready(function () {
   $("a, input[type='submit']").on("click", function () {
     setTimeout(() => {
       // Get the 'data-click-id' attribute of the clicked element or its 'id' attribute
-      let clickID = $(this).attr('data-click-id') || $(this).attr('id');
+      let clickID = $(this).attr('data-click-id') || $(this).attr('data-cta-id') || $(this).attr('id');
+      if (clickID === undefined || clickID.trim() === "") {
+        clickID = fallbackClickID(this);
+      }
       // Generate a timestamp of the current time
       let timestamp = new Date().getTime();
+      // TODO: if clickId is null then we should not make the api call. but instead log it on some server.
       // Make an AJAX POST request to the specified API endpoint
-      callAPI(clickID, timestamp)
+      clickID && callAPI(clickID, timestamp)
     }, 1000);
   });
 
