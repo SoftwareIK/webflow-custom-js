@@ -161,7 +161,7 @@ $(document).ready(function () {
       let timestamp = new Date().getTime();
       // TODO: if clickId is null then we should not make the api call. but instead log it on some server.
       // Make an AJAX POST request to the specified API endpoint
-      clickID && callAPI(clickID, timestamp)
+      callAPI(clickID, timestamp)
     }, 1000);
   });
 
