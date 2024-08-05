@@ -171,7 +171,7 @@ $(document).ready(function () {
   }
 
   // Bind a click event to all anchor elements and input elements of type 'submit'
-  $("a, input[type='submit']").on("click", function () {
+  $(document).on("click", "a, input[type='submit']", function () {
     setTimeout(() => {
       // Get the 'data-click-id' attribute of the clicked element or its 'id' attribute
       let clickID = $(this).attr('data-click-id') || $(this).attr('data-cta-id') || $(this).attr('id');
