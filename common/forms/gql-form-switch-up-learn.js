@@ -49,6 +49,13 @@ $("#domain-role").change(function () {
     (e ? $(".error-msg-domain").hide() : $(".error-msg-domain").show());
 });
 
+$("#future-plan").change(function () {
+  hasInteracted = !0;
+  let e = $(this).val();
+  hasInteracted &&
+    (e ? $(".error-msg-future-plan").hide() : $(".error-msg-future-plan").show());
+});
+
 $(".complete-registration").click(function (e) {
   e.preventDefault();
   let utmparams = getAllUrlParams();
@@ -70,14 +77,24 @@ $(".complete-registration").click(function (e) {
     $(".int_start_time").val($(".gql-starttime-select").val());
     $(".error-msg-start").addClass("hide");
   }
+
+  if ($(".gql-future-plan-select").val() == "") {
+    $(".error-msg-future-plan").removeClass("hide");
+  } else {
+    $(".future_plan").val($(".gql-future-plan-select").val());
+    $(".error-msg-future-plan").addClass("hide");
+  }
+
   $(".laid_off").val($("#laidoff-flag").is(":checked"));
   if (
     $(".gql-exp-select").val() != "" &&
     $(".gql-domain-select").val() != "" &&
+    $(".gql-future-plan-select").val() != "" &&
     $(".gql-starttime-select").val() != ""
   ) {
     $(".work_experience").val($(".gql-exp-select").val());
     $(".role_domain").val($(".gql-domain-select").val());
+    $(".future_plan").val($(".gql-future-plan-select").val());
     $(".int_start_time").val($(".gql-starttime-select").val());
     $(".laid_off").val($("#laidoff-flag").is(":checked"));
     var GQLformData = {
@@ -99,6 +116,7 @@ $(".complete-registration").click(function (e) {
       "Event End Time": $(".event_end_time").val(),
       "Work Experience": $(".work_experience").val(),
       "Role Domain": $(".gql-domain-select").val(),
+      "Future Plan": $(".gql-future-plan-select").val(),
       "Interview Start Time": $(".gql-starttime-select").val(),
       "Laid Off": $("#laidoff-flag").is(":checked"),
       "Is Student": $("#is-student").is(":checked"),
