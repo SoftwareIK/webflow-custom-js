@@ -253,10 +253,13 @@ $(document).ready(function () {
 
   $('#ip-tab, #switchup-tab').click(function (e) {
     e.preventDefault();
+    saveClickActivity("homepage_" + $(this).attr('id'), new Date().getTime());
     var queryParams = window.location.search;
     var destinationURL = $(this).attr('href');
     var redirectURL = destinationURL + queryParams;
-    window.location.href = redirectURL;
+    setTimeout(() => {
+      window.location.href = redirectURL;
+    }, 100);
   });
 
   // Function to fetch data from an API
