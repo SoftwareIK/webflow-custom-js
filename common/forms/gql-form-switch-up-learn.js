@@ -56,8 +56,55 @@ $("#future-plan").change(function () {
     (e ? $(".error-msg-future-plan").hide() : $(".error-msg-future-plan").show());
 });
 
+// Create an array of objects with URLs
+  const urlMappings = [
+    {
+      cta_url: 'ik.com/courses/edgeup',
+      program_preview_link: '/program-preview-edgeup',
+    },
+    {
+      cta_url: 'ik.com/courses/applied-genai',
+      program_preview_link: '/program-preview-genai',
+    },
+    {
+      cta_url: 'learn.ik/course/edgeup',
+      program_preview_link: '/program-preview-edgeup',
+    },
+    {
+      cta_url: 'learn.ik/course/applied-genai-v2',
+      program_preview_link: '/program-preview-genai',
+    },
+  ];
+
 $(".complete-registration").click(function (e) {
   e.preventDefault();
+
+  //Get previousData cookie values and store in userData
+    var userData;
+    var previousDataCookie = getCookie('previousData');
+    if (previousDataCookie !== null) {
+      var parsedData = decodeURIComponent(previousDataCookie);
+      userData = JSON.parse(parsedData); // Assigned globally
+      console.log('previousData', userData);
+
+      redirectToPreview({ cta_url: userData.cta_url }); // Can be used here
+    } else {
+      console.log('Cookie not found');
+    }
+
+    // Function to handle redirection
+    function redirectToPreview(urlObject) {
+      const matchingUrl = urlMappings.find(
+        (mapping) => mapping.cta_url === urlObject.cta_url,
+      );
+
+      if (matchingUrl) {
+        window.location.href = matchingUrl.program_preview_link;
+      } else {
+        console.log('No matching URL found to redirect to program preview.');
+      }
+    }
+  
   let utmparams = getAllUrlParams();
   if ($(".gql-exp-select").val() == "") {
     $(".error-msg-exp").removeClass("hide");
@@ -149,6 +196,8 @@ $(".complete-registration").click(function (e) {
         success: function (e) {
           if (e.status == "success") {
             console.log("Form submitted successfully step3!");
+            //check if the URL is present in array if yes the redirect to program preview accordingly
+            redirectToPreview({ cta_url: userData.cta_url });
             $(".webinar-signup-laststep-form").css("display", "none");
             $(".success-message-4 ").css("display", "block");
           }
@@ -178,4 +227,3 @@ $(".complete-registration").click(function (e) {
     }
   }
 });
-
