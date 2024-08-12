@@ -107,6 +107,8 @@ $(document).ready(function () {
         "Event End Time": $(".event_end_time").val(),
         "Work Experience": $(".work_experience").val(),
         "Role Domain": $(".gql-domain-select").val(),
+        'PA Consult Time':$('.gql-paconsulttime-select').val(),
+        'PA Consult Time Other':$('.gql-paconsulttime-text').val(),
         "Future Plan": $(".gql-future-plan-select").val(),
         "Interview Start Time": $(".gql-starttime-select").val(),
         "Laid Off": $("#laidoff-flag").is(":checked"),
