@@ -660,91 +660,211 @@ $(document).ready(function () {
           $("input:radio[name='start-date']:first").data("webinar_lead_type")
         );
     }),
-    $(".bc__btn-select-webinar-slot").click(function (t) {
-      t.preventDefault(), setHiddenFields();
+    $(".bc__btn-select-webinar-slot").click(function (event) {
+      event.preventDefault();
+      setHiddenFields();
       paRegisteredCookie();
-      let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
-      $("input[name='phone_number[intphone_full]'").val(a),
-        $(".tno1").val(a),
-        $(".first-name, .last-name, .phone, .email").keypress(function () {
-          $(
-            ".first-name-error, .last-name-error,.email-id-error,.phone-error"
-          ).addClass("hide");
-        }),
-        $(".first-name, .last-name, .phone, .email").focus(function () {
-          $(
-            ".first-name-error, .last-name-error,.email-id-error,.phone-error"
-          ).addClass("hide");
-        });
-      let n = new RegExp("^[a-zA-Z ]+$");
-      0 == $(".first-name").val().length &&
-      0 == $(".last-name").val().length &&
-      0 == $(".email").val().length &&
-      0 == $(".phone").val().length
-        ? $(
-            ".first-name-error, .last-name-error,.email-id-error,.phone-error"
-          ).removeClass("hide")
-        : n.test($(".first-name").val()) && 0 != $(".first-name").val().length
-        ? n.test($(".last-name").val()) && 0 != $(".last-name").val().length
-          ? /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
+
+      let phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      $("input[name='phone_number[intphone_full]'").val(phoneNumber);
+      $(".tno1").val(phoneNumber);
+
+      $(".first-name, .last-name, .phone, .email").keypress(function () {
+        $(
+          ".first-name-error, .last-name-error, .email-id-error, .phone-error"
+        ).addClass("hide");
+      });
+
+      $(".first-name, .last-name, .phone, .email").focus(function () {
+        $(
+          ".first-name-error, .last-name-error, .email-id-error, .phone-error"
+        ).addClass("hide");
+      });
+
+      let namePattern = new RegExp("^[a-zA-Z ]+$");
+
+      if (
+        $(".first-name").val().length == 0 &&
+        $(".last-name").val().length == 0 &&
+        $(".email").val().length == 0 &&
+        $(".phone").val().length == 0
+      ) {
+        $(
+          ".first-name-error, .last-name-error, .email-id-error, .phone-error"
+        ).removeClass("hide");
+      } else if (
+        namePattern.test($(".first-name").val()) &&
+        $(".first-name").val().length != 0
+      ) {
+        if (
+          namePattern.test($(".last-name").val()) &&
+          $(".last-name").val().length != 0
+        ) {
+          if (
+            /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
               $(".phone").val()
-            ) && 0 != $(".phone").val().length
-            ? /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(
+            ) &&
+            $(".phone").val().length != 0
+          ) {
+            if (
+              /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(
                 $(".email").val()
-              ) && 0 != $(".email").val().length
-              ? ($(".webinar__loadingbar").css("display", "flex"),
-                $(".wr__firstname").val($(".first-name").val()),
-                $(".wr__lastname").val($(".last-name").val()),
-                $(".wr__email").val($(".email").val()),
-                $(".wr__phone").val(a),
+              ) &&
+              $(".email").val().length != 0
+            ) {
+              $(".webinar__loadingbar").css("display", "flex");
+              $(".wr__firstname").val($(".first-name").val());
+              $(".wr__lastname").val($(".last-name").val());
+              $(".wr__email").val($(".email").val());
+              $(".wr__phone").val(phoneNumber);
+
+              dataLayer.push({
+                event: "new_webinar_registration_form_submitted",
+                webinar_name: document.querySelector(".webinar__lightbox-title")
+                  .innerHTML,
+              });
+
+              if ($(".is_exit_intent_popup").val() == "On Scroll") {
                 dataLayer.push({
-                  event: "new_webinar_registration_form_submitted",
-                  webinar_name: document.querySelector(
-                    ".webinar__lightbox-title"
-                  ).innerHTML,
-                }),
-                "On Scroll" == $(".is_exit_intent_popup").val() &&
-                  dataLayer.push({
-                    event: "exit_intent",
-                    eventCategory: "exit_intent_scroll",
-                    eventAction: "exit_intent_scroll",
-                    eventLabel: "form submitted",
-                  }),
-                "Browser Tab" == $(".is_exit_intent_popup").val() &&
-                  dataLayer.push({
-                    event: "exit_intent",
-                    eventCategory: "exit_intent_browser_tab_close_gesture",
-                    eventAction: "exit_intent_browser_tab_close_gesture",
-                    eventLabel: "form submitted",
-                  }),
-                s("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/"),
-                $(".webinar__registration-form1").submit(),
-                $(".webinar__registration-form1-block").hide(),
-                setTimeout(function () {
-                  $(".webinar__registration-form2-block").show(),
-                    $(".webinar__loadingbar").hide();
-                }, 200))
-              : $(".email-id-error").removeClass("hide")
-            : $(".phone-error").removeClass("hide")
-          : $(".last-name-error").removeClass("hide")
-        : $(".first-name-error").removeClass("hide"),
-        $("input:radio[name='start-date']:first").attr("checked", !0),
-        $(".wr__event-start-time").val(
-          $("input:radio[name='start-date']:first").val()
-        ),
-        $(".wr__event-end-time").val(
-          $("input:radio[name='start-date']:first").data("endtime")
-        ),
-        $(".wr__invitee-start-time").val(
-          $("input:radio[name='start-date']:first").data("invitee_starttime")
-        ),
-        $(".wr__invitee-end-time").val(
-          $("input:radio[name='start-date']:first").data("invitee_endtime")
-        ),
-        $(".webinar-lead-type").val(
-          $("input:radio[name='start-date']:first").data("webinar_lead_type")
-        );
+                  event: "exit_intent",
+                  eventCategory: "exit_intent_scroll",
+                  eventAction: "exit_intent_scroll",
+                  eventLabel: "form submitted",
+                });
+              }
+
+              if ($(".is_exit_intent_popup").val() == "Browser Tab") {
+                dataLayer.push({
+                  event: "exit_intent",
+                  eventCategory: "exit_intent_browser_tab_close_gesture",
+                  eventAction: "exit_intent_browser_tab_close_gesture",
+                  eventLabel: "form submitted",
+                });
+              }
+
+              s("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/");
+              $(".webinar__registration-form1").submit();
+              $(".webinar__registration-form1-block").hide();
+
+              setTimeout(function () {
+                $(".webinar__registration-form2-block").show();
+                $(".webinar__loadingbar").hide();
+              }, 200);
+            } else {
+              $(".email-id-error").removeClass("hide");
+            }
+          } else {
+            $(".phone-error").removeClass("hide");
+          }
+        } else {
+          $(".last-name-error").removeClass("hide");
+        }
+      } else {
+        $(".first-name-error").removeClass("hide");
+      }
+
+      $("input:radio[name='start-date']:first").attr("checked", true);
+      $(".wr__event-start-time").val(
+        $("input:radio[name='start-date']:first").val()
+      );
+      $(".wr__event-end-time").val(
+        $("input:radio[name='start-date']:first").data("endtime")
+      );
+      $(".wr__invitee-start-time").val(
+        $("input:radio[name='start-date']:first").data("invitee_starttime")
+      );
+      $(".wr__invitee-end-time").val(
+        $("input:radio[name='start-date']:first").data("invitee_endtime")
+      );
+      $(".webinar-lead-type").val(
+        $("input:radio[name='start-date']:first").data("webinar_lead_type")
+      );
     }),
+    // $(".bc__btn-select-webinar-slot").click(function (t) {
+    //   t.preventDefault(), setHiddenFields();
+    //   paRegisteredCookie();
+    //   let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+    //   $("input[name='phone_number[intphone_full]'").val(a),
+    //     $(".tno1").val(a),
+    //     $(".first-name, .last-name, .phone, .email").keypress(function () {
+    //       $(
+    //         ".first-name-error, .last-name-error,.email-id-error,.phone-error"
+    //       ).addClass("hide");
+    //     }),
+    //     $(".first-name, .last-name, .phone, .email").focus(function () {
+    //       $(
+    //         ".first-name-error, .last-name-error,.email-id-error,.phone-error"
+    //       ).addClass("hide");
+    //     });
+    //   let n = new RegExp("^[a-zA-Z ]+$");
+    //   0 == $(".first-name").val().length &&
+    //   0 == $(".last-name").val().length &&
+    //   0 == $(".email").val().length &&
+    //   0 == $(".phone").val().length
+    //     ? $(
+    //         ".first-name-error, .last-name-error,.email-id-error,.phone-error"
+    //       ).removeClass("hide")
+    //     : n.test($(".first-name").val()) && 0 != $(".first-name").val().length
+    //     ? n.test($(".last-name").val()) && 0 != $(".last-name").val().length
+    //       ? /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
+    //           $(".phone").val()
+    //         ) && 0 != $(".phone").val().length
+    //         ? /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(
+    //             $(".email").val()
+    //           ) && 0 != $(".email").val().length
+    //           ? ($(".webinar__loadingbar").css("display", "flex"),
+    //             $(".wr__firstname").val($(".first-name").val()),
+    //             $(".wr__lastname").val($(".last-name").val()),
+    //             $(".wr__email").val($(".email").val()),
+    //             $(".wr__phone").val(a),
+    //             dataLayer.push({
+    //               event: "new_webinar_registration_form_submitted",
+    //               webinar_name: document.querySelector(
+    //                 ".webinar__lightbox-title"
+    //               ).innerHTML,
+    //             }),
+    //             "On Scroll" == $(".is_exit_intent_popup").val() &&
+    //               dataLayer.push({
+    //                 event: "exit_intent",
+    //                 eventCategory: "exit_intent_scroll",
+    //                 eventAction: "exit_intent_scroll",
+    //                 eventLabel: "form submitted",
+    //               }),
+    //             "Browser Tab" == $(".is_exit_intent_popup").val() &&
+    //               dataLayer.push({
+    //                 event: "exit_intent",
+    //                 eventCategory: "exit_intent_browser_tab_close_gesture",
+    //                 eventAction: "exit_intent_browser_tab_close_gesture",
+    //                 eventLabel: "form submitted",
+    //               }),
+    //             s("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/"),
+    //             $(".webinar__registration-form1").submit(),
+    //             $(".webinar__registration-form1-block").hide(),
+    //             setTimeout(function () {
+    //               $(".webinar__registration-form2-block").show(),
+    //                 $(".webinar__loadingbar").hide();
+    //             }, 200))
+    //           : $(".email-id-error").removeClass("hide")
+    //         : $(".phone-error").removeClass("hide")
+    //       : $(".last-name-error").removeClass("hide")
+    //     : $(".first-name-error").removeClass("hide"),
+    //     $("input:radio[name='start-date']:first").attr("checked", !0),
+    //     $(".wr__event-start-time").val(
+    //       $("input:radio[name='start-date']:first").val()
+    //     ),
+    //     $(".wr__event-end-time").val(
+    //       $("input:radio[name='start-date']:first").data("endtime")
+    //     ),
+    //     $(".wr__invitee-start-time").val(
+    //       $("input:radio[name='start-date']:first").data("invitee_starttime")
+    //     ),
+    //     $(".wr__invitee-end-time").val(
+    //       $("input:radio[name='start-date']:first").data("invitee_endtime")
+    //     ),
+    //     $(".webinar-lead-type").val(
+    //       $("input:radio[name='start-date']:first").data("webinar_lead_type")
+    //     );
+    // }),
     $(".bc__btn-select-webinar-slot-upsight1").click(function (t) {
       t.preventDefault();
       setHiddenFields();
