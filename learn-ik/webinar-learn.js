@@ -9,7 +9,8 @@ var experiment_type,
   interviewPrepURL,
   switchUpURL,
   eventUpsightDate,
-  webinarSlotDate;
+  webinarSlotDate
+  isCompactForm = false;
 
 function getDeviceType() {
   var e = navigator.userAgent;
@@ -51,6 +52,60 @@ function paRegisteredCookie() {
   }
 }
 
+function toggleCompactMode(isFormCompact) {
+  isCompactForm = isFormCompact;
+  // Classes to show/hide based on the flag
+  const showClasses = [
+    "compact-class-fname",
+    "compact-class-lname",
+    "compact-class-phone-label",
+  ];
+
+  // Classes to hide/show based on the flag
+  const hideClasses = [
+    "compact-class-phone-label-desktop",
+    "compact-class-fullname",
+  ];
+
+  // Classes to remove/add based on the flag
+  const toggleClasses = [
+    "compact-class-lightbox",
+    "compact-class-lightbox-card",
+    "compact-class-lightbox-padding",
+    "compact-class-form-grid",
+    "compact-class-logo-title",
+    "compact-class-title",
+    "compact-class-duration",
+    "compact-class-light-box-card",
+    "compact-class-stages",
+    "compact-class-label",
+    "compact-class-input",
+    "compact-class-email",
+    "compact-class-submit",
+  ];
+
+  // Toggle display for showClasses
+  $.each(showClasses, function (index, className) {
+    $(`.${className}`).css("display", isFormCompact ? "none" : "block");
+  });
+
+  // Toggle display for hideClasses
+  $.each(hideClasses, function (index, className) {
+    $(`.${className}`).css("display", isFormCompact ? "block" : "none");
+  });
+
+  // Add/remove classes based on the compact mode
+  $.each(toggleClasses, function (index, className) {
+    if (isFormCompact) {
+      $('[data-original-class~="' + className + '"]').addClass(className);
+    } else {
+      $("." + className).each(function () {
+        $(this).attr("data-original-class", className).removeClass(className);
+      });
+    }
+  });
+}
+
 $(document).ready(function () {
   var e;
   let t = getAllUrlParams();
@@ -61,6 +116,33 @@ $(document).ready(function () {
       },
     });
   }
+
+  // a/b testing. control version will not have compact form.
+  var isCompactForm = false; // This would be determined by your AB test flag
+
+  toggleCompactMode(isCompactForm);
+
+  // This is for handling AB Testing on the form. pelase remove after we conlude the AB test. //UG-2235
+  $("#fullName").on("input", function () {
+    // only move foward if the form is compact.
+    var fullName = $.trim($(this).val());
+
+    if (fullName === "") {
+      $(".first-name").val("");
+      $(".last-name").val("");
+    } else {
+      var nameParts = fullName.split(/\s+/);
+      var firstName = nameParts[0];
+      var lastName = "";
+
+      if (nameParts.length > 1) {
+        lastName = nameParts.slice(1).join(" ");
+      }
+
+      $(".first-name").val(firstName);
+      $(".last-name").val(lastName);
+    }
+  });
 
   function n(e) {
     const t = [
