@@ -35,11 +35,43 @@ $(document).ready(function () {
       }
     );
   }
+  // Create an array of objects with URLs
+  const urlMappings = [
+    {
+      cta_url: 'ik.com/courses/edgeup',
+      program_preview_link: '/program-preview-edgeup',
+    },
+    {
+      cta_url: 'ik.com/courses/applied-genai',
+      program_preview_link: '/program-preview-genai',
+    },
+    {
+      cta_url: 'learn.ik/course/edgeup',
+      program_preview_link: '/program-preview-edgeup',
+    },
+    {
+      cta_url: 'learn.ik/course/applied-genai-v2',
+      program_preview_link: '/program-preview-genai',
+    },
+  ];
+  
   $(".complete-registration").click(function (e) {
     e.preventDefault();
     let phonewithccode = int_phone5.getNumber(
       intlTelInputUtils.numberFormat.E164
     );
+    // Function to handle redirection
+    function redirectToPreview(urlObject) {
+      const matchingUrl = urlMappings.find(
+        (mapping) => mapping.cta_url === urlObject.cta_url,
+      );
+
+      if (matchingUrl) {
+        window.location.href = matchingUrl.program_preview_link;
+      } else {
+        console.log('No matching URL found to redirect to program preview.');
+      }
+    }
     var utmparams = getAllUrlParams();
     $("input[name='answer_1'").val(phonewithccode);
     if (!phonewithccode || $(".form-phone").val().length == 0) {
@@ -144,6 +176,8 @@ $(document).ready(function () {
               console.log("Form submitted successfully!");
               $(".gql-form").css("display", "none");
               $(".success-message-4 ").css("display", "block");
+              //check if the URL is present in array if yes the redirect to program preview accordingly
+              redirectToPreview({ cta_url: userData.cta_url });
             }
           },
         });
