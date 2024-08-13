@@ -9,8 +9,7 @@ var experiment_type,
   interviewPrepURL,
   switchUpURL,
   eventUpsightDate,
-  webinarSlotDate
-  isCompactForm = false;
+  webinarSlotDate;
 
 function getDeviceType() {
   var e = navigator.userAgent;
@@ -52,8 +51,8 @@ function paRegisteredCookie() {
   }
 }
 
-function toggleCompactMode(isFormCompact) {
-  isCompactForm = isFormCompact;
+function toggleCompactMode(flag) {
+  isCompactForm = flag;
   // Classes to show/hide based on the flag
   const showClasses = [
     "compact-class-fname",
@@ -86,17 +85,17 @@ function toggleCompactMode(isFormCompact) {
 
   // Toggle display for showClasses
   $.each(showClasses, function (index, className) {
-    $(`.${className}`).css("display", isFormCompact ? "none" : "block");
+    $(`.${className}`).css("display", flag ? "none" : "block");
   });
 
   // Toggle display for hideClasses
   $.each(hideClasses, function (index, className) {
-    $(`.${className}`).css("display", isFormCompact ? "block" : "none");
+    $(`.${className}`).css("display", flag ? "block" : "none");
   });
 
   // Add/remove classes based on the compact mode
   $.each(toggleClasses, function (index, className) {
-    if (isFormCompact) {
+    if (flag) {
       $('[data-original-class~="' + className + '"]').addClass(className);
     } else {
       $("." + className).each(function () {
@@ -116,11 +115,6 @@ $(document).ready(function () {
       },
     });
   }
-
-  // a/b testing. control version will not have compact form.
-  var isCompactForm = false; // This would be determined by your AB test flag
-
-  toggleCompactMode(isCompactForm);
 
   // This is for handling AB Testing on the form. pelase remove after we conlude the AB test. //UG-2235
   $("#fullName").on("input", function () {
