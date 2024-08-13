@@ -1250,6 +1250,7 @@ $(document).ready(function () {
     }),
     $(".bc__btn-2nd-step").click(function (e) {
       try {
+        saveClickActivity($(this).attr('id'), new Date().getTime());
         window.VWO = window.VWO || [];
         VWO.event =
           VWO.event ||
@@ -1262,7 +1263,6 @@ $(document).ready(function () {
       } catch (e) {
         console.error(e);
       }
-
       if (
         (e.preventDefault(), $("input:radio[name='start-date']").is(":checked"))
       ) {
