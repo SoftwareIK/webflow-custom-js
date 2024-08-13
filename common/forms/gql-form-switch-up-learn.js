@@ -86,8 +86,6 @@ $(".complete-registration").click(function (e) {
       var parsedData = decodeURIComponent(previousDataCookie);
       userData = JSON.parse(parsedData); // Assigned globally
       console.log('previousData', userData);
-
-      redirectToPreview({ cta_url: userData.cta_url }); // Can be used here
     } else {
       console.log('Cookie not found');
     }
