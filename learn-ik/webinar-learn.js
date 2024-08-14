@@ -745,36 +745,47 @@ $(document).ready(function () {
       $("input[name='phone_number[intphone_full]'").val(phoneNumber);
       $(".tno1").val(phoneNumber);
 
-      $(".first-name, .last-name, .phone, .email").keypress(function () {
-        $(
-          ".first-name-error, .last-name-error, .email-id-error, .phone-error"
-        ).addClass("hide");
-      });
-
-      $(".first-name, .last-name, .phone, .email").focus(function () {
-        $(
-          ".first-name-error, .last-name-error, .email-id-error, .phone-error"
-        ).addClass("hide");
-      });
-
       let namePattern = new RegExp("^[a-zA-Z ]+$");
 
       if (
+        isCompactForm && !(namePattern.test($(".last-name").val()) && $(".last-name").val().length != 0)
+      ){
+        $(".last-name").val($(".first-name").val());
+      }
+
+      $(".first-name, .last-name, .full-name, .phone, .email").keypress(
+        function () {
+          $(
+            ".first-name-error, .full-name-error, .last-name-error, .email-id-error, .phone-error"
+          ).addClass("hide");
+        }
+      );
+
+      $(".first-name, .last-name, .full-name, .phone, .email").focus(
+        function () {
+          $(
+            ".first-name-error, .full-name-error, .last-name-error, .email-id-error, .phone-error"
+          ).addClass("hide");
+        }
+      );
+
+      if (
         $(".first-name").val().length == 0 &&
-        $(".last-name").val().length == 0 &&
+        (isCompactForm || $(".last-name").val().length == 0) &&
         $(".email").val().length == 0 &&
         $(".phone").val().length == 0
       ) {
         $(
-          ".first-name-error, .last-name-error, .email-id-error, .phone-error"
+          ".first-name-error, .full-name-error, .last-name-error, .email-id-error, .phone-error"
         ).removeClass("hide");
       } else if (
         namePattern.test($(".first-name").val()) &&
         $(".first-name").val().length != 0
       ) {
         if (
-          namePattern.test($(".last-name").val()) &&
-          $(".last-name").val().length != 0
+          isCompactForm ||
+          (namePattern.test($(".last-name").val()) &&
+            $(".last-name").val().length != 0)
         ) {
           if (
             /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
@@ -837,6 +848,7 @@ $(document).ready(function () {
         }
       } else {
         $(".first-name-error").removeClass("hide");
+        $(".full-name-error").removeClass("hide");
       }
 
       $("input:radio[name='start-date']:first").attr("checked", true);
@@ -1250,6 +1262,7 @@ $(document).ready(function () {
     }),
     $(".bc__btn-2nd-step").click(function (e) {
       try {
+        saveClickActivity($(this).attr("id"), new Date().getTime());
         window.VWO = window.VWO || [];
         VWO.event =
           VWO.event ||
@@ -1262,7 +1275,6 @@ $(document).ready(function () {
       } catch (e) {
         console.error(e);
       }
-
       if (
         (e.preventDefault(), $("input:radio[name='start-date']").is(":checked"))
       ) {
