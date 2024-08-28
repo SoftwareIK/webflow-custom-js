@@ -751,9 +751,15 @@ $(document).ready(function () {
       bake_cookie("v_latest", "");
 
       if (singlesignup != true) {
-        setTimeout(function () {
-          location.href = finalurl;
-        }, 800);
+        try {
+          saveClickActivity("Webinar-modal_button_open-gql" , new Date().getTime(), () => {
+            location.href = finalurl;
+          });
+        } catch (error) {
+          setTimeout(function () {
+            location.href = finalurl;
+          }, 800);  
+        }
       } else {
         $('.webinar__loadingbar').hide();
         $('.webinar__registration-form2-block').hide();

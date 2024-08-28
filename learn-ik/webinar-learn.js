@@ -1339,9 +1339,17 @@ $(document).ready(function () {
             bake_cookie("v_history", ""),
             bake_cookie("v_latest", ""),
             1 != singlesignup
-              ? setTimeout(function () {
-                  location.href = d;
-                }, 800)
+              ? (() => {
+                  try {
+                    saveClickActivity("Webinar-modal_button_open-gql", new Date().getTime(), () => {
+                      location.href = d;
+                    });
+                  } catch (error) {
+                    setTimeout(function () {
+                      location.href = d;
+                    }, 800);
+                  }
+                })()
               : ($(".webinar__loadingbar").hide(),
                 $(".webinar__registration-form2-block").hide(),
                 $(".webinar__registration-form3-block").show());
@@ -1373,9 +1381,17 @@ $(document).ready(function () {
             bake_cookie("v_history", ""),
             bake_cookie("v_latest", ""),
             1 != singlesignup
-              ? setTimeout(function () {
-                  location.href = d;
-                }, 800)
+              ? (() => {
+                try {
+                  saveClickActivity("Webinar-modal_button_open-gql", new Date().getTime(), () => {
+                    location.href = d;
+                  });
+                } catch (error) {
+                  setTimeout(function () {
+                    location.href = d;
+                  }, 800);
+                }
+              })()
               : ($(".webinar__loadingbar").hide(),
                 $(".webinar__registration-form2-block").hide(),
                 $(".webinar__registration-form3-block").show());
@@ -1407,9 +1423,17 @@ $(document).ready(function () {
             bake_cookie("v_history", ""),
             bake_cookie("v_latest", ""),
             1 != singlesignup
-              ? setTimeout(function () {
-                  location.href = e;
-                }, 800)
+              ? (() => {
+                  try {
+                    saveClickActivity("Webinar-modal_button_open-gql", new Date().getTime(), () => {
+                      location.href = e;
+                    });
+                  } catch (error) {
+                    setTimeout(function () {
+                      location.href = e;
+                    }, 800);
+                  }
+                })()
               : ($(".webinar__loadingbar").hide(),
                 $(".webinar__registration-form2-block").hide(),
                 $(".webinar__registration-form3-block").show());

@@ -16,10 +16,12 @@ function isBot(userAgent) {
 
 }
 
-function saveClickActivity(clickID, timestamp) {
+function saveClickActivity(clickID, timestamp, callback = null) {
   if(isBot()) {
     return;
   }
+  timestamp = timestamp || new Date().getTime();
+
   $.ajax({
     "url": "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
     "method": "POST",
@@ -46,6 +48,13 @@ function saveClickActivity(clickID, timestamp) {
       console.log("Error Response:", xhr.responseText);
       console.log("Status:", status);
       console.log("Error:", error);
+    }
+  }).always(function() {
+    try {
+      callback && callback();
+    } catch (error) {
+      console.error("Error in callback function:", error);
+      throw error;
     }
   });
 }
