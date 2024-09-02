@@ -196,7 +196,7 @@ $(document).ready(function () {
   });
 
   // Bind a click event to all FAQs
-  $(".course__faq-question, .course__faq-question-2").on("click", function () {
+  $(".course__faq-question, .course__faq-question-2, course__faq-question-3").on("click", function () {
     try {
       setTimeout(() => {
         let parentDiv = $(this).closest('div');
