@@ -311,41 +311,45 @@ $(document).ready(function () {
       }
     }
   }
-  "CAREER_SESSION" == webinarType
-    ? null != t.event
-      ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)),
-        $('input[name="Event Name"]').val(decodeURIComponent(t.event)),
-        (eventName = decodeURIComponent(t.event)))
-      : ($(".webinar__lightbox-title").text(
-          "Seize the AI Advantage: Strengthen Your Resume"
-        ),
-        $('input[name="Event Name"]').val(
-          "Seize the AI Advantage: Strengthen Your Resume"
-        ),
-        (eventName = "Seize the AI Advantage: Strengthen Your Resume"))
-    : "SWITCH_UP" == webinarType
-    ? null != t.event
-      ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)),
-        $('input[name="Event Name"]').val(decodeURIComponent(t.event)),
-        (eventName = decodeURIComponent(t.event)))
-      : ($(".webinar__lightbox-title").text(
-          "Uplevel your career with AI/ML/GenAI"
-        ),
-        $('input[name="Event Name"]').val(
-          "Uplevel your career with AI/ML/GenAI"
-        ),
-        (eventName = "Uplevel your career with AI/ML/GenAI"))
-    : null != t.event
-    ? ($(".webinar__lightbox-title").text(decodeURIComponent(t.event)),
-      $('input[name="Event Name"]').val(decodeURIComponent(t.event)),
-      (eventName = decodeURIComponent(t.event)))
-    : ($(".webinar__lightbox-title").text(
-        "How to Nail your next Technical Interview"
-      ),
-      $('input[name="Event Name"]').val(
-        "How to Nail your next Technical Interview"
-      ),
-      (eventName = "How to Nail your next Technical Interview")),
+
+  // Mapping of default titles for each webinarType
+  const eventTitleMap = {
+    CAREER_SESSION: "Seize the AI Advantage: Strengthen Your Resume",
+    SWITCH_UP: "Uplevel your career with AI/ML/GenAI",
+    DEFAULT: "How to Nail your next Technical Interview",
+    'Product Management': "How to Nail your next Technical Interview",
+  };
+
+  // Function to set the event details in the DOM
+  const setEventDetails = (title) => {
+    // Update the title and input field with the given title
+    $(".webinar__lightbox-title").text(title);
+    $('input[name="Event Name"]').val(title);
+    eventName = title;
+  };
+
+  // Function to determine the appropriate event title
+  const getEventTitle = (webinarType, event) => {
+    // If the event exists, decode it and return
+    if (event) {
+      return decodeURIComponent(event);
+    }
+
+    // Use the appropriate default title based on webinarType
+    switch (webinarType) {
+      case "CAREER_SESSION":
+        return eventTitleMap.CAREER_SESSION;
+      case "SWITCH_UP":
+        return eventTitleMap.SWITCH_UP;
+      default:
+        return eventTitleMap.DEFAULT;
+    }
+  };
+
+  // Safely get the event title and set it in the DOM
+  const eventTitle = getEventTitle(webinarType, t.event);
+  setEventDetails(eventTitle);
+
     $(".webinar-lightbox-close").click(function (e) {
       "ExitIntent" == experiment_type
         ? ($(".webinar__lightbox-card").css("display", "none"),
@@ -454,114 +458,121 @@ $(document).ready(function () {
       e.send();
   }
   function createWebinarSlot(webinarType) {
-    let r = v_timezone.replace("+", "%2B");
-    l =
-      "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" +
-      r +
-      "&type=" +
-      webinarType;
-    if ("No" == isSwitchUp) {
-      let e = new XMLHttpRequest();
-      e.open("GET", l, !0),
-        e.setRequestHeader("Authorization", "1Cgx6oYXkOlWkNDn7_tXO");
-      var o = new Date().toString().match(/\((.+)\)/);
-      o[1].includes(" ") &&
-        (o = o[1]
-          .split(" ")
-          .map(([e]) => e)
-          .join("")),
-        (e.onload = function () {
-          if (200 == this.status) {
-            let e = JSON.parse(this.response);
-            // 0 == e.length ? registration_type = "calendly" : registration_type = "byecalendly",
-            if (e.length == 0) {
-              registration_type = "calendly";
-              webinarType = "REGULAR";
-              callAPI(
-                "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" +
-                  r +
-                  "&type=" +
-                  webinarType
-              );
-            } else {
-              registration_type = "byecalendly";
-            }
-            (e =
-              "SWITCH_UP" == webinarType
-                ? e.map((e) => ({
-                    ...e,
-                    webinar_lead_type: "SWITCH_UP",
-                  }))
-                : "CAREER_SESSION" == webinarType
-                ? e.map((e) => ({
-                    ...e,
-
-                    webinar_lead_type: "CAREER_SESSION",
-                  }))
-                : e.map((e) => ({
-                    ...e,
-                    webinar_lead_type: "REGULAR",
-                  }))),
-              (function () {
-                TimerHandler(e);
-                typeof fillWebinarSlots === "function" && fillWebinarSlots(e);
-                n(e);
-              })();
-          } else {
-            TimerHandler(null);
-            typeof fillWebinarSlots === "function" && fillWebinarSlots(null);
-            registration_type = "calendly";
+    const timezoneEncoded = v_timezone.replace("+", "%2B");
+    const baseURL = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=${timezoneEncoded}&type=`;
+    const url = baseURL + webinarType;
+    const authToken = "1Cgx6oYXkOlWkNDn7_tXO";
+  
+    const handleError = () => {
+      TimerHandler(null);
+      // This fillWebinarSlots is for v2-homepage.
+      if (typeof fillWebinarSlots === "function") {
+        fillWebinarSlots(null);
+      }
+      registration_type = "calendly";
+    };
+  
+    const processWebinarData = (data, webinarType) => {
+      if (data.length === 0) {
+        registration_type = "calendly";
+        webinarType = "REGULAR";
+        callAPI(baseURL + webinarType);
+      } else {
+        registration_type = "byecalendly";
+      }
+  
+      const processedData = data.map((slot) => ({
+        ...slot,
+        webinar_lead_type: webinarType,
+      }));
+  
+      TimerHandler(processedData);
+      if (typeof fillWebinarSlots === "function") {
+        fillWebinarSlots(processedData);
+      }
+      n(processedData);
+    };
+  
+    // Handle non-switch up logic (when isSwitchUp is "No")
+    const fetchWebinarSlotsWithXMLHttpRequest = () => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", url, true);
+      xhr.setRequestHeader("Authorization", authToken);
+  
+      xhr.onload = function () {
+        if (this.status === 200) {
+          const response = JSON.parse(this.response);
+          processWebinarData(response, webinarType);
+        } else {
+          handleError();
+        }
+      };
+  
+      xhr.onerror = handleError;
+      xhr.send();
+    };
+  
+    // Handle switch up logic (when isSwitchUp is not "No")
+    const fetchWebinarSlotsAsync = async () => {
+      const interviewPrepURL = baseURL + "REGULAR";
+      const switchUpURL = baseURL + "SWITCH_UP";
+  
+      try {
+        const [interviewPrepData, switchUpData] = await Promise.all([
+          a(interviewPrepURL),
+          a(switchUpURL),
+        ]);
+  
+        const processedInterviewPrepData = interviewPrepData.map((slot) => ({
+          ...slot,
+          webinar_lead_type: "REGULAR",
+        }));
+  
+        const processedSwitchUpData = switchUpData.map((slot) => ({
+          ...slot,
+          webinar_lead_type: "SWITCH_UP",
+        }));
+  
+        const combinedData = [...processedInterviewPrepData];
+        for (const switchUpSlot of processedSwitchUpData) {
+          const index = combinedData.findIndex(
+            (slot) => slot.day === switchUpSlot.day
+          );
+          if (index !== -1) {
+            combinedData.splice(index, 1); // Remove conflicting slot
           }
-        }),
-        (e.onerror = function () {
-          TimerHandler(null);
-          typeof fillWebinarSlots === "function" && fillWebinarSlots(null);
-          registration_type = "calendly";
-        }),
-        e.send();
+          combinedData.push(switchUpSlot); // Add switch up slot
+        }
+  
+        combinedData.sort(
+          (a, b) => new Date(a.start_time) - new Date(b.start_time)
+        );
+  
+        TimerHandler(combinedData);
+        if (typeof fillWebinarSlots === "function") {
+          fillWebinarSlots(combinedData);
+        }
+        n(combinedData);
+      } catch (error) {
+        handleError();
+        console.error("Error:", error);
+      }
+    };
+  
+    // Logic branching based on isSwitchUp flag
+    if (isSwitchUp === "No") {
+      fetchWebinarSlotsWithXMLHttpRequest();
     } else {
-      let r = v_timezone.replace("+", "%2B");
-      (interviewPrepURL =
-        "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" +
-        r +
-        "&type=REGULAR"),
-        (switchUpURL =
-          "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=" +
-          r +
-          "&type=SWITCH_UP"),
-        (async function () {
-          try {
-            let e = await a(interviewPrepURL),
-              t = await a(switchUpURL);
-            (e = e.map((e) => ({
-              ...e,
-              webinar_lead_type: "REGULAR",
-            }))),
-              (t = t.map((e) => ({
-                ...e,
-                webinar_lead_type: "SWITCH_UP",
-              })));
-            const n = [...e];
-            for (const e of t) {
-              const t = n.findIndex((t) => t.day === e.day);
-              -1 !== t && n.splice(t, 1), n.push(e);
-            }
-            return (
-              n.sort((e, t) => new Date(e.start_time) - new Date(t.start_time)),
-              n
-            );
-          } catch (e) {
-            TimerHandler(null);
-            typeof fillWebinarSlots === "function" && fillWebinarSlots(null);
-            console.error("Error:", e);
-          }
-        })().then((e) => {
-          TimerHandler(e);
-          typeof fillWebinarSlots === "function" && fillWebinarSlots(e);
-          n(e);
-        });
+      fetchWebinarSlotsAsync().then((data) => {
+        TimerHandler(data);
+        if (typeof fillWebinarSlots === "function") {
+          fillWebinarSlots(data);
+        }
+        n(data);
+      });
     }
   }
+  
   function s(e) {
     var t = {
       "First Name": $(".wr__firstname").val(),
