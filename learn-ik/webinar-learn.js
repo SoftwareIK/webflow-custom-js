@@ -317,7 +317,7 @@ $(document).ready(function () {
     CAREER_SESSION: "Seize the AI Advantage: Strengthen Your Resume",
     SWITCH_UP: "Uplevel your career with AI/ML/GenAI",
     DEFAULT: "How to Nail your next Technical Interview",
-    'Product Management': "How to Nail your next Technical Interview",
+    'Product Management': "How to Nail Your Next Tech/Product Interview",
   };
 
   // Function to set the event details in the DOM
