@@ -106,6 +106,9 @@ function toggleCompactMode(flag) {
 }
 
 $(document).ready(function () {
+  // AB test code TODO: remove this.
+  toggleCompactMode(false);
+
   var e;
   let t = getAllUrlParams();
   async function a(e) {
