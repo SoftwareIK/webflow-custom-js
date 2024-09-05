@@ -319,8 +319,8 @@ $(document).ready(function () {
   const eventTitleMap = {
     CAREER_SESSION: "Seize the AI Advantage: Strengthen Your Resume",
     SWITCH_UP: "Uplevel your career with AI/ML/GenAI",
-    DEFAULT: "How to Nail your next Technical Interview",
     'Product Management': "How to Nail Your Next Tech/Product Interview",
+    DEFAULT: "How to Nail your next Technical Interview",
   };
 
   // Function to set the event details in the DOM
@@ -344,6 +344,8 @@ $(document).ready(function () {
         return eventTitleMap.CAREER_SESSION;
       case "SWITCH_UP":
         return eventTitleMap.SWITCH_UP;
+      case "Product Management": 
+        return eventTitleMap['Product Management'];
       default:
         return eventTitleMap.DEFAULT;
     }
