@@ -233,6 +233,7 @@ function setHiddenFields() {
       break;
     case "Product Management":
       webinarTypeValue = "Product Management";
+      break;
     default:
       webinarTypeValue = "SWITCH_UP";
       break;
