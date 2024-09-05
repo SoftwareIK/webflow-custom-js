@@ -473,7 +473,7 @@ $(document).ready(function () {
     };
   
     const processWebinarData = (data, webinarType) => {
-      if (data.length === 0) {
+      if (data.length === 0 && webinarType !== "Product Management") {
         registration_type = "calendly";
         webinarType = "REGULAR";
         callAPI(baseURL + webinarType);
