@@ -757,7 +757,17 @@ $(document).ready(function () {
       setHiddenFields();
       paRegisteredCookie();
 
-      let phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      // let phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      let phoneNumber = "";
+      if(typeof intlTelInputUtils == "undefined") {
+        try {
+          phoneNumber = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+        } catch (error) {
+          phoneNumber = $("#webinar_pnumber")?.val();
+        }
+      } else {
+        phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
       $("input[name='phone_number[intphone_full]'").val(phoneNumber);
       $(".tno1").val(phoneNumber);
 
