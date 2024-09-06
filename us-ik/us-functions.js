@@ -225,7 +225,21 @@ function setHiddenFields() {
   $('.utm_term').val(decodeURIComponent((params?.utm_term != undefined) ? params['utm_term'] : ""));
 
   $('.page_url').val(window.location.href);
-  $('.webinar-type').val(((webinarType == undefined) || (webinarType == "REGULAR")) ? "REGULAR" : "SWITCH_UP");
+  // $('.webinar-type').val(((webinarType == undefined) || (webinarType == "REGULAR")) ? "REGULAR" : "SWITCH_UP");
+  switch (webinarType) {
+    case undefined:
+    case "REGULAR":
+      webinarTypeValue = "REGULAR";
+      break;
+    case "Product Management":
+      webinarTypeValue = "Product Management";
+      break;
+    default:
+      webinarTypeValue = "SWITCH_UP";
+      break;
+  }
+  $('.webinar-type').val(webinarTypeValue);
+
   $('.user_id').val(visitor_id);
   $('.gclid').val(decodeURIComponent((params?.gclid != undefined) ? params['gclid'] : ""));
   $('.salesforce_uuid').val(decodeURIComponent((params?.salesforce_uuid != undefined) ? params['salesforce_uuid'] : ""));

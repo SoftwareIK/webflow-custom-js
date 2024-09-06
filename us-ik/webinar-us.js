@@ -200,7 +200,20 @@ $(document).ready(function () {
 
   function createWebinarSlotsList(country, timezone, callback = () => {}) {
     v_timezone_formatted = timezone.replace("+", "%2B");
-    webinarType = (webinarType == undefined || webinarType == "REGULAR") ? "REGULAR" : "SWITCH_UP";
+
+    switch (webinarType) {
+      case undefined:
+      case "REGULAR":
+        webinarType = "REGULAR";
+        break;
+      case "Product Management":
+        webinarType = "Product Management";
+        break;
+      default:
+        webinarType = "SWITCH_UP";
+        break;
+    }
+
     if(typeof(isSwitchUpHomePage) !== 'undefined' && isSwitchUpHomePage) {
       var getUtmParam = getAllUrlParams();
       if (v_timezone_formatted == "Asia/Kolkata" && !getUtmParam.forceuswebinar) {
@@ -222,10 +235,16 @@ $(document).ready(function () {
       xhr.onload = function () {
         if (this.status == 200) {
           let resobj = JSON.parse(this.response);
-          if (webinarType == "SWITCH_UP") {
-            resobj = resobj.map(item => ({ ...item, webinar_lead_type: "SWITCH_UP" }));
-          } else {
-            resobj = resobj.map(item => ({ ...item, webinar_lead_type: "REGULAR" }));
+          switch (webinarType) {
+            case "SWITCH_UP":
+              resobj = resobj.map(item => ({ ...item, webinar_lead_type: "SWITCH_UP" }));
+              break;
+            case "Product Management":
+              resobj = resobj.map(item => ({ ...item, webinar_lead_type: "Product Management" }));
+              break;
+            default:
+              resobj = resobj.map(item => ({ ...item, webinar_lead_type: "REGULAR" }));
+              break;
           }
           callback(resobj);
           populateWebinarSlots(resobj);
@@ -319,7 +338,9 @@ $(document).ready(function () {
   });
 
   function pushToEndPoint(endpoint) {
-    if (v_timezone_formatted == 'Asia/Kolkata') {
+    if(webinarType == "Product Management"){
+      webinarType = "Product Management";
+    } else if (v_timezone_formatted == 'Asia/Kolkata') {
       webinarType = "REGULAR";
     } else {
       webinarType == "SWITCH_UP"
