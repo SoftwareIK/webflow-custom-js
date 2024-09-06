@@ -35,6 +35,7 @@ function createPagination(containerSelector, defaultParam) {
 	const currentPage = parseInt(urlParams.get(pageKey)) || 1;
 
 	const paginationContainer = document.querySelector(containerSelector);
+	paginationContainer.classList.add('pagination-wrapper');
 	paginationContainer.innerHTML = '';
 
 	const emptyElips = document.createElement('div');

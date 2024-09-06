@@ -12,6 +12,16 @@
 	color: #333;
 }
 
+.pagination-wrapper {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	flex-wrap: wrap;
+	align-items: center;
+	grid-column-gap: 0px;
+	grid-row-gap: 10px;
+}
+
 .pagination-button.active,
 .pagination-button:hover {
 	background-color: #00d1b4;
