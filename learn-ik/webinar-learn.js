@@ -105,10 +105,41 @@ function toggleCompactMode(flag) {
   });
 }
 
+function webflowFormSubmitObserver() {
+  try {
+    if (window.MutationObserver) {
+      // Function to handle mutation
+      function handleMutation(mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+            var target = $(mutation.target);
+            if (target.css('display') === 'none') {
+              target.css('display', 'block');
+              $('.w-form-done').css('display', 'none');
+              $('.w-form-fail').css('display', 'none');
+            }
+          }
+        });
+      }
+      // Create an observer instance
+      var observer = new MutationObserver(handleMutation);
+  
+      // Configuration of the observer
+      var config = { attributes: true, attributeFilter: ['style'] };
+  
+      // Observe all forms under .v2-form-container
+      $('.webinar__registration-form1').each(function () {
+        observer.observe(this, config);
+      });
+    }
+  } catch (error) { console.error(error) }
+
+}
+
 $(document).ready(function () {
   // AB test code TODO: remove this.
   toggleCompactMode(false);
-
+  webflowFormSubmitObserver();
   var e;
   let t = getAllUrlParams();
   async function a(e) {
