@@ -6,8 +6,8 @@
  */
 function createPagination(containerSelector, defaultParam) {
 	const maxVisiblePages = 3;
-	const prevButton = document.querySelector('#previous-page-button-articles');
-	const nextButton = document.querySelector('#next-page-button-articles');
+	const prevButton = document.querySelector('.w-pagination-previous');
+	const nextButton = document.querySelector('.w-pagination-next');
 
 	// Use nextButton as the default control button
 	const controlButton = nextButton || prevButton;
