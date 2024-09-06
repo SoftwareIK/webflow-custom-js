@@ -13,6 +13,8 @@
 	text-decoration: none;
 	min-width: 40px;
 	color: #333;
+	background-color: #fff;
+	font-size: 16px;
 }
 
 .pagination-wrapper {
