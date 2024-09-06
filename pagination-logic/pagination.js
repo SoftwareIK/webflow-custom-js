@@ -1,4 +1,10 @@
-function createPagination(paginationContainerClass, defaultParam) {
+/**
+ * Creates a pagination control dynamically.
+ *
+ * @param {string} containerSelector - The CSS selector for the pagination container element.
+ * @param {string} defaultParam - The default query parameter key to be used if the page key is not found in the URL.
+ */
+function createPagination(containerSelector, defaultParam) {
 	const maxVisiblePages = 3;
 	const prevButton = document.querySelector('#previous-page-button-articles');
 	const nextButton = document.querySelector('#next-page-button-articles');
@@ -28,9 +34,7 @@ function createPagination(paginationContainerClass, defaultParam) {
 	const urlParams = new URLSearchParams(queryString);
 	const currentPage = parseInt(urlParams.get(pageKey)) || 1;
 
-	const paginationContainer = document.querySelector(
-		`.${paginationContainerClass}`,
-	);
+	const paginationContainer = document.querySelector(containerSelector);
 	paginationContainer.innerHTML = '';
 
 	const emptyElips = document.createElement('div');
@@ -72,7 +76,8 @@ function createPagination(paginationContainerClass, defaultParam) {
 		addButton(totalPageCount.toString(), totalPageCount);
 	}
 }
+
 // example use
 // createPagination() function take two arg parent class and fallback default param
 // to work this we have to enable pagination from webflow collection
-// document.addEventListener('DOMContentLoaded', createPagination('parent-class', urlDefaultParam));
+// document.addEventListener('DOMContentLoaded', createPagination('.parent-class', urlDefaultParam));
