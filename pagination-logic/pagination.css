@@ -1,6 +1,10 @@
 .pagination-button {
 	border: 1px solid #f1f1f1;
 	border-radius: 4px;
+}
+
+.empty-elips,
+.pagination-button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
