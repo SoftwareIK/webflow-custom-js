@@ -9,12 +9,18 @@ function createPagination(containerSelector, defaultParam) {
 	const prevButton = document.querySelector('.w-pagination-previous');
 	const nextButton = document.querySelector('.w-pagination-next');
 
+	if (nextButton) {
+		nextButton.classList.add('pagination-button');
+	}
+
+	if (prevButton) {
+		prevButton.classList.add('pagination-button');
+	}
+
 	// Use nextButton as the default control button
 	const controlButton = nextButton || prevButton;
 
 	if (!controlButton) return; // Early exit if no control button is found
-
-	controlButton.classList.add('pagination-button');
 
 	const allQuery = controlButton.href.split('?')[1];
 	const hrefUrlParams = new URLSearchParams(allQuery);
