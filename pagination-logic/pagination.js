@@ -81,4 +81,11 @@ function createPagination(containerSelector, defaultParam) {
 // example use
 // createPagination() function take two arg parent class and fallback default param
 // to work this we have to enable pagination from webflow collection
-// document.addEventListener('DOMContentLoaded', createPagination('.parent-class', urlDefaultParam));
+{
+	/* 
+    <script defer src="https://cdn.jsdelivr.net/gh/SoftwareIK/webflow-custom-js@pagination-ik/pagination-logic/pagination.js"></script>
+    <script>
+		document.addEventListener('DOMContentLoaded', () => createPagination('.pagination-container', 'test'));
+    </script> 
+*/
+}
