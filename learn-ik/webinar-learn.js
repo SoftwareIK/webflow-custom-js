@@ -113,10 +113,14 @@ function webflowFormSubmitObserver() {
         mutations.forEach(function (mutation) {
           if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
             var target = $(mutation.target);
-            if (target.css('display') === 'none') {
+            if (target.hasClass('webinar__registration-form1') && target.css('display') === 'none') {
               target.css('display', 'block');
               $('.w-form-done').css('display', 'none');
               $('.w-form-fail').css('display', 'none');
+            }
+
+            if (target.hasClass('w-form-fail') && target.css('display') !== 'none') {
+              target.css('display', 'none');
             }
           }
         });
@@ -128,7 +132,7 @@ function webflowFormSubmitObserver() {
       var config = { attributes: true, attributeFilter: ['style'] };
   
       // Observe all forms under .v2-form-container
-      $('.webinar__registration-form1').each(function () {
+      $('.webinar__registration-form1, .w-form-fail').each(function () {
         observer.observe(this, config);
       });
     }
