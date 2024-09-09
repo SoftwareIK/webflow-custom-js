@@ -216,6 +216,21 @@ $(document).ready(function () {
         saveClickActivity(clickID, timestamp);
       }, 1000);
     } catch (error) { console.error(error); }
+  });
 
+    // Bind a click event to Image CTAs Across the Website
+  $("img.direct-link").on("click", function () {
+    try {
+      setTimeout(() => {
+        // Find the index of the clicked image relative to all images with the class "direct-link"
+        let ctaIndex = $("img.direct-link").index(this) + 1; // 1-based index
+  
+        // Generate clickID using the format "banner-cta-clicked--{nth}"
+        let clickID = `banner-cta-clicked--${ctaIndex}`;
+  
+        let timestamp = new Date().getTime();
+        saveClickActivity(clickID, timestamp);
+      }, 1000);
+    } catch (error) { console.error(error); }
   });
 });
