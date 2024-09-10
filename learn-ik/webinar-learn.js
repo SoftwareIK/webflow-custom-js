@@ -123,17 +123,19 @@ function initObservers() {
               target.css('display', 'none');
             }
 
-            if (target.hasClass('webinar__lightbox')) {
-              if (target.css('display') !== 'none' && target.css('visibility') !== 'hidden') {
-                $('body').css({
-                  'overflow': 'hidden',
-                  'position': 'fixed',
-                });
-              } else {
-                $('body').css({
-                  'overflow': '',
-                  'position': '',
-                });
+            if(typeof(isCompactForm) != "undefined" && isCompactForm){
+              if (target.hasClass('webinar__lightbox')) {
+                if (target.css('display') !== 'none' && target.css('visibility') !== 'hidden') {
+                  $('body').css({
+                    'overflow': 'hidden',
+                    'position': 'fixed',
+                  });
+                } else {
+                  $('body').css({
+                    'overflow': '',
+                    'position': '',
+                  });
+                }
               }
             }
           }
