@@ -127,14 +127,12 @@ function initObservers() {
               if (target.css('display') !== 'none' && target.css('visibility') !== 'hidden') {
                 $('body').css({
                   'overflow': 'hidden',
-                  'touch-action': 'none',
-                  'user-select': 'none'
+                  'position': 'fixed',
                 });
               } else {
                 $('body').css({
                   'overflow': '',
-                  'touch-action': '',
-                  'user-select': ''
+                  'position': '',
                 });
               }
             }
