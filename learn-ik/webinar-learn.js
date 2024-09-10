@@ -105,7 +105,7 @@ function toggleCompactMode(flag) {
   });
 }
 
-function webflowFormSubmitObserver() {
+function initObservers() {
   try {
     if (window.MutationObserver) {
       // Function to handle mutation
@@ -122,6 +122,22 @@ function webflowFormSubmitObserver() {
             if (target.hasClass('w-form-fail') && target.css('display') !== 'none') {
               target.css('display', 'none');
             }
+
+            if (target.hasClass('webinar__lightbox')) {
+              if (target.css('display') !== 'none' && target.css('visibility') !== 'hidden') {
+                $('body').css({
+                  'overflow': 'hidden',
+                  'touch-action': 'none',
+                  'user-select': 'none'
+                });
+              } else {
+                $('body').css({
+                  'overflow': '',
+                  'touch-action': '',
+                  'user-select': ''
+                });
+              }
+            }
           }
         });
       }
@@ -132,7 +148,7 @@ function webflowFormSubmitObserver() {
       var config = { attributes: true, attributeFilter: ['style'] };
   
       // Observe all forms under .v2-form-container
-      $('.webinar__registration-form1, .w-form-fail').each(function () {
+      $('.webinar__registration-form1, .w-form-fail, .webinar__lightbox').each(function () {
         observer.observe(this, config);
       });
     }
@@ -141,7 +157,7 @@ function webflowFormSubmitObserver() {
 }
 
 $(document).ready(function () {
-  webflowFormSubmitObserver();
+  initObservers();
   var e;
   let t = getAllUrlParams();
   async function a(e) {
