@@ -307,7 +307,22 @@ $(document).ready(function () {
     e.preventDefault();
     setHiddenFields();
     try { paRegisteredCookie(); } catch (e) { console.error(e) }
-    let fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+    // let fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+    let fullphonenumber3 = "";
+    // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
+    if(typeof(isCompactForm) != "undefined" && isCompactForm){
+      if(typeof(intlTelInputUtils) == "undefined") {
+        try {
+          fullphonenumber3 = `+${v2PhoneNumber.getSelectedCountryData().dialCode}${$("#v2-phone-number").val()}`
+        } catch (error) {
+          fullphonenumber3 = $("#v2-phone-number")?.val();
+        }
+      } else {
+        fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
+    } else {
+      fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+    }
     $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
     $(".tno1").val(fullphonenumber3);
 
