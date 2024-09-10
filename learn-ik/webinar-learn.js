@@ -106,6 +106,7 @@ function toggleCompactMode(flag) {
 }
 
 function initObservers() {
+  let scrollPosition = 0;
   try {
     if (window.MutationObserver) {
       // Function to handle mutation
@@ -126,15 +127,20 @@ function initObservers() {
             if(typeof(isCompactForm) != "undefined" && isCompactForm){
               if (target.hasClass('webinar__lightbox')) {
                 if (target.css('display') !== 'none' && target.css('visibility') !== 'hidden') {
+                  scrollPosition = $(window).scrollTop();
+
                   $('body').css({
                     'overflow': 'hidden',
                     'position': 'fixed',
+                    'top': `-${scrollPosition}px`,
+                    'width': '100%'
                   });
                 } else {
                   $('body').css({
                     'overflow': '',
                     'position': '',
                   });
+                  $(window).scrollTop(scrollPosition);
                 }
               }
             }
