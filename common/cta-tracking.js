@@ -225,8 +225,8 @@ $(document).ready(function () {
         // Find the index of the clicked image relative to all images with the class "direct-link"
         let ctaIndex = $("img.direct-link").index(this) + 1; // 1-based index
   
-        // Generate clickID using the format "banner-cta-clicked--{nth}"
-        let clickID = `banner-cta-clicked--${ctaIndex}`;
+        // Generate clickID using the format "banner-cta-clicked--{nth}_open-modal"
+        let clickID = `banner-cta-clicked--${ctaIndex}_open-modal`;
   
         let timestamp = new Date().getTime();
         saveClickActivity(clickID, timestamp);
