@@ -105,10 +105,65 @@ function toggleCompactMode(flag) {
   });
 }
 
-$(document).ready(function () {
-  // AB test code TODO: remove this.
-  toggleCompactMode(false);
+function initObservers() {
+  let scrollPosition = 0;
+  try {
+    if (window.MutationObserver) {
+      // Function to handle mutation
+      function handleMutation(mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+            var target = $(mutation.target);
+            if (target.hasClass('webinar__registration-form1') && target.css('display') === 'none') {
+              target.css('display', 'block');
+              $('.w-form-done').css('display', 'none');
+              $('.w-form-fail').css('display', 'none');
+            }
 
+            if (target.hasClass('w-form-fail') && target.css('display') !== 'none') {
+              target.css('display', 'none');
+            }
+
+            if(typeof(isCompactForm) != "undefined" && isCompactForm){
+              if (target.hasClass('webinar__lightbox')) {
+                if (target.css('display') !== 'none' && target.css('visibility') !== 'hidden') {
+                  scrollPosition = $(window).scrollTop();
+
+                  $('body').css({
+                    'overflow': 'hidden',
+                    'position': 'fixed',
+                    'top': `-${scrollPosition}px`,
+                    'width': '100%'
+                  });
+                } else {
+                  $('body').css({
+                    'overflow': '',
+                    'position': '',
+                  });
+                  $(window).scrollTop(scrollPosition);
+                }
+              }
+            }
+          }
+        });
+      }
+      // Create an observer instance
+      var observer = new MutationObserver(handleMutation);
+  
+      // Configuration of the observer
+      var config = { attributes: true, attributeFilter: ['style'] };
+  
+      // Observe all forms under .v2-form-container
+      $('.webinar__registration-form1, .w-form-fail, .webinar__lightbox').each(function () {
+        observer.observe(this, config);
+      });
+    }
+  } catch (error) { console.error(error) }
+
+}
+
+$(document).ready(function () {
+  initObservers();
   var e;
   let t = getAllUrlParams();
   async function a(e) {
@@ -676,7 +731,22 @@ $(document).ready(function () {
     }),
     $(".bc__btn-select-webinar-slot-newsletter").click(function (t) {
       t.preventDefault(), setHiddenFields();
-      let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      // let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      let a = "";
+      // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
+      if(typeof(isCompactForm) != "undefined" && isCompactForm){
+        if(typeof(intlTelInputUtils) == "undefined") {
+          try {
+            a = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+          } catch (error) {
+            a = $("#webinar_pnumber")?.val();
+          }
+        } else {
+          a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+        }
+      } else {
+        a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
       $("input[name='phone_number[intphone_full]'").val(a),
         $(".tno1").val(a),
         $(".first-name, .last-name, .phone").keypress(function () {
@@ -757,7 +827,23 @@ $(document).ready(function () {
       setHiddenFields();
       paRegisteredCookie();
 
-      let phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      // let phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      let phoneNumber = "";
+      // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
+      if(typeof(isCompactForm) != "undefined" && isCompactForm){
+        if(typeof(intlTelInputUtils) == "undefined") {
+          try {
+            phoneNumber = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+          } catch (error) {
+            phoneNumber = $("#webinar_pnumber")?.val();
+          }
+        } else {
+          phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
+        }
+      } else {
+        phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
+
       $("input[name='phone_number[intphone_full]'").val(phoneNumber);
       $(".tno1").val(phoneNumber);
 
@@ -987,7 +1073,24 @@ $(document).ready(function () {
       $(".webinar-lead-type").val(
         $(".webinar-event-date").attr("data-webinar_lead_type")
       );
-      let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      // let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      let a = "";
+      // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
+      if(typeof(isCompactForm) != "undefined" && isCompactForm){
+        if(typeof(intlTelInputUtils) == "undefined") {
+          try {
+            a = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+          } catch (error) {
+            a = $("#webinar_pnumber")?.val();
+          }
+        } else {
+          a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+        }
+      } else {
+        a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
+
+
       $("input[name='phone_number[intphone_full]'").val(a);
       $(".tno1").val(a);
 
@@ -1109,7 +1212,23 @@ $(document).ready(function () {
     }),
     $(".bc__btn-select-webinar-slot-v2").click(function (t) {
       t.preventDefault(), setHiddenFields();
-      let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      // let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      let a = "";
+      // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
+      if(typeof(isCompactForm) != "undefined" && isCompactForm){
+        if(typeof(intlTelInputUtils) == "undefined") {
+          try {
+            a = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+          } catch (error) {
+            a = $("#webinar_pnumber")?.val();
+          }
+        } else {
+          a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+        }
+      } else {
+        a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
+
       $("input[name='phone_number[intphone_full]'").val(a),
         $(".tno1").val(a),
         $(".full-name,.email,.phone").keypress(function () {
@@ -1215,8 +1334,23 @@ $(document).ready(function () {
     $(".bc__upworth-step2").click(function (t) {
       t.preventDefault(), setHiddenFields();
       let a = $(".gql-exp-select").val(),
-        n = $(".gql-domain-select").val(),
+        n = $(".gql-domain-select").val();
+      // let i = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      let i = "";
+      // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
+      if(typeof(isCompactForm) != "undefined" && isCompactForm){
+        if(typeof(intlTelInputUtils) == "undefined") {
+          try {
+            i = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+          } catch (error) {
+            i = $("#webinar_pnumber")?.val();
+          }
+        } else {
+          i = e.getNumber(intlTelInputUtils.numberFormat.E164);
+        }
+      } else {
         i = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
       $("input[name='phone_number[intphone_full]'").val(i),
         $(".tno1").val(i),
         $(".first-name, .last-name, .phone, .email").keypress(function () {
