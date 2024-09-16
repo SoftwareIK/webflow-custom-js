@@ -226,6 +226,20 @@ $(document).ready(function () {
     utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
   });
 
+  function getPhoneNumber() {
+    let phone = "";
+    try {
+      if(typeof(intlTelInputUtils) == "undefined") {
+        phone = `+${v2PhoneNumber.getSelectedCountryData().dialCode}${$("#v2-phone-number").val()}`
+       } else {
+        phone = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
+    } catch (error) {
+      phone = $("#v2-phone-number")?.val();
+    }
+    return phone
+  }
+
   function showFormSuccessSection() {
     $("#v2-success-date").html(SELECTED_SLOT.date);
     $("#v2-success-day").html(SELECTED_SLOT.day);
@@ -346,16 +360,11 @@ $(document).ready(function () {
     e.preventDefault();
     setHiddenFields();
     try { paRegisteredCookie(); } catch (e) { console.error(e) }
-    // let fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+
     let fullphonenumber3 = ""
-    try {
-      if(typeof(intlTelInputUtils) == "undefined") {
-        fullphonenumber3 = `+${v2PhoneNumber.getSelectedCountryData().dialCode}${$("#v2-phone-number").val()}`
-       } else {
-        fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
-      }
-    } catch (error) {
-      fullphonenumber3 = $("#v2-phone-number")?.val();
+    if(currentFormPage == "learn-su"){
+      // let fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+      fullphonenumber3 = getPhoneNumber();
     }
 
     $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
