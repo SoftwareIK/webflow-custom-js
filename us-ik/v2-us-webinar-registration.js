@@ -151,6 +151,7 @@ function getMonthName(monthNumber) {
 
   return monthNames[monthNumber - 1];
 }
+
 $(document).ready(function () {
   const SELECTED_SLOT = {};
   window.VWO = window.VWO || [];
@@ -225,6 +226,20 @@ $(document).ready(function () {
     utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
   });
 
+  function getPhoneNumber() {
+    let phone = "";
+    try {
+      if(typeof(intlTelInputUtils) == "undefined") {
+        phone = `+${v2PhoneNumber.getSelectedCountryData().dialCode}${$("#v2-phone-number").val()}`
+       } else {
+        phone = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
+    } catch (error) {
+      phone = $("#v2-phone-number")?.val();
+    }
+    return phone
+  }
+
   function showFormSuccessSection() {
     $("#v2-success-date").html(SELECTED_SLOT.date);
     $("#v2-success-day").html(SELECTED_SLOT.day);
@@ -234,26 +249,38 @@ $(document).ready(function () {
     $(".form-submitted-div").css("display", "block");
   }
 
-  function adjustFormStep(currentStep, nextStep, isBack) {
-    const currentStepContainer = $(currentStep);
-    currentStepContainer.removeClass("active-step");
-    currentStepContainer.children(".v2-step-count").removeClass("active-step-count");
-    currentStepContainer.children(".v2-step-name").removeClass("active-step-name");
-
+  function adjustFormStep(currentStep, nextStep, isBack, lineStatus = {
+    ".v2-line-1": false,
+    ".v2-line-2": false
+  }) {
+    const $currentStepContainer = $(currentStep);
+    const $nextStepContainer = $(nextStep);
+  
+    // Deactivating current step and hiding/showing elements based on the direction
+    $currentStepContainer
+      .find(".v3-step-count").removeClass("active-step-count").end()
+      .find(".step-details").removeClass("active-step-details").end()
+      .find(".caret-wrapper").addClass("hide").end()
+      .find(".v3-step-checked").toggleClass("hide", isBack).end()
+      .find(".step-wrapper").toggleClass("hide", !isBack);
+  
+    // Activating next step
+    $nextStepContainer
+      .find(".v3-step-count").addClass("active-step-count").end()
+      .find(".step-details").addClass("active-step-details").end()
+      .find(".caret-wrapper").removeClass("hide").end()
+      .find(".step-wrapper").removeClass("hide");
+  
+    // Toggle checked state and visibility of elements if moving backwards
     if (isBack) {
-      currentStepContainer.children(".v2-step-checked").addClass("hide");
-      currentStepContainer.children(".v2-step-count").show();
-    } else {
-      currentStepContainer.children(".v2-step-checked").removeClass("hide");
-      currentStepContainer.children(".v2-step-count").hide();
+      $nextStepContainer.find(".v3-step-checked").addClass("hide");
+      $currentStepContainer.find(".step-wrapper").removeClass("hide");
     }
-
-    const nextStepContainer = $(nextStep);
-    nextStepContainer.addClass("active-step");
-    nextStepContainer.children(".v2-step-checked").addClass("hide");
-    nextStepContainer.children(".v2-step-count").addClass("active-step-count");
-    nextStepContainer.children(".v2-step-name").addClass("active-step-name");
-    nextStepContainer.children(".v2-step-count").show();
+  
+    // Update line status
+    for (let line in lineStatus) {
+      $(line).toggleClass("v2-active-line", !!lineStatus[line]);
+    }
   }
 
   if (window.MutationObserver) {
@@ -282,6 +309,26 @@ $(document).ready(function () {
     });
   }
 
+  $("#v2-full-name").on("input", function () {
+    var fullName = $.trim($(this).val());
+
+    if (fullName === "") {
+      $("#v2-fname").val("");
+      $("#v2-lname").val("");
+    } else {
+      var nameParts = fullName.split(/\s+/);
+      var firstName = nameParts[0];
+      var lastName = "";
+
+      if (nameParts.length > 1) {
+        lastName = nameParts.slice(1).join(" ");
+      }
+
+      $("#v2-fname").val(firstName);
+      $("#v2-lname").val(lastName || firstName);
+    }
+  });
+
   $(document).on('click', '.slot-radiobutton', function () {
     $('.time-slot-wrapper').removeClass('selected-slot');
     $(this).siblings('.time-slot-wrapper').addClass('selected-slot');
@@ -294,31 +341,43 @@ $(document).ready(function () {
   $("#v2-form-2nd-back").click(function (e) {
     $(".v2-second-form-block").hide();
     $(".v2-first-form-block").show();
-    adjustFormStep("#form-step-2", "#form-step-1", true);
+    adjustFormStep("#form-step-indicator-2", "#form-step-indicator-1", true, {
+      ".v2-line-1": false,
+      ".v2-line-2": false
+    });
   });
 
   $("#v2-form-3rd-back").click(function (e) {
     $(".v2-third-form-block").hide();
     $(".v2-second-form-block").show();
-    adjustFormStep("#form-step-3", "#form-step-2", true);
+    adjustFormStep("#form-step-indicator-3", "#form-step-indicator-2", true, {
+      ".v2-line-1": true,
+      ".v2-line-2": false
+    });
   });
 
   $('#v2-form-1st-submit').click(function (e) {
     e.preventDefault();
     setHiddenFields();
     try { paRegisteredCookie(); } catch (e) { console.error(e) }
-    let fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+
+    let fullphonenumber3 = ""
+    if(currentFormPage == "learn-su"){
+      // let fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+      fullphonenumber3 = getPhoneNumber();
+    }
+
     $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
     $(".tno1").val(fullphonenumber3);
 
-    $("#v2-fname, #v2-lname, #v2-phone-number, #v2-email").keypress(function () {
-      $(".v2-fname-error, .v2-lname-error, .v2-email-id-error, .v2-phone-number-error").hide();
-      $("#v2-fname, #v2-lname, #v2-phone-number, #v2-email").removeClass("has-error");
+    $("#v2-full-name, #v2-phone-number, #v2-email").keypress(function () {
+      $(".v2-full-name-error, .v2-email-id-error, .v2-phone-number-error").hide();
+      $("#v2-full-name, #v2-phone-number, #v2-email").removeClass("has-error");
     })
 
-    $("#v2-fname, #v2-lname, #v2-phone-number, #v2-email").focus(function () {
-      $(".v2-fname-error, .v2-lname-error, .v2-email-id-error, .v2-phone-number-error").hide();
-      $("#v2-fname, #v2-lname, #v2-phone-number, #v2-email").removeClass("has-error");
+    $("#v2-full-name, #v2-phone-number, #v2-email").focus(function () {
+      $(".v2-full-name-error, .v2-email-id-error, .v2-phone-number-error").hide();
+      $("#v2-full-name, #v2-phone-number, #v2-email").removeClass("has-error");
     });
 
     let name_regex = new RegExp("^[a-zA-Z ]+$");
@@ -326,16 +385,12 @@ $(document).ready(function () {
     let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm;
 
     if (($("#v2-fname").val().length == 0) &&
-      ($("#v2-lname").val().length == 0) &&
       ($("#v2-email").val().length == 0) &&
       ($("#v2-phone-number").val().length == 0)) {
-      $('.v2-fname-error, .v2-lname-error, .v2-email-id-error, .v2-phone-number-error').show();
+      $('.v2-full-name-error, .v2-email-id-error, .v2-phone-number-error').show();
     } else if (!name_regex.test($("#v2-fname").val()) || $("#v2-fname").val().length == 0) {
-      $('.v2-fname-error').show();
-      $('#v2-fname').addClass('has-error');
-    } else if (!name_regex.test($("#v2-lname").val()) || $("#v2-lname").val().length == 0) {
-      $('.v2-lname-error').show();
-      $('#v2-lname').addClass('has-error');
+      $('.v2-full-name-error').show();
+      $('#v2-full-name').addClass('has-error');
     } else if (!phone_regex.test($("#v2-phone-number").val()) || $("#v2-phone-number").val().length == 0) {
       $('.v2-phone-number-error').show();
       $('#v2-phone-number').addClass('has-error');
@@ -351,7 +406,7 @@ $(document).ready(function () {
 
       dataLayer.push({
         'event': 'new_webinar_registration_form_submitted',
-        'webinar_name': (document.querySelector('.webinar__lightbox-title').innerHTML)
+        'webinar_name': eventName
       });
 
       if ($('.is_exit_intent_popup').val() == "On Scroll") {
@@ -376,7 +431,10 @@ $(document).ready(function () {
 
       $('#wf-webinar-1-step-v2').submit();
       $('.v2-first-form-block').hide();
-      adjustFormStep("#form-step-1", "#form-step-2");
+      adjustFormStep("#form-step-indicator-1", "#form-step-indicator-2", false, {
+        ".v2-line-1": true,
+        ".v2-line-2": false
+      });
       setTimeout(function () {
         $('.v2-first-form-block').hide();
         $(".v2-second-form-block").show();
@@ -433,7 +491,10 @@ $(document).ready(function () {
       });
 
       $(".v2-second-form-block").hide();
-      adjustFormStep("#form-step-2", "#form-step-3");
+      adjustFormStep("#form-step-indicator-2", "#form-step-indicator-3", false, {
+        ".v2-line-1": true,
+        ".v2-line-2": true
+      });
       setTimeout(function () {
         $('.v2-form-loading-bar').hide();
         $(".v2-third-form-block").show();
