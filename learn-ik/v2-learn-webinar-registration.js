@@ -361,11 +361,7 @@ $(document).ready(function () {
     setHiddenFields();
     try { paRegisteredCookie(); } catch (e) { console.error(e) }
 
-    let fullphonenumber3 = ""
-    if(currentFormPage == "learn-su"){
-      // let fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
-      fullphonenumber3 = getPhoneNumber();
-    }
+    let fullphonenumber3 = getPhoneNumber();
 
     $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
     $(".tno1").val(fullphonenumber3);

@@ -143,6 +143,7 @@ function handleSlotScroll() {
   // Initial check
   updateArrows();
 }
+
 function getMonthName(monthNumber) {
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -361,39 +362,24 @@ $(document).ready(function () {
     setHiddenFields();
     try { paRegisteredCookie(); } catch (e) { console.error(e) }
 
-    let fullphonenumber3 = ""
-    if(currentFormPage == "learn-su"){
-      // let fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
-      fullphonenumber3 = getPhoneNumber();
-    }
-
-    $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
-    $(".tno1").val(fullphonenumber3);
-
-    $("#v2-full-name, #v2-phone-number, #v2-email").keypress(function () {
-      $(".v2-full-name-error, .v2-email-id-error, .v2-phone-number-error").hide();
-      $("#v2-full-name, #v2-phone-number, #v2-email").removeClass("has-error");
+    $("#v2-full-name, #v2-email").keypress(function () {
+      $(".v2-full-name-error, .v2-email-id-error").hide();
+      $("#v2-full-name, #v2-email").removeClass("has-error");
     })
 
-    $("#v2-full-name, #v2-phone-number, #v2-email").focus(function () {
-      $(".v2-full-name-error, .v2-email-id-error, .v2-phone-number-error").hide();
-      $("#v2-full-name, #v2-phone-number, #v2-email").removeClass("has-error");
+    $("#v2-full-name, #v2-email").focus(function () {
+      $(".v2-full-name-error, .v2-email-id-error").hide();
+      $("#v2-full-name, #v2-email").removeClass("has-error");
     });
 
     let name_regex = new RegExp("^[a-zA-Z ]+$");
     let email_regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm;
-
     if (($("#v2-fname").val().length == 0) &&
-      ($("#v2-email").val().length == 0) &&
-      ($("#v2-phone-number").val().length == 0)) {
-      $('.v2-full-name-error, .v2-email-id-error, .v2-phone-number-error').show();
+      ($("#v2-email").val().length == 0)) {
+      $('.v2-full-name-error, .v2-email-id-error').show();
     } else if (!name_regex.test($("#v2-fname").val()) || $("#v2-fname").val().length == 0) {
       $('.v2-full-name-error').show();
       $('#v2-full-name').addClass('has-error');
-    } else if (!phone_regex.test($("#v2-phone-number").val()) || $("#v2-phone-number").val().length == 0) {
-      $('.v2-phone-number-error').show();
-      $('#v2-phone-number').addClass('has-error');
     } else if (!email_regex.test($("#v2-email").val()) || $("#v2-email").val().length == 0) {
       $('.v2-email-id-error').show();
       $('#v2-email').addClass('has-error');
@@ -402,7 +388,6 @@ $(document).ready(function () {
       $('.wr__firstname').val($("#v2-fname").val());
       $('.wr__lastname').val($("#v2-lname").val());
       $('.wr__email').val($("#v2-email").val());
-      $('.wr__phone').val(fullphonenumber3);
 
       dataLayer.push({
         'event': 'new_webinar_registration_form_submitted',
@@ -451,44 +436,34 @@ $(document).ready(function () {
 
   $('#v2-form-2nd-submit').click(function (e) {
     e.preventDefault();
+    let utm_parms = getAllUrlParams();
 
     if ($("input:radio[name='v2-slots-radio']").is(":checked")) {
-      try { paRegisteredCookie(); } catch (e) { console.error(e) }
-
       const startDate = $('input[name="v2-slots-radio"]:checked').val();
       const endDate = $('input[name="v2-slots-radio"]:checked').data("endtime");
+      const utmm = visitor_id + ":" + v_country;
+      const sf_uuid = v_timezone + ":ik.com" + cta_lp + ":ik.com" + getCookie("ik-landingpage-v2");
+      const utmstr = "&" + (window.location.search == '') ? '' : window.location.search.slice(1);
+      let utmstring = "?utm_source=" + $('.utm_source').val() + "&utm_medium=" + utmm + "&salesforce_uuid=" + sf_uuid + "&forceuswebinar=" + utm_parms['forceuswebinar'] + utmstr;
 
-      function updateFormFields() {
-        $(".wr__event-start-time").val(startDate);
-        $(".wr__event-end-time").val(endDate);
-        $(".wr__invitee-start-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_starttime"));
-        $(".wr__invitee-end-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_endtime"));
-        $(".webinar-lead-type").val($('input[name="v2-slots-radio"]:checked').data("webinar_lead_type"));
-      }
+      $(".wr__event-start-time").val(startDate);
+      $(".wr__event-end-time").val(endDate);
+      $(".wr__invitee-start-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_starttime"));
+      $(".wr__invitee-end-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_endtime"));
+      $(".webinar-lead-type").val($('input[name="v2-slots-radio"]:checked').data("webinar_lead_type"));
 
       function formatDate(dateTime) {
         return dateTime.toISOString().replace(/T/, " ").replace(/\.\d+Z$/, " UTC");
       }
 
-      if (typeof paRegistered !== "undefined") {
-        updateFormFields();
-        $(".v2-form-loading-bar").show();
-        pushToZap("https://hooks.zapier.com/hooks/catch/11068981/307qti9/");
-      } else {
-        updateFormFields();
-        $(".v2-form-loading-bar").show();
-        pushToZap("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/");
-      }
+      $(".v2-form-loading-bar").show();
+      pushToZap("https://hooks.zapier.com/hooks/catch/11068981/34cq9f8/");
 
       bake_cookie("v_history", "");
       bake_cookie("v_latest", "");
 
       $('#wf-webinar-2-step-v2').submit();
-
-      // For A/B testing
-      VWO.event("gqlFormCompleted", {
-        "gqlFormCompleted": true
-      });
+      saveClickActivity("Webinar-form_button_open-gql");
 
       $(".v2-second-form-block").hide();
       adjustFormStep("#form-step-indicator-2", "#form-step-indicator-3", false, {
@@ -527,7 +502,7 @@ $(document).ready(function () {
             Lead_Created_Time: leadCreatedTime,
             Lead_Name: `${$(".wr__firstname").val()} ${$(".wr__lastname").val()}`,
             Lead_First_Name: $(".wr__firstname").val(),
-            Lead_Last__Name: $(".wr__firstname").val(),
+            Lead_Last__Name: $(".wr__lastname").val(),
             Lead_Email: $(".wr__email").val(),
             Lead_Time_Zone: $(".user_timezone").val(),
             Event_Type_Name: eventName,
@@ -588,9 +563,9 @@ $(document).ready(function () {
       eventEndTime: $(".wr__event-end-time").val(),
       inviteeStartTime: $(".wr__invitee-start-time").val(),
       inviteeEndTime: $(".wr__invitee-end-time").val(),
-      learnUserId: $(".user_id").val(),
+      User_ID: $(".user_id").val(),
       event_name: eventName,
-      cta_url: "learn.ik" + window.location.pathname,
+      cta_url: $(".cta_page_url").val(),
     };
 
     dataLayer.push({
@@ -606,7 +581,7 @@ $(document).ready(function () {
     $(".answer_1").val(data.phone);
     $(".event_start_time").val(data.eventStartTime);
     $(".event_end_time").val(data.eventEndTime);
-    $(".user_id").val(data.learnUserId);
+    $(".user_id").val(data.User_ID);
     $(".wr__referrer").val(data.referrer);
     $(".site_url").val(data.site_url);
     $(".event_name").val(data.event_name);
@@ -633,6 +608,12 @@ $(document).ready(function () {
       "salesforce_uuid": $('.salesforce_uuid').val(),
     }
 
+    let fullphonenumber3 = getPhoneNumber();
+
+    $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
+    $(".tno1").val(fullphonenumber3);
+    let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm;
+
     const data = {
       firstName: $(".wr__firstname").val(),
       lastName: $(".wr__lastname").val(),
@@ -647,10 +628,15 @@ $(document).ready(function () {
       eventEndTime: $(".wr__event-end-time").val(),
       inviteeStartTime: $(".wr__invitee-start-time").val(),
       inviteeEndTime: $(".wr__invitee-end-time").val(),
-      learnUserId: $(".user_id").val(),
+      User_ID: $(".user_id").val(),
       event_name: eventName,
-      cta_url: "learn.ik" + window.location.pathname,
+      cta_url: $(".cta_page_url").val(),
     };
+
+    if (!phone_regex.test($("#v2-phone-number").val()) || $("#v2-phone-number").val().length == 0) {
+      $('.v2-phone-number-error').show();
+      $('#v2-phone-number').addClass('has-error');
+    } 
 
     if ($("#v2-Experience").val() == "") {
       $(".v3-experience-error").removeClass("hide");
@@ -691,10 +677,10 @@ $(document).ready(function () {
         gclid: decodeURIComponent(utmparams.gclid),
         msclkid: decodeURIComponent(utmparams.msclkid),
         fbclid: decodeURIComponent(utmparams.fbclid),
-        user_id: data.learnUserId,
+        user_id: $('.user_id').val(),
         user_timezone: v_timezone,
         v_country: v_country,
-        phone_number_full: data.phone,
+        phone_number_full: fullphonenumber3,
         "Event Start Time": data.eventStartTime,
         "Event End Time": data.eventEndTime,
         "Work Experience": $("#v2-Experience").val(),
@@ -723,7 +709,7 @@ $(document).ready(function () {
         setDataLayer(leadScoreData);
         $.ajax({
           type: "POST",
-          url: "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/",
+          url: "https://hooks.zapier.com/hooks/catch/11068981/34cx4dp/",
           data: {
             ...GQLformData,
             ...leadScoreData,
