@@ -58,7 +58,7 @@ function fillWebinarSlots(data) {
           data-invitee_starttime="${invitee_start_time}" 
           data-invitee_endtime="${invitee_end_time}" 
           data-name="${datetime}"
-          class="w-form-formradioinput checkbox v2-checkbox slot-checkbox slot-radiobutton w-radio-input" 
+          class="w-form-formradioinput checkbox checkbox-2 v2-checkbox slot-checkbox slot-radiobutton w-radio-input" 
         >
         <div class="div-block-59 time-slot-wrapper">
           <div class="v2-day">${day}</div>
@@ -166,7 +166,7 @@ $(document).ready(function () {
       "Email Address": $('#v2-email').val(),
       "ByeCalendlyType": $('.bye-calendly-type').val(),
       "webinar-type": $('.webinar-type').val(),
-      "Webinar Lead Type": $('.webinar-lead-type').val(),
+      "Webinar Lead Type": $('.webinar-type').val(),
       "utm_source": $('.utm_source').val(),
       "utm_medium": $('.utm_medium').val(),
       "utm_campaign": $('.utm_campaign').val(),
@@ -186,7 +186,7 @@ $(document).ready(function () {
 
       "cta_page_url": $('.cta_page_url').val(),
       "landing_page_url": $('.l_page_url').val(),
-      "event_name": eventName,
+      "event_name": $('input[name="Event Name"]').val(),
       "user_timezone": $('.user_timezone').val(),
       "page_url": $('.page_url').val(),
       "site_url": $('.site_url').val(),
@@ -360,7 +360,6 @@ $(document).ready(function () {
   $('#v2-form-1st-submit').click(function (e) {
     e.preventDefault();
     setHiddenFields();
-    try { paRegisteredCookie(); } catch (e) { console.error(e) }
 
     $("#v2-full-name, #v2-email").keypress(function () {
       $(".v2-full-name-error, .v2-email-id-error").hide();
@@ -391,7 +390,7 @@ $(document).ready(function () {
 
       dataLayer.push({
         'event': 'new_webinar_registration_form_submitted',
-        'webinar_name': eventName
+        'webinar_name': $('input[name="Event Name"]').val()
       });
 
       if ($('.is_exit_intent_popup').val() == "On Scroll") {
@@ -412,9 +411,8 @@ $(document).ready(function () {
         });
       }
 
-      pushToZap("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/");
+      pushToZap("https://hooks.zapier.com/hooks/catch/11068981/34c9jjz/");
 
-      $('#wf-webinar-1-step-v2').submit();
       $('.v2-first-form-block').hide();
       adjustFormStep("#form-step-indicator-1", "#form-step-indicator-2", false, {
         ".v2-line-1": true,
@@ -436,15 +434,10 @@ $(document).ready(function () {
 
   $('#v2-form-2nd-submit').click(function (e) {
     e.preventDefault();
-    let utm_parms = getAllUrlParams();
 
     if ($("input:radio[name='v2-slots-radio']").is(":checked")) {
       const startDate = $('input[name="v2-slots-radio"]:checked').val();
       const endDate = $('input[name="v2-slots-radio"]:checked').data("endtime");
-      const utmm = visitor_id + ":" + v_country;
-      const sf_uuid = v_timezone + ":ik.com" + cta_lp + ":ik.com" + getCookie("ik-landingpage-v2");
-      const utmstr = "&" + (window.location.search == '') ? '' : window.location.search.slice(1);
-      let utmstring = "?utm_source=" + $('.utm_source').val() + "&utm_medium=" + utmm + "&salesforce_uuid=" + sf_uuid + "&forceuswebinar=" + utm_parms['forceuswebinar'] + utmstr;
 
       $(".wr__event-start-time").val(startDate);
       $(".wr__event-end-time").val(endDate);
@@ -462,7 +455,6 @@ $(document).ready(function () {
       bake_cookie("v_history", "");
       bake_cookie("v_latest", "");
 
-      $('#wf-webinar-2-step-v2').submit();
       saveClickActivity("Webinar-form_button_open-gql");
 
       $(".v2-second-form-block").hide();
@@ -505,7 +497,7 @@ $(document).ready(function () {
             Lead_Last__Name: $(".wr__lastname").val(),
             Lead_Email: $(".wr__email").val(),
             Lead_Time_Zone: $(".user_timezone").val(),
-            Event_Type_Name: eventName,
+            Event_Type_Name: $('input[name="Event Name"]').val(),
             Event_Start_Date_Time: formattedStartDateTime,
             Event_End_Date_Time: formattedEndDateTime,
             Cancellation_reason: "",
@@ -564,7 +556,7 @@ $(document).ready(function () {
       inviteeStartTime: $(".wr__invitee-start-time").val(),
       inviteeEndTime: $(".wr__invitee-end-time").val(),
       User_ID: $(".user_id").val(),
-      event_name: eventName,
+      event_name: $('input[name="Event Name"]').val(),
       cta_url: $(".cta_page_url").val(),
     };
 
@@ -594,6 +586,9 @@ $(document).ready(function () {
 
   $('#v2-form-3rd-submit').click(function (e) {
     e.preventDefault();
+
+    let sf_uuid = v_timezone + ":ik.com" + cta_lp + ":ik.com" + getCookie("ik-landingpage-v2");
+    
     let utmparams = {
       "utm_source": $('.utm_source').val(),
       "utm_medium": $('.utm_medium').val(),
@@ -605,7 +600,7 @@ $(document).ready(function () {
       "msclkid": $('.msclkid').val(),
       "fbclid": $('.fbclid').val(),
       "user_id": $('.user_id').val(),
-      "salesforce_uuid": $('.salesforce_uuid').val(),
+      "salesforce_uuid": sf_uuid,
     }
 
     let fullphonenumber3 = getPhoneNumber();
@@ -629,7 +624,7 @@ $(document).ready(function () {
       inviteeStartTime: $(".wr__invitee-start-time").val(),
       inviteeEndTime: $(".wr__invitee-end-time").val(),
       User_ID: $(".user_id").val(),
-      event_name: eventName,
+      event_name: $('input[name="Event Name"]').val(),
       cta_url: $(".cta_page_url").val(),
     };
 

@@ -615,6 +615,8 @@ $(document).ready(function () {
 
   $('#v2-form-3rd-submit').click(function (e) {
     e.preventDefault();
+    let sf_uuid = v_timezone + ":learn.ik" +  cta_lp +  ":learn.ik" +  getCookie("ik-landingpage-v2");
+
     let utmparams = {
       "utm_source": $('.utm_source').val(),
       "utm_medium": $('.utm_medium').val(),
@@ -626,7 +628,7 @@ $(document).ready(function () {
       "msclkid": $('.msclkid').val(),
       "fbclid": $('.fbclid').val(),
       "user_id": $('.user_id').val(),
-      "salesforce_uuid": $('.salesforce_uuid').val(),
+      "salesforce_uuid": sf_uuid,
     }
 
     const data = {
