@@ -247,6 +247,7 @@ $(document).ready(function () {
     $("#v2-success-time").html(SELECTED_SLOT.time)
     $('.form-info').hide();
     $(".form-submitted-div").css("display", "block");
+    $("#extra-content").show();
   }
 
   function adjustFormStep(currentStep, nextStep, isBack, lineStatus = {
