@@ -22,7 +22,7 @@ function fillNextWebinarTimer() {
 }
 
 function fillWebinarSlots(data) {
-  if (!data) {
+  if (!data || data.length == 0) {
     $(".v2-form-wrapper").hide();
     $(".calendly-fallback-v2").show();
     return;
