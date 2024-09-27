@@ -112,33 +112,45 @@ function initObservers() {
       // Function to handle mutation
       function handleMutation(mutations) {
         mutations.forEach(function (mutation) {
-          if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "style"
+          ) {
             var target = $(mutation.target);
-            if (target.hasClass('webinar__registration-form1') && target.css('display') === 'none') {
-              target.css('display', 'block');
-              $('.w-form-done').css('display', 'none');
-              $('.w-form-fail').css('display', 'none');
+            if (
+              target.hasClass("webinar__registration-form1") &&
+              target.css("display") === "none"
+            ) {
+              target.css("display", "block");
+              $(".w-form-done").css("display", "none");
+              $(".w-form-fail").css("display", "none");
             }
 
-            if (target.hasClass('w-form-fail') && target.css('display') !== 'none') {
-              target.css('display', 'none');
+            if (
+              target.hasClass("w-form-fail") &&
+              target.css("display") !== "none"
+            ) {
+              target.css("display", "none");
             }
 
-            if(typeof(isCompactForm) != "undefined" && isCompactForm){
-              if (target.hasClass('webinar__lightbox')) {
-                if (target.css('display') !== 'none' && target.css('visibility') !== 'hidden') {
+            if (typeof isCompactForm != "undefined" && isCompactForm) {
+              if (target.hasClass("webinar__lightbox")) {
+                if (
+                  target.css("display") !== "none" &&
+                  target.css("visibility") !== "hidden"
+                ) {
                   scrollPosition = $(window).scrollTop();
 
-                  $('body').css({
-                    'overflow': 'hidden',
-                    'position': 'fixed',
-                    'top': `-${scrollPosition}px`,
-                    'width': '100%'
+                  $("body").css({
+                    overflow: "hidden",
+                    position: "fixed",
+                    top: `-${scrollPosition}px`,
+                    width: "100%",
                   });
                 } else {
-                  $('body').css({
-                    'overflow': '',
-                    'position': '',
+                  $("body").css({
+                    overflow: "",
+                    position: "",
                   });
                   $(window).scrollTop(scrollPosition);
                 }
@@ -149,17 +161,20 @@ function initObservers() {
       }
       // Create an observer instance
       var observer = new MutationObserver(handleMutation);
-  
-      // Configuration of the observer
-      var config = { attributes: true, attributeFilter: ['style'] };
-  
-      // Observe all forms under .v2-form-container
-      $('.webinar__registration-form1, .w-form-fail, .webinar__lightbox').each(function () {
-        observer.observe(this, config);
-      });
-    }
-  } catch (error) { console.error(error) }
 
+      // Configuration of the observer
+      var config = { attributes: true, attributeFilter: ["style"] };
+
+      // Observe all forms under .v2-form-container
+      $(".webinar__registration-form1, .w-form-fail, .webinar__lightbox").each(
+        function () {
+          observer.observe(this, config);
+        }
+      );
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 $(document).ready(function () {
@@ -374,7 +389,7 @@ $(document).ready(function () {
   const eventTitleMap = {
     CAREER_SESSION: "Seize the AI Advantage: Strengthen Your Resume",
     SWITCH_UP: "Uplevel your career with AI/ML/GenAI",
-    'Product Management': "How to Nail Your Next Tech/Product Interview",
+    "Product Management": "How to Nail Your Next Tech/Product Interview",
     DEFAULT: "How to Nail your next Technical Interview",
   };
 
@@ -399,8 +414,8 @@ $(document).ready(function () {
         return eventTitleMap.CAREER_SESSION;
       case "SWITCH_UP":
         return eventTitleMap.SWITCH_UP;
-      case "Product Management": 
-        return eventTitleMap['Product Management'];
+      case "Product Management":
+        return eventTitleMap["Product Management"];
       default:
         return eventTitleMap.DEFAULT;
     }
@@ -410,37 +425,37 @@ $(document).ready(function () {
   const eventTitle = getEventTitle(webinarType, t.event);
   setEventDetails(eventTitle);
 
-    $(".webinar-lightbox-close").click(function (e) {
-      "ExitIntent" == experiment_type
-        ? ($(".webinar__lightbox-card").css("display", "none"),
-          $(".webinar__lightbox-exit-intent").css("display", "block"))
-        : 1 == exitintent_freecourse
-        ? ($(".webinar__lightbox-card").css("display", "none"),
-          $(".webinar__lightbox-free-course").css("display", "block"),
-          $(".exitintent-fc-email").val($(".email").val()),
+  $(".webinar-lightbox-close").click(function (e) {
+    "ExitIntent" == experiment_type
+      ? ($(".webinar__lightbox-card").css("display", "none"),
+        $(".webinar__lightbox-exit-intent").css("display", "block"))
+      : 1 == exitintent_freecourse
+      ? ($(".webinar__lightbox-card").css("display", "none"),
+        $(".webinar__lightbox-free-course").css("display", "block"),
+        $(".exitintent-fc-email").val($(".email").val()),
+        dataLayer.push({
+          event: "exit_intent",
+          eventCategory: "exit_intent_free_course",
+          eventAction: "exit_intent_free_course",
+          eventLabel: "form triggered",
+        }))
+      : ($(".webinar__lightbox").css("display", "none"),
+        $("body").css("overflow", "auto"),
+        "On Scroll" == $(".is_exit_intent_popup").val() &&
           dataLayer.push({
             event: "exit_intent",
-            eventCategory: "exit_intent_free_course",
-            eventAction: "exit_intent_free_course",
-            eventLabel: "form triggered",
-          }))
-        : ($(".webinar__lightbox").css("display", "none"),
-          $("body").css("overflow", "auto"),
-          "On Scroll" == $(".is_exit_intent_popup").val() &&
-            dataLayer.push({
-              event: "exit_intent",
-              eventCategory: "exit_intent_scroll",
-              eventAction: "exit_intent_scroll",
-              eventLabel: "close",
-            }),
-          "Browser Tab" == $(".is_exit_intent_popup").val() &&
-            dataLayer.push({
-              event: "exit_intent",
-              eventCategory: "exit_intent_browser_tab_close_gesture",
-              eventAction: "exit_intent_browser_tab_close_gesture",
-              eventLabel: "close",
-            }));
-    }),
+            eventCategory: "exit_intent_scroll",
+            eventAction: "exit_intent_scroll",
+            eventLabel: "close",
+          }),
+        "Browser Tab" == $(".is_exit_intent_popup").val() &&
+          dataLayer.push({
+            event: "exit_intent",
+            eventCategory: "exit_intent_browser_tab_close_gesture",
+            eventAction: "exit_intent_browser_tab_close_gesture",
+            eventLabel: "close",
+          }));
+  }),
     $(".btn-getaccess").click(function (e) {
       e.preventDefault();
       $(".exitintent-fc-email").keypress(function () {
@@ -522,7 +537,7 @@ $(document).ready(function () {
     const baseURL = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=${timezoneEncoded}&type=`;
     const url = baseURL + webinarType;
     const authToken = "1Cgx6oYXkOlWkNDn7_tXO";
-  
+
     const handleError = () => {
       TimerHandler(null);
       // This fillWebinarSlots is for v2-homepage.
@@ -531,7 +546,7 @@ $(document).ready(function () {
       }
       registration_type = "calendly";
     };
-  
+
     const processWebinarData = (data, webinarType) => {
       if (data.length === 0 && webinarType !== "Product Management") {
         registration_type = "calendly";
@@ -540,25 +555,25 @@ $(document).ready(function () {
       } else {
         registration_type = "byecalendly";
       }
-  
+
       const processedData = data.map((slot) => ({
         ...slot,
         webinar_lead_type: webinarType,
       }));
-  
+
       TimerHandler(processedData);
       if (typeof fillWebinarSlots === "function") {
         fillWebinarSlots(processedData);
       }
       n(processedData);
     };
-  
+
     // Handle non-switch up logic (when isSwitchUp is "No")
     const fetchWebinarSlotsWithXMLHttpRequest = () => {
       const xhr = new XMLHttpRequest();
       xhr.open("GET", url, true);
       xhr.setRequestHeader("Authorization", authToken);
-  
+
       xhr.onload = function () {
         if (this.status === 200) {
           const response = JSON.parse(this.response);
@@ -567,32 +582,32 @@ $(document).ready(function () {
           handleError();
         }
       };
-  
+
       xhr.onerror = handleError;
       xhr.send();
     };
-  
+
     // Handle switch up logic (when isSwitchUp is not "No")
     const fetchWebinarSlotsAsync = async () => {
       const interviewPrepURL = baseURL + "REGULAR";
       const switchUpURL = baseURL + "SWITCH_UP";
-  
+
       try {
         const [interviewPrepData, switchUpData] = await Promise.all([
           a(interviewPrepURL),
           a(switchUpURL),
         ]);
-  
+
         const processedInterviewPrepData = interviewPrepData.map((slot) => ({
           ...slot,
           webinar_lead_type: "REGULAR",
         }));
-  
+
         const processedSwitchUpData = switchUpData.map((slot) => ({
           ...slot,
           webinar_lead_type: "SWITCH_UP",
         }));
-  
+
         const combinedData = [...processedInterviewPrepData];
         for (const switchUpSlot of processedSwitchUpData) {
           const index = combinedData.findIndex(
@@ -603,11 +618,11 @@ $(document).ready(function () {
           }
           combinedData.push(switchUpSlot); // Add switch up slot
         }
-  
+
         combinedData.sort(
           (a, b) => new Date(a.start_time) - new Date(b.start_time)
         );
-  
+
         TimerHandler(combinedData);
         if (typeof fillWebinarSlots === "function") {
           fillWebinarSlots(combinedData);
@@ -618,7 +633,7 @@ $(document).ready(function () {
         console.error("Error:", error);
       }
     };
-  
+
     // Logic branching based on isSwitchUp flag
     if (isSwitchUp === "No") {
       fetchWebinarSlotsWithXMLHttpRequest();
@@ -632,7 +647,7 @@ $(document).ready(function () {
       });
     }
   }
-  
+
   function s(e) {
     var t = {
       "First Name": $(".wr__firstname").val(),
@@ -734,10 +749,12 @@ $(document).ready(function () {
       // let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
       let a = "";
       // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
-      if(typeof(isCompactForm) != "undefined" && isCompactForm){
-        if(typeof(intlTelInputUtils) == "undefined") {
+      if (typeof isCompactForm != "undefined" && isCompactForm) {
+        if (typeof intlTelInputUtils == "undefined") {
           try {
-            a = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+            a = `+${e.getSelectedCountryData().dialCode}${$(
+              "#webinar_pnumber"
+            ).val()}`;
           } catch (error) {
             a = $("#webinar_pnumber")?.val();
           }
@@ -830,10 +847,12 @@ $(document).ready(function () {
       // let phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
       let phoneNumber = "";
       // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
-      if(typeof(isCompactForm) != "undefined" && isCompactForm){
-        if(typeof(intlTelInputUtils) == "undefined") {
+      if (typeof isCompactForm != "undefined" && isCompactForm) {
+        if (typeof intlTelInputUtils == "undefined") {
           try {
-            phoneNumber = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+            phoneNumber = `+${e.getSelectedCountryData().dialCode}${$(
+              "#webinar_pnumber"
+            ).val()}`;
           } catch (error) {
             phoneNumber = $("#webinar_pnumber")?.val();
           }
@@ -850,8 +869,12 @@ $(document).ready(function () {
       let namePattern = new RegExp("^[a-zA-Z ]+$");
 
       if (
-        isCompactForm && !(namePattern.test($(".last-name").val()) && $(".last-name").val().length != 0)
-      ){
+        isCompactForm &&
+        !(
+          namePattern.test($(".last-name").val()) &&
+          $(".last-name").val().length != 0
+        )
+      ) {
         $(".last-name").val($(".first-name").val());
       }
 
@@ -1076,10 +1099,12 @@ $(document).ready(function () {
       // let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
       let a = "";
       // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
-      if(typeof(isCompactForm) != "undefined" && isCompactForm){
-        if(typeof(intlTelInputUtils) == "undefined") {
+      if (typeof isCompactForm != "undefined" && isCompactForm) {
+        if (typeof intlTelInputUtils == "undefined") {
           try {
-            a = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+            a = `+${e.getSelectedCountryData().dialCode}${$(
+              "#webinar_pnumber"
+            ).val()}`;
           } catch (error) {
             a = $("#webinar_pnumber")?.val();
           }
@@ -1089,7 +1114,6 @@ $(document).ready(function () {
       } else {
         a = e.getNumber(intlTelInputUtils.numberFormat.E164);
       }
-
 
       $("input[name='phone_number[intphone_full]'").val(a);
       $(".tno1").val(a);
@@ -1215,10 +1239,12 @@ $(document).ready(function () {
       // let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
       let a = "";
       // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
-      if(typeof(isCompactForm) != "undefined" && isCompactForm){
-        if(typeof(intlTelInputUtils) == "undefined") {
+      if (typeof isCompactForm != "undefined" && isCompactForm) {
+        if (typeof intlTelInputUtils == "undefined") {
           try {
-            a = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+            a = `+${e.getSelectedCountryData().dialCode}${$(
+              "#webinar_pnumber"
+            ).val()}`;
           } catch (error) {
             a = $("#webinar_pnumber")?.val();
           }
@@ -1338,10 +1364,12 @@ $(document).ready(function () {
       // let i = e.getNumber(intlTelInputUtils.numberFormat.E164);
       let i = "";
       // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
-      if(typeof(isCompactForm) != "undefined" && isCompactForm){
-        if(typeof(intlTelInputUtils) == "undefined") {
+      if (typeof isCompactForm != "undefined" && isCompactForm) {
+        if (typeof intlTelInputUtils == "undefined") {
           try {
-            i = `+${e.getSelectedCountryData().dialCode}${$("#webinar_pnumber").val()}`
+            i = `+${e.getSelectedCountryData().dialCode}${$(
+              "#webinar_pnumber"
+            ).val()}`;
           } catch (error) {
             i = $("#webinar_pnumber")?.val();
           }
@@ -1491,9 +1519,13 @@ $(document).ready(function () {
             1 != singlesignup
               ? (() => {
                   try {
-                    saveClickActivity("Webinar-modal_button_open-gql", new Date().getTime(), () => {
-                      location.href = d;
-                    });
+                    saveClickActivity(
+                      "Webinar-modal_button_open-gql",
+                      new Date().getTime(),
+                      () => {
+                        location.href = d;
+                      }
+                    );
                   } catch (error) {
                     setTimeout(function () {
                       location.href = d;
@@ -1532,16 +1564,20 @@ $(document).ready(function () {
             bake_cookie("v_latest", ""),
             1 != singlesignup
               ? (() => {
-                try {
-                  saveClickActivity("Webinar-modal_button_open-gql", new Date().getTime(), () => {
-                    location.href = d;
-                  });
-                } catch (error) {
-                  setTimeout(function () {
-                    location.href = d;
-                  }, 800);
-                }
-              })()
+                  try {
+                    saveClickActivity(
+                      "Webinar-modal_button_open-gql",
+                      new Date().getTime(),
+                      () => {
+                        location.href = d;
+                      }
+                    );
+                  } catch (error) {
+                    setTimeout(function () {
+                      location.href = d;
+                    }, 800);
+                  }
+                })()
               : ($(".webinar__loadingbar").hide(),
                 $(".webinar__registration-form2-block").hide(),
                 $(".webinar__registration-form3-block").show());
@@ -1575,9 +1611,13 @@ $(document).ready(function () {
             1 != singlesignup
               ? (() => {
                   try {
-                    saveClickActivity("Webinar-modal_button_open-gql", new Date().getTime(), () => {
-                      location.href = e;
-                    });
+                    saveClickActivity(
+                      "Webinar-modal_button_open-gql",
+                      new Date().getTime(),
+                      () => {
+                        location.href = e;
+                      }
+                    );
                   } catch (error) {
                     setTimeout(function () {
                       location.href = e;
