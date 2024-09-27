@@ -599,11 +599,16 @@ $(document).ready(function () {
 
       xhr.onload = function () {
         if (this.status === 200) {
-          const response =
-            typeof this.response === "string"
-              ? JSON.parse(this.response)
-              : this.response;
-          processWebinarData(response, webinarType);
+          try {
+            const response =
+              typeof this.response === "string"
+                ? JSON.parse(this.response)
+                : this.response;
+            processWebinarData(response, webinarType);
+          } catch (error) {
+            console.error("Error:", error);
+            handleError();
+          }
         } else {
           handleError();
         }
