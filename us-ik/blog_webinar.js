@@ -407,48 +407,57 @@ $(document).ready(function () {
       ($(".article_email").val().length == 0)) {
       $('.first-name-error, .last-name-error,.email-id-error').removeClass('hide');
     }
-    else if (!name_regex.test($(".article_first-name").val()) || $(".article_first-name").val().length == 0) {
-      $('.first-name-error').removeClass('hide');
-    } else if (!name_regex.test($(".article_last-name").val()) || $(".article_last-name").val().length == 0) {
-      $('.last-name-error').removeClass('hide');
-    } else if (!email_regex.test($(".article_email").val()) || $(".article_email").val().length == 0) {
-      $('.email-id-error').removeClass('hide');
-    } else {
-      $('.webinar__loadingbar').css("display", "flex");
-      $('.wr__firstname').val($(".article_first-name").val());
-      $('.wr__lastname').val($(".article_last-name").val());
-      $('.wr__email').val($(".article_email").val());
+    else {
+        let isInputInvalid = false;
+        if (!name_regex.test($(".article_first-name").val()) || $(".article_first-name").val().length == 0) {
+          $('.first-name-error').removeClass('hide');
+          isInputInvalid = true;
+        }
+        if (!name_regex.test($(".article_last-name").val()) || $(".article_last-name").val().length == 0) {
+            $('.last-name-error').removeClass('hide');
+            isInputInvalid = true;
+        }
+        if (!email_regex.test($(".article_email").val()) || $(".article_email").val().length == 0) {
+            $('.email-id-error').removeClass('hide');
+            isInputInvalid = true;
+        }
+        if(!isInputInvalid) {
+        $('.webinar__loadingbar').css("display", "flex");
+        $('.wr__firstname').val($(".article_first-name").val());
+        $('.wr__lastname').val($(".article_last-name").val());
+        $('.wr__email').val($(".article_email").val());
 
-      dataLayer.push({
-        'event': 'new_webinar_registration_form_submitted',
-        'webinar_name': (document.querySelector('.webinar__lightbox-title').innerHTML)
-      });
-
-      if ($('.is_exit_intent_popup').val() == "On Scroll") {
         dataLayer.push({
-          'event': 'exit_intent',
-          'eventCategory': 'exit_intent_scroll',
-          'eventAction': 'exit_intent_scroll',
-          'eventLabel': 'form submitted'
+            'event': 'new_webinar_registration_form_submitted',
+            'webinar_name': (document.querySelector('.webinar__lightbox-title').innerHTML)
         });
-      }
 
-      if ($('.is_exit_intent_popup').val() == "Browser Tab") {
-        dataLayer.push({
-          'event': 'exit_intent',
-          'eventCategory': 'exit_intent_browser_tab_close_gesture',
-          'eventAction': 'exit_intent_browser_tab_close_gesture',
-          'eventLabel': 'form submitted'
-        });
-      }
-      pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34c9jjz/");
-      //$('.webinar__registration-form1').submit();
-      $('.article_webinar__registration-form1-block').hide();
-      setTimeout(function () {
-        $('.article_webinar__registration-form2-block').show();
-        $('.webinar__loadingbar').hide();
-      }, 200);
+        if ($('.is_exit_intent_popup').val() == "On Scroll") {
+            dataLayer.push({
+            'event': 'exit_intent',
+            'eventCategory': 'exit_intent_scroll',
+            'eventAction': 'exit_intent_scroll',
+            'eventLabel': 'form submitted'
+            });
+        }
 
+        if ($('.is_exit_intent_popup').val() == "Browser Tab") {
+            dataLayer.push({
+            'event': 'exit_intent',
+            'eventCategory': 'exit_intent_browser_tab_close_gesture',
+            'eventAction': 'exit_intent_browser_tab_close_gesture',
+            'eventLabel': 'form submitted'
+            });
+        }
+        pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34c9jjz/");
+        //$('.webinar__registration-form1').submit();
+        $('.article_webinar__registration-form1-block').hide();
+        setTimeout(function () {
+            $('.article_webinar__registration-form2-block').show();
+            $('.webinar__loadingbar').hide();
+        }, 200);
+
+        }
     }
     $("input:radio[name='start-date']:first").attr("checked", true);
     $('.wr__event-start-time').val($("input:radio[name='start-date']:first").val());
@@ -514,13 +523,21 @@ $(document).ready(function () {
       ($(".phone").val().length == 0)) {
       $('.first-name-error, .last-name-error,.phone-error').removeClass('hide');
     }
-    else if (!name_regex.test($(".article_first-name").val()) || $(".article_first-name").val().length == 0) {
-      $('.first-name-error').removeClass('hide');
-    } else if (!name_regex.test($(".article_last-name").val()) || $(".last-name").val().length == 0) {
-      $('.last-name-error').removeClass('hide');
-    } else if (!phone_regex.test($(".phone").val()) || $(".phone").val().length == 0) {
-      $('.phone-error').removeClass('hide');
-    } else {
+    else {
+        let isInputInvalid = false;
+        if (!name_regex.test($(".article_first-name").val()) || $(".article_first-name").val().length == 0) {
+            $('.first-name-error').removeClass('hide');
+            isInputInvalid = true;
+        }
+        if (!name_regex.test($(".article_last-name").val()) || $(".last-name").val().length == 0) {
+            $('.last-name-error').removeClass('hide');
+            isInputInvalid = true;
+        }
+        if (!phone_regex.test($(".phone").val()) || $(".phone").val().length == 0) {
+            $('.phone-error').removeClass('hide');
+            isInputInvalid = true;
+        } 
+        if(!isInputInvalid) {
       $('.webinar__loadingbar').css("display", "flex");
       $('.wr__firstname').val($(".article_first-name").val());
       $('.wr__lastname').val($(".article_last-name").val());
@@ -559,6 +576,7 @@ $(document).ready(function () {
         $('.webinar__loadingbar').hide();
       }, 200);
 
+        }
     }
     $("input:radio[name='start-date']:first").attr("checked", true);
     $('.wr__event-start-time').val($("input:radio[name='start-date']:first").val());
@@ -697,13 +715,21 @@ $(document).ready(function () {
       ($(".email").val().length == 0)) {
       $('.article_first-name-error, .last-name-error,.email-id-error').removeClass('hide');
     }
-    else if (!name_regex.test($(".article_first-name").val()) || $(".article_first-name").val().length == 0) {
-      $('.first-name-error').removeClass('hide');
-    } else if (!name_regex.test($(".last-name").val()) || $(".last-name").val().length == 0) {
-      $('.last-name-error').removeClass('hide');
-    } else if (!email_regex.test($(".email").val()) || $(".email").val().length == 0) {
-      $('.email-id-error').removeClass('hide');
-    } else {
+    else {
+        let isInputInvalid = false;
+        if (!name_regex.test($(".article_first-name").val()) || $(".article_first-name").val().length == 0) {
+            $('.first-name-error').removeClass('hide');
+            isInputInvalid = true;
+        }
+        if (!name_regex.test($(".last-name").val()) || $(".last-name").val().length == 0) {
+            $('.last-name-error').removeClass('hide');
+            isInputInvalid = true;
+        }
+        if (!email_regex.test($(".email").val()) || $(".email").val().length == 0) {
+            $('.email-id-error').removeClass('hide');
+            isInputInvalid = true;
+        } 
+        if(!isInputInvalid) {
       $('.webinar__loadingbar').css("display", "flex");
 
       dataLayer.push({
@@ -717,6 +743,7 @@ $(document).ready(function () {
         location.href = "/upworth-profile-analysis?domain=" + domainSelected + "&workexp=" + expSelected + "&email=" + $('.article_email').val() + "&fname=" + $('.article_first-name').val() + "&lname=" + $('.article_last-name').val();
       }, 200);
 
+        }
     }
   });
 
