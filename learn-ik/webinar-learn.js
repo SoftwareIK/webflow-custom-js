@@ -190,7 +190,7 @@ $(document).ready(function () {
     });
   }
 
-  is_webinar_1o1_eligible = webinarType === "Product Management";
+  is_webinar_1o1_eligible = webinarType === "ONE_TO_ONE_CONNECT";
 
   // This is for handling AB Testing on the form. pelase remove after we conlude the AB test. //UG-2235
   $("#fullName").on("input", function () {
@@ -392,7 +392,7 @@ $(document).ready(function () {
   const eventTitleMap = {
     CAREER_SESSION: "Seize the AI Advantage: Strengthen Your Resume",
     SWITCH_UP: "Uplevel your career with AI/ML/GenAI",
-    "Product Management": "How to Nail Your Next Tech/Product Interview",
+    ONE_TO_ONE_CONNECT: "How to Nail Your Next Tech/Product Interview",
     DEFAULT: "How to Nail your next Technical Interview",
   };
 
@@ -417,8 +417,8 @@ $(document).ready(function () {
         return eventTitleMap.CAREER_SESSION;
       case "SWITCH_UP":
         return eventTitleMap.SWITCH_UP;
-      case "Product Management":
-        return eventTitleMap["Product Management"];
+      case "ONE_TO_ONE_CONNECT":
+        return eventTitleMap["ONE_TO_ONE_CONNECT"];
       default:
         return eventTitleMap.DEFAULT;
     }
@@ -535,6 +535,15 @@ $(document).ready(function () {
     }),
       e.send();
   }
+
+  function webinar1o1Fallback() {
+    is_webinar_1o1_eligible = false;
+    webinarType = "REGULAR";
+    $(".webinar-lead-type").val("REGULAR");
+    $(".webinar-type").val("REGULAR");
+    createWebinarSlot(webinarType);
+  }
+
   function createWebinarSlot(webinarType) {
     const timezoneEncoded = v_timezone.replace("+", "%2B");
     const baseURL = is_webinar_1o1_eligible
@@ -546,8 +555,7 @@ $(document).ready(function () {
     const handleError = () => {
       // if the API call fails, we'll show the default webinar slot
       if (is_webinar_1o1_eligible) {
-        is_webinar_1o1_eligible = false;
-        createWebinarSlot(webinarType);
+        webinar1o1Fallback();
         return;
       }
 
@@ -560,15 +568,14 @@ $(document).ready(function () {
     };
 
     const processWebinarData = (data, webinarType) => {
-      // Check if the webinar type is Product Management and if data contains any non-empty objects
+      // Check if the webinar type is ONE_TO_ONE_CONNECT and if data contains any non-empty objects
       if (is_webinar_1o1_eligible) {
         if (Object.values(data).some((times) => Object.keys(times).length)) {
           render1o1Slots(data);
           registration_type = "byecalendly";
         } else {
           // If the data is empty, we'll show the default webinar slot
-          is_webinar_1o1_eligible = false;
-          createWebinarSlot(webinarType);
+          webinar1o1Fallback();
         }
         return;
       } else if (Array.isArray(data) && data.length === 0) {
@@ -988,7 +995,6 @@ $(document).ready(function () {
 
               if (is_webinar_1o1_eligible) {
                 $(".webinar-lead-type").val("ONE_TO_ONE_CONNECT");
-                $(".webinar-type").val("ONE_TO_ONE_CONNECT");
               }
 
               s("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/");
@@ -1643,7 +1649,7 @@ $(document).ready(function () {
               if (res.status === 201) {
                 resolve(data);
               } else {
-                is_webinar_1o1_eligible = false;
+                webinar1o1Fallback();
                 console.error(
                   "Something went wrong while calling webinar_connect/book-slot api",
                   res,
@@ -1688,11 +1694,7 @@ $(document).ready(function () {
                     "webinar_lead_type"
                   )
                 ),
-                $(".webinar-type").val(
-                  is_webinar_1o1_eligible
-                    ? "ONE_TO_ONE_CONNECT"
-                    : $(".webinar-type").val()
-                ),
+                $(".webinar-type").val($(".webinar-type").val()),
                 $(".webinar__loadingbar").show(),
                 is_webinar_1o1_eligible
                   ? s("https://hooks.zapier.com/hooks/catch/11068981/34cq9f8/")
@@ -1957,6 +1959,8 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
     return;
   }
 
+  const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   const convertPSTToLocal = (slotsDates) => {
     const result = {};
 
@@ -1967,7 +1971,7 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
         const pstDate = new Date(`${date}T${time}:00-07:00`); // Use UTC-7 to account for PST (Pacific Daylight Time)
         // Convert to local time zone
         const localDate = new Date(
-          pstDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+          pstDate.toLocaleString("en-US", { timeZone: localTimeZone })
         );
         // Extract local date and time
         const localDateString = localDate.toISOString().split("T")[0];
@@ -2017,8 +2021,7 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
     const timezoneDisplay = $(".webinar__slots #timezone");
 
     // Display timezone
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    timezoneDisplay.text(`Time Zone: ${timeZone}`);
+    timezoneDisplay.text(`Time Zone: ${localTimeZone}`);
 
     Object.keys(slotsDates)
       .sort()
