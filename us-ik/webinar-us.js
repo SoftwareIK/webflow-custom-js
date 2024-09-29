@@ -129,19 +129,32 @@ $(document).ready(function () {
     if ((t.country_code3 == "IND") && (forceUSwebinarFlag['forceuswebinar'] == undefined)) {
       createWebinarSlotsList("IND", t.timezone, (slots) => {
         TimerHandler('IST', slots)
+        // This fillWebinarSlots is for v2-pages.
+        if (typeof fillWebinarSlots === "function") {
+          fillWebinarSlots(slots);
+        }
       });
     } else if (forceUSwebinarFlag['forceuswebinar'] == "true") {
       createWebinarSlotsList("USA", "US/Pacific", (slots) => {
         TimerHandler('America/New_York', slots)
+        if (typeof fillWebinarSlots === "function") {
+          fillWebinarSlots(slots);
+        }
       });
     } else {
       createWebinarSlotsList("USA", t.timezone, (slots) => {
         TimerHandler('America/New_York', slots)
+        if (typeof fillWebinarSlots === "function") {
+          fillWebinarSlots(slots);
+        }
       });
     }
   }).fail(function (t) {
     createWebinarSlotsList("USA", "US/Pacific", (slots) => {
       TimerHandler('America/New_York', slots)
+      if (typeof fillWebinarSlots === "function") {
+        fillWebinarSlots(slots);
+      }
     });
   });
 
