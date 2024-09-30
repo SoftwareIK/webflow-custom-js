@@ -305,8 +305,8 @@ function setHiddenFields() {
     case "REGULAR":
       webinarTypeValue = "REGULAR";
       break;
-    case "Product Management":
-      webinarTypeValue = "Product Management";
+    case "ONE_TO_ONE_CONNECT":
+      webinarTypeValue = "ONE_TO_ONE_CONNECT";
       break;
     default:
       webinarTypeValue = "SWITCH_UP";
