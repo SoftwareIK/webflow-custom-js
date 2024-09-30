@@ -726,7 +726,7 @@ $(document).ready(function () {
       "Domain or Role": $(".gql-role-domain").val(),
       "Pa Name": $(".wr__pa-name").val(),
       "Pa Email": $(".wr__pa-email").val(),
-      "Booking id": $('input[name="start-date"]:checked').data("slotid"),
+      "Booking id": $('input[name="start-date"]:checked').data("bookingid"),
     };
     $.ajax({
       type: "POST",
@@ -1647,6 +1647,10 @@ $(document).ready(function () {
               const res = await fetch(url, requestOptions);
               const data = await res.json();
               if (res.status === 201) {
+                $('input[name="start-date"]:checked').data(
+                  "bookingid",
+                  data.booking_id
+                );
                 resolve(data);
               } else {
                 webinar1o1Fallback();

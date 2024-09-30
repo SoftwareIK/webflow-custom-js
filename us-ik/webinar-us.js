@@ -577,7 +577,7 @@ $(document).ready(function () {
       "Event End Time": $(".wr__event-end-time").val(),
       "Invitee Start Time": $(".wr__invitee-start-time").val(),
       "Invitee End Time": $(".wr__invitee-end-time").val(),
-      "Booking id": $('input[name="start-date"]:checked').data("slotid"),
+      "Booking id": $('input[name="start-date"]:checked').data("bookingid"),
     };
 
     $.ajax({
@@ -1085,6 +1085,10 @@ $(document).ready(function () {
                 email: $(".email").val(),
               }),
               success: function (res) {
+                $('input[name="start-date"]:checked').data(
+                  "bookingid",
+                  res.booking_id
+                );
                 console.log("Form submitted successfully!");
                 resolve();
               },
