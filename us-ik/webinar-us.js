@@ -4,7 +4,8 @@ var experiment_type,
   v_timezone_formatted,
   interviewPrepURL,
   switchUpURL,
-  hybrid;
+  hybrid,
+  is_webinar_1o1_eligible = false;
 
 function isDev() {
   return location?.host?.includes("webflow");
@@ -142,22 +143,37 @@ $(document).ready(function () {
       ) {
         createWebinarSlotsList("IND", t.timezone, (slots) => {
           TimerHandler("IST", slots);
+          // This fillWebinarSlots is for v2-pages.
+          if (typeof fillWebinarSlots === "function") {
+            fillWebinarSlots(slots);
+          }
         });
       } else if (forceUSwebinarFlag["forceuswebinar"] == "true") {
         createWebinarSlotsList("USA", "US/Pacific", (slots) => {
           TimerHandler("America/New_York", slots);
+          if (typeof fillWebinarSlots === "function") {
+            fillWebinarSlots(slots);
+          }
         });
       } else {
         createWebinarSlotsList("USA", t.timezone, (slots) => {
           TimerHandler("America/New_York", slots);
+          if (typeof fillWebinarSlots === "function") {
+            fillWebinarSlots(slots);
+          }
         });
       }
     })
     .fail(function (t) {
       createWebinarSlotsList("USA", "US/Pacific", (slots) => {
         TimerHandler("America/New_York", slots);
+        if (typeof fillWebinarSlots === "function") {
+          fillWebinarSlots(slots);
+        }
       });
     });
+
+  is_webinar_1o1_eligible = webinarType === "ONE_TO_ONE_CONNECT";
 
   function getItemsByDateRange(startDate, endDate, data) {
     var startDate = new Date(startDate);
@@ -167,6 +183,16 @@ $(document).ready(function () {
       var itemDate = new Date(item.utc_start_time);
       return itemDate >= startDate && itemDate <= endDate;
     });
+  }
+
+  function populate1o1WebinarSlots(slotsDates, failedCallback) {
+    if (!slotsDates || Object.keys(slotsDates).length === 0) {
+      $(".webinar__slots").html("<p>No slots available</p>");
+      failedCallback();
+      return;
+    }
+    registration_type = "byecalendly";
+    render1o1Slots(slotsDates);
   }
 
   function populateWebinarSlots(resobj) {
@@ -302,7 +328,16 @@ $(document).ready(function () {
     }
   }
 
+  function webinar1o1Fallback() {
+    is_webinar_1o1_eligible = false;
+    webinarType = "REGULAR";
+    $(".webinar-lead-type").val("REGULAR");
+    $(".webinar-type").val("REGULAR");
+  }
+
   function createWebinarSlotsList(country, timezone, callback = () => {}) {
+    $(".webinar-type").val(webinarType);
+
     v_timezone_formatted = timezone.replace("+", "%2B");
 
     switch (webinarType) {
@@ -310,8 +345,8 @@ $(document).ready(function () {
       case "REGULAR":
         webinarType = "REGULAR";
         break;
-      case "Product Management":
-        webinarType = "Product Management";
+      case "ONE_TO_ONE_CONNECT":
+        webinarType = "ONE_TO_ONE_CONNECT";
         break;
       default:
         webinarType = "SWITCH_UP";
@@ -328,16 +363,18 @@ $(document).ready(function () {
       }
     }
     if (isSwitchUp == "No") {
-      let api_url =
-        "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=" +
-        country +
-        "&program=Backend&timezone=" +
-        v_timezone_formatted +
-        "&type=" +
-        webinarType;
+      let api_url = is_webinar_1o1_eligible
+        ? "https://uplevel.interviewkickstart.com/api/v1/webinar_connect/available-slots/"
+        : "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=" +
+          country +
+          "&program=Backend&timezone=" +
+          v_timezone_formatted +
+          "&type=" +
+          webinarType;
       let xhr = new XMLHttpRequest();
       xhr.open("GET", api_url, true);
-      xhr.setRequestHeader("Authorization", "1Cgx6oYXkOlWkNDn7_tXO");
+      if (is_webinar_1o1_eligible)
+        xhr.setRequestHeader("Authorization", "1Cgx6oYXkOlWkNDn7_tXO");
       var tz = new Date().toString().match(/\((.+)\)/);
       if (tz[1].includes(" ")) {
         tz = tz[1]
@@ -355,11 +392,7 @@ $(document).ready(function () {
                 webinar_lead_type: "SWITCH_UP",
               }));
               break;
-            case "Product Management":
-              resobj = resobj.map((item) => ({
-                ...item,
-                webinar_lead_type: "Product Management",
-              }));
+            case "ONE_TO_ONE_CONNECT":
               break;
             default:
               resobj = resobj.map((item) => ({
@@ -368,8 +401,16 @@ $(document).ready(function () {
               }));
               break;
           }
-          callback(resobj);
-          populateWebinarSlots(resobj);
+          callback(Array.isArray(resobj) ? resobj : []);
+          if (is_webinar_1o1_eligible) {
+            populate1o1WebinarSlots(resobj, () => {
+              webinar1o1Fallback();
+              createWebinarSlotsList(country, timezone, callback);
+              xhr.abort();
+            });
+          } else {
+            populateWebinarSlots(resobj);
+          }
         } else {
           callback(null);
           registration_type = "calendly";
@@ -490,8 +531,8 @@ $(document).ready(function () {
   });
 
   function pushToEndPoint(endpoint) {
-    if (webinarType == "Product Management") {
-      webinarType = "Product Management";
+    if (webinarType == "ONE_TO_ONE_CONNECT") {
+      webinarType = "ONE_TO_ONE_CONNECT";
     } else if (v_timezone_formatted == "Asia/Kolkata") {
       webinarType = "REGULAR";
     } else {
@@ -536,7 +577,9 @@ $(document).ready(function () {
       "Event End Time": $(".wr__event-end-time").val(),
       "Invitee Start Time": $(".wr__invitee-start-time").val(),
       "Invitee End Time": $(".wr__invitee-end-time").val(),
+      "Booking id": $('input[name="start-date"]:checked').data("slotid"),
     };
+
     $.ajax({
       type: "POST",
       url: endpoint,
@@ -623,6 +666,7 @@ $(document).ready(function () {
           eventLabel: "form submitted",
         });
       }
+
       pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34c9jjz/");
       //$('.webinar__registration-form1').submit();
       $(".webinar__registration-form1-block").hide();
@@ -1027,7 +1071,45 @@ $(document).ready(function () {
 
       $(".webinar__loadingbar").show();
 
-      pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34cq9f8/");
+      let promise = new Promise((resolve, reject) => {
+        try {
+          if (is_webinar_1o1_eligible) {
+            $.ajax({
+              url: "https://uplevel.interviewkickstart.com/api/v1/webinar_connect/book-slot/",
+              type: "POST",
+              contentType: "application/json",
+              data: JSON.stringify({
+                slot_id: parseInt(
+                  $('input[name="start-date"]:checked').data("slotid")
+                ),
+                email: $(".email").val(),
+              }),
+              success: function (res) {
+                console.log("Form submitted successfully!");
+                resolve();
+              },
+              error: function (err) {
+                console.error(
+                  "1:1 Slot booking failed submission failed!",
+                  err
+                );
+                resolve();
+              },
+            });
+          } else {
+            resolve();
+          }
+        } catch (error) {
+          console.error("Try catch failed at 1:1 Slot API code", err);
+          resolve();
+        }
+      });
+
+      promise.then(() => {
+        pushToEndPoint(
+          "https://hooks.zapier.com/hooks/catch/11068981/34cq9f8/"
+        );
+      });
 
       //$('.webinar__registration-form2').submit();
 
@@ -1260,3 +1342,210 @@ $(document).ready(function () {
     });
   }, "3000");
 });
+
+function render1o1Slots(slotsDates, selectionHandler = () => {}) {
+  if (!slotsDates || Object.keys(slotsDates).length === 0) {
+    $(".webinar__slots").html("<p>No slots available</p>");
+    return;
+  }
+
+  const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const convertPSTToLocal = (slotsDates) => {
+    const result = {};
+
+    // Loop over each date
+    Object.keys(slotsDates).forEach((date) => {
+      Object.keys(slotsDates[date]).forEach((time) => {
+        // Create a new Date object from the date and time in PST
+        const pstDate = new Date(`${date}T${time}:00-07:00`); // Use UTC-7 to account for PST (Pacific Daylight Time)
+        // Convert to local time zone
+        const localDate = new Date(
+          pstDate.toLocaleString("en-US", { timeZone: localTimeZone })
+        );
+        // Extract local date and time
+        const localDateString = localDate.toISOString().split("T")[0];
+        const localTimeString = localDate.toTimeString().slice(0, 5);
+        // If the local date doesn't exist in the result, create it
+        if (!result[localDateString]) {
+          result[localDateString] = {};
+        }
+        // Assign the converted time to the corresponding local date
+        result[localDateString][localTimeString] = slotsDates[date][time];
+      });
+    });
+
+    return result;
+  };
+
+  slotsDates = convertPSTToLocal(slotsDates);
+
+  console.log("1:1 Slots rendered");
+
+  $(".webinar__slots").css({
+    display: "flex",
+    "flex-direction": "column",
+    "justify-content": "space-between",
+  });
+  $(".webinar__slots").html(`
+      <div style="display: flex; gap: 20px;">
+        <div style="flex-grow: 1; position:sticky; top:0px; max-height:300px; overflow-y :auto;">
+          <h4>Select a Date</h4>
+          <div style="display: flex; flex-direction: column;" id="date-list"></div>
+        </div>
+        <div style="border-left: 1px solid #ddd; position:sticky; top:0px;"></div>
+        <div style="flex-grow: 1;  max-height:300px; overflow-y :auto;">
+          <h4>Time slots</h4>
+          <div style="display: flex; flex-direction: column;" id="time-list"></div>
+        </div>
+      </div>
+      <span id="input-placeholder-1o1"> </span>
+      <p id="timezone" style="margin-top: 12px;"></p>
+    `);
+
+  const buttonCommonStyles = `color: #000; cursor: pointer; padding: 10px; margin-bottom: 5px; cursor: pointer; padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid #5494cd;`;
+
+  // Populate dates and time slots
+  function populateDates() {
+    const dateList = $(".webinar__slots #date-list");
+    const timezoneDisplay = $(".timezone-disclaimer");
+
+    // Display timezone
+    timezoneDisplay.text(`Time Zone: ${localTimeZone}`);
+
+    Object.keys(slotsDates)
+      .sort()
+      .map((date, index) => {
+        const localDate = new Date(date).toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+        });
+        const dateBtn = $(`<button type="button" style="${buttonCommonStyles} ${
+          index === 0
+            ? "background-color: #5494cd; color:#fff; font-weight:600;"
+            : "background-color: #fff;"
+        }">
+            ${localDate}</button>`);
+
+        dateBtn.click(function () {
+          $(".webinar__slots #date-list button").css({
+            "background-color": "#fff",
+            color: "#000",
+            fontWeight: "400",
+          }); // Reset all buttons
+          $(this).css({
+            "background-color": "#5494cd",
+            color: "#fff",
+            fontWeight: "600",
+          }); // Highlight clicked date
+          populateTimeSlots(date); // Load time slots for the selected date
+        });
+
+        dateList.append(dateBtn);
+        return dateBtn;
+      })[0]
+      ?.click?.(); // Select the first date by default
+  }
+
+  function populateTimeSlots(selectedDate) {
+    const timeList = $(".webinar__slots #time-list");
+    timeList.empty(); // Clear previous time slots
+
+    const times = slotsDates[selectedDate];
+    Object.keys(times).forEach((time, index) => {
+      const timeBtn = $(
+        `<button type="button" style="${buttonCommonStyles} background-color: #fff;">${time.toUpperCase()}</button>`
+      );
+
+      timeBtn.click(function () {
+        $(".webinar__slots #time-list button").css({
+          "background-color": "#fff",
+          color: "#000",
+          fontWeight: "400",
+        }); // Reset all buttons
+        $(this).css({
+          "background-color": "#5494cd",
+          color: "#fff",
+          fontWeight: "600",
+        }); // Highlight clicked time
+        selectionHandler?.(times[time]); // Callback function
+        console.log(selectedDate, time, `Slot ID: ${times[time]} selected`); // Alert the slot ID
+
+        const startDate = new Date(`${selectedDate}T${time}:00`);
+        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+
+        const inviteeStartTime =
+          startDate.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }) +
+          " - " +
+          startDate.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+        const inviteeEndTime =
+          endDate.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }) +
+          " - " +
+          endDate.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+        function formatDateWithTimezoneOffset(date) {
+          const timezoneOffset = -date.getTimezoneOffset(); // offset in minutes
+          const diffHours = Math.floor(timezoneOffset / 60);
+          const diffMinutes = timezoneOffset % 60;
+          const sign = diffHours >= 0 ? "+" : "-";
+          const pad = (num) => String(Math.abs(num)).padStart(2, "0");
+          return (
+            date.getFullYear() +
+            "-" +
+            pad(date.getMonth() + 1) +
+            "-" +
+            pad(date.getDate()) +
+            "T" +
+            pad(date.getHours()) +
+            ":" +
+            pad(date.getMinutes()) +
+            ":" +
+            pad(date.getSeconds()) +
+            "." +
+            String(date.getMilliseconds()).padStart(3, "0") +
+            sign +
+            pad(diffHours) +
+            ":" +
+            pad(diffMinutes)
+          );
+        }
+        $("#input-placeholder-1o1").html(
+          `<input 
+              data-slotid="${
+                times[time]
+              }" hidden type="radio" name="start-date" value="${formatDateWithTimezoneOffset(
+            startDate
+          )}" data-endtime="${formatDateWithTimezoneOffset(
+            endDate
+          )}" data-invitee_starttime="${inviteeStartTime}" data-invitee_endtime="${inviteeEndTime}" data-name="${formatDateWithTimezoneOffset(
+            startDate
+          )}" class="w-form-formradioinput select-webinar-radio-btn w-radio-input" data-webinar_lead_type="ONE_TO_ONE_CONNECT" checked="checked" />`
+        );
+      });
+
+      timeList.append(timeBtn);
+      setTimeout(() => {
+        if (index === 0) timeBtn.click(); // Select the first time slot by default
+      }, 0);
+    });
+  }
+
+  populateDates();
+}
