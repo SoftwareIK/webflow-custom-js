@@ -373,7 +373,7 @@ $(document).ready(function () {
           webinarType;
       let xhr = new XMLHttpRequest();
       xhr.open("GET", api_url, true);
-      if (is_webinar_1o1_eligible)
+      if (is_webinar_1o1_eligible === false)
         xhr.setRequestHeader("Authorization", "1Cgx6oYXkOlWkNDn7_tXO");
       var tz = new Date().toString().match(/\((.+)\)/);
       if (tz[1].includes(" ")) {
@@ -1106,9 +1106,15 @@ $(document).ready(function () {
       });
 
       promise.then(() => {
-        pushToEndPoint(
-          "https://hooks.zapier.com/hooks/catch/11068981/34cq9f8/"
-        );
+        if (is_webinar_1o1_eligible) {
+          pushToEndPoint(
+            "https://hooks.zapier.com/hooks/catch/11068981/2dvppke/"
+          );
+        } else {
+          pushToEndPoint(
+            "https://hooks.zapier.com/hooks/catch/11068981/34cq9f8/"
+          );
+        }
       });
 
       //$('.webinar__registration-form2').submit();

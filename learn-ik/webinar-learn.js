@@ -1697,7 +1697,7 @@ $(document).ready(function () {
                 $(".webinar-type").val($(".webinar-type").val()),
                 $(".webinar__loadingbar").show(),
                 is_webinar_1o1_eligible
-                  ? s("https://hooks.zapier.com/hooks/catch/11068981/34cq9f8/")
+                  ? s("https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/")
                   : s("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/"),
                 $(".webinar__registration-form2").submit(),
                 bake_cookie("v_history", ""),
