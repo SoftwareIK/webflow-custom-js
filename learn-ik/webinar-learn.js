@@ -1026,6 +1026,7 @@ $(document).ready(function () {
       $(".wr__event-end-time").val(
         $("input:radio[name='start-date']:first").data("endtime")
       );
+
       $(".wr__invitee-start-time").val(
         $("input:radio[name='start-date']:first").data("invitee_starttime")
       );
@@ -1130,6 +1131,7 @@ $(document).ready(function () {
       $(".wr__event-end-time").val(
         $(".webinar-event-date").attr("data-endtime")
       );
+
       $(".wr__invitee-start-time").val(
         $(".webinar-event-date").attr("data-invitee_starttime")
       );
@@ -2093,6 +2095,7 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
             hour: "numeric",
             minute: "2-digit",
             hour12: true,
+            timeZone: localTimeZone, // Set the time zone to IST
           }) +
           " - " +
           startDate.toLocaleDateString("en-US", {
@@ -2100,12 +2103,15 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
             month: "long",
             day: "numeric",
             year: "numeric",
+            timeZone: localTimeZone, // Set the time zone to IST
           });
+
         const inviteeEndTime =
           endDate.toLocaleTimeString("en-US", {
             hour: "numeric",
             minute: "2-digit",
             hour12: true,
+            timeZone: localTimeZone, // Set the time zone to IST
           }) +
           " - " +
           endDate.toLocaleDateString("en-US", {
@@ -2113,7 +2119,9 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
             month: "long",
             day: "numeric",
             year: "numeric",
+            timeZone: localTimeZone, // Set the time zone to IST
           });
+
         function formatDateWithTimezoneOffset(date) {
           const timezoneOffset = -date.getTimezoneOffset(); // offset in minutes
           const diffHours = Math.floor(timezoneOffset / 60);
@@ -2132,8 +2140,6 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
             pad(date.getMinutes()) +
             ":" +
             pad(date.getSeconds()) +
-            "." +
-            String(date.getMilliseconds()).padStart(3, "0") +
             sign +
             pad(diffHours) +
             ":" +
