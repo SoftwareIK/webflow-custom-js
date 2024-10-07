@@ -193,6 +193,9 @@ $(document).ready(function () {
     }
     registration_type = "byecalendly";
     render1o1Slots(slotsDates);
+    if (typeof fillWebinarSlots === "function") {
+      fillWebinarSlots(null);
+    }
   }
 
   function populateWebinarSlots(resobj) {
