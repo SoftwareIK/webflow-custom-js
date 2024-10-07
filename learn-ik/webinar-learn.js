@@ -53,60 +53,6 @@ function paRegisteredCookie() {
   }
 }
 
-function toggleCompactMode(flag) {
-  isCompactForm = flag;
-  // Classes to show/hide based on the flag
-  const showClasses = [
-    "compact-class-fname",
-    "compact-class-lname",
-    "compact-class-phone-label",
-  ];
-
-  // Classes to hide/show based on the flag
-  const hideClasses = [
-    "compact-class-phone-label-desktop",
-    "compact-class-fullname",
-  ];
-
-  // Classes to remove/add based on the flag
-  const toggleClasses = [
-    "compact-class-lightbox",
-    "compact-class-lightbox-card",
-    "compact-class-lightbox-padding",
-    "compact-class-form-grid",
-    "compact-class-logo-title",
-    "compact-class-title",
-    "compact-class-duration",
-    "compact-class-light-box-card",
-    "compact-class-stages",
-    "compact-class-label",
-    "compact-class-input",
-    "compact-class-email",
-    "compact-class-submit",
-  ];
-
-  // Toggle display for showClasses
-  $.each(showClasses, function (index, className) {
-    $(`.${className}`).css("display", flag ? "none" : "block");
-  });
-
-  // Toggle display for hideClasses
-  $.each(hideClasses, function (index, className) {
-    $(`.${className}`).css("display", flag ? "block" : "none");
-  });
-
-  // Add/remove classes based on the compact mode
-  $.each(toggleClasses, function (index, className) {
-    if (flag) {
-      $('[data-original-class~="' + className + '"]').addClass(className);
-    } else {
-      $("." + className).each(function () {
-        $(this).attr("data-original-class", className).removeClass(className);
-      });
-    }
-  });
-}
-
 function initObservers() {
   let scrollPosition = 0;
   try {
@@ -135,27 +81,25 @@ function initObservers() {
               target.css("display", "none");
             }
 
-            if (typeof isCompactForm != "undefined" && isCompactForm) {
-              if (target.hasClass("webinar__lightbox")) {
-                if (
-                  target.css("display") !== "none" &&
-                  target.css("visibility") !== "hidden"
-                ) {
-                  scrollPosition = $(window).scrollTop();
+            if (target.hasClass("webinar__lightbox")) {
+              if (
+                target.css("display") !== "none" &&
+                target.css("visibility") !== "hidden"
+              ) {
+                scrollPosition = $(window).scrollTop();
 
-                  $("body").css({
-                    overflow: "hidden",
-                    position: "fixed",
-                    top: `-${scrollPosition}px`,
-                    width: "100%",
-                  });
-                } else {
-                  $("body").css({
-                    overflow: "",
-                    position: "",
-                  });
-                  $(window).scrollTop(scrollPosition);
-                }
+                $("body").css({
+                  overflow: "hidden",
+                  position: "fixed",
+                  top: `-${scrollPosition}px`,
+                  width: "100%",
+                });
+              } else {
+                $("body").css({
+                  overflow: "",
+                  position: "",
+                });
+                $(window).scrollTop(scrollPosition);
               }
             }
           }
@@ -193,9 +137,7 @@ $(document).ready(function () {
 
   is_webinar_1o1_eligible = webinarType === "ONE_TO_ONE_CONNECT";
 
-  // This is for handling AB Testing on the form. pelase remove after we conlude the AB test. //UG-2235
   $("#fullName").on("input", function () {
-    // only move foward if the form is compact.
     var fullName = $.trim($(this).val());
 
     if (fullName === "") {
@@ -791,20 +733,14 @@ $(document).ready(function () {
     }),
     $(".bc__btn-select-webinar-slot-newsletter").click(function (t) {
       t.preventDefault(), setHiddenFields();
-      // let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
       let a = "";
-      // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
-      if (typeof isCompactForm != "undefined" && isCompactForm) {
-        if (typeof intlTelInputUtils == "undefined") {
-          try {
-            a = `+${e.getSelectedCountryData().dialCode}${$(
-              "#webinar_pnumber"
-            ).val()}`;
-          } catch (error) {
-            a = $("#webinar_pnumber")?.val();
-          }
-        } else {
-          a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      if (typeof intlTelInputUtils == "undefined") {
+        try {
+          a = `+${e.getSelectedCountryData().dialCode}${$(
+            "#webinar_pnumber"
+          ).val()}`;
+        } catch (error) {
+          a = $("#webinar_pnumber")?.val();
         }
       } else {
         a = e.getNumber(intlTelInputUtils.numberFormat.E164);
@@ -889,32 +825,24 @@ $(document).ready(function () {
       setHiddenFields();
       paRegisteredCookie();
 
-      // let phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
       let phoneNumber = "";
-      // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
-      if (typeof isCompactForm != "undefined" && isCompactForm) {
-        if (typeof intlTelInputUtils == "undefined") {
-          try {
-            phoneNumber = `+${e.getSelectedCountryData().dialCode}${$(
-              "#webinar_pnumber"
-            ).val()}`;
-          } catch (error) {
-            phoneNumber = $("#webinar_pnumber")?.val();
-          }
-        } else {
-          phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      if (typeof intlTelInputUtils == "undefined") {
+        try {
+          phoneNumber = `+${e.getSelectedCountryData().dialCode}${$(
+            "#webinar_pnumber"
+          ).val()}`;
+        } catch (error) {
+          phoneNumber = $("#webinar_pnumber")?.val();
         }
       } else {
         phoneNumber = e.getNumber(intlTelInputUtils.numberFormat.E164);
       }
-
       $("input[name='phone_number[intphone_full]'").val(phoneNumber);
       $(".tno1").val(phoneNumber);
 
       let namePattern = new RegExp("^[a-zA-Z ]+$");
 
       if (
-        isCompactForm &&
         !(
           namePattern.test($(".last-name").val()) &&
           $(".last-name").val().length != 0
@@ -941,7 +869,6 @@ $(document).ready(function () {
 
       if (
         $(".first-name").val().length == 0 &&
-        (isCompactForm || $(".last-name").val().length == 0) &&
         $(".email").val().length == 0 &&
         $(".phone").val().length == 0
       ) {
@@ -953,72 +880,64 @@ $(document).ready(function () {
         $(".first-name").val().length != 0
       ) {
         if (
-          isCompactForm ||
-          (namePattern.test($(".last-name").val()) &&
-            $(".last-name").val().length != 0)
+          /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
+            $(".phone").val()
+          ) &&
+          $(".phone").val().length != 0
         ) {
           if (
-            /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
-              $(".phone").val()
+            /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(
+              $(".email").val()
             ) &&
-            $(".phone").val().length != 0
+            $(".email").val().length != 0
           ) {
-            if (
-              /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(
-                $(".email").val()
-              ) &&
-              $(".email").val().length != 0
-            ) {
-              $(".webinar__loadingbar").css("display", "flex");
-              $(".wr__firstname").val($(".first-name").val());
-              $(".wr__lastname").val($(".last-name").val());
-              $(".wr__email").val($(".email").val());
-              $(".wr__phone").val(phoneNumber);
+            $(".webinar__loadingbar").css("display", "flex");
+            $(".wr__firstname").val($(".first-name").val());
+            $(".wr__lastname").val($(".last-name").val());
+            $(".wr__email").val($(".email").val());
+            $(".wr__phone").val(phoneNumber);
 
+            dataLayer.push({
+              event: "new_webinar_registration_form_submitted",
+              webinar_name: document.querySelector(".webinar__lightbox-title")
+                .innerHTML,
+            });
+
+            if ($(".is_exit_intent_popup").val() == "On Scroll") {
               dataLayer.push({
-                event: "new_webinar_registration_form_submitted",
-                webinar_name: document.querySelector(".webinar__lightbox-title")
-                  .innerHTML,
+                event: "exit_intent",
+                eventCategory: "exit_intent_scroll",
+                eventAction: "exit_intent_scroll",
+                eventLabel: "form submitted",
               });
-
-              if ($(".is_exit_intent_popup").val() == "On Scroll") {
-                dataLayer.push({
-                  event: "exit_intent",
-                  eventCategory: "exit_intent_scroll",
-                  eventAction: "exit_intent_scroll",
-                  eventLabel: "form submitted",
-                });
-              }
-
-              if ($(".is_exit_intent_popup").val() == "Browser Tab") {
-                dataLayer.push({
-                  event: "exit_intent",
-                  eventCategory: "exit_intent_browser_tab_close_gesture",
-                  eventAction: "exit_intent_browser_tab_close_gesture",
-                  eventLabel: "form submitted",
-                });
-              }
-
-              if (is_webinar_1o1_eligible) {
-                $(".webinar-lead-type").val("ONE_TO_ONE_CONNECT");
-              }
-
-              s("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/");
-              $(".webinar__registration-form1").submit();
-              $(".webinar__registration-form1-block").hide();
-
-              setTimeout(function () {
-                $(".webinar__registration-form2-block").show();
-                $(".webinar__loadingbar").hide();
-              }, 200);
-            } else {
-              $(".email-id-error").removeClass("hide");
             }
+
+            if ($(".is_exit_intent_popup").val() == "Browser Tab") {
+              dataLayer.push({
+                event: "exit_intent",
+                eventCategory: "exit_intent_browser_tab_close_gesture",
+                eventAction: "exit_intent_browser_tab_close_gesture",
+                eventLabel: "form submitted",
+              });
+            }
+
+            if (is_webinar_1o1_eligible) {
+              $(".webinar-lead-type").val("ONE_TO_ONE_CONNECT");
+            }
+
+            s("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/");
+            $(".webinar__registration-form1").submit();
+            $(".webinar__registration-form1-block").hide();
+
+            setTimeout(function () {
+              $(".webinar__registration-form2-block").show();
+              $(".webinar__loadingbar").hide();
+            }, 200);
           } else {
-            $(".phone-error").removeClass("hide");
+            $(".email-id-error").removeClass("hide");
           }
         } else {
-          $(".last-name-error").removeClass("hide");
+          $(".phone-error").removeClass("hide");
         }
       } else {
         $(".first-name-error").removeClass("hide");
@@ -1032,6 +951,7 @@ $(document).ready(function () {
       $(".wr__event-end-time").val(
         $("input:radio[name='start-date']:first").data("endtime")
       );
+
       $(".wr__invitee-start-time").val(
         $("input:radio[name='start-date']:first").data("invitee_starttime")
       );
@@ -1042,91 +962,6 @@ $(document).ready(function () {
         $("input:radio[name='start-date']:first").data("webinar_lead_type")
       );
     }),
-    // $(".bc__btn-select-webinar-slot").click(function (t) {
-    //   t.preventDefault(), setHiddenFields();
-    //   paRegisteredCookie();
-    //   let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
-    //   $("input[name='phone_number[intphone_full]'").val(a),
-    //     $(".tno1").val(a),
-    //     $(".first-name, .last-name, .phone, .email").keypress(function () {
-    //       $(
-    //         ".first-name-error, .last-name-error,.email-id-error,.phone-error"
-    //       ).addClass("hide");
-    //     }),
-    //     $(".first-name, .last-name, .phone, .email").focus(function () {
-    //       $(
-    //         ".first-name-error, .last-name-error,.email-id-error,.phone-error"
-    //       ).addClass("hide");
-    //     });
-    //   let n = new RegExp("^[a-zA-Z ]+$");
-    //   0 == $(".first-name").val().length &&
-    //   0 == $(".last-name").val().length &&
-    //   0 == $(".email").val().length &&
-    //   0 == $(".phone").val().length
-    //     ? $(
-    //         ".first-name-error, .last-name-error,.email-id-error,.phone-error"
-    //       ).removeClass("hide")
-    //     : n.test($(".first-name").val()) && 0 != $(".first-name").val().length
-    //     ? n.test($(".last-name").val()) && 0 != $(".last-name").val().length
-    //       ? /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
-    //           $(".phone").val()
-    //         ) && 0 != $(".phone").val().length
-    //         ? /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(
-    //             $(".email").val()
-    //           ) && 0 != $(".email").val().length
-    //           ? ($(".webinar__loadingbar").css("display", "flex"),
-    //             $(".wr__firstname").val($(".first-name").val()),
-    //             $(".wr__lastname").val($(".last-name").val()),
-    //             $(".wr__email").val($(".email").val()),
-    //             $(".wr__phone").val(a),
-    //             dataLayer.push({
-    //               event: "new_webinar_registration_form_submitted",
-    //               webinar_name: document.querySelector(
-    //                 ".webinar__lightbox-title"
-    //               ).innerHTML,
-    //             }),
-    //             "On Scroll" == $(".is_exit_intent_popup").val() &&
-    //               dataLayer.push({
-    //                 event: "exit_intent",
-    //                 eventCategory: "exit_intent_scroll",
-    //                 eventAction: "exit_intent_scroll",
-    //                 eventLabel: "form submitted",
-    //               }),
-    //             "Browser Tab" == $(".is_exit_intent_popup").val() &&
-    //               dataLayer.push({
-    //                 event: "exit_intent",
-    //                 eventCategory: "exit_intent_browser_tab_close_gesture",
-    //                 eventAction: "exit_intent_browser_tab_close_gesture",
-    //                 eventLabel: "form submitted",
-    //               }),
-    //             s("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/"),
-    //             $(".webinar__registration-form1").submit(),
-    //             $(".webinar__registration-form1-block").hide(),
-    //             setTimeout(function () {
-    //               $(".webinar__registration-form2-block").show(),
-    //                 $(".webinar__loadingbar").hide();
-    //             }, 200))
-    //           : $(".email-id-error").removeClass("hide")
-    //         : $(".phone-error").removeClass("hide")
-    //       : $(".last-name-error").removeClass("hide")
-    //     : $(".first-name-error").removeClass("hide"),
-    //     $("input:radio[name='start-date']:first").attr("checked", !0),
-    //     $(".wr__event-start-time").val(
-    //       $("input:radio[name='start-date']:first").val()
-    //     ),
-    //     $(".wr__event-end-time").val(
-    //       $("input:radio[name='start-date']:first").data("endtime")
-    //     ),
-    //     $(".wr__invitee-start-time").val(
-    //       $("input:radio[name='start-date']:first").data("invitee_starttime")
-    //     ),
-    //     $(".wr__invitee-end-time").val(
-    //       $("input:radio[name='start-date']:first").data("invitee_endtime")
-    //     ),
-    //     $(".webinar-lead-type").val(
-    //       $("input:radio[name='start-date']:first").data("webinar_lead_type")
-    //     );
-    // }),
     $(".bc__btn-select-webinar-slot-upsight1").click(function (t) {
       t.preventDefault();
       setHiddenFields();
@@ -1136,6 +971,7 @@ $(document).ready(function () {
       $(".wr__event-end-time").val(
         $(".webinar-event-date").attr("data-endtime")
       );
+
       $(".wr__invitee-start-time").val(
         $(".webinar-event-date").attr("data-invitee_starttime")
       );
@@ -1145,20 +981,14 @@ $(document).ready(function () {
       $(".webinar-lead-type").val(
         $(".webinar-event-date").attr("data-webinar_lead_type")
       );
-      // let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
       let a = "";
-      // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
-      if (typeof isCompactForm != "undefined" && isCompactForm) {
-        if (typeof intlTelInputUtils == "undefined") {
-          try {
-            a = `+${e.getSelectedCountryData().dialCode}${$(
-              "#webinar_pnumber"
-            ).val()}`;
-          } catch (error) {
-            a = $("#webinar_pnumber")?.val();
-          }
-        } else {
-          a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      if (typeof intlTelInputUtils == "undefined") {
+        try {
+          a = `+${e.getSelectedCountryData().dialCode}${$(
+            "#webinar_pnumber"
+          ).val()}`;
+        } catch (error) {
+          a = $("#webinar_pnumber")?.val();
         }
       } else {
         a = e.getNumber(intlTelInputUtils.numberFormat.E164);
@@ -1285,20 +1115,14 @@ $(document).ready(function () {
     }),
     $(".bc__btn-select-webinar-slot-v2").click(function (t) {
       t.preventDefault(), setHiddenFields();
-      // let a = e.getNumber(intlTelInputUtils.numberFormat.E164);
       let a = "";
-      // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
-      if (typeof isCompactForm != "undefined" && isCompactForm) {
-        if (typeof intlTelInputUtils == "undefined") {
-          try {
-            a = `+${e.getSelectedCountryData().dialCode}${$(
-              "#webinar_pnumber"
-            ).val()}`;
-          } catch (error) {
-            a = $("#webinar_pnumber")?.val();
-          }
-        } else {
-          a = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      if (typeof intlTelInputUtils == "undefined") {
+        try {
+          a = `+${e.getSelectedCountryData().dialCode}${$(
+            "#webinar_pnumber"
+          ).val()}`;
+        } catch (error) {
+          a = $("#webinar_pnumber")?.val();
         }
       } else {
         a = e.getNumber(intlTelInputUtils.numberFormat.E164);
@@ -1410,20 +1234,14 @@ $(document).ready(function () {
       t.preventDefault(), setHiddenFields();
       let a = $(".gql-exp-select").val(),
         n = $(".gql-domain-select").val();
-      // let i = e.getNumber(intlTelInputUtils.numberFormat.E164);
       let i = "";
-      // AB test code. if isCompactForm is true, than we'll fix the bug. otherwise as it is.
-      if (typeof isCompactForm != "undefined" && isCompactForm) {
-        if (typeof intlTelInputUtils == "undefined") {
-          try {
-            i = `+${e.getSelectedCountryData().dialCode}${$(
-              "#webinar_pnumber"
-            ).val()}`;
-          } catch (error) {
-            i = $("#webinar_pnumber")?.val();
-          }
-        } else {
-          i = e.getNumber(intlTelInputUtils.numberFormat.E164);
+      if (typeof intlTelInputUtils == "undefined") {
+        try {
+          i = `+${e.getSelectedCountryData().dialCode}${$(
+            "#webinar_pnumber"
+          ).val()}`;
+        } catch (error) {
+          i = $("#webinar_pnumber")?.val();
         }
       } else {
         i = e.getNumber(intlTelInputUtils.numberFormat.E164);
@@ -2099,6 +1917,7 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
             hour: "numeric",
             minute: "2-digit",
             hour12: true,
+            timeZone: localTimeZone, // Set the time zone to IST
           }) +
           " - " +
           startDate.toLocaleDateString("en-US", {
@@ -2106,12 +1925,15 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
             month: "long",
             day: "numeric",
             year: "numeric",
+            timeZone: localTimeZone, // Set the time zone to IST
           });
+
         const inviteeEndTime =
           endDate.toLocaleTimeString("en-US", {
             hour: "numeric",
             minute: "2-digit",
             hour12: true,
+            timeZone: localTimeZone, // Set the time zone to IST
           }) +
           " - " +
           endDate.toLocaleDateString("en-US", {
@@ -2119,7 +1941,9 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
             month: "long",
             day: "numeric",
             year: "numeric",
+            timeZone: localTimeZone, // Set the time zone to IST
           });
+
         function formatDateWithTimezoneOffset(date) {
           const timezoneOffset = -date.getTimezoneOffset(); // offset in minutes
           const diffHours = Math.floor(timezoneOffset / 60);
@@ -2138,8 +1962,6 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
             pad(date.getMinutes()) +
             ":" +
             pad(date.getSeconds()) +
-            "." +
-            String(date.getMilliseconds()).padStart(3, "0") +
             sign +
             pad(diffHours) +
             ":" +
