@@ -115,7 +115,7 @@ $(document).ready(function () {
     let forceUSwebinarFlag = getAllUrlParams();
     if ((t.country_code3 == "IND") && (forceUSwebinarFlag['forceuswebinar'] == undefined)) {
       createWebinarSlotsList("IND", t.timezone, (slots) => {
-        TimerHandler('IST', slots)
+        TimerHandler('Asia/Kolkata', slots)
       });
     } else if (forceUSwebinarFlag['forceuswebinar'] == "true") {
       createWebinarSlotsList("USA", "US/Pacific", (slots) => {
