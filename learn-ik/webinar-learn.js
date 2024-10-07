@@ -10,7 +10,8 @@ var experiment_type,
   switchUpURL,
   eventUpsightDate,
   webinarSlotDate,
-  is_webinar_1o1_eligible;
+  is_webinar_1o1_eligible,
+  callCreateWebinarSlot;
 
 function getDeviceType() {
   var e = navigator.userAgent;
@@ -685,6 +686,8 @@ $(document).ready(function () {
       });
     }
   }
+
+  callCreateWebinarSlot = createWebinarSlot;
 
   function s(e) {
     var t = {

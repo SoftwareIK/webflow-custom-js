@@ -21,11 +21,22 @@ function fillNextWebinarTimer() {
   setTimeout(fillNextWebinarTimer, 60000);
 }
 
+function fallbackToCelendlly() {
+  $(".v2-form-wrapper").hide();
+  $(".calendly-fallback-v2").show();
+}
+
 function fillWebinarSlots(data) {
   if (!data || data.length == 0) {
-    $(".v2-form-wrapper").hide();
-    $(".calendly-fallback-v2").show();
+    fallbackToCelendlly();
     return;
+  }
+
+  if(is_webinar_1o1_eligible){
+    $('.webinar__slots').show();
+  } else {
+    $('.webinar__slots').remove();
+    $(".v2-check-container").show();
   }
 
   upcomingWebinar = findNextWebinar(data);
@@ -106,6 +117,18 @@ function fillWebinarSlots(data) {
   $(".v2-check-container").html(slotMarkups.join(""));
 }
 
+function webinar1o1Fallback() {
+  try {
+    is_webinar_1o1_eligible = false;
+    webinarType = "REGULAR";
+    $(".webinar-lead-type").val("REGULAR");
+    $(".webinar-type").val("REGULAR");
+    callCreateWebinarSlot(webinarType);
+  } catch (error) {
+    fallbackToCelendlly();
+  }
+}
+
 function handleSlotScroll() {
   const $container = $('.v2-check-container');
   const $arrowRight = $('.swipe-arrow-right');
@@ -143,6 +166,7 @@ function handleSlotScroll() {
   // Initial check
   updateArrows();
 }
+
 function getMonthName(monthNumber) {
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -151,6 +175,11 @@ function getMonthName(monthNumber) {
 
   return monthNames[monthNumber - 1];
 }
+
+function formatDate(dateTime) {
+  return dateTime.toISOString().replace(/T/, " ").replace(/\.\d+Z$/, " UTC");
+}
+
 
 $(document).ready(function () {
   const SELECTED_SLOT = {};
@@ -200,6 +229,7 @@ $(document).ready(function () {
       "Invitee End Time": $('.wr__invitee-end-time').val(),
       "Work Experience": $('.gql-work-experience').val(),
       "Domain or Role": $('.gql-role-domain').val(),
+      "Booking id": $('input[name="start-date"]:checked').data("bookingid")
     };
 
     $.ajax({
@@ -424,6 +454,10 @@ $(document).ready(function () {
         });
       }
 
+      if (is_webinar_1o1_eligible) {
+        $(".webinar-lead-type").val("ONE_TO_ONE_CONNECT");
+      }
+
       pushToZap("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/");
 
       $('#wf-webinar-1-step-v2').submit();
@@ -438,36 +472,194 @@ $(document).ready(function () {
         $('.v2-form-loading-bar').hide();
       }, 200);
     }
-    $("input:radio[name='v2-slots-radio']:first").attr("checked", true);
-    $('.wr__event-start-time').val($("input:radio[name='v2-slots-radio']:first").val());
-    $('.wr__event-end-time').val($("input:radio[name='v2-slots-radio']:first").data('endtime'));
-    $('.wr__invitee-start-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_starttime'));
-    $('.wr__invitee-end-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_endtime'));
-    $('.webinar-lead-type').val($("input:radio[name='v2-slots-radio']:first").data('webinar_lead_type'));
+    if(is_webinar_1o1_eligible){
+      $("input:radio[name='start-date']:first").attr("checked", true);
+      $(".wr__event-start-time").val($("input:radio[name='start-date']:first").val());
+      $(".wr__event-end-time").val($("input:radio[name='start-date']:first").data("endtime"));
+      $(".wr__invitee-start-time").val($("input:radio[name='start-date']:first").data("invitee_starttime"));
+      $(".wr__invitee-end-time").val($("input:radio[name='start-date']:first").data("invitee_endtime"));
+      $(".webinar-lead-type").val($("input:radio[name='start-date']:first").data("webinar_lead_type"));
+    } else {
+      $("input:radio[name='v2-slots-radio']:first").attr("checked", true);
+      $('.wr__event-start-time').val($("input:radio[name='v2-slots-radio']:first").val());
+      $('.wr__event-end-time').val($("input:radio[name='v2-slots-radio']:first").data('endtime'));
+      $('.wr__invitee-start-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_starttime'));
+      $('.wr__invitee-end-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_endtime'));
+      $('.webinar-lead-type').val($("input:radio[name='v2-slots-radio']:first").data('webinar_lead_type'));
+    }
+
   })
 
-  $('#v2-form-2nd-submit').click(function (e) {
-    e.preventDefault();
+  function bookSlot() {
+    return new Promise(async (resolve, reject) => {
+      if (is_webinar_1o1_eligible) {
+        const url =
+          "https://uplevel.interviewkickstart.com/api/v1/webinar_connect/book-slot/";
+        const payload = {
+          slot_id: parseInt(
+            $('input[name="start-date"]:checked').data("slotid")
+          ),
+          email: $('#v2-email').val(),
+        };
+        const requestOptions = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+          redirect: "follow",
+        };
 
-    if ($("input:radio[name='v2-slots-radio']").is(":checked")) {
+        /**
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         *  TODO: REMOVE THIS. THIS IS A TEMPORARY testing thing.
+         */
+
+        const res = {
+          status: 201,
+        }
+        const data = {"booking_id":66,"start_datetime":"2024-10-09T00:30:00Z"}
+        
+        // const res = await fetch(url, requestOptions);
+        // const data = await res.json();
+        if (res.status === 201) {
+          $('input[name="start-date"]:checked').data(
+            "bookingid",
+            data.booking_id
+          );
+          resolve(data);
+        } else {
+          webinar1o1Fallback();
+          console.error(
+            "Something went wrong while calling webinar_connect/book-slot api",
+            res,
+            data
+          );
+          reject(
+            new Error(
+              "Something went wrong while calling webinar_connect/book-slot api"
+            )
+          );
+        }
+      } else {
+        resolve();
+      }
+    });
+  }
+
+  $('#v2-form-2nd-submit').click(async function (e) {
+    e.preventDefault();
+    let slotBookRes = {}
+    if(is_webinar_1o1_eligible){
+      slotBookRes = await bookSlot();
+    }
+
+    if ($("input:radio[name='v2-slots-radio']").is(":checked") || (is_webinar_1o1_eligible && $('input[name="start-date"]').is(":checked") )) {
       try { paRegisteredCookie(); } catch (e) { console.error(e) }
 
-      const startDate = $('input[name="v2-slots-radio"]:checked').val();
-      const endDate = $('input[name="v2-slots-radio"]:checked').data("endtime");
+      let startDate = "";
+      let endDate = "";
+
+      if(is_webinar_1o1_eligible){
+        startDate = $('input[name="start-date"]:checked').val();
+        endDate = $('input[name="start-date"]:checked').data("endtime");
+      } else {
+        startDate = $('input[name="v2-slots-radio"]:checked').val();
+        endDate = $('input[name="v2-slots-radio"]:checked').data("endtime");
+      }
 
       function updateFormFields() {
         $(".wr__event-start-time").val(startDate);
         $(".wr__event-end-time").val(endDate);
-        $(".wr__invitee-start-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_starttime"));
-        $(".wr__invitee-end-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_endtime"));
-        $(".webinar-lead-type").val($('input[name="v2-slots-radio"]:checked').data("webinar_lead_type"));
+        if(is_webinar_1o1_eligible){
+          $(".wr__invitee-start-time").val(slotBookRes.start_datetime);
+          $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime"));
+          $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type"));
+        } else {
+          $(".wr__invitee-start-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_starttime"));
+          $(".wr__invitee-end-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_endtime"));
+          $(".webinar-lead-type").val($('input[name="v2-slots-radio"]:checked').data("webinar_lead_type"));
+        }
       }
 
-      function formatDate(dateTime) {
-        return dateTime.toISOString().replace(/T/, " ").replace(/\.\d+Z$/, " UTC");
-      }
-
-      if (typeof paRegistered !== "undefined") {
+      if(is_webinar_1o1_eligible){
+        pushToZap("https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/");
+      }else if (typeof paRegistered !== "undefined") {
         updateFormFields();
         $(".v2-form-loading-bar").show();
         pushToZap("https://hooks.zapier.com/hooks/catch/11068981/307qti9/");
