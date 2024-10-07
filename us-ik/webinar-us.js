@@ -1394,25 +1394,29 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
 
   const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const convertPSTToLocal = (slotsDates) => {
+  const convertUTCToLocal = (slotsDates, localTimeZone) => {
     const result = {};
 
     // Loop over each date
     Object.keys(slotsDates).forEach((date) => {
       Object.keys(slotsDates[date]).forEach((time) => {
-        // Create a new Date object from the date and time in PST
-        const pstDate = new Date(`${date}T${time}:00-07:00`); // Use UTC-7 to account for PST (Pacific Daylight Time)
+        // Create a new Date object from the date and time in UTC
+        const utcDate = new Date(`${date}T${time}:00Z`); // Use "Z" to indicate UTC time
+
         // Convert to local time zone
         const localDate = new Date(
-          pstDate.toLocaleString("en-US", { timeZone: localTimeZone })
+          utcDate.toLocaleString("en-US", { timeZone: localTimeZone })
         );
+
         // Extract local date and time
         const localDateString = localDate.toISOString().split("T")[0];
         const localTimeString = localDate.toTimeString().slice(0, 5);
+
         // If the local date doesn't exist in the result, create it
         if (!result[localDateString]) {
           result[localDateString] = {};
         }
+
         // Assign the converted time to the corresponding local date
         result[localDateString][localTimeString] = slotsDates[date][time];
       });
@@ -1421,7 +1425,8 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
     return result;
   };
 
-  slotsDates = convertPSTToLocal(slotsDates);
+
+  slotsDates = convertUTCToLocal(slotsDates);
 
   console.log("1:1 Slots rendered");
 
@@ -1464,8 +1469,8 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
           day: "numeric",
         });
         const dateBtn = $(`<button type="button" style="${buttonCommonStyles} ${index === 0
-            ? "background-color: #5494cd; color:#fff; font-weight:600;"
-            : "background-color: #fff;"
+          ? "background-color: #5494cd; color:#fff; font-weight:600;"
+          : "background-color: #fff;"
           }">
             ${localDate}</button>`);
 
@@ -1494,7 +1499,11 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
     timeList.empty(); // Clear previous time slots
 
     const times = slotsDates[selectedDate];
-    Object.keys(times).forEach((time, index) => {
+    Object.keys(times).sort((a, b) => {
+      const timeA = new Date(`1970-01-01T${a}:00`).getTime();
+      const timeB = new Date(`1970-01-01T${b}:00`).getTime();
+      return timeA - timeB;
+    }).forEach((time, index) => {
       const timeBtn = $(
         `<button type="button" style="${buttonCommonStyles} background-color: #fff;">${time.toUpperCase()}</button>`
       );

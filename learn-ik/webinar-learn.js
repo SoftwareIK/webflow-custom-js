@@ -17,8 +17,8 @@ function getDeviceType() {
   return /mobile/i.test(e)
     ? "Mobile"
     : /iPad|Android|Touch/i.test(e)
-    ? "Tablet"
-    : "Desktop";
+      ? "Tablet"
+      : "Desktop";
 }
 function isDev() {
   return location?.host?.includes("webflow");
@@ -294,19 +294,19 @@ $(document).ready(function () {
     } else {
       for (i = 0; i < a; i++) {
         var n =
-            e[i].weekday +
-            ", " +
-            e[i].day +
-            " " +
-            t[parseInt(e[i].month) - 1] +
-            " " +
-            e[i].year +
-            " | " +
-            e[i].hour +
-            ":" +
-            e[i].minute +
-            " " +
-            e[i].am_or_pm,
+          e[i].weekday +
+          ", " +
+          e[i].day +
+          " " +
+          t[parseInt(e[i].month) - 1] +
+          " " +
+          e[i].year +
+          " | " +
+          e[i].hour +
+          ":" +
+          e[i].minute +
+          " " +
+          e[i].am_or_pm,
           r =
             '<label class="select-webinar-slot w-radio"><input type="radio" name="start-date" value="' +
             e[i].start_time +
@@ -375,25 +375,25 @@ $(document).ready(function () {
       ? ($(".webinar__lightbox-card").css("display", "none"),
         $(".webinar__lightbox-exit-intent").css("display", "block"))
       : 1 == exitintent_freecourse
-      ? ($(".webinar__lightbox-card").css("display", "none"),
-        $(".webinar__lightbox-free-course").css("display", "block"),
-        $(".exitintent-fc-email").val($(".email").val()),
-        dataLayer.push({
-          event: "exit_intent",
-          eventCategory: "exit_intent_free_course",
-          eventAction: "exit_intent_free_course",
-          eventLabel: "form triggered",
-        }))
-      : ($(".webinar__lightbox").css("display", "none"),
-        $("body").css("overflow", "auto"),
-        "On Scroll" == $(".is_exit_intent_popup").val() &&
+        ? ($(".webinar__lightbox-card").css("display", "none"),
+          $(".webinar__lightbox-free-course").css("display", "block"),
+          $(".exitintent-fc-email").val($(".email").val()),
+          dataLayer.push({
+            event: "exit_intent",
+            eventCategory: "exit_intent_free_course",
+            eventAction: "exit_intent_free_course",
+            eventLabel: "form triggered",
+          }))
+        : ($(".webinar__lightbox").css("display", "none"),
+          $("body").css("overflow", "auto"),
+          "On Scroll" == $(".is_exit_intent_popup").val() &&
           dataLayer.push({
             event: "exit_intent",
             eventCategory: "exit_intent_scroll",
             eventAction: "exit_intent_scroll",
             eventLabel: "close",
           }),
-        "Browser Tab" == $(".is_exit_intent_popup").val() &&
+          "Browser Tab" == $(".is_exit_intent_popup").val() &&
           dataLayer.push({
             event: "exit_intent",
             eventCategory: "exit_intent_browser_tab_close_gesture",
@@ -686,7 +686,7 @@ $(document).ready(function () {
       geoIpLookup: function (e) {
         $.get(
           "https://get.geojs.io/v1/ip/country.json",
-          function () {},
+          function () { },
           "json"
         ).always(function (t) {
           var a = t && t.country ? t.country : "us";
@@ -753,50 +753,50 @@ $(document).ready(function () {
         });
       let n = new RegExp("^[a-zA-Z ]+$");
       0 == $(".first-name").val().length &&
-      0 == $(".last-name").val().length &&
-      0 == $(".phone").val().length
+        0 == $(".last-name").val().length &&
+        0 == $(".phone").val().length
         ? $(".first-name-error, .last-name-error,.phone-error").removeClass(
-            "hide"
-          )
+          "hide"
+        )
         : n.test($(".first-name").val()) && 0 != $(".first-name").val().length
-        ? n.test($(".last-name").val()) && 0 != $(".last-name").val().length
-          ? /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
+          ? n.test($(".last-name").val()) && 0 != $(".last-name").val().length
+            ? /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
               $(".phone").val()
             ) && 0 != $(".phone").val().length
-            ? ($(".webinar__loadingbar").css("display", "flex"),
-              $(".wr__firstname").val($(".first-name").val()),
-              $(".wr__lastname").val($(".last-name").val()),
-              $(".wr__email").val($(".email").val()),
-              $(".wr__phone").val(a),
-              dataLayer.push({
-                event: "new_webinar_registration_form_submitted",
-                webinar_name: document.querySelector(".webinar__lightbox-title")
-                  .innerHTML,
-              }),
-              "On Scroll" == $(".is_exit_intent_popup").val() &&
+              ? ($(".webinar__loadingbar").css("display", "flex"),
+                $(".wr__firstname").val($(".first-name").val()),
+                $(".wr__lastname").val($(".last-name").val()),
+                $(".wr__email").val($(".email").val()),
+                $(".wr__phone").val(a),
+                dataLayer.push({
+                  event: "new_webinar_registration_form_submitted",
+                  webinar_name: document.querySelector(".webinar__lightbox-title")
+                    .innerHTML,
+                }),
+                "On Scroll" == $(".is_exit_intent_popup").val() &&
                 dataLayer.push({
                   event: "exit_intent",
                   eventCategory: "exit_intent_scroll",
                   eventAction: "exit_intent_scroll",
                   eventLabel: "form submitted",
                 }),
-              "Browser Tab" == $(".is_exit_intent_popup").val() &&
+                "Browser Tab" == $(".is_exit_intent_popup").val() &&
                 dataLayer.push({
                   event: "exit_intent",
                   eventCategory: "exit_intent_browser_tab_close_gesture",
                   eventAction: "exit_intent_browser_tab_close_gesture",
                   eventLabel: "form submitted",
                 }),
-              s("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/"),
-              $(".webinar__registration-form1").submit(),
-              $(".webinar__registration-form1-block").hide(),
-              setTimeout(function () {
-                $(".webinar__registration-form2-block").show(),
-                  $(".webinar__loadingbar").hide();
-              }, 200))
-            : $(".phone-error").removeClass("hide")
-          : $(".last-name-error").removeClass("hide")
-        : $(".first-name-error").removeClass("hide"),
+                s("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/"),
+                $(".webinar__registration-form1").submit(),
+                $(".webinar__registration-form1-block").hide(),
+                setTimeout(function () {
+                  $(".webinar__registration-form2-block").show(),
+                    $(".webinar__loadingbar").hide();
+                }, 200))
+              : $(".phone-error").removeClass("hide")
+            : $(".last-name-error").removeClass("hide")
+          : $(".first-name-error").removeClass("hide"),
         $("input:radio[name='start-date']:first").attr("checked", !0),
         $(".wr__event-start-time").val(
           $("input:radio[name='start-date']:first").val()
@@ -1159,10 +1159,10 @@ $(document).ready(function () {
               ? ($(".wr__firstname").val(e.substring(e.indexOf(" ") + 1)),
                 $(".wr__lastname").val("IK"))
               : "" == e.substring(e.indexOf(" ") + 1)
-              ? ($(".wr__firstname").val(e.substring(0, e.indexOf(" "))),
-                $(".wr__lastname").val(e.substring(0, e.indexOf(" "))))
-              : ($(".wr__firstname").val(e.substring(0, e.indexOf(" "))),
-                $(".wr__lastname").val(e.substring(e.indexOf(" ") + 1))),
+                ? ($(".wr__firstname").val(e.substring(0, e.indexOf(" "))),
+                  $(".wr__lastname").val(e.substring(0, e.indexOf(" "))))
+                : ($(".wr__firstname").val(e.substring(0, e.indexOf(" "))),
+                  $(".wr__lastname").val(e.substring(e.indexOf(" ") + 1))),
               $(".wr__email").val($(".email").val()),
               $(".wr__phone").val(a),
               dataLayer.push({
@@ -1171,19 +1171,19 @@ $(document).ready(function () {
                   .innerHTML,
               }),
               "On Scroll" == $(".is_exit_intent_popup").val() &&
-                dataLayer.push({
-                  event: "exit_intent",
-                  eventCategory: "exit_intent_scroll",
-                  eventAction: "exit_intent_scroll",
-                  eventLabel: "form submitted",
-                }),
+              dataLayer.push({
+                event: "exit_intent",
+                eventCategory: "exit_intent_scroll",
+                eventAction: "exit_intent_scroll",
+                eventLabel: "form submitted",
+              }),
               "Browser Tab" == $(".is_exit_intent_popup").val() &&
-                dataLayer.push({
-                  event: "exit_intent",
-                  eventCategory: "exit_intent_browser_tab_close_gesture",
-                  eventAction: "exit_intent_browser_tab_close_gesture",
-                  eventLabel: "form submitted",
-                }),
+              dataLayer.push({
+                event: "exit_intent",
+                eventCategory: "exit_intent_browser_tab_close_gesture",
+                eventAction: "exit_intent_browser_tab_close_gesture",
+                eventLabel: "form submitted",
+              }),
               s("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/"),
               $(".webinar__registration-form1").submit(),
               $(".webinar__registration-form1-block").hide(),
@@ -1218,11 +1218,11 @@ $(document).ready(function () {
       "" == t
         ? $(".work-exp-error").removeClass("hide")
         : "" == a
-        ? $(".domain-error").removeClass("hide")
-        : ($(".gql-work-experience").val(t),
-          $(".gql-role-domain").val(a),
-          $(".webinar__registration-form1-block-s1").hide(),
-          $(".webinar__registration-form1-block-s2").show());
+          ? $(".domain-error").removeClass("hide")
+          : ($(".gql-work-experience").val(t),
+            $(".gql-role-domain").val(a),
+            $(".webinar__registration-form1-block-s1").hide(),
+            $(".webinar__registration-form1-block-s2").show());
     }),
     $(".bc__upworth-step2").click(function (t) {
       t.preventDefault(), setHiddenFields();
@@ -1254,50 +1254,50 @@ $(document).ready(function () {
         });
       let r = new RegExp("^[a-zA-Z ]+$");
       0 == $(".first-name").val().length &&
-      0 == $(".last-name").val().length &&
-      0 == $(".email").val().length &&
-      0 == $(".phone").val().length
+        0 == $(".last-name").val().length &&
+        0 == $(".email").val().length &&
+        0 == $(".phone").val().length
         ? $(
-            ".first-name-error, .last-name-error,.email-id-error,.phone-error"
-          ).removeClass("hide")
+          ".first-name-error, .last-name-error,.email-id-error,.phone-error"
+        ).removeClass("hide")
         : r.test($(".first-name").val()) && 0 != $(".first-name").val().length
-        ? r.test($(".last-name").val()) && 0 != $(".last-name").val().length
-          ? /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
+          ? r.test($(".last-name").val()) && 0 != $(".last-name").val().length
+            ? /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm.test(
               $(".phone").val()
             ) && 0 != $(".phone").val().length
-            ? /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(
+              ? /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(
                 $(".email").val()
               ) && 0 != $(".email").val().length
-              ? ($(".webinar__loadingbar").css("display", "flex"),
-                dataLayer.push({
-                  event: "new_webinar_registration_form_submitted",
-                  webinar_name: document.querySelector(
-                    ".webinar__lightbox-title"
-                  ).innerHTML,
-                }),
-                s("https://hooks.zapier.com/hooks/catch/11068981/3hp515j/"),
-                $(".profile-analysis-step1").submit(),
-                setTimeout(function () {
-                  location.href =
-                    "/upworth" +
-                    window.location.search +
-                    "&domain=" +
-                    n +
-                    "&workexp=" +
-                    a +
-                    "&email=" +
-                    $(".email").val() +
-                    "&fname=" +
-                    $(".first-name").val() +
-                    "&lname=" +
-                    $(".last-name").val() +
-                    "&phone=" +
-                    $(".phone").val();
-                }, 200))
-              : $(".email-id-error").removeClass("hide")
-            : $(".phone-error").removeClass("hide")
-          : $(".last-name-error").removeClass("hide")
-        : $(".first-name-error").removeClass("hide");
+                ? ($(".webinar__loadingbar").css("display", "flex"),
+                  dataLayer.push({
+                    event: "new_webinar_registration_form_submitted",
+                    webinar_name: document.querySelector(
+                      ".webinar__lightbox-title"
+                    ).innerHTML,
+                  }),
+                  s("https://hooks.zapier.com/hooks/catch/11068981/3hp515j/"),
+                  $(".profile-analysis-step1").submit(),
+                  setTimeout(function () {
+                    location.href =
+                      "/upworth" +
+                      window.location.search +
+                      "&domain=" +
+                      n +
+                      "&workexp=" +
+                      a +
+                      "&email=" +
+                      $(".email").val() +
+                      "&fname=" +
+                      $(".first-name").val() +
+                      "&lname=" +
+                      $(".last-name").val() +
+                      "&phone=" +
+                      $(".phone").val();
+                  }, 200))
+                : $(".email-id-error").removeClass("hide")
+              : $(".phone-error").removeClass("hide")
+            : $(".last-name-error").removeClass("hide")
+          : $(".first-name-error").removeClass("hide");
     }),
     $(".bc__btn-2nd-step").click(function (e) {
       try {
@@ -1355,12 +1355,12 @@ $(document).ready(function () {
             "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val()
               ? "https://www.interviewkickstart.com/signup-final-step-v6" + r
               : "https://www.interviewkickstart.com/signup-final-step-v9" +
-                "?utm_source=" +
-                $(".utm_source").val() +
-                "&utm_medium=" +
-                n +
-                "&salesforce_uuid=" +
-                i),
+              "?utm_source=" +
+              $(".utm_source").val() +
+              "&utm_medium=" +
+              n +
+              "&salesforce_uuid=" +
+              i),
             $(".wr__event-start-time").val(t),
             $(".wr__event-end-time").val(a),
             $(".wr__invitee-start-time").val(
@@ -1379,20 +1379,20 @@ $(document).ready(function () {
             bake_cookie("v_latest", ""),
             1 != singlesignup
               ? (() => {
-                  try {
-                    saveClickActivity(
-                      "Webinar-modal_button_open-gql",
-                      new Date().getTime(),
-                      () => {
-                        location.href = d;
-                      }
-                    );
-                  } catch (error) {
-                    setTimeout(function () {
+                try {
+                  saveClickActivity(
+                    "Webinar-modal_button_open-gql",
+                    new Date().getTime(),
+                    () => {
                       location.href = d;
-                    }, 800);
-                  }
-                })()
+                    }
+                  );
+                } catch (error) {
+                  setTimeout(function () {
+                    location.href = d;
+                  }, 800);
+                }
+              })()
               : ($(".webinar__loadingbar").hide(),
                 $(".webinar__registration-form2-block").hide(),
                 $(".webinar__registration-form3-block").show());
@@ -1401,12 +1401,12 @@ $(document).ready(function () {
             "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val()
               ? "https://www.interviewkickstart.com/signup-final-step-v6" + r
               : getLearnGQLLink() +
-                "?utm_source=" +
-                $(".utm_source").val() +
-                "&utm_medium=" +
-                $(".wr__email").val() +
-                "&salesforce_uuid=" +
-                i),
+              "?utm_source=" +
+              $(".utm_source").val() +
+              "&utm_medium=" +
+              $(".wr__email").val() +
+              "&salesforce_uuid=" +
+              i),
             $(".wr__event-start-time").val(t),
             $(".wr__event-end-time").val(a),
             $(".wr__invitee-start-time").val(
@@ -1425,20 +1425,20 @@ $(document).ready(function () {
             bake_cookie("v_latest", ""),
             1 != singlesignup
               ? (() => {
-                  try {
-                    saveClickActivity(
-                      "Webinar-modal_button_open-gql",
-                      new Date().getTime(),
-                      () => {
-                        location.href = d;
-                      }
-                    );
-                  } catch (error) {
-                    setTimeout(function () {
+                try {
+                  saveClickActivity(
+                    "Webinar-modal_button_open-gql",
+                    new Date().getTime(),
+                    () => {
                       location.href = d;
-                    }, 800);
-                  }
-                })()
+                    }
+                  );
+                } catch (error) {
+                  setTimeout(function () {
+                    location.href = d;
+                  }, 800);
+                }
+              })()
               : ($(".webinar__loadingbar").hide(),
                 $(".webinar__registration-form2-block").hide(),
                 $(".webinar__registration-form3-block").show());
@@ -1491,22 +1491,22 @@ $(document).ready(function () {
               (e =
                 "NoPhoneInTheFirstStep" == $(".bye-calendly-type").val()
                   ? "https://www.interviewkickstart.com/signup-final-step-v6" +
-                    r
+                  r
                   : getLearnGQLLink() +
-                    "?utm_source=" +
-                    $(".utm_source").val() +
-                    "&utm_medium=" +
-                    n +
-                    "&salesforce_uuid=" +
-                    i),
+                  "?utm_source=" +
+                  $(".utm_source").val() +
+                  "&utm_medium=" +
+                  n +
+                  "&salesforce_uuid=" +
+                  i),
                 $(".wr__event-start-time").val(t),
                 $(".wr__event-end-time").val(a),
                 $(".wr__invitee-start-time").val(
                   is_webinar_1o1_eligible
                     ? resData.start_datetime
                     : $("input[name='start-date']:checked").data(
-                        "invitee_starttime"
-                      )
+                      "invitee_starttime"
+                    )
                 ),
                 $(".wr__invitee-end-time").val(
                   $("input[name='start-date']:checked").data("invitee_endtime")
@@ -1526,20 +1526,20 @@ $(document).ready(function () {
                 bake_cookie("v_latest", ""),
                 1 != singlesignup
                   ? (() => {
-                      try {
-                        saveClickActivity(
-                          "Webinar-modal_button_open-gql",
-                          new Date().getTime(),
-                          () => {
-                            location.href = e;
-                          }
-                        );
-                      } catch (error) {
-                        setTimeout(function () {
+                    try {
+                      saveClickActivity(
+                        "Webinar-modal_button_open-gql",
+                        new Date().getTime(),
+                        () => {
                           location.href = e;
-                        }, 800);
-                      }
-                    })()
+                        }
+                      );
+                    } catch (error) {
+                      setTimeout(function () {
+                        location.href = e;
+                      }, 800);
+                    }
+                  })()
                   : ($(".webinar__loadingbar").hide(),
                     $(".webinar__registration-form2-block").hide(),
                     $(".webinar__registration-form3-block").show());
@@ -1775,7 +1775,7 @@ $(document).ready(function () {
   }
 });
 
-function render1o1Slots(slotsDates, selectionHandler = () => {}) {
+function render1o1Slots(slotsDates, selectionHandler = () => { }) {
   if (!slotsDates || Object.keys(slotsDates).length === 0) {
     $(".webinar__slots").html("<p>No slots available</p>");
     return;
@@ -1783,25 +1783,29 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
 
   const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const convertPSTToLocal = (slotsDates) => {
+  const convertUTCToLocal = (slotsDates, localTimeZone) => {
     const result = {};
 
     // Loop over each date
     Object.keys(slotsDates).forEach((date) => {
       Object.keys(slotsDates[date]).forEach((time) => {
-        // Create a new Date object from the date and time in PST
-        const pstDate = new Date(`${date}T${time}:00-07:00`); // Use UTC-7 to account for PST (Pacific Daylight Time)
+        // Create a new Date object from the date and time in UTC
+        const utcDate = new Date(`${date}T${time}:00Z`); // Use "Z" to indicate UTC time
+
         // Convert to local time zone
         const localDate = new Date(
-          pstDate.toLocaleString("en-US", { timeZone: localTimeZone })
+          utcDate.toLocaleString("en-US", { timeZone: localTimeZone })
         );
+
         // Extract local date and time
         const localDateString = localDate.toISOString().split("T")[0];
         const localTimeString = localDate.toTimeString().slice(0, 5);
+
         // If the local date doesn't exist in the result, create it
         if (!result[localDateString]) {
           result[localDateString] = {};
         }
+
         // Assign the converted time to the corresponding local date
         result[localDateString][localTimeString] = slotsDates[date][time];
       });
@@ -1810,7 +1814,8 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
     return result;
   };
 
-  slotsDates = convertPSTToLocal(slotsDates);
+
+  slotsDates = convertUTCToLocal(slotsDates);
 
   console.log("1:1 Slots rendered");
 
@@ -1852,11 +1857,10 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
           month: "long",
           day: "numeric",
         });
-        const dateBtn = $(`<button type="button" style="${buttonCommonStyles} ${
-          index === 0
-            ? "background-color: #5494cd; color:#fff; font-weight:600;"
-            : "background-color: #fff;"
-        }">
+        const dateBtn = $(`<button type="button" style="${buttonCommonStyles} ${index === 0
+          ? "background-color: #5494cd; color:#fff; font-weight:600;"
+          : "background-color: #fff;"
+          }">
           ${localDate}</button>`);
 
         dateBtn.click(function () {
@@ -1884,7 +1888,11 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
     timeList.empty(); // Clear previous time slots
 
     const times = slotsDates[selectedDate];
-    Object.keys(times).forEach((time, index) => {
+    Object.keys(times).sort((a, b) => {
+      const timeA = new Date(`1970-01-01T${a}:00`).getTime();
+      const timeB = new Date(`1970-01-01T${b}:00`).getTime();
+      return timeA - timeB;
+    }).forEach((time, index) => {
       const timeBtn = $(
         `<button type="button" style="${buttonCommonStyles} background-color: #fff;">${time.toUpperCase()}</button>`
       );
@@ -1964,9 +1972,8 @@ function render1o1Slots(slotsDates, selectionHandler = () => {}) {
         }
         $("#input-placeholder-1o1").html(
           `<input 
-            data-slotid="${
-              times[time]
-            }" hidden type="radio" name="start-date" value="${formatDateWithTimezoneOffset(
+            data-slotid="${times[time]
+          }" hidden type="radio" name="start-date" value="${formatDateWithTimezoneOffset(
             startDate
           )}" data-endtime="${formatDateWithTimezoneOffset(
             endDate
