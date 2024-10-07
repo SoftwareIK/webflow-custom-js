@@ -27,17 +27,18 @@ function fallbackToCelendlly() {
 }
 
 function fillWebinarSlots(data) {
-  if (!data || data.length == 0) {
-    fallbackToCelendlly();
-    return;
-  }
-
   if(is_webinar_1o1_eligible){
     $('.webinar__slots').show();
     $(".v2-check-container").hide();
+    return;
   } else {
     $('.webinar__slots').remove();
-    $(".v2-check-container").show();
+    $(".v2-check-container").css("display", "flex");
+  }
+  
+  if (!data || data.length == 0) {
+    fallbackToCelendlly();
+    return;
   }
 
   upcomingWebinar = findNextWebinar(data);

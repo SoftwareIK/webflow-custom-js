@@ -573,6 +573,9 @@ $(document).ready(function () {
       if (is_webinar_1o1_eligible) {
         if (Object.values(data).some((times) => Object.keys(times).length)) {
           render1o1Slots(data);
+          if (typeof fillWebinarSlots === "function") {
+            fillWebinarSlots(null);
+          }
           registration_type = "byecalendly";
         } else {
           // If the data is empty, we'll show the default webinar slot
