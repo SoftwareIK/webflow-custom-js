@@ -34,6 +34,7 @@ function fillWebinarSlots(data) {
 
   if(is_webinar_1o1_eligible){
     $('.webinar__slots').show();
+    $(".v2-check-container").hide();
   } else {
     $('.webinar__slots').remove();
     $(".v2-check-container").show();
