@@ -7,7 +7,7 @@ const timerState = {
 
 // This function will be in use when upcoming-slots api fails.
 function fallbackTimerDate(tz = "") {
-  const isIndia = tz == "IST";
+  const isIndia = tz == "IST" || tz == "Asia/Kolkata";
   const currentDate = new Date();
   const dayOfWeek = currentDate.getDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
   const dateString = currentDate.toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata', month: '2-digit', day: '2-digit', year: 'numeric' });
@@ -51,7 +51,7 @@ function nextWebinar(currentDate, currentWebTime, tz, slots) {
     time: `${slot.hour}:${slot.minute}:${slot.second} ${slot.am_or_pm}`, //"07:30:00 PM"
   }))
 
-  webinarSchedule = tz == "IST" ? webinarScheduleIndia : webinarScheduleUSA;
+  webinarSchedule = (tz == "IST" || tz == "Asia/Kolkata") ? webinarScheduleIndia : webinarScheduleUSA;
 
   for (let idx = 0; idx < formattedSlots.length; idx++) {
     if (formattedSlots[idx]) {
@@ -68,7 +68,11 @@ function nextWebinar(currentDate, currentWebTime, tz, slots) {
 }
 
 function initStates(tz, slots) {
-  timerState.currentDate = new Date().toLocaleString("en-US", { timeZone: tz });
+  try {
+    timerState.currentDate = new Date().toLocaleString("en-US", { timeZone: tz });
+  } catch (error) {
+    
+  }
   timerState.currentDateSec = Date.parse(timerState.currentDate);
   timerState.nextDate = nextWebinar(
     timerState.currentDate.split(",")[0],

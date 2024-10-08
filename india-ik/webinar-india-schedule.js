@@ -50,7 +50,7 @@ function nextWebinar(currentDate, currentWebTime, slots) {
 };
 
 function initStates(slots) {
-  timerState.currentDate = new Date().toLocaleString('en-US', { timeZone: 'IST' });
+  timerState.currentDate = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
   timerState.currentDateSec = Date.parse(timerState.currentDate);
   timerState.nextDate = nextWebinar(timerState.currentDate.split(',')[0], timerState.currentDateSec, slots);
   if (timerState.nextDate !== '') {
@@ -113,7 +113,7 @@ function TimerHandler(slots) {
     if (timerState.nextDate === '') {
       clearInterval(webinarTimer);
     }
-    timerState.currentDate = new Date().toLocaleString('en-US', { timeZone: 'IST' });
+    timerState.currentDate = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
     timerState.currentDateSec = Date.parse(timerState.currentDate);
 
     const distanceCount = timerState.nextDateSec - timerState.currentDateSec;

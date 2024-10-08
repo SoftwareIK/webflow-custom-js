@@ -21,10 +21,23 @@ function fillNextWebinarTimer() {
   setTimeout(fillNextWebinarTimer, 60000);
 }
 
+function fallbackToCelendlly() {
+  $(".v2-form-wrapper").hide();
+  $(".calendly-fallback-v2").show();
+}
+
 function fillWebinarSlots(data) {
+  if(is_webinar_1o1_eligible){
+    $('.webinar__slots').show();
+    $(".v2-check-container").hide();
+    return;
+  } else {
+    $('.webinar__slots').remove();
+    $(".v2-check-container").css("display", "flex");
+  }
+  
   if (!data || data.length == 0) {
-    $(".v2-form-wrapper").hide();
-    $(".calendly-fallback-v2").show();
+    fallbackToCelendlly();
     return;
   }
 
@@ -153,6 +166,11 @@ function getMonthName(monthNumber) {
   return monthNames[monthNumber - 1];
 }
 
+
+function formatDate(dateTime) {
+  return dateTime.toISOString().replace(/T/, " ").replace(/\.\d+Z$/, " UTC");
+}
+
 $(document).ready(function () {
   const SELECTED_SLOT = {};
   window.VWO = window.VWO || [];
@@ -201,6 +219,7 @@ $(document).ready(function () {
       "Invitee End Time": $('.wr__invitee-end-time').val(),
       "Work Experience": $('.gql-work-experience').val(),
       "Domain or Role": $('.gql-role-domain').val(),
+      "Booking id": $('input[name="start-date"]:checked').data("bookingid")
     };
 
     $.ajax({
@@ -412,6 +431,10 @@ $(document).ready(function () {
         });
       }
 
+      if (is_webinar_1o1_eligible) {
+        $(".webinar-lead-type").val("ONE_TO_ONE_CONNECT");
+      }
+
       pushToZap("https://hooks.zapier.com/hooks/catch/11068981/34c9jjz/");
 
       $('.v2-first-form-block').hide();
@@ -425,33 +448,122 @@ $(document).ready(function () {
         $('.v2-form-loading-bar').hide();
       }, 200);
     }
-    $("input:radio[name='v2-slots-radio']:first").attr("checked", true);
-    $('.wr__event-start-time').val($("input:radio[name='v2-slots-radio']:first").val());
-    $('.wr__event-end-time').val($("input:radio[name='v2-slots-radio']:first").data('endtime'));
-    $('.wr__invitee-start-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_starttime'));
-    $('.wr__invitee-end-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_endtime'));
-    $('.webinar-lead-type').val($("input:radio[name='v2-slots-radio']:first").data('webinar_lead_type'));
+    if(is_webinar_1o1_eligible){
+      $("input:radio[name='start-date']:first").attr("checked", true);
+      $(".wr__event-start-time").val($("input:radio[name='start-date']:first").val());
+      $(".wr__event-end-time").val($("input:radio[name='start-date']:first").data("endtime"));
+      $(".wr__invitee-start-time").val($("input:radio[name='start-date']:first").data("invitee_starttime"));
+      $(".wr__invitee-end-time").val($("input:radio[name='start-date']:first").data("invitee_endtime"));
+      $(".webinar-lead-type").val($("input:radio[name='start-date']:first").data("webinar_lead_type"));
+    } else {
+      $("input:radio[name='v2-slots-radio']:first").attr("checked", true);
+      $('.wr__event-start-time').val($("input:radio[name='v2-slots-radio']:first").val());
+      $('.wr__event-end-time').val($("input:radio[name='v2-slots-radio']:first").data('endtime'));
+      $('.wr__invitee-start-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_starttime'));
+      $('.wr__invitee-end-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_endtime'));
+      $('.webinar-lead-type').val($("input:radio[name='v2-slots-radio']:first").data('webinar_lead_type'));
+    }
   })
 
-  $('#v2-form-2nd-submit').click(function (e) {
-    e.preventDefault();
+  function bookSlot() {
+    return new Promise(async (resolve, reject) => {
+      if (is_webinar_1o1_eligible) {
+        const url =
+          "https://uplevel.interviewkickstart.com/api/v1/webinar_connect/book-slot/";
+        const payload = {
+          slot_id: parseInt(
+            $('input[name="start-date"]:checked').data("slotid")
+          ),
+          email: $('#v2-email').val(),
+        };
+        const requestOptions = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+          redirect: "follow",
+        };
 
-    if ($("input:radio[name='v2-slots-radio']").is(":checked")) {
-      const startDate = $('input[name="v2-slots-radio"]:checked').val();
-      const endDate = $('input[name="v2-slots-radio"]:checked').data("endtime");
+        const res = await fetch(url, requestOptions);
+        const data = await res.json();
+        if (res.status === 201) {
+          $('input[name="start-date"]:checked').data(
+            "bookingid",
+            data.booking_id
+          );
+          resolve(data);
+        } else {
+          console.error(
+            "Something went wrong while calling webinar_connect/book-slot api",
+            res,
+            data
+          );
+          reject(
+            new Error(
+              "Something went wrong while calling webinar_connect/book-slot api"
+            )
+          );
+        }
+      } else {
+        resolve();
+      }
+    });
+  }
+
+  $('#v2-form-2nd-submit').click(async function (e) {
+    e.preventDefault();
+    let slotBookRes = {}
+    if(is_webinar_1o1_eligible){
+      slotBookRes = await bookSlot();
+    }
+    if ($("input:radio[name='v2-slots-radio']").is(":checked") || (is_webinar_1o1_eligible && $('input[name="start-date"]').is(":checked") )) {
+
+      let startDate = "";
+      let endDate = "";
+
+      if(is_webinar_1o1_eligible){
+        const utcDate = new Date(slotBookRes.start_datetime);
+
+        const day = utcDate.toLocaleString('en-US', { weekday: 'long', timeZone: 'UTC' });
+        const date = utcDate.getUTCDate();
+        const month = utcDate.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
+        
+        let hours = utcDate.getUTCHours() % 12 || 12;
+        let minutes = utcDate.getUTCMinutes();
+        let period = utcDate.getUTCHours() >= 12 ? 'pm' : 'am';
+        let time = minutes === 0 ? `${hours}${period}` : `${hours}:${minutes.toString().padStart(2, '0')}${period}`;
+        
+        SELECTED_SLOT['day'] = day;
+        SELECTED_SLOT['date'] = date;
+        SELECTED_SLOT['time'] = time;
+        SELECTED_SLOT['month'] = month;
+
+        startDate = $('input[name="start-date"]:checked').val();
+        endDate = $('input[name="start-date"]:checked').data("endtime");
+      } else {
+        startDate = $('input[name="v2-slots-radio"]:checked').val();
+        endDate = $('input[name="v2-slots-radio"]:checked').data("endtime");
+      }
 
       $(".wr__event-start-time").val(startDate);
       $(".wr__event-end-time").val(endDate);
-      $(".wr__invitee-start-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_starttime"));
-      $(".wr__invitee-end-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_endtime"));
-      $(".webinar-lead-type").val($('input[name="v2-slots-radio"]:checked').data("webinar_lead_type"));
-
-      function formatDate(dateTime) {
-        return dateTime.toISOString().replace(/T/, " ").replace(/\.\d+Z$/, " UTC");
+      if(is_webinar_1o1_eligible){
+        $(".wr__invitee-start-time").val(slotBookRes.start_datetime);
+        $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime"));
+        $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type"));
+      } else {
+        $(".wr__invitee-start-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_starttime"));
+        $(".wr__invitee-end-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_endtime"));
+        $(".webinar-lead-type").val($('input[name="v2-slots-radio"]:checked').data("webinar_lead_type"));
       }
 
       $(".v2-form-loading-bar").show();
-      pushToZap("https://hooks.zapier.com/hooks/catch/11068981/34cq9f8/");
+      if(is_webinar_1o1_eligible){
+        pushToZap("https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/");
+      } else { 
+        pushToZap("https://hooks.zapier.com/hooks/catch/11068981/34cq9f8/"); 
+      }
 
       bake_cookie("v_history", "");
       bake_cookie("v_latest", "");

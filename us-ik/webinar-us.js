@@ -142,7 +142,7 @@ $(document).ready(function () {
         forceUSwebinarFlag["forceuswebinar"] == undefined
       ) {
         createWebinarSlotsList("IND", t.timezone, (slots) => {
-          TimerHandler("IST", slots);
+          TimerHandler("Asia/Kolkata", slots);
           // This fillWebinarSlots is for v2-pages.
           if (typeof fillWebinarSlots === "function") {
             fillWebinarSlots(slots);
@@ -193,6 +193,9 @@ $(document).ready(function () {
     }
     registration_type = "byecalendly";
     render1o1Slots(slotsDates);
+    if (typeof fillWebinarSlots === "function") {
+      fillWebinarSlots(null);
+    }
   }
 
   function populateWebinarSlots(resobj) {

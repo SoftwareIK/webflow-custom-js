@@ -10,7 +10,8 @@ var experiment_type,
   switchUpURL,
   eventUpsightDate,
   webinarSlotDate,
-  is_webinar_1o1_eligible;
+  is_webinar_1o1_eligible,
+  callCreateWebinarSlot;
 
 function getDeviceType() {
   var e = navigator.userAgent;
@@ -514,6 +515,9 @@ $(document).ready(function () {
       if (is_webinar_1o1_eligible) {
         if (Object.values(data).some((times) => Object.keys(times).length)) {
           render1o1Slots(data);
+          if (typeof fillWebinarSlots === "function") {
+            fillWebinarSlots(null);
+          }
           registration_type = "byecalendly";
         } else {
           // If the data is empty, we'll show the default webinar slot
@@ -627,6 +631,8 @@ $(document).ready(function () {
       });
     }
   }
+
+  callCreateWebinarSlot = createWebinarSlot;
 
   function s(e) {
     var t = {
