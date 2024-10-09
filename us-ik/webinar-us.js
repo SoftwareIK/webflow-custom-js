@@ -1397,37 +1397,34 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
 
   const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const convertUTCToLocal = (slotsDates, localTimeZone) => {
-    const result = {};
+  function convertUTCToLocal(availableSlots) {
+    const localSlots = {};
 
-    // Loop over each date
-    Object.keys(slotsDates).forEach((date) => {
-      Object.keys(slotsDates[date]).forEach((time) => {
-        // Create a new Date object from the date and time in UTC
-        const utcDate = new Date(`${date}T${time}:00Z`); // Use "Z" to indicate UTC time
-
-        // Convert to local time zone
-        const localDate = new Date(
-          utcDate.toLocaleString("en-US", { timeZone: localTimeZone })
+    for (const date in availableSlots) {
+      for (const time in availableSlots[date]) {
+        const utcDateTime = new Date(`${date}T${time}:00Z`);
+        const localDateTime = new Date(
+          utcDateTime.toLocaleString("en-US", { timeZone: localTimeZone })
         );
 
-        // Extract local date and time
-        const localDateString = localDate.toISOString().split("T")[0];
-        const localTimeString = localDate.toTimeString().slice(0, 5);
+        const localDate = `${localDateTime.getFullYear()}-${(
+          "0" + localDateTime.getMonth()
+        ).slice(-2)}-${("0" + localDateTime.getDate()).slice(-2)}`;
+        const localTime = localDateTime
+          .toTimeString()
+          .split(" ")[0]
+          .slice(0, 5);
 
-        // If the local date doesn't exist in the result, create it
-        if (!result[localDateString]) {
-          result[localDateString] = {};
+        if (!localSlots[localDate]) {
+          localSlots[localDate] = {};
         }
 
-        // Assign the converted time to the corresponding local date
-        result[localDateString][localTimeString] = slotsDates[date][time];
-      });
-    });
+        localSlots[localDate][localTime] = availableSlots[date][time];
+      }
+    }
 
-    return result;
-  };
-
+    return localSlots;
+  }
 
   slotsDates = convertUTCToLocal(slotsDates);
 
@@ -1465,7 +1462,11 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
     timezoneDisplay.text(`Time Zone: ${localTimeZone}`);
 
     Object.keys(slotsDates)
-      .sort()
+      .sort((a, b) => {
+        const timeA = new Date(`${a}T00:00`).getTime();
+        const timeB = new Date(`${b}T00:00`).getTime();
+        return timeA - timeB;
+      })
       .map((date, index) => {
         const localDate = new Date(date).toLocaleDateString("en-US", {
           month: "long",

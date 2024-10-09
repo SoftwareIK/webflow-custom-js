@@ -1787,37 +1787,34 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
 
   const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const convertUTCToLocal = (slotsDates, localTimeZone) => {
-    const result = {};
+  function convertUTCToLocal(availableSlots) {
+    const localSlots = {};
 
-    // Loop over each date
-    Object.keys(slotsDates).forEach((date) => {
-      Object.keys(slotsDates[date]).forEach((time) => {
-        // Create a new Date object from the date and time in UTC
-        const utcDate = new Date(`${date}T${time}:00Z`); // Use "Z" to indicate UTC time
-
-        // Convert to local time zone
-        const localDate = new Date(
-          utcDate.toLocaleString("en-US", { timeZone: localTimeZone })
+    for (const date in availableSlots) {
+      for (const time in availableSlots[date]) {
+        const utcDateTime = new Date(`${date}T${time}:00Z`);
+        const localDateTime = new Date(
+          utcDateTime.toLocaleString("en-US", { timeZone: localTimeZone })
         );
 
-        // Extract local date and time
-        const localDateString = localDate.toISOString().split("T")[0];
-        const localTimeString = localDate.toTimeString().slice(0, 5);
+        const localDate = `${localDateTime.getFullYear()}-${(
+          "0" + localDateTime.getMonth()
+        ).slice(-2)}-${("0" + localDateTime.getDate()).slice(-2)}`;
+        const localTime = localDateTime
+          .toTimeString()
+          .split(" ")[0]
+          .slice(0, 5);
 
-        // If the local date doesn't exist in the result, create it
-        if (!result[localDateString]) {
-          result[localDateString] = {};
+        if (!localSlots[localDate]) {
+          localSlots[localDate] = {};
         }
 
-        // Assign the converted time to the corresponding local date
-        result[localDateString][localTimeString] = slotsDates[date][time];
-      });
-    });
+        localSlots[localDate][localTime] = availableSlots[date][time];
+      }
+    }
 
-    return result;
-  };
-
+    return localSlots;
+  }
 
   slotsDates = convertUTCToLocal(slotsDates);
 
@@ -1855,15 +1852,19 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
     timezoneDisplay.text(`Time Zone: ${localTimeZone}`);
 
     Object.keys(slotsDates)
-      .sort()
+      .sort((a, b) => {
+        const timeA = new Date(`${a}T00:00`).getTime();
+        const timeB = new Date(`${b}T00:00`).getTime();
+        return timeA - timeB;
+      })
       .map((date, index) => {
         const localDate = new Date(date).toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
         });
         const dateBtn = $(`<button type="button" style="${buttonCommonStyles} ${index === 0
-          ? "background-color: #5494cd; color:#fff; font-weight:600;"
-          : "background-color: #fff;"
+            ? "background-color: #5494cd; color:#fff; font-weight:600;"
+            : "background-color: #fff;"
           }">
           ${localDate}</button>`);
 
@@ -1892,106 +1893,108 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
     timeList.empty(); // Clear previous time slots
 
     const times = slotsDates[selectedDate];
-    Object.keys(times).sort((a, b) => {
-      const timeA = new Date(`1970-01-01T${a}:00`).getTime();
-      const timeB = new Date(`1970-01-01T${b}:00`).getTime();
-      return timeA - timeB;
-    }).forEach((time, index) => {
-      const timeBtn = $(
-        `<button type="button" style="${buttonCommonStyles} background-color: #fff;">${time.toUpperCase()}</button>`
-      );
-
-      timeBtn.click(function () {
-        $(".webinar__slots #time-list button").css({
-          "background-color": "#fff",
-          color: "#000",
-          fontWeight: "400",
-        }); // Reset all buttons
-        $(this).css({
-          "background-color": "#5494cd",
-          color: "#fff",
-          fontWeight: "600",
-        }); // Highlight clicked time
-        selectionHandler?.(times[time]); // Callback function
-        console.log(selectedDate, time, `Slot ID: ${times[time]} selected`); // Alert the slot ID
-
-        const startDate = new Date(`${selectedDate}T${time}:00`);
-        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
-
-        const inviteeStartTime =
-          startDate.toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-            timeZone: localTimeZone, // Set the time zone to IST
-          }) +
-          " - " +
-          startDate.toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-            timeZone: localTimeZone, // Set the time zone to IST
-          });
-
-        const inviteeEndTime =
-          endDate.toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-            timeZone: localTimeZone, // Set the time zone to IST
-          }) +
-          " - " +
-          endDate.toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-            timeZone: localTimeZone, // Set the time zone to IST
-          });
-
-        function formatDateWithTimezoneOffset(date) {
-          const timezoneOffset = -date.getTimezoneOffset(); // offset in minutes
-          const diffHours = Math.floor(timezoneOffset / 60);
-          const diffMinutes = timezoneOffset % 60;
-          const sign = diffHours >= 0 ? "+" : "-";
-          const pad = (num) => String(Math.abs(num)).padStart(2, "0");
-          return (
-            date.getFullYear() +
-            "-" +
-            pad(date.getMonth() + 1) +
-            "-" +
-            pad(date.getDate()) +
-            "T" +
-            pad(date.getHours()) +
-            ":" +
-            pad(date.getMinutes()) +
-            ":" +
-            pad(date.getSeconds()) +
-            sign +
-            pad(diffHours) +
-            ":" +
-            pad(diffMinutes)
-          );
-        }
-        $("#input-placeholder-1o1").html(
-          `<input 
-            data-slotid="${times[time]
-          }" hidden type="radio" name="start-date" value="${formatDateWithTimezoneOffset(
-            startDate
-          )}" data-endtime="${formatDateWithTimezoneOffset(
-            endDate
-          )}" data-invitee_starttime="${inviteeStartTime}" data-invitee_endtime="${inviteeEndTime}" data-name="${formatDateWithTimezoneOffset(
-            startDate
-          )}" class="w-form-formradioinput select-webinar-radio-btn w-radio-input" data-webinar_lead_type="ONE_TO_ONE_CONNECT" checked="checked" />`
+    Object.keys(times)
+      .sort((a, b) => {
+        const timeA = new Date(`1970-01-01T${a}:00`).getTime();
+        const timeB = new Date(`1970-01-01T${b}:00`).getTime();
+        return timeA - timeB;
+      })
+      .forEach((time, index) => {
+        const timeBtn = $(
+          `<button type="button" style="${buttonCommonStyles} background-color: #fff;">${time.toUpperCase()}</button>`
         );
-      });
 
-      timeList.append(timeBtn);
-      setTimeout(() => {
-        if (index === 0) timeBtn.click(); // Select the first time slot by default
-      }, 0);
-    });
+        timeBtn.click(function () {
+          $(".webinar__slots #time-list button").css({
+            "background-color": "#fff",
+            color: "#000",
+            fontWeight: "400",
+          }); // Reset all buttons
+          $(this).css({
+            "background-color": "#5494cd",
+            color: "#fff",
+            fontWeight: "600",
+          }); // Highlight clicked time
+          selectionHandler?.(times[time]); // Callback function
+          console.log(selectedDate, time, `Slot ID: ${times[time]} selected`); // Alert the slot ID
+
+          const startDate = new Date(`${selectedDate}T${time}:00`);
+          const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+
+          const inviteeStartTime =
+            startDate.toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+              timeZone: localTimeZone, // Set the time zone to IST
+            }) +
+            " - " +
+            startDate.toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+              timeZone: localTimeZone, // Set the time zone to IST
+            });
+
+          const inviteeEndTime =
+            endDate.toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+              timeZone: localTimeZone, // Set the time zone to IST
+            }) +
+            " - " +
+            endDate.toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+              timeZone: localTimeZone, // Set the time zone to IST
+            });
+
+          function formatDateWithTimezoneOffset(date) {
+            const timezoneOffset = -date.getTimezoneOffset(); // offset in minutes
+            const diffHours = Math.floor(timezoneOffset / 60);
+            const diffMinutes = timezoneOffset % 60;
+            const sign = diffHours >= 0 ? "+" : "-";
+            const pad = (num) => String(Math.abs(num)).padStart(2, "0");
+            return (
+              date.getFullYear() +
+              "-" +
+              pad(date.getMonth() + 1) +
+              "-" +
+              pad(date.getDate()) +
+              "T" +
+              pad(date.getHours()) +
+              ":" +
+              pad(date.getMinutes()) +
+              ":" +
+              pad(date.getSeconds()) +
+              sign +
+              pad(diffHours) +
+              ":" +
+              pad(diffMinutes)
+            );
+          }
+          $("#input-placeholder-1o1").html(
+            `<input 
+            data-slotid="${times[time]
+            }" hidden type="radio" name="start-date" value="${formatDateWithTimezoneOffset(
+              startDate
+            )}" data-endtime="${formatDateWithTimezoneOffset(
+              endDate
+            )}" data-invitee_starttime="${inviteeStartTime}" data-invitee_endtime="${inviteeEndTime}" data-name="${formatDateWithTimezoneOffset(
+              startDate
+            )}" class="w-form-formradioinput select-webinar-radio-btn w-radio-input" data-webinar_lead_type="ONE_TO_ONE_CONNECT" checked="checked" />`
+          );
+        });
+
+        timeList.append(timeBtn);
+        setTimeout(() => {
+          if (index === 0) timeBtn.click(); // Select the first time slot by default
+        }, 0);
+      });
   }
 
   populateDates();
