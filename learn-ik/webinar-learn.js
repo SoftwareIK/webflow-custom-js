@@ -1508,11 +1508,9 @@ $(document).ready(function () {
                 $(".wr__event-start-time").val(t),
                 $(".wr__event-end-time").val(a),
                 $(".wr__invitee-start-time").val(
-                  is_webinar_1o1_eligible
-                    ? resData.start_datetime
-                    : $("input[name='start-date']:checked").data(
-                      "invitee_starttime"
-                    )
+                  $("input[name='start-date']:checked").data(
+                    "invitee_starttime"
+                  )
                 ),
                 $(".wr__invitee-end-time").val(
                   $("input[name='start-date']:checked").data("invitee_endtime")
