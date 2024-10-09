@@ -522,16 +522,16 @@ $(document).ready(function () {
       let startDate = "";
       let endDate = "";
 
-      if(is_webinar_1o1_eligible){
-        const utcDate = new Date(slotBookRes.start_datetime);
+      if (is_webinar_1o1_eligible) {
+        const localDate = new Date(slotBookRes.start_datetime);
 
-        const day = utcDate.toLocaleString('en-US', { weekday: 'long', timeZone: 'UTC' });
-        const date = utcDate.getUTCDate();
-        const month = utcDate.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
-        
-        let hours = utcDate.getUTCHours() % 12 || 12;
-        let minutes = utcDate.getUTCMinutes();
-        let period = utcDate.getUTCHours() >= 12 ? 'pm' : 'am';
+        const day = localDate.toLocaleString('en-US', { weekday: 'long' });
+        const date = localDate.getDate();
+        const month = localDate.toLocaleString('en-US', { month: 'long' });
+          
+        let hours = localDate.getHours() % 12 || 12;
+        let minutes = localDate.getMinutes();
+        let period = localDate.getHours() >= 12 ? 'pm' : 'am';
         let time = minutes === 0 ? `${hours}${period}` : `${hours}:${minutes.toString().padStart(2, '0')}${period}`;
         
         SELECTED_SLOT['day'] = day;
