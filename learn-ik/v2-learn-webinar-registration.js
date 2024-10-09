@@ -591,7 +591,7 @@ $(document).ready(function () {
       }
 
       if(is_webinar_1o1_eligible){
-        pushToZap("https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/");
+        pushToZap("https://hooks.zapier.com/hooks/catch/11068981/2dvppke/");
       }else if (typeof paRegistered !== "undefined") {
         updateFormFields();
         $(".v2-form-loading-bar").show();
