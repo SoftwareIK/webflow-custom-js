@@ -1408,7 +1408,7 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
         );
 
         const localDate = `${localDateTime.getFullYear()}-${(
-          "0" + localDateTime.getMonth()
+          "0" + (localDateTime.getMonth() + 1)
         ).slice(-2)}-${("0" + localDateTime.getDate()).slice(-2)}`;
         const localTime = localDateTime
           .toTimeString()
