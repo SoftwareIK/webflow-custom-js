@@ -1468,7 +1468,7 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
         return timeA - timeB;
       })
       .map((date, index) => {
-        const localDate = new Date(date).toLocaleDateString("en-US", {
+        const localDate = new Date(date + "T00:00:00").toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
         });
