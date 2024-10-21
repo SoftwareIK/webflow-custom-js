@@ -10,36 +10,22 @@ function findNextWebinar(webinars) {
 
 function fillNextWebinarTimer() {
   const countdownElement = $('#v2-webinar-countdown');
-  const miniCountDownElement = $(".v2-next-webinar-in")
+  const miniCountDownElement = $(".v2-next-webinar-in");
+  const timezoneElement = $("#v2-timezone");
   const now = new Date();
   const timeDifference = upcomingWebinar - now;
   const hours = Math.floor(timeDifference / (1000 * 60 * 60));
   const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+  timezoneElement.html(`Time Zone: ${timezone}`);
   countdownElement.html(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} Hrs`);
-  miniCountDownElement.html(`${hours.toString().padStart(2, '0')} hrs`)
+  miniCountDownElement.html(`${hours.toString().padStart(2, '0')} hrs`);
+
   setTimeout(fillNextWebinarTimer, 60000);
 }
 
 function fillWebinarSlots(data) {
-  // TODO: remove this later. This is just for testing
-  /**
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   * 
-   */
-  data = [{"start_time":"2024-10-19T05:00:00+05:30","end_time":"2024-10-19T06:00:00+05:30","utc_start_time":"2024-10-18T23:30:00+00:00","utc_end_time":"2024-10-19T00:30:00+00:00","day":"19","month":"10","year":"2024","hour":"05","minute":"00","second":"00","am_or_pm":"AM","weekday":"Saturday","invitee_start_time":"05:00AM - Saturday, October 19, 2024","invitee_end_time":"06:00AM - Saturday, October 19, 2024"},{"start_time":"2024-10-21T06:00:00+05:30","end_time":"2024-10-21T07:00:00+05:30","utc_start_time":"2024-10-21T00:30:00+00:00","utc_end_time":"2024-10-21T01:30:00+00:00","day":"21","month":"10","year":"2024","hour":"06","minute":"00","second":"00","am_or_pm":"AM","weekday":"Monday","invitee_start_time":"06:00AM - Monday, October 21, 2024","invitee_end_time":"07:00AM - Monday, October 21, 2024"},{"start_time":"2024-10-22T05:00:00+05:30","end_time":"2024-10-22T06:00:00+05:30","utc_start_time":"2024-10-21T23:30:00+00:00","utc_end_time":"2024-10-22T00:30:00+00:00","day":"22","month":"10","year":"2024","hour":"05","minute":"00","second":"00","am_or_pm":"AM","weekday":"Tuesday","invitee_start_time":"05:00AM - Tuesday, October 22, 2024","invitee_end_time":"06:00AM - Tuesday, October 22, 2024"},{"start_time":"2024-10-23T06:00:00+05:30","end_time":"2024-10-23T07:00:00+05:30","utc_start_time":"2024-10-23T00:30:00+00:00","utc_end_time":"2024-10-23T01:30:00+00:00","day":"23","month":"10","year":"2024","hour":"06","minute":"00","second":"00","am_or_pm":"AM","weekday":"Wednesday","invitee_start_time":"06:00AM - Wednesday, October 23, 2024","invitee_end_time":"07:00AM - Wednesday, October 23, 2024"},{"start_time":"2024-10-24T05:00:00+05:30","end_time":"2024-10-24T06:00:00+05:30","utc_start_time":"2024-10-23T23:30:00+00:00","utc_end_time":"2024-10-24T00:30:00+00:00","day":"24","month":"10","year":"2024","hour":"05","minute":"00","second":"00","am_or_pm":"AM","weekday":"Thursday","invitee_start_time":"05:00AM - Thursday, October 24, 2024","invitee_end_time":"06:00AM - Thursday, October 24, 2024"},{"start_time":"2024-10-25T06:00:00+05:30","end_time":"2024-10-25T07:00:00+05:30","utc_start_time":"2024-10-25T00:30:00+00:00","utc_end_time":"2024-10-25T01:30:00+00:00","day":"25","month":"10","year":"2024","hour":"06","minute":"00","second":"00","am_or_pm":"AM","weekday":"Friday","invitee_start_time":"06:00AM - Friday, October 25, 2024","invitee_end_time":"07:00AM - Friday, October 25, 2024"},{"start_time":"2024-10-26T05:00:00+05:30","end_time":"2024-10-26T06:00:00+05:30","utc_start_time":"2024-10-25T23:30:00+00:00","utc_end_time":"2024-10-26T00:30:00+00:00","day":"26","month":"10","year":"2024","hour":"05","minute":"00","second":"00","am_or_pm":"AM","weekday":"Saturday","invitee_start_time":"05:00AM - Saturday, October 26, 2024","invitee_end_time":"06:00AM - Saturday, October 26, 2024"},{"start_time":"2024-10-28T06:00:00+05:30","end_time":"2024-10-28T07:00:00+05:30","utc_start_time":"2024-10-28T00:30:00+00:00","utc_end_time":"2024-10-28T01:30:00+00:00","day":"28","month":"10","year":"2024","hour":"06","minute":"00","second":"00","am_or_pm":"AM","weekday":"Monday","invitee_start_time":"06:00AM - Monday, October 28, 2024","invitee_end_time":"07:00AM - Monday, October 28, 2024"},{"start_time":"2024-10-29T05:00:00+05:30","end_time":"2024-10-29T06:00:00+05:30","utc_start_time":"2024-10-28T23:30:00+00:00","utc_end_time":"2024-10-29T00:30:00+00:00","day":"29","month":"10","year":"2024","hour":"05","minute":"00","second":"00","am_or_pm":"AM","weekday":"Tuesday","invitee_start_time":"05:00AM - Tuesday, October 29, 2024","invitee_end_time":"06:00AM - Tuesday, October 29, 2024"},{"start_time":"2024-10-30T06:00:00+05:30","end_time":"2024-10-30T07:00:00+05:30","utc_start_time":"2024-10-30T00:30:00+00:00","utc_end_time":"2024-10-30T01:30:00+00:00","day":"30","month":"10","year":"2024","hour":"06","minute":"00","second":"00","am_or_pm":"AM","weekday":"Wednesday","invitee_start_time":"06:00AM - Wednesday, October 30, 2024","invitee_end_time":"07:00AM - Wednesday, October 30, 2024"},{"start_time":"2024-10-31T05:00:00+05:30","end_time":"2024-10-31T06:00:00+05:30","utc_start_time":"2024-10-30T23:30:00+00:00","utc_end_time":"2024-10-31T00:30:00+00:00","day":"31","month":"10","year":"2024","hour":"05","minute":"00","second":"00","am_or_pm":"AM","weekday":"Thursday","invitee_start_time":"05:00AM - Thursday, October 31, 2024","invitee_end_time":"06:00AM - Thursday, October 31, 2024"},{"start_time":"2024-11-01T06:00:00+05:30","end_time":"2024-11-01T07:00:00+05:30","utc_start_time":"2024-11-01T00:30:00+00:00","utc_end_time":"2024-11-01T01:30:00+00:00","day":"01","month":"11","year":"2024","hour":"06","minute":"00","second":"00","am_or_pm":"AM","weekday":"Friday","invitee_start_time":"06:00AM - Friday, November 01, 2024","invitee_end_time":"07:00AM - Friday, November 01, 2024"}]
   if (!data) {
     $(".v2-form-wrapper").hide();
     $(".calendly-fallback-v2").show();
