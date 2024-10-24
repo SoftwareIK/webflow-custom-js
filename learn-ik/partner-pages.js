@@ -52,7 +52,8 @@ function fillWebinarSlots(data) {
     endDateTime,
     alert,
     invitee_start_time,
-    invitee_end_time
+    invitee_end_time,
+    active = false
   }) {
 
     let content = `
@@ -72,7 +73,7 @@ function fillWebinarSlots(data) {
           data-name="${datetime}"
           class="w-form-formradioinput checkbox v2-checkbox slot-checkbox slot-radiobutton w-radio-input" 
         >
-        <div class="div-block-59 time-slot-wrapper">
+        <div class="div-block-59 time-slot-wrapper ${active ? "selected-slot" : ""}">
           <div class="v2-day">${day}</div>
           <div class="v2-date">${date}</div>
           <div class="hr no-spacings"></div>
@@ -110,7 +111,8 @@ function fillWebinarSlots(data) {
       endDateTime: slot.end_time,
       invitee_start_time: slot.invitee_start_time,
       invitee_end_time: slot.invitee_end_time,
-      alert: alertMessage
+      alert: alertMessage,
+      active: i === 0
     }))
   });
   handleSlotScroll();
