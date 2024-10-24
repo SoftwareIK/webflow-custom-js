@@ -93,7 +93,7 @@ function fillWebinarSlots(data) {
   };
 
   const slotMarkups = [];
-  data.map((slot, i) => {
+  data.slice(0, 6).map((slot, i) => {
     let alertMessage;
     if (i === 0) {
       alertMessage = { class: "warning-color", text: "Filling fast" }
