@@ -234,6 +234,13 @@ $(document).ready(function () {
       "Booking id": $('input[name="start-date"]:checked').data("bookingid")
     };
 
+    const partnerDetails = read_cookie("partner_details");
+    if(partnerDetails) {
+      t["Partner Name"] = partnerDetails?.partner_name;
+      t["is_partnership_lead"] = partnerDetails?.is_partnership_lead
+      t["is_user_eligible_for_partnership_discount"] = partnerDetails?.is_user_eligible_for_partnership_discount
+    }
+    
     $.ajax({
       type: "POST",
       url: endpoint,

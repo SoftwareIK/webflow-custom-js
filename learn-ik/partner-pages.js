@@ -8,6 +8,14 @@ function findNextWebinar(webinars) {
     .sort((a, b) => a - b)[0];
 }
 
+function setPartnerCookies(partner_name, is_partnership_lead = "yes", is_user_eligible_for_partnership_discount = "yes") {
+  bake_cookie("partner_details", {
+    partner_name,
+    is_partnership_lead,
+    is_user_eligible_for_partnership_discount
+  })
+}
+
 function fillNextWebinarTimer() {
   const countdownElement = $('#v2-webinar-countdown');
   const miniCountDownElement = $(".v2-next-webinar-in");
@@ -44,7 +52,8 @@ function fillWebinarSlots(data) {
     endDateTime,
     alert,
     invitee_start_time,
-    invitee_end_time
+    invitee_end_time,
+    active = false
   }) {
 
     let content = `
@@ -64,7 +73,7 @@ function fillWebinarSlots(data) {
           data-name="${datetime}"
           class="w-form-formradioinput checkbox v2-checkbox slot-checkbox slot-radiobutton w-radio-input" 
         >
-        <div class="div-block-59 time-slot-wrapper">
+        <div class="div-block-59 time-slot-wrapper ${active ? "selected-slot" : ""}">
           <div class="v2-day">${day}</div>
           <div class="v2-date">${date}</div>
           <div class="hr no-spacings"></div>
@@ -85,7 +94,7 @@ function fillWebinarSlots(data) {
   };
 
   const slotMarkups = [];
-  data.map((slot, i) => {
+  data.slice(0, 6).map((slot, i) => {
     let alertMessage;
     if (i === 0) {
       alertMessage = { class: "warning-color", text: "Filling fast" }
@@ -102,7 +111,8 @@ function fillWebinarSlots(data) {
       endDateTime: slot.end_time,
       invitee_start_time: slot.invitee_start_time,
       invitee_end_time: slot.invitee_end_time,
-      alert: alertMessage
+      alert: alertMessage,
+      active: i === 0
     }))
   });
   handleSlotScroll();
@@ -159,6 +169,10 @@ $(document).ready(function () {
   const SELECTED_SLOT = {};
   window.VWO = window.VWO || [];
   VWO.event = VWO.event || function () { VWO.push(["event"].concat([].slice.call(arguments))) };
+  
+  try {
+    setPartnerCookies($('.partner_name')?.val(), "yes", "yes");
+  } catch (error) { console.error(error) }
   
   function pushToZap(endpoint) {
     //Zap end point for step 1
@@ -311,8 +325,8 @@ $(document).ready(function () {
     // Configuration of the observer
     var config = { attributes: true, attributeFilter: ['style'] };
 
-    // Observe all forms under .v2-form-container
-    $('.v2-form-container form').each(function () {
+    // Observe all forms under .v2-form-container-x
+    $('.v2-form-container-x form').each(function () {
       observer.observe(this, config);
     });
   }
@@ -741,7 +755,7 @@ $(document).ready(function () {
           },
           success: function (e) {
             if (e.status == "success") {
-              $(".v2-form-container").css("display", "none");
+              $(".v2-form-container-x").css("display", "none");
               showFormSuccessSection();
             }
           },
