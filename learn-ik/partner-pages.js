@@ -8,6 +8,14 @@ function findNextWebinar(webinars) {
     .sort((a, b) => a - b)[0];
 }
 
+function setPartnerCookies(partner_name, is_partnership_lead = "yes", is_user_eligible_for_partnership_discount = "yes") {
+  bake_cookie("partner_details", {
+    partner_name,
+    is_partnership_lead,
+    is_user_eligible_for_partnership_discount
+  })
+}
+
 function fillNextWebinarTimer() {
   const countdownElement = $('#v2-webinar-countdown');
   const miniCountDownElement = $(".v2-next-webinar-in");
@@ -159,6 +167,10 @@ $(document).ready(function () {
   const SELECTED_SLOT = {};
   window.VWO = window.VWO || [];
   VWO.event = VWO.event || function () { VWO.push(["event"].concat([].slice.call(arguments))) };
+  
+  try {
+    setPartnerCookies($('.partner_name')?.val(), "yes", "yes");
+  } catch (error) { console.error(error) }
   
   function pushToZap(endpoint) {
     //Zap end point for step 1
