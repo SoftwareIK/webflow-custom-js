@@ -323,8 +323,8 @@ $(document).ready(function () {
     // Configuration of the observer
     var config = { attributes: true, attributeFilter: ['style'] };
 
-    // Observe all forms under .v2-form-container
-    $('.v2-form-container form').each(function () {
+    // Observe all forms under .v2-form-container-x
+    $('.v2-form-container-x form').each(function () {
       observer.observe(this, config);
     });
   }
@@ -753,7 +753,7 @@ $(document).ready(function () {
           },
           success: function (e) {
             if (e.status == "success") {
-              $(".v2-form-container").css("display", "none");
+              $(".v2-form-container-x").css("display", "none");
               showFormSuccessSection();
             }
           },
