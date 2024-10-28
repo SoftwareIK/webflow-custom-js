@@ -580,9 +580,11 @@ $(document).ready(function () {
         $(".wr__event-start-time").val(startDate);
         $(".wr__event-end-time").val(endDate);
         if(is_webinar_1o1_eligible){
-          $(".wr__invitee-start-time").val(slotBookRes.start_datetime);
-          $(".wr__invitee-end-time").val($("input[name='start-date']:checked").data("invitee_endtime"));
-          $(".webinar-lead-type").val($("input[name='start-date']:checked").data("webinar_lead_type"));
+          $(".wr__event-start-time").val($("input:radio[name='start-date']:first").val());
+          $(".wr__event-end-time").val($("input:radio[name='start-date']:first").data("endtime"));
+          $(".wr__invitee-start-time").val($("input:radio[name='start-date']:first").data("invitee_starttime"));
+          $(".wr__invitee-end-time").val($("input:radio[name='start-date']:first").data("invitee_endtime"));
+          $(".webinar-lead-type").val($("input:radio[name='start-date']:first").data("webinar_lead_type"));
         } else {
           $(".wr__invitee-start-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_starttime"));
           $(".wr__invitee-end-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_endtime"));
@@ -590,14 +592,13 @@ $(document).ready(function () {
         }
       }
 
+      updateFormFields();
       if(is_webinar_1o1_eligible){
         pushToZap("https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/");
       }else if (typeof paRegistered !== "undefined") {
-        updateFormFields();
         $(".v2-form-loading-bar").show();
         pushToZap("https://hooks.zapier.com/hooks/catch/11068981/307qti9/");
       } else {
-        updateFormFields();
         $(".v2-form-loading-bar").show();
         pushToZap("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/");
       }
