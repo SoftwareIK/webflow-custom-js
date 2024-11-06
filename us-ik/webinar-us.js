@@ -565,6 +565,7 @@ $(document).ready(function () {
       msclkid: $(".msclkid").val(),
       fbclid: $(".fbclid").val(),
       user_id: $(".user_id").val(),
+      irclickid: $(".irclickid").val(),
 
       cta_page_url: $(".cta_page_url").val(),
       landing_page_url: $(".l_page_url").val(),
@@ -1469,12 +1470,12 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
       })
       .map((date, index) => {
         const localDate = new Date(date + "T00:00:00").toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-        });
+            month: "long",
+            day: "numeric",
+          });
         const dateBtn = $(`<button type="button" style="${buttonCommonStyles} ${index === 0
-          ? "background-color: #5494cd; color:#fff; font-weight:600;"
-          : "background-color: #fff;"
+            ? "background-color: #5494cd; color:#fff; font-weight:600;"
+            : "background-color: #fff;"
           }">
             ${localDate}</button>`);
 
@@ -1504,99 +1505,99 @@ function render1o1Slots(slotsDates, selectionHandler = () => { }) {
 
     const times = slotsDates[selectedDate];
     Object.keys(times).sort((a, b) => {
-      const timeA = new Date(`1970-01-01T${a}:00`).getTime();
-      const timeB = new Date(`1970-01-01T${b}:00`).getTime();
-      return timeA - timeB;
-    }).forEach((time, index) => {
-      const timeBtn = $(
-        `<button type="button" style="${buttonCommonStyles} background-color: #fff;">${time.toUpperCase()}</button>`
-      );
-
-      timeBtn.click(function () {
-        $(".webinar__slots #time-list button").css({
-          "background-color": "#fff",
-          color: "#000",
-          fontWeight: "400",
-        }); // Reset all buttons
-        $(this).css({
-          "background-color": "#5494cd",
-          color: "#fff",
-          fontWeight: "600",
-        }); // Highlight clicked time
-        selectionHandler?.(times[time]); // Callback function
-        console.log(selectedDate, time, `Slot ID: ${times[time]} selected`); // Alert the slot ID
-
-        const startDate = new Date(`${selectedDate}T${time}:00`);
-        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
-
-        const inviteeStartTime =
-          startDate.toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-          }) +
-          " - " +
-          startDate.toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          });
-        const inviteeEndTime =
-          endDate.toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true,
-          }) +
-          " - " +
-          endDate.toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          });
-        function formatDateWithTimezoneOffset(date) {
-          const timezoneOffset = -date.getTimezoneOffset(); // offset in minutes
-          const diffHours = Math.floor(timezoneOffset / 60);
-          const diffMinutes = timezoneOffset % 60;
-          const sign = diffHours >= 0 ? "+" : "-";
-          const pad = (num) => String(Math.abs(num)).padStart(2, "0");
-          return (
-            date.getFullYear() +
-            "-" +
-            pad(date.getMonth() + 1) +
-            "-" +
-            pad(date.getDate()) +
-            "T" +
-            pad(date.getHours()) +
-            ":" +
-            pad(date.getMinutes()) +
-            ":" +
-            pad(date.getSeconds()) +
-            sign +
-            pad(diffHours) +
-            ":" +
-            pad(diffMinutes)
-          );
-        }
-        $("#input-placeholder-1o1").html(
-          `<input 
-              data-slotid="${times[time]
-          }" hidden type="radio" name="start-date" value="${formatDateWithTimezoneOffset(
-            startDate
-          )}" data-endtime="${formatDateWithTimezoneOffset(
-            endDate
-          )}" data-invitee_starttime="${inviteeStartTime}" data-invitee_endtime="${inviteeEndTime}" data-name="${formatDateWithTimezoneOffset(
-            startDate
-          )}" class="w-form-formradioinput select-webinar-radio-btn w-radio-input" data-webinar_lead_type="ONE_TO_ONE_CONNECT" checked="checked" />`
+        const timeA = new Date(`1970-01-01T${a}:00`).getTime();
+        const timeB = new Date(`1970-01-01T${b}:00`).getTime();
+        return timeA - timeB;
+      }).forEach((time, index) => {
+        const timeBtn = $(
+          `<button type="button" style="${buttonCommonStyles} background-color: #fff;">${time.toUpperCase()}</button>`
         );
-      });
 
-      timeList.append(timeBtn);
-      setTimeout(() => {
-        if (index === 0) timeBtn.click(); // Select the first time slot by default
-      }, 0);
-    });
+        timeBtn.click(function () {
+          $(".webinar__slots #time-list button").css({
+            "background-color": "#fff",
+            color: "#000",
+            fontWeight: "400",
+          }); // Reset all buttons
+          $(this).css({
+            "background-color": "#5494cd",
+            color: "#fff",
+            fontWeight: "600",
+          }); // Highlight clicked time
+          selectionHandler?.(times[time]); // Callback function
+          console.log(selectedDate, time, `Slot ID: ${times[time]} selected`); // Alert the slot ID
+
+          const startDate = new Date(`${selectedDate}T${time}:00`);
+          const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+
+          const inviteeStartTime =
+            startDate.toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            }) +
+            " - " +
+            startDate.toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            });
+          const inviteeEndTime =
+            endDate.toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            }) +
+            " - " +
+            endDate.toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            });
+          function formatDateWithTimezoneOffset(date) {
+            const timezoneOffset = -date.getTimezoneOffset(); // offset in minutes
+            const diffHours = Math.floor(timezoneOffset / 60);
+            const diffMinutes = timezoneOffset % 60;
+            const sign = diffHours >= 0 ? "+" : "-";
+            const pad = (num) => String(Math.abs(num)).padStart(2, "0");
+            return (
+              date.getFullYear() +
+              "-" +
+              pad(date.getMonth() + 1) +
+              "-" +
+              pad(date.getDate()) +
+              "T" +
+              pad(date.getHours()) +
+              ":" +
+              pad(date.getMinutes()) +
+              ":" +
+              pad(date.getSeconds()) +
+              sign +
+              pad(diffHours) +
+              ":" +
+              pad(diffMinutes)
+            );
+          }
+          $("#input-placeholder-1o1").html(
+            `<input 
+              data-slotid="${times[time]
+            }" hidden type="radio" name="start-date" value="${formatDateWithTimezoneOffset(
+              startDate
+            )}" data-endtime="${formatDateWithTimezoneOffset(
+              endDate
+            )}" data-invitee_starttime="${inviteeStartTime}" data-invitee_endtime="${inviteeEndTime}" data-name="${formatDateWithTimezoneOffset(
+              startDate
+            )}" class="w-form-formradioinput select-webinar-radio-btn w-radio-input" data-webinar_lead_type="ONE_TO_ONE_CONNECT" checked="checked" />`
+          );
+        });
+
+        timeList.append(timeBtn);
+        setTimeout(() => {
+          if (index === 0) timeBtn.click(); // Select the first time slot by default
+        }, 0);
+      });
   }
 
   populateDates();

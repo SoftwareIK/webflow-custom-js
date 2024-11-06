@@ -19,7 +19,8 @@ function isDuplicateCookie(utm_params, recent_visit) {
     utm_params["utm_adset"] == recent_visit["utm_adset"] &&
     utm_params["utm_content"] == recent_visit["utm_content"] &&
     utm_params["utm_term"] == recent_visit["utm_term"] &&
-    utm_params["fbclid"] == recent_visit["fbclid"]
+    utm_params["fbclid"] == recent_visit["fbclid"] &&
+    utm_params["irclickid"] == recent_visit["irclickid"]
   ) {
     return true;
   } else {
@@ -214,13 +215,17 @@ function generateCalendlyLink(platform, cv) {
         utm_medium_str + "msclkid:" + `${active_visit[property]}`;
     } else if (`${property}` == "fbclid") {
       utm_medium_str = utm_medium_str + "fbclid:" + `${active_visit[property]}`;
+    } else if (`${property}` == "irclickid") {
+      utm_medium_str =
+        utm_medium_str + "irclickid:" + `${active_visit[property]}`;
     }
   }
 
   if (
     utm_medium_str.indexOf("gclid") == -1 &&
     utm_medium_str.indexOf("msclkid") == -1 &&
-    utm_medium_str.indexOf("fbclid") == -1
+    utm_medium_str.indexOf("fbclid") == -1 &&
+    utm_medium_str.indexOf("irclickid") == -1
   ) {
     utm_medium_str = utm_medium_str + ":";
   }
@@ -235,7 +240,8 @@ function generateCalendlyLink(platform, cv) {
       `${property}` != "utm_medium" &&
       `${property}` != "msclkid" &&
       `${property}` != "fbclid" &&
-      `${property}` != "gclid"
+      `${property}` != "gclid" &&
+      `${property}` != "irclickid"
     ) {
       calendlyurl =
         calendlyurl + `${property}` + "=" + `${active_visit[property]}` + "&";
@@ -328,6 +334,9 @@ function setHiddenFields() {
   );
   $(".fbclid").val(
     decodeURIComponent(params?.fbclid != undefined ? params["fbclid"] : "")
+  );
+  $(".irclickid").val(
+    decodeURIComponent(params?.irclickid != undefined ? params["irclickid"] : "")
   );
   $(".landing_page").val("ik.com" + getCookie("ik-landingpage-v2"));
   $(".cta_page_url").val("ik.com" + cta_lp),
