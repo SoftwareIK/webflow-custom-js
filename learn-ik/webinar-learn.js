@@ -675,7 +675,7 @@ $(document).ready(function () {
       "Pa Name": $(".wr__pa-name").val(),
       "Pa Email": $(".wr__pa-email").val(),
       "Booking id": $('input[name="start-date"]:checked').data("bookingid"),
-      "fbclid": $(".irclickid").val(),
+      "irclickid": $(".irclickid").val(),
     };
     
     const partnerDetails = read_cookie("partner_details");
