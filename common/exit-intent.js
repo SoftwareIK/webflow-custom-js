@@ -11,8 +11,6 @@ function splitTraffic() {
 
     if(window.clarity) {
       window.clarity("set", "intent-variant", isVarient ? "variant" : "control");
-      window.clarity("identify", uuid);
-      window.clarity("set", "uuid", uuid)	
     }
   } catch (error) {
     console.log(error)
