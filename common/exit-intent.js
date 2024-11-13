@@ -294,8 +294,8 @@ function showScrollInfo() {
   window.addEventListener("resize", updateScrollInfo);
 }
 
-const isVariant = splitTraffic();
-if(isVariant){
+// const isVariant = splitTraffic();
+// if(isVariant){
   initExitIntentPopup(
     "https://cdn.prod.website-files.com/5d0cef7a72ca1b074065dfda/6614e5e55597d19627c656ba_blog-ik-thumbnail-p-500.png",
     {
@@ -310,4 +310,4 @@ if(isVariant){
     }
   );
   showScrollInfo();
-}
+// }
