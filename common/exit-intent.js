@@ -97,7 +97,7 @@ function initExitIntentPopup(imageUrl, options = {}) {
   };
 
   const shouldShowPopup = () => {
-    return true;
+    return !popupShown;
     return !getCookie(COOKIE_NAME) && !popupShown;
   };
 
