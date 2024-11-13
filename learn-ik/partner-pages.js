@@ -198,6 +198,7 @@ $(document).ready(function () {
       "gclid": $('.gclid').val(),
       "msclkid": $('.msclkid').val(),
       "fbclid": $('.fbclid').val(),
+      "irclickid": $('.irclickid').val(),
       "user_id": $('.user_id').val(),
 
       "cta_page_url": $('.cta_page_url').val(),
@@ -651,6 +652,7 @@ $(document).ready(function () {
       "gclid": $('.gclid').val(),
       "msclkid": $('.msclkid').val(),
       "fbclid": $('.fbclid').val(),
+      "irclickid": $('.irclickid').val(),
       "user_id": $('.user_id').val(),
       "salesforce_uuid": sf_uuid,
     }
@@ -713,6 +715,7 @@ $(document).ready(function () {
         gclid: decodeURIComponent(utmparams.gclid),
         msclkid: decodeURIComponent(utmparams.msclkid),
         fbclid: decodeURIComponent(utmparams.fbclid),
+        irclickid: decodeURIComponent(utmparams.irclickid),
         user_id: data.learnUserId,
         user_timezone: v_timezone,
         v_country: v_country,
