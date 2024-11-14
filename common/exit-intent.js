@@ -22,7 +22,11 @@ function splitTraffic() {
   return isVarient;
 }
 
-function initExitIntentPopup(imageUrl, options = {}) {
+function mobileDevice() {
+  return window.innerWidth <= 768;
+}
+
+function initExitIntentPopup(eagerLoadImage, options = {}) {
   const COOKIE_NAME = "exitIntentPopupShown";
 
   // Configurable parameters with default values
@@ -83,7 +87,10 @@ function initExitIntentPopup(imageUrl, options = {}) {
     popup.style.position = "relative";
     popup.style.backgroundColor = "white";
     popup.style.borderRadius = "8px";
-    popup.style.padding = "30px";
+    if(mobileDevice()){
+      popup.style.paddingTop = "30px";
+      popup.style.paddingBottom = "30px";
+    }
     popup.style.maxWidth = "80%";
     popup.style.maxHeight = "80%";
     popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
@@ -91,10 +98,13 @@ function initExitIntentPopup(imageUrl, options = {}) {
 
     // Image element
     const image = document.createElement("img");
-    image.src = imageUrl;
+    image.src = eagerLoadImage.src;
     image.alt = "IKIQ thumbnail";
     image.style.maxWidth = "100%";
     image.style.height = "auto";
+    image.style.cursor = "pointer";
+    image.style.borderRadius = "8px";
+
 
     // Image click event to redirect, close popup, and track activity
     image.onclick = () => {
@@ -144,10 +154,10 @@ function initExitIntentPopup(imageUrl, options = {}) {
     const closeButton = document.createElement("span");
     closeButton.innerHTML = "&times;";
     closeButton.style.position = "absolute";
-    closeButton.style.top = "10px";
-    closeButton.style.right = "10px";
+    closeButton.style.top = "0";
+    closeButton.style.right = "14px";
     closeButton.style.cursor = "pointer";
-    closeButton.style.fontSize = "24px";
+    closeButton.style.fontSize = "32px";
     closeButton.style.color = "#555";
 
     // Close button click event to close popup and track activity
@@ -307,7 +317,7 @@ function initExitIntentPopup(imageUrl, options = {}) {
 
   // Add event listeners based on device type
   const initializeExitIntentDetection = () => {
-    if (window.innerWidth > 768) {
+    if (!mobileDevice()) {
       // Desktop-specific exit intent triggers
       document.addEventListener("mouseleave", onMouseLeave);
       document.addEventListener("mouseenter", onMouseEnter); // Track re-entering viewport
@@ -327,71 +337,55 @@ function initExitIntentPopup(imageUrl, options = {}) {
   document.addEventListener("DOMContentLoaded", initializeExitIntentDetection);
 }
 
-function showScrollInfo() {
-  // Create a div for displaying scroll information
-  const scrollInfo = document.createElement("div");
-  scrollInfo.style.position = "fixed";
-  scrollInfo.style.top = "10px";
-  scrollInfo.style.left = "10px";
-  scrollInfo.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-  scrollInfo.style.color = "white";
-  scrollInfo.style.padding = "5px 10px";
-  scrollInfo.style.borderRadius = "5px";
-  scrollInfo.style.fontSize = "14px";
-  scrollInfo.style.zIndex = "1000";
-  document.body.appendChild(scrollInfo);
-
-  let lastScrollTop = window.scrollY;
-  let lastTime = performance.now();
-
-  function updateScrollInfo() {
-    const scrollTop = window.scrollY;
-    const docHeight =
-      document.documentElement.scrollHeight - window.innerHeight;
-    const scrolled = (scrollTop / docHeight) * 100;
-
-    // Calculate scroll speed
-    const currentTime = performance.now();
-    const timeElapsed = currentTime - lastTime;
-    const distanceScrolled = Math.abs(scrollTop - lastScrollTop);
-    const speed = ((distanceScrolled / timeElapsed) * 1000).toFixed(2); // px per second
-
-    // Get display width, height, and device type
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const deviceType = width > 768 ? "Desktop" : "Mobile";
-
-    // Update display with scroll percentage, speed, screen dimensions, and device type
-    scrollInfo.textContent = `Scroll: ${Math.round(
-      scrolled
-    )}% | Speed: ${speed} px/s | Width: ${width}px | Height: ${height}px | Device: ${deviceType} | Popup shown?: ${
-      popupShown ? "yes" : "no"
-    }`;
-
-    // Update last scroll position and time for next calculation
-    lastScrollTop = scrollTop;
-    lastTime = currentTime;
-  }
-
-  // Update scroll info on scroll and resize events
-  window.addEventListener("scroll", updateScrollInfo);
-  window.addEventListener("resize", updateScrollInfo);
+function isOnFinalStep() {
+  const finalStepPages = [
+      "signup-final-step",
+      "signup-final-step-v6",
+      "signup-final-step-switchup",
+      "signup-final-step-switchup-v6"
+  ];
+  
+  return finalStepPages.some(step => window.location.href.includes(step));
 }
 
-// const isVariant = splitTraffic();
-// if(isVariant){
-initExitIntentPopup(
-  "https://cdn.prod.website-files.com/5d0cef7a72ca1b074065dfda/6614e5e55597d19627c656ba_blog-ik-thumbnail-p-500.png",
-  {
-    downScrollThreshold: 1,
-    upScrollThreshold: 1,
-    upScrollSpeedThreshold: 5,
-    popupTimeoutHours: 6,
-    checkInterval: 100,
-    initialScrollIgnore: 15,
-    bottomIgnoreThreshold: 5,
-    outsideViewportDelay: 500, // Minimum time outside viewport to trigger popup (500ms)
+function hideCurrentModalOnBlogPage() {
+  const pathname = window.location.pathname;
+
+  if (pathname.includes('/blogs/')) {
+      const modalElements = document.querySelectorAll('.fs_modal-2_component');
+      modalElements.forEach(element => {
+          element.style.display = 'none';
+      });
   }
-);
-showScrollInfo();
-// }
+}
+
+if (!isOnFinalStep()) {
+  const isVariant = splitTraffic();
+  if (isVariant) {
+    hideCurrentModalOnBlogPage();
+
+    const eagerLoadImage = new Image();
+    if (mobileDevice()) {
+      eagerLoadImage.src = "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6735d41ebced5e2946456b47_Mobile.webp";
+    } else {
+      eagerLoadImage.src = "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6735d325701670c92f7ae107_exit-intent-web.webp";
+    }
+  
+    console.log("Current variant", "variant");
+    initExitIntentPopup(
+      eagerLoadImage,
+      {
+        downScrollThreshold: 1,
+        upScrollThreshold: 1,
+        upScrollSpeedThreshold: 5,
+        popupTimeoutHours: 6,
+        checkInterval: 100,
+        initialScrollIgnore: 15,
+        bottomIgnoreThreshold: 5,
+        outsideViewportDelay: 500, // Minimum time outside viewport to trigger popup (500ms)
+      }
+    );
+  } else {
+    console.log("Current variant", "control");
+  }  
+}
