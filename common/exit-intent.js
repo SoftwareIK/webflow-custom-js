@@ -388,7 +388,7 @@ initExitIntentPopup(
     upScrollSpeedThreshold: 5,
     popupTimeoutHours: 6,
     checkInterval: 100,
-    initialScrollIgnore: 10,
+    initialScrollIgnore: 15,
     bottomIgnoreThreshold: 5,
     outsideViewportDelay: 500, // Minimum time outside viewport to trigger popup (500ms)
   }
