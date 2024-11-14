@@ -9,11 +9,15 @@ function splitTraffic() {
     const lastTwoDigits = parseInt(trimmedUuid.slice(-2)); // Defaults to base 10
     isVarient = lastTwoDigits >= weightageOfVariant;
 
-    if(window.clarity) {
-      window.clarity("set", "intent-variant", isVarient ? "variant" : "control");
+    if (window.clarity) {
+      window.clarity(
+        "set",
+        "intent-variant",
+        isVarient ? "variant" : "control"
+      );
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
   return isVarient;
 }
@@ -59,41 +63,121 @@ function initExitIntentPopup(imageUrl, options = {}) {
   };
 
   const createExitIntentPopup = () => {
+    // Overlay
+    const overlay = document.createElement("div");
+    overlay.id = "exit-intent-overlay";
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
+    overlay.style.display = "flex";
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "center";
+    overlay.style.zIndex = "9999";
+
+    // Popup container
     const popup = document.createElement("div");
     popup.id = "exit-intent-popup";
-    popup.style.position = "fixed";
-    popup.style.top = "50%";
-    popup.style.left = "50%";
-    popup.style.transform = "translate(-50%, -50%)";
-    popup.style.padding = "20px";
+    popup.style.position = "relative";
     popup.style.backgroundColor = "white";
-    popup.style.border = "1px solid #ddd";
-    popup.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
-    popup.style.zIndex = "9999";
+    popup.style.borderRadius = "8px";
+    popup.style.padding = "30px";
+    popup.style.maxWidth = "80%";
+    popup.style.maxHeight = "80%";
+    popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
     popup.style.textAlign = "center";
-    popup.style.display = "none";
 
-    // Add image to the popup
+    // Image element
     const image = document.createElement("img");
     image.src = imageUrl;
-    image.alt = "Special Offer";
+    image.alt = "IKIQ thumbnail";
     image.style.maxWidth = "100%";
     image.style.height = "auto";
+
+    // Image click event to redirect, close popup, and track activity
+    image.onclick = () => {
+      const targetUrl = new URL(
+        "https://ikiq.interviewkickstart.com/resume-analysis"
+      );
+
+      const appendUTMParams = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if ([...urlParams].length > 0) {
+          urlParams.forEach((value, key) =>
+            targetUrl.searchParams.append(key, value)
+          );
+        } else {
+          const vLatestCookie = getCookie("v_latest");
+          if (vLatestCookie) {
+            try {
+              const utmParams = JSON.parse(decodeURIComponent(vLatestCookie));
+              Object.keys(utmParams).forEach((key) => {
+                if (utmParams[key]) {
+                  targetUrl.searchParams.append(key, utmParams[key]);
+                }
+              });
+            } catch (error) {
+              console.error("Failed to parse v_latest cookie:", error);
+            }
+          }
+        }
+      };
+
+      appendUTMParams();
+      window.open(targetUrl.toString(), "_blank");
+
+      // Track image click activity
+      saveClickActivity("exit_intent_image_clicked", new Date().getTime());
+
+      // Close popup
+      overlay.style.display = "none";
+      setCookie(COOKIE_NAME, "true", popupTimeoutHours);
+      popupShown = true;
+    };
+
     popup.appendChild(image);
 
     // Close button
-    const closeButton = document.createElement("button");
-    closeButton.innerText = "Close";
-    closeButton.style.marginTop = "10px";
+    const closeButton = document.createElement("span");
+    closeButton.innerHTML = "&times;";
+    closeButton.style.position = "absolute";
+    closeButton.style.top = "10px";
+    closeButton.style.right = "10px";
+    closeButton.style.cursor = "pointer";
+    closeButton.style.fontSize = "24px";
+    closeButton.style.color = "#555";
+
+    // Close button click event to close popup and track activity
     closeButton.onclick = () => {
-      popup.style.display = "none";
+      overlay.style.display = "none";
       setCookie(COOKIE_NAME, "true", popupTimeoutHours);
-      popupShown = true; // Mark the popup as shown in the current session
+      popupShown = true;
+
+      // Track close button activity
+      saveClickActivity("exit_intent_closed", new Date().getTime());
     };
+
     popup.appendChild(closeButton);
 
-    document.body.appendChild(popup);
-    return popup;
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+
+    // Close popup when clicking outside
+    overlay.onclick = (event) => {
+      if (event.target === overlay) {
+        overlay.style.display = "none";
+        setCookie(COOKIE_NAME, "true", popupTimeoutHours);
+        popupShown = true;
+
+        // Track outside click activity as close
+        saveClickActivity("exit_intent_clicked", new Date().getTime());
+      }
+    };
+
+    return overlay;
   };
 
   const shouldShowPopup = () => {
@@ -107,7 +191,7 @@ function initExitIntentPopup(imageUrl, options = {}) {
       popupInitialized = true;
     }
     if (shouldShowPopup()) {
-      exitPopup.style.display = "block";
+      exitPopup.style.display = "flex";
       popupShown = true; // Mark the popup as shown in the current session
     }
   };
@@ -296,18 +380,18 @@ function showScrollInfo() {
 
 // const isVariant = splitTraffic();
 // if(isVariant){
-  initExitIntentPopup(
-    "https://cdn.prod.website-files.com/5d0cef7a72ca1b074065dfda/6614e5e55597d19627c656ba_blog-ik-thumbnail-p-500.png",
-    {
-      downScrollThreshold: 1,
-      upScrollThreshold: 1,
-      upScrollSpeedThreshold: 5,
-      popupTimeoutHours: 6,
-      checkInterval: 100,
-      initialScrollIgnore: 10,
-      bottomIgnoreThreshold: 5,
-      outsideViewportDelay: 500, // Minimum time outside viewport to trigger popup (500ms)
-    }
-  );
-  showScrollInfo();
+initExitIntentPopup(
+  "https://cdn.prod.website-files.com/5d0cef7a72ca1b074065dfda/6614e5e55597d19627c656ba_blog-ik-thumbnail-p-500.png",
+  {
+    downScrollThreshold: 1,
+    upScrollThreshold: 1,
+    upScrollSpeedThreshold: 5,
+    popupTimeoutHours: 6,
+    checkInterval: 100,
+    initialScrollIgnore: 10,
+    bottomIgnoreThreshold: 5,
+    outsideViewportDelay: 500, // Minimum time outside viewport to trigger popup (500ms)
+  }
+);
+showScrollInfo();
 // }
