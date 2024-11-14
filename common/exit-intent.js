@@ -90,8 +90,10 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     if(mobileDevice()){
       popup.style.paddingTop = "30px";
       popup.style.paddingBottom = "30px";
+      popup.style.maxWidth = "80%";
+    }else {
+      popup.style.maxWidth = "800px";
     }
-    popup.style.maxWidth = "80%";
     popup.style.maxHeight = "80%";
     popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
     popup.style.textAlign = "center";
