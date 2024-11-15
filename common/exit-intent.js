@@ -1,4 +1,3 @@
-const weightageOfVariant = 50;
 let popupShown = false;
 
 function splitTraffic() {
