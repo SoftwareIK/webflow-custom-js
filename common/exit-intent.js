@@ -87,11 +87,11 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     popup.style.position = "relative";
     popup.style.backgroundColor = "white";
     popup.style.borderRadius = "8px";
-    if(mobileDevice()){
+    if (mobileDevice()) {
       popup.style.paddingTop = "30px";
       popup.style.paddingBottom = "30px";
       popup.style.maxWidth = "80%";
-    }else {
+    } else {
       popup.style.maxWidth = "800px";
     }
     popup.style.maxHeight = "80%";
@@ -106,7 +106,6 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     image.style.height = "auto";
     image.style.cursor = "pointer";
     image.style.borderRadius = "8px";
-
 
     // Image click event to redirect, close popup, and track activity
     image.onclick = () => {
@@ -341,23 +340,23 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
 
 function isOnFinalStep() {
   const finalStepPages = [
-      "signup-final-step",
-      "signup-final-step-v6",
-      "signup-final-step-switchup",
-      "signup-final-step-switchup-v6"
+    "signup-final-step",
+    "signup-final-step-v6",
+    "signup-final-step-switchup",
+    "signup-final-step-switchup-v6",
   ];
-  
-  return finalStepPages.some(step => window.location.href.includes(step));
+
+  return finalStepPages.some((step) => window.location.href.includes(step));
 }
 
 function hideCurrentModalOnBlogPage() {
   const pathname = window.location.pathname;
 
-  if (pathname.includes('/blogs/')) {
-      const modalElements = document.querySelectorAll('.fs_modal-2_component');
-      modalElements.forEach(element => {
-          element.style.display = 'none';
-      });
+  if (pathname.includes("/blogs/")) {
+    const modalElements = document.querySelectorAll(".fs_modal-2_component");
+    modalElements.forEach((element) => {
+      element.style.display = "none";
+    });
   }
 }
 
@@ -368,26 +367,25 @@ if (!isOnFinalStep()) {
 
     const eagerLoadImage = new Image();
     if (mobileDevice()) {
-      eagerLoadImage.src = "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6735d41ebced5e2946456b47_Mobile.webp";
+      eagerLoadImage.src =
+        "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6735d41ebced5e2946456b47_Mobile.webp";
     } else {
-      eagerLoadImage.src = "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6735d325701670c92f7ae107_exit-intent-web.webp";
+      eagerLoadImage.src =
+        "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6736c3bbc05aac9dc828b94f_exit-intent-web.webp";
     }
-  
+
     console.log("Current variant", "variant");
-    initExitIntentPopup(
-      eagerLoadImage,
-      {
-        downScrollThreshold: 1,
-        upScrollThreshold: 1,
-        upScrollSpeedThreshold: 5,
-        popupTimeoutHours: 6,
-        checkInterval: 100,
-        initialScrollIgnore: 15,
-        bottomIgnoreThreshold: 5,
-        outsideViewportDelay: 500, // Minimum time outside viewport to trigger popup (500ms)
-      }
-    );
+    initExitIntentPopup(eagerLoadImage, {
+      downScrollThreshold: 1,
+      upScrollThreshold: 1,
+      upScrollSpeedThreshold: 5,
+      popupTimeoutHours: 6,
+      checkInterval: 100,
+      initialScrollIgnore: 15,
+      bottomIgnoreThreshold: 5,
+      outsideViewportDelay: 500, // Minimum time outside viewport to trigger popup (500ms)
+    });
   } else {
     console.log("Current variant", "control");
-  }  
+  }
 }
