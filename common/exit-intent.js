@@ -191,7 +191,6 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   };
 
   const shouldShowPopup = () => {
-    return !popupShown;
     return !getCookie(COOKIE_NAME) && !popupShown;
   };
 
