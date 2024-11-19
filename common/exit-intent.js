@@ -25,6 +25,17 @@ function mobileDevice() {
   return window.innerWidth <= 768;
 }
 
+function hideCurrentModalOnBlogPage() {
+  const pathname = window.location.pathname;
+
+  if (pathname.includes("/blogs/")) {
+    const modalElements = document.querySelectorAll(".fs_modal-2_component");
+    modalElements.forEach((element) => {
+      element.style.display = "none";
+    });
+  }
+}
+
 function initExitIntentPopup(eagerLoadImage, options = {}) {
   const COOKIE_NAME = "exitIntentPopupShown";
 
@@ -64,6 +75,17 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     }
     return null;
   };
+
+  const closePopup = (overlay, trackClick = true) => {
+    // Close popup
+    overlay.style.display = "none";
+    setCookie(COOKIE_NAME, "true", popupTimeoutHours);
+    popupShown = true;
+
+    if (trackClick) {
+      saveClickActivity("exit_intent_clicked", new Date().getTime());
+    }
+  }
 
   const createExitIntentPopup = () => {
     // Overlay
@@ -142,10 +164,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
       // Track image click activity
       saveClickActivity("exit_intent_image_clicked", new Date().getTime());
 
-      // Close popup
-      overlay.style.display = "none";
-      setCookie(COOKIE_NAME, "true", popupTimeoutHours);
-      popupShown = true;
+      closePopup(overlay, false);
     };
 
     popup.appendChild(image);
@@ -162,12 +181,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
 
     // Close button click event to close popup and track activity
     closeButton.onclick = () => {
-      overlay.style.display = "none";
-      setCookie(COOKIE_NAME, "true", popupTimeoutHours);
-      popupShown = true;
-
-      // Track close button activity
-      saveClickActivity("exit_intent_closed", new Date().getTime());
+      closePopup(overlay);
     };
 
     popup.appendChild(closeButton);
@@ -178,12 +192,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     // Close popup when clicking outside
     overlay.onclick = (event) => {
       if (event.target === overlay) {
-        overlay.style.display = "none";
-        setCookie(COOKIE_NAME, "true", popupTimeoutHours);
-        popupShown = true;
-
-        // Track outside click activity as close
-        saveClickActivity("exit_intent_clicked", new Date().getTime());
+        closePopup(overlay);
       }
     };
 
@@ -191,7 +200,11 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   };
 
   const shouldShowPopup = () => {
-    return !getCookie(COOKIE_NAME) && !popupShown;
+    const shouldShow = !getCookie(COOKIE_NAME) && !popupShown;
+    if (shouldShow && window.location.pathname.includes("/blogs/") && typeof(blogPopupShown) != undefined) {
+      return !blogPopupShown;
+    }
+    return shouldShow;
   };
 
   const showPopup = () => {
@@ -202,6 +215,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     if (shouldShowPopup()) {
       exitPopup.style.display = "flex";
       popupShown = true; // Mark the popup as shown in the current session
+      hideCurrentModalOnBlogPage();
     }
   };
 
@@ -332,22 +346,9 @@ function isOnFinalStep() {
   return finalStepPages.some((step) => window.location.href.includes(step));
 }
 
-function hideCurrentModalOnBlogPage() {
-  const pathname = window.location.pathname;
-
-  if (pathname.includes("/blogs/")) {
-    const modalElements = document.querySelectorAll(".fs_modal-2_component");
-    modalElements.forEach((element) => {
-      element.style.display = "none";
-    });
-  }
-}
-
 if (!isOnFinalStep()) {
   const isVariant = splitTraffic();
   if (isVariant) {
-    hideCurrentModalOnBlogPage();
-
     const eagerLoadImage = new Image();
     if (mobileDevice()) {
       eagerLoadImage.src =
@@ -362,7 +363,7 @@ if (!isOnFinalStep()) {
       downScrollThreshold: 1,
       upScrollThreshold: 1,
       upScrollSpeedThreshold: 5,
-      popupTimeoutHours: 6,
+      popupTimeoutHours: 3,
       checkInterval: 100,
       initialScrollIgnore: 15,
       bottomIgnoreThreshold: 5,
