@@ -341,6 +341,7 @@ function isOnFinalStep() {
     "signup-final-step-v6",
     "signup-final-step-switchup",
     "signup-final-step-switchup-v6",
+    "ikiq-webinar-registration",
   ];
 
   return finalStepPages.some((step) => window.location.href.includes(step));
