@@ -274,9 +274,6 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     showPopup();
   };
 
-  let mouseY = 0;
-  let timer;
-
   // Desktop: Detect mouseleave event to identify exit intent
   const onMouseLeave = (e) => {
     if (contextMenuOpen) return; // Ignore if context menu is open
@@ -294,17 +291,6 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     clearTimeout(outsideViewportTimer); // Clear the timer if user returns within delay
   };
 
-  // Desktop: Detect when the user moves the mouse upwards quickly
-  const onMouseMove = (e) => {
-    if (e.clientY < mouseY && mouseY > window.innerHeight - 100) {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        if (!contextMenuOpen) showPopup(); // Show popup only if context menu wasn't open
-      }, outsideViewportDelay);
-    }
-    mouseY = e.clientY;
-  };
-
   // Track context menu open/close state
   window.addEventListener("contextmenu", () => {
     contextMenuOpen = true;
@@ -320,7 +306,6 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
       // Desktop-specific exit intent triggers
       document.addEventListener("mouseleave", onMouseLeave);
       document.addEventListener("mouseenter", onMouseEnter); // Track re-entering viewport
-      document.addEventListener("mousemove", onMouseMove);
     } else {
       // Mobile-specific exit intent triggers
       detectBackButton();
