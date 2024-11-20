@@ -342,13 +342,10 @@ function isOnFinalStep() {
     "signup-final-step-switchup",
     "signup-final-step-switchup-v6",
     "ikiq-webinar-registration",
-    "webinar-registration/interview-prep",
-    "webinar-registration/switch-up",
-    "webinar-registration/product-management",
     "/webinar-registration"
   ];
 
-  return finalStepPages.some((step) => window.location.href.includes(step));
+  return finalStepPages.some((step) => window.location.pathname.includes(step));
 }
 
 if (!isOnFinalStep()) {
