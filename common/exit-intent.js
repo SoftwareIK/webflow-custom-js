@@ -200,7 +200,10 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   };
 
   const shouldShowPopup = () => {
-    const shouldShow = !getCookie(COOKIE_NAME) && !popupShown;
+    const isFormOpened = !!document.querySelector('.webinar__lightbox') && getComputedStyle(document.querySelector('.webinar__lightbox')).display != 'none';
+    const isVideoOpened = !!document.querySelector('.w-lightbox-backdrop') && getComputedStyle(document.querySelector('.w-lightbox-backdrop')).display != 'none';
+    const shouldShow = !getCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened;
+
     if (shouldShow && window.location.pathname.includes("/blogs/") && typeof(blogPopupShown) != undefined) {
       return !blogPopupShown;
     }
