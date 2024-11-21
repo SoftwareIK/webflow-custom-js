@@ -676,10 +676,10 @@ $(document).ready(function () {
       "Pa Email": $(".wr__pa-email").val(),
       "Booking id": $('input[name="start-date"]:checked').data("bookingid"),
       "irclickid": $(".irclickid").val(),
-      ipAddress: $(".ipAddress-input").val(),
-      browserName: $(".browserName-input").val(),
-      browserVersion: $(".browserVersion-input").val(),
-      platform: $(".platform-input").val()
+      ipAddress: $("#ipAddress-input").val(),
+      browserName: $("#browserName-input").val(),
+      browserVersion: $("#browserVersion-input").val(),
+      platform: $("#platform-input").val()
     };
     
     const partnerDetails = read_cookie("partner_details");
@@ -688,7 +688,7 @@ $(document).ready(function () {
       t["is_partnership_lead"] = partnerDetails?.is_partnership_lead
       t["is_user_eligible_for_partnership_discount"] = partnerDetails?.is_user_eligible_for_partnership_discount
     }
-
+console.log("userDetails",t)
     $.ajax({
       type: "POST",
       url: e,
