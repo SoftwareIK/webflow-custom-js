@@ -162,7 +162,6 @@ $(document).ready(function () {
         ipAddress: null,
         browserName: browserDetails.name,
         browserVersion: browserDetails.version,
-        platform: browserDetails.platform,
     };
 
     async function fetchIPAddress() {
@@ -192,7 +191,6 @@ $(document).ready(function () {
             ipAddress: inputData.ipAddress,
             browserName: inputData.browserName,
             browserVersion: inputData.browserVersion,
-            platform: inputData.platform,
         };
 
         for (const [key, value] of Object.entries(fields)) {
@@ -205,7 +203,6 @@ $(document).ready(function () {
         }
 
         document.body.appendChild(form);
-        console.log('Hidden form added:', form);
     }
 
     // Main logic
@@ -222,7 +219,6 @@ $(document).ready(function () {
         const ua = navigator.userAgent;
         let browserName = "Unknown";
         let version = "Unknown";
-        let platform = navigator.platform;
 
         if (ua.indexOf("Firefox") > -1) {
             browserName = "Firefox";
@@ -241,7 +237,7 @@ $(document).ready(function () {
             version = ua.split("rv:")[1].split(")")[0];
         }
 
-        return { name: browserName, version: version, platform: platform };
+        return { name: browserName, version: version };
     }
 
   function n(e) {
@@ -765,8 +761,7 @@ $(document).ready(function () {
       "irclickid": $(".irclickid").val(),
       ipAddress: $("#ipAddress-input").val(),
       browserName: $("#browserName-input").val(),
-      browserVersion: $("#browserVersion-input").val(),
-      platform: $("#platform-input").val()
+      browserVersion: $("#browserVersion-input").val()
     };
     
     const partnerDetails = read_cookie("partner_details");
@@ -775,7 +770,7 @@ $(document).ready(function () {
       t["is_partnership_lead"] = partnerDetails?.is_partnership_lead
       t["is_user_eligible_for_partnership_discount"] = partnerDetails?.is_user_eligible_for_partnership_discount
     }
-console.log("userDetails",t)
+
     $.ajax({
       type: "POST",
       url: e,
