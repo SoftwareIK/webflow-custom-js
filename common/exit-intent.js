@@ -335,7 +335,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   document.addEventListener("DOMContentLoaded", initializeExitIntentDetection);
 }
 
-function isOnFinalStep() {
+function ignorePath() {
   const finalStepPages = [
     "signup-final-step",
     "signup-final-step-v6",
@@ -345,10 +345,20 @@ function isOnFinalStep() {
     "/webinar-registration"
   ];
 
-  return finalStepPages.some((step) => window.location.pathname.includes(step));
+  // Check if current URL matches any of the predefined final step pages
+  const isFinalStepPage = finalStepPages.some((step) =>
+    window.location.pathname.includes(step)
+  );
+
+  // Check for paths matching "/su/*"
+  const isSuPage =
+    window.location.pathname.startsWith("/su/") &&
+    window.location.hostname === "www.interviewkickstart.com";
+
+  return isFinalStepPage || isSuPage;
 }
 
-if (!isOnFinalStep()) {
+if (!ignorePath()) {
   const isVariant = splitTraffic();
   if (isVariant) {
     const eagerLoadImage = new Image();
