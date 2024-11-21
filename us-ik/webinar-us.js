@@ -62,6 +62,90 @@ $(document).ready(function () {
     }
   });
 
+  const browserDetails = getBrowserDetails();
+  const inputData = {
+      ipAddress: null,
+      browserName: browserDetails.name,
+      browserVersion: browserDetails.version,
+  };
+
+  async function fetchIPAddress() {
+      const apiURL = 'https://api.ipify.org?format=json';
+      try {
+          const response = await fetch(apiURL);
+
+          if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          inputData.ipAddress = data.ip;
+          return data.ip;
+
+      } catch (error) {
+          console.error('Error fetching IP address:', error);
+          return null;
+      }
+  }
+
+  function addHiddenForm() {
+      const form = document.createElement('form');
+      form.style.display = 'none'; // Ensure the form is hidden
+
+      // Create and append hidden fields
+      const fields = {
+          ipAddress: inputData.ipAddress,
+          browserName: inputData.browserName,
+          browserVersion: inputData.browserVersion,
+      };
+
+      for (const [key, value] of Object.entries(fields)) {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = key;
+          input.value = value || '';
+          input.id = `${key}-input`;
+          form.appendChild(input);
+      }
+
+      document.body.appendChild(form);
+  }
+
+  // Main logic
+  (async () => {
+      const ipAddress = await fetchIPAddress();
+      if (ipAddress) {
+          console.log('Your IP address is:', ipAddress);
+      } else {
+          console.log('Failed to fetch the IP address.');
+      }
+      addHiddenForm();
+  })();
+  function getBrowserDetails() {
+      const ua = navigator.userAgent;
+      let browserName = "Unknown";
+      let version = "Unknown";
+
+      if (ua.indexOf("Firefox") > -1) {
+          browserName = "Firefox";
+          version = ua.split("Firefox/")[1];
+      } else if (ua.indexOf("Chrome") > -1 && ua.indexOf("Edg/") === -1) {
+          browserName = "Chrome";
+          version = ua.split("Chrome/")[1].split(" ")[0];
+      } else if (ua.indexOf("Safari") > -1 && ua.indexOf("Chrome") === -1) {
+          browserName = "Safari";
+          version = ua.split("Version/")[1].split(" ")[0];
+      } else if (ua.indexOf("Edg/") > -1) {
+          browserName = "Edge";
+          version = ua.split("Edg/")[1];
+      } else if (ua.indexOf("Trident/") > -1) {
+          browserName = "Internet Explorer";
+          version = ua.split("rv:")[1].split(")")[0];
+      }
+
+      return { name: browserName, version: version };
+  }
+
+
   function daysUntil(dateString) {
     const futureDate = new Date(dateString);
     const currentDate = new Date();
@@ -583,6 +667,9 @@ $(document).ready(function () {
       "Invitee Start Time": $(".wr__invitee-start-time").val(),
       "Invitee End Time": $(".wr__invitee-end-time").val(),
       "Booking id": $('input[name="start-date"]:checked').data("bookingid"),
+      ipAddress: $("#ipAddress-input").val(),
+      browserName: $("#browserName-input").val(),
+      browserVersion: $("#browserVersion-input").val()
     };
 
     $.ajax({
