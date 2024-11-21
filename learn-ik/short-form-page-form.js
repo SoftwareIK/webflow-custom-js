@@ -1,5 +1,63 @@
 let upcomingWebinar;
 
+function openForm() {
+  $("#form-popup-container").css("display", "flex");
+  $("#form-wrapper").css("display", "flex");
+  $("#form-submitted-div").css("display", "none");
+}
+
+function closeForm() {
+  $("#form-popup-container").css("display", "none");
+}
+
+(function () {
+  let hasScrolledDown = false;
+
+  function getScrollPercentage() {
+      return (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  }
+
+  function showHeader() {
+      const headerWrapper = document.querySelector('.header-wrapper');
+      if (!headerWrapper) return;
+
+      const whiteLogo = headerWrapper.querySelector('.white-logo');
+      if (whiteLogo) whiteLogo.style.display = 'none';
+
+      const coloredLogo = headerWrapper.querySelector('.colored-logo');
+      if (coloredLogo) coloredLogo.style.display = 'inline-block';
+
+      const headerSection = headerWrapper.querySelector('.header-section');
+      if (headerSection) headerSection.style.backgroundColor = 'white';
+  }
+
+  function hideHeader() {
+      const headerWrapper = document.querySelector('.header-wrapper');
+      if (!headerWrapper) return;
+
+      const whiteLogo = headerWrapper.querySelector('.white-logo');
+      if (whiteLogo) whiteLogo.style.display = 'inline-block';
+
+      const coloredLogo = headerWrapper.querySelector('.colored-logo');
+      if (coloredLogo) coloredLogo.style.display = 'none';
+
+      const headerSection = headerWrapper.querySelector('.header-section');
+      if (headerSection) headerSection.style.backgroundColor = '';
+  }
+
+  window.addEventListener('scroll', () => {
+      const scrollPercentage = getScrollPercentage();
+
+      if (scrollPercentage >= 2 && !hasScrolledDown) {
+          showHeader();
+          hasScrolledDown = true;
+      } else if (scrollPercentage < 2 && hasScrolledDown) {
+          hideHeader();
+          hasScrolledDown = false;
+      }
+  });
+})();
+
 function findNextWebinar(webinars) {
   const now = new Date();
   return webinars
@@ -11,11 +69,14 @@ function findNextWebinar(webinars) {
 function fillNextWebinarTimer() {
   const countdownElement = $('#v2-webinar-countdown');
   const miniCountDownElement = $(".v2-next-webinar-in")
+  const timezoneElement = $("#v2-timezone");
   const now = new Date();
   const timeDifference = upcomingWebinar - now;
   const hours = Math.floor(timeDifference / (1000 * 60 * 60));
   const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+  timezoneElement.html(`Time Zone: ${timezone}`);
   countdownElement.html(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} Hrs`);
   miniCountDownElement.html(`${hours.toString().padStart(2, '0')} hrs`)
   setTimeout(fillNextWebinarTimer, 60000);
@@ -33,7 +94,7 @@ function fillWebinarSlots(data) {
     return;
   } else {
     $('.webinar__slots').remove();
-    $(".v2-check-container").css("display", "flex");
+    $(".v2-check-container").css("display", "grid");
   }
   
   if (!data || data.length == 0) {
@@ -53,7 +114,8 @@ function fillWebinarSlots(data) {
     endDateTime,
     alert,
     invitee_start_time,
-    invitee_end_time
+    invitee_end_time,
+    active = false
   }) {
 
     let content = `
@@ -73,7 +135,7 @@ function fillWebinarSlots(data) {
           data-name="${datetime}"
           class="w-form-formradioinput checkbox v2-checkbox slot-checkbox slot-radiobutton w-radio-input" 
         >
-        <div class="div-block-59 time-slot-wrapper">
+        <div class="div-block-59 time-slot-wrapper ${active ? "selected-slot" : ""}">
           <div class="v2-day">${day}</div>
           <div class="v2-date">${date}</div>
           <div class="hr no-spacings"></div>
@@ -111,10 +173,11 @@ function fillWebinarSlots(data) {
       endDateTime: slot.end_time,
       invitee_start_time: slot.invitee_start_time,
       invitee_end_time: slot.invitee_end_time,
-      alert: alertMessage
+      alert: alertMessage,
+      active: i === 0
     }))
   });
-  handleSlotScroll();
+  // handleSlotScroll();
 
   $(".v2-check-container").html(slotMarkups.join(""));
 }
@@ -181,7 +244,6 @@ function getMonthName(monthNumber) {
 function formatDate(dateTime) {
   return dateTime.toISOString().replace(/T/, " ").replace(/\.\d+Z$/, " UTC");
 }
-
 
 $(document).ready(function () {
   const SELECTED_SLOT = {};
@@ -284,9 +346,8 @@ $(document).ready(function () {
     $("#v2-success-day").html(SELECTED_SLOT.day);
     $("#v2-success-month").html(SELECTED_SLOT.month)
     $("#v2-success-time").html(SELECTED_SLOT.time)
-    $('.form-info').hide();
-    $(".form-submitted-div").css("display", "block");
-    $("#extra-content").show();
+    $('#form-wrapper').hide();
+    $("#form-submitted-div").css("display", "block");
   }
 
   function adjustFormStep(currentStep, nextStep, isBack, lineStatus = {
@@ -343,11 +404,14 @@ $(document).ready(function () {
     // Configuration of the observer
     var config = { attributes: true, attributeFilter: ['style'] };
 
-    // Observe all forms under .v2-form-container
-    $('.v2-form-container form').each(function () {
+    // Observe all forms under #v2-form-container
+    $('#v2-form-container form').each(function () {
       observer.observe(this, config);
     });
   }
+
+  $(".open-form").click(openForm)
+  $(".close-form").click(closeForm)
 
   $("#v2-full-name").on("input", function () {
     var fullName = $.trim($(this).val());
@@ -862,7 +926,7 @@ $(document).ready(function () {
           },
           success: function (e) {
             if (e.status == "success") {
-              $(".v2-form-container").css("display", "none");
+              $("#v2-form-container").css("display", "none");
               showFormSuccessSection();
             }
           },
