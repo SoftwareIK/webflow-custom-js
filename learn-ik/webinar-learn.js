@@ -918,6 +918,20 @@ $(document).ready(function () {
     $(".bc__btn-select-webinar-slot").click(function (event) {
       event.preventDefault();
       setHiddenFields();
+      
+      try {
+        if(typeof(hasCaptcha) !== "undefined" && hasCaptcha){
+          if($("#captcha")?.val() != "W9H5K") {
+            $(".captcha-error").removeClass("hide")
+            return;
+          } else {
+            $(".captcha-error").addClass("hide")
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+
       paRegisteredCookie();
 
       let phoneNumber = "";
