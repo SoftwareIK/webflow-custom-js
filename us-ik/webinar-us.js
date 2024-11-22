@@ -947,6 +947,19 @@ $(document).ready(function () {
     e.preventDefault();
     setHiddenFields();
 
+    try {
+      if(typeof(hasCaptcha) !== "undefined" && hasCaptcha){
+        if($("#captcha")?.val() != "W9H5K") {
+          $(".captcha-error").removeClass("hide")
+          return;
+        } else {
+          $(".captcha-error").addClass("hide")
+        }
+      }
+    } catch (error) {
+      console.error(error)
+    }
+    
     //let fullphonenumber3 = int_phone3.getNumber(intlTelInputUtils.numberFormat.E164);
     //$("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
     //$(".tno1").val(fullphonenumber3);
