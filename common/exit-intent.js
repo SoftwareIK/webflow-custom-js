@@ -200,10 +200,18 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   };
 
   const shouldShowPopup = () => {
-    const isFormOpened = !!document.querySelector('.webinar__lightbox') && getComputedStyle(document.querySelector('.webinar__lightbox')).display != 'none';
-    const isVideoOpened = !!document.querySelector('.w-lightbox-backdrop') && getComputedStyle(document.querySelector('.w-lightbox-backdrop')).display != 'none';
-    const shouldShow = !getCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened;
+    let isFormOpened = false;
+    let isVideoOpened = false;
+    try {
+      isFormOpened = !!document.querySelector('.webinar__lightbox') && getComputedStyle(document.querySelector('.webinar__lightbox')).display != 'none';
+      isVideoOpened = !!document.querySelector('.w-lightbox-backdrop') && getComputedStyle(document.querySelector('.w-lightbox-backdrop')).display != 'none';
+    } catch (error) {
+      console.error("Failed to check if form or video is opened:", error);
+    }
 
+    const isSwitchup = webinarType === "SWITCH_UP";
+
+    const shouldShow = !getCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened && !isSwitchup;
     if (shouldShow && window.location.pathname.includes("/blogs/") && typeof(blogPopupShown) != undefined) {
       return !blogPopupShown;
     }
