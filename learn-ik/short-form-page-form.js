@@ -29,6 +29,9 @@ function closeForm() {
 
       const headerSection = headerWrapper.querySelector('.header-section');
       if (headerSection) headerSection.style.backgroundColor = 'white';
+
+      const headerShadow = headerWrapper.querySelector('.header-shadow');
+      if (headerShadow) headerShadow.style.display = 'block';
   }
 
   function hideHeader() {
@@ -43,6 +46,9 @@ function closeForm() {
 
       const headerSection = headerWrapper.querySelector('.header-section');
       if (headerSection) headerSection.style.backgroundColor = '';
+
+      const headerShadow = headerWrapper.querySelector('.header-shadow');
+      if (headerShadow) headerShadow.style.display = 'none';
   }
 
   window.addEventListener('scroll', () => {
