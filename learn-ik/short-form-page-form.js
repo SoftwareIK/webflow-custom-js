@@ -1,6 +1,9 @@
 let upcomingWebinar;
 
 function openForm() {
+  $(".v2-first-form-block").show();
+  $(".v2-third-form-block").hide();
+  $("#v2-form-container").show();
   $("#form-popup-container").css("display", "flex");
   $("#form-wrapper").css("display", "flex");
   $("#form-submitted-div").css("display", "none");
