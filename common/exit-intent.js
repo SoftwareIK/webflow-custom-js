@@ -1,4 +1,7 @@
 let popupShown = false;
+let highIntentClickCount = 0; // Counter for high intent clicks
+const highIntentThreshold = 2; // Number of clicks to mark a user as high intent
+const highIntentCookieName = "highIntentUser";
 
 function splitTraffic() {
   let isVarient = false;
@@ -19,6 +22,36 @@ function splitTraffic() {
     console.log(error);
   }
   return isVarient;
+}
+
+function trackHighIntentClicks() {
+  document.addEventListener("click", (e) => {
+    // Check if the clicked element is a link
+    const target = e.target.closest("a");
+    if (target) {
+      const href = target.getAttribute("href");
+
+      // Ignore in-page links and JavaScript links
+      if (
+        !href || // No href attribute
+        href.startsWith("#") || // In-page links
+        target.pathname === window.location.pathname // Same page links
+      ) {
+        return;
+      }
+
+      // Increment the high intent click counter
+      highIntentClickCount++;
+
+      console.log(`Valid navigation link clicked. Total clicks: ${highIntentClickCount}`);
+
+      if (highIntentClickCount >= highIntentThreshold) {
+        // Set a cookie to suppress the popup for high intent users
+        setCookie(highIntentCookieName, "true", 6); // Suppress popup for 6 hours
+        console.log("High intent user detected. Suppressing popup.");
+      }
+    }
+  });
 }
 
 function mobileDevice() {
@@ -200,6 +233,8 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   const shouldShowPopup = () => {
     let isFormOpened = false;
     let isVideoOpened = false;
+    let isHighIntentUser = getCookie(highIntentCookieName) === "true";
+
     try {
       isFormOpened = !!document.querySelector('.webinar__lightbox') && getComputedStyle(document.querySelector('.webinar__lightbox')).display != 'none';
       isVideoOpened = !!document.querySelector('.w-lightbox-backdrop') && getComputedStyle(document.querySelector('.w-lightbox-backdrop')).display != 'none';
@@ -209,7 +244,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
 
     const isSwitchup = webinarType === "SWITCH_UP";
 
-    const shouldShow = !getCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened && !isSwitchup;
+    const shouldShow = !getCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened && !isSwitchup && !isHighIntentUser;
     if (shouldShow && window.location.pathname.includes("/blogs/") && typeof(blogPopupShown) != undefined) {
       return !blogPopupShown;
     }
@@ -395,3 +430,5 @@ if (!ignorePath()) {
     console.log("Current variant", "control");
   }
 }
+
+trackHighIntentClicks();
