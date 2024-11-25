@@ -1,6 +1,6 @@
 let popupShown = false;
 let highIntentClickCount = 0; // Counter for high intent clicks
-const highIntentThreshold = 2; // Number of clicks to mark a user as high intent
+const highIntentThreshold = 1; // Number of clicks to mark a user as high intent
 const highIntentCookieName = "highIntentUser";
 
 function getDeviceType() {
