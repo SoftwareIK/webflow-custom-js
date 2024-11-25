@@ -3,6 +3,23 @@ let highIntentClickCount = 0; // Counter for high intent clicks
 const highIntentThreshold = 2; // Number of clicks to mark a user as high intent
 const highIntentCookieName = "highIntentUser";
 
+function getDeviceType() {
+  var e = navigator.userAgent;
+  return /mobile/i.test(e)
+    ? "Mobile"
+    : /iPad|Android|Touch/i.test(e)
+      ? "Tablet"
+      : "Desktop";
+}
+
+function mobileDevice() {
+  return getDeviceType() === "Mobile";
+}
+
+function desktopDevice() {
+  return getDeviceType() == "Desktop";
+}
+
 function splitTraffic() {
   let isVarient = false;
   try {
@@ -10,6 +27,10 @@ function splitTraffic() {
     const trimmedUuid = uuid.slice(0, 50);
     const lastTwoDigits = parseInt(trimmedUuid.slice(-2)); // Defaults to base 10
     isVarient = lastTwoDigits >= weightageOfVariant;
+
+    if(location.host.includes("learn") && !desktopDevice()){
+      isVarient = lastTwoDigits >= 50;
+    }
 
     if (window.clarity) {
       window.clarity(
@@ -52,10 +73,6 @@ function trackHighIntentClicks() {
       }
     }
   });
-}
-
-function mobileDevice() {
-  return window.innerWidth <= 768;
 }
 
 function hideCurrentModalOnBlogPage() {
