@@ -79,8 +79,6 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   const closePopup = (overlay, trackClick = true) => {
     // Close popup
     overlay.style.display = "none";
-    setCookie(COOKIE_NAME, "true", popupTimeoutHours);
-    popupShown = true;
 
     if (trackClick) {
       saveClickActivity("exit_intent_clicked", new Date().getTime());
@@ -226,6 +224,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     if (shouldShowPopup()) {
       exitPopup.style.display = "flex";
       popupShown = true; // Mark the popup as shown in the current session
+      setCookie(COOKIE_NAME, "true", popupTimeoutHours);
       hideCurrentModalOnBlogPage();
     }
   };
