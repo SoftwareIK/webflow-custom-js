@@ -1,15 +1,25 @@
 let upcomingWebinar;
 
+function adjustFormStep(currentStep, nextStep) {
+  $(currentStep).removeClass("v3-step-active")
+  $(nextStep).addClass("v3-step-active")
+}
+
 function openForm() {
+  $("body").css("overflow","hidden");
   $(".v2-first-form-block").show();
+  $(".v2-second-form-block").hide();
   $(".v2-third-form-block").hide();
   $("#v2-form-container").show();
   $("#form-popup-container").css("display", "flex");
   $("#form-wrapper").css("display", "flex");
   $("#form-submitted-div").css("display", "none");
+  adjustFormStep("#2-step-indicator", "#1-step-indicator");
+  adjustFormStep("#3-step-indicator", "#1-step-indicator");
 }
 
 function closeForm() {
+  $("body").css("overflow","scroll")
   $("#form-popup-container").css("display", "none");
 }
 
@@ -359,40 +369,6 @@ $(document).ready(function () {
     $("#form-submitted-div").css("display", "block");
   }
 
-  function adjustFormStep(currentStep, nextStep, isBack, lineStatus = {
-    ".v2-line-1": false,
-    ".v2-line-2": false
-  }) {
-    const $currentStepContainer = $(currentStep);
-    const $nextStepContainer = $(nextStep);
-  
-    // Deactivating current step and hiding/showing elements based on the direction
-    $currentStepContainer
-      .find(".v3-step-count").removeClass("active-step-count").end()
-      .find(".step-details").removeClass("active-step-details").end()
-      .find(".caret-wrapper").addClass("hide").end()
-      .find(".v3-step-checked").toggleClass("hide", isBack).end()
-      .find(".step-wrapper").toggleClass("hide", !isBack);
-  
-    // Activating next step
-    $nextStepContainer
-      .find(".v3-step-count").addClass("active-step-count").end()
-      .find(".step-details").addClass("active-step-details").end()
-      .find(".caret-wrapper").removeClass("hide").end()
-      .find(".step-wrapper").removeClass("hide");
-  
-    // Toggle checked state and visibility of elements if moving backwards
-    if (isBack) {
-      $nextStepContainer.find(".v3-step-checked").addClass("hide");
-      $currentStepContainer.find(".step-wrapper").removeClass("hide");
-    }
-  
-    // Update line status
-    for (let line in lineStatus) {
-      $(line).toggleClass("v2-active-line", !!lineStatus[line]);
-    }
-  }
-
   if (window.MutationObserver) {
     // Function to handle mutation
     function handleMutation(mutations) {
@@ -454,19 +430,13 @@ $(document).ready(function () {
   $("#v2-form-2nd-back").click(function (e) {
     $(".v2-second-form-block").hide();
     $(".v2-first-form-block").show();
-    adjustFormStep("#form-step-indicator-2", "#form-step-indicator-1", true, {
-      ".v2-line-1": false,
-      ".v2-line-2": false
-    });
+    adjustFormStep("#2-step-indicator", "#1-step-indicator");
   });
 
   $("#v2-form-3rd-back").click(function (e) {
     $(".v2-third-form-block").hide();
     $(".v2-second-form-block").show();
-    adjustFormStep("#form-step-indicator-3", "#form-step-indicator-2", true, {
-      ".v2-line-1": true,
-      ".v2-line-2": false
-    });
+    adjustFormStep("#3-step-indicator", "#2-step-indicator");
   });
 
   $('#v2-form-1st-submit').click(function (e) {
@@ -544,10 +514,7 @@ $(document).ready(function () {
 
       $('#wf-webinar-1-step-v2').submit();
       $('.v2-first-form-block').hide();
-      adjustFormStep("#form-step-indicator-1", "#form-step-indicator-2", false, {
-        ".v2-line-1": true,
-        ".v2-line-2": false
-      });
+      adjustFormStep("#1-step-indicator", "#2-step-indicator");
       setTimeout(function () {
         $('.v2-first-form-block').hide();
         $(".v2-second-form-block").show();
@@ -694,10 +661,7 @@ $(document).ready(function () {
       });
 
       $(".v2-second-form-block").hide();
-      adjustFormStep("#form-step-indicator-2", "#form-step-indicator-3", false, {
-        ".v2-line-1": true,
-        ".v2-line-2": true
-      });
+      adjustFormStep("#2-step-indicator", "#3-step-indicator");
       setTimeout(function () {
         $('.v2-form-loading-bar').hide();
         $(".v2-third-form-block").show();
