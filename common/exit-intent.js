@@ -3,6 +3,22 @@ let highIntentClickCount = 0; // Counter for high intent clicks
 const highIntentThreshold = 1; // Number of clicks to mark a user as high intent
 const highIntentCookieName = "highIntentUser";
 
+function fetchCookie(cname) {
+  var name = cname + "=";
+  var ca = document.cookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+
 function getDeviceType() {
   var e = navigator.userAgent;
   return /mobile/i.test(e)
@@ -23,7 +39,7 @@ function desktopDevice() {
 function splitTraffic() {
   let isVarient = false;
   try {
-    uuid = getCookie("unique_visitor_id6") || "";
+    uuid = fetchCookie("unique_visitor_id6") || "";
     const trimmedUuid = uuid.slice(0, 50);
     const lastTwoDigits = parseInt(trimmedUuid.slice(-2)); // Defaults to base 10
     isVarient = lastTwoDigits >= weightageOfVariant;
@@ -117,7 +133,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   };
 
   // Utility to get the value of a specific cookie by name
-  const getCookie = (name) => {
+  const fetchCookie = (name) => {
     const cookies = document.cookie.split("; ");
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].split("=");
@@ -190,7 +206,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
             targetUrl.searchParams.append(key, value)
           );
         } else {
-          const vLatestCookie = getCookie("v_latest");
+          const vLatestCookie = fetchCookie("v_latest");
           if (vLatestCookie) {
             try {
               const utmParams = JSON.parse(decodeURIComponent(vLatestCookie));
@@ -250,7 +266,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   const shouldShowPopup = () => {
     let isFormOpened = false;
     let isVideoOpened = false;
-    let isHighIntentUser = getCookie(highIntentCookieName) === "true";
+    let isHighIntentUser = fetchCookie(highIntentCookieName) === "true";
 
     try {
       isFormOpened = !!document.querySelector('.webinar__lightbox') && getComputedStyle(document.querySelector('.webinar__lightbox')).display != 'none';
@@ -261,7 +277,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
 
     const isSwitchup = webinarType === "SWITCH_UP";
 
-    const shouldShow = !getCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened && !isSwitchup && !isHighIntentUser;
+    const shouldShow = !fetchCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened && !isSwitchup && !isHighIntentUser;
     if (shouldShow && window.location.pathname.includes("/blogs/") && typeof(blogPopupShown) != undefined) {
       return !blogPopupShown;
     }
