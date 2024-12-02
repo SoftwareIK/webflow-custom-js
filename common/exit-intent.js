@@ -29,7 +29,7 @@ function splitTraffic() {
     isVarient = lastTwoDigits >= weightageOfVariant;
 
     if(location.host.includes("learn") && !desktopDevice()){
-      isVarient = lastTwoDigits >= 50;
+      isVarient = lastTwoDigits >= 30;
     }
 
     if (window.clarity) {
