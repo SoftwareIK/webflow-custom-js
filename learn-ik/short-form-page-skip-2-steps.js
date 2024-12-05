@@ -176,46 +176,52 @@ function fillWebinarSlots(data) {
 
   const slotMarkups = [];
   const firstSlot = data[0] ?? undefined;
-  console.log('firstSlot', firstSlot)
-  if(firstSlot) {
-  slotMarkups.push(generateSlotMarkup({
-    day: firstSlot.weekday.slice(0, 3).toUpperCase(),
-    dayfull: firstSlot.weekday,
-    month: firstSlot.month,
-    date: firstSlot.day,
-    time: `${firstSlot.hour}:${firstSlot.minute} ${firstSlot.am_or_pm}`,
-    datetime: firstSlot.start_time,
-    endDateTime: firstSlot.end_time,
-    invitee_start_time: firstSlot.invitee_start_time,
-    invitee_end_time: firstSlot.invitee_end_time,
-    alert: alertMessage,
-    active: true
-  }));
-}
-//   data.slice(0, 6).map((slot, i) => {
-//     let alertMessage;
-//     if (i === 0) {
-//       alertMessage = { class: "warning-color", text: "Filling fast" }
-//     } else if (slot.weekday === "Saturday") {
-//       alertMessage = { class: "danger-color", text: "Almost full" }
-//     }
-//     slotMarkups.push(generateSlotMarkup({
-//       day: firstSlot.weekday.slice(0, 3).toUpperCase(),
-//       dayfull: firstSlot.weekday,
-//       month: firstSlot.month,
-//       date: firstSlot.day,
-//       time: `${firstSlot.hour}:${firstSlot.minute} ${firstSlot.am_or_pm}`,
-//       datetime: firstSlot.start_time,
-//       endDateTime: firstSlot.end_time,
-//       invitee_start_time: firstSlot.invitee_start_time,
-//       invitee_end_time: firstSlot.invitee_end_time,
-//       alert: alertMessage,
-//       active: true
-//     }))
-//   });
-  // handleSlotScroll();
-console.log('slotMarkups', slotMarkups)
-  $(".v2-check-container").html(slotMarkups.join(""));
+
+  if (window.skipSecondSteps){
+    if(firstSlot) {
+        slotMarkups.push(generateSlotMarkup({
+            day: firstSlot?.weekday.slice(0, 3).toUpperCase(),
+            dayfull: firstSlot?.weekday,
+            month: firstSlot?.month,
+            date: firstSlot?.day,
+            time: `${firstSlot?.hour}:${firstSlot?.minute} ${firstSlot?.am_or_pm}`,
+            datetime: firstSlot?.start_time,
+            endDateTime: firstSlot?.end_time,
+            invitee_start_time: firstSlot?.invitee_start_time,
+            invitee_end_time: firstSlot?.invitee_end_time,
+            alert: "",
+            active: true
+         }));
+    };
+
+
+  }else {
+
+        data.slice(0, 6).map((slot, i) => {
+            let alertMessage;
+            if (i === 0) {
+            alertMessage = { class: "warning-color", text: "Filling fast" }
+            } else if (slot.weekday === "Saturday") {
+            alertMessage = { class: "danger-color", text: "Almost full" }
+            }
+            slotMarkups.push(generateSlotMarkup({
+            day: firstSlot.weekday.slice(0, 3).toUpperCase(),
+            dayfull: firstSlot.weekday,
+            month: firstSlot.month,
+            date: firstSlot.day,
+            time: `${firstSlot.hour}:${firstSlot.minute} ${firstSlot.am_or_pm}`,
+            datetime: firstSlot.start_time,
+            endDateTime: firstSlot.end_time,
+            invitee_start_time: firstSlot.invitee_start_time,
+            invitee_end_time: firstSlot.invitee_end_time,
+            alert: alertMessage,
+            active: true
+            }))
+        });
+  }
+
+handleSlotScroll();
+$(".v2-check-container").html(slotMarkups.join(""));
 }
 
 function webinar1o1Fallback() {
@@ -332,12 +338,12 @@ $(document).ready(function () {
       "Booking id": $('input[name="start-date"]:checked').data("bookingid")
     };
 
-    const partnerDetails = read_cookie("partner_details");
-    if(partnerDetails) {
-      formData["Partner Name"] = partnerDetails?.partner_name;
-      formData["is_partnership_lead"] = partnerDetails?.is_partnership_lead
-      formData["is_user_eligible_for_partnership_discount"] = partnerDetails?.is_user_eligible_for_partnership_discount
-    }
+    // const partnerDetails = read_cookie("partner_details");
+    // if(partnerDetails) {
+    //   formData["Partner Name"] = partnerDetails?.partner_name;
+    //   formData["is_partnership_lead"] = partnerDetails?.is_partnership_lead
+    //   formData["is_user_eligible_for_partnership_discount"] = partnerDetails?.is_user_eligible_for_partnership_discount
+    // }
     
     $.ajax({
       type: "POST",
@@ -452,7 +458,12 @@ $(document).ready(function () {
 
   $("#v2-form-3rd-back").click(function (e) {
     $(".v2-third-form-block").hide();
-    $(".v2-second-form-block").show();
+    if(window.skipSecondSteps) {
+        $(".v2-second-form-block").hide();
+        $(".v2-first-form-block").show();
+    }else {
+        $(".v2-second-form-block").show();
+    }
     adjustFormStep("#3-step-indicator", "#2-step-indicator");
   });
 
@@ -544,7 +555,6 @@ $(document).ready(function () {
         $('.v2-form-loading-bar').hide();
       }, 200);
     }
-    console.log('is_webinar_1o1_eligible', is_webinar_1o1_eligible)
     if(is_webinar_1o1_eligible){
       $("input:radio[name='start-date']:first").attr("checked", true);
       $(".wr__event-start-time").val($("input:radio[name='start-date']:first").val());
@@ -560,13 +570,13 @@ $(document).ready(function () {
       $('.wr__invitee-end-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_endtime'));
       $('.webinar-lead-type').val($("input:radio[name='v2-slots-radio']:first").data('webinar_lead_type'));
     }
-console.log('window.skipSecondSteps', window.skipSecondSteps)
+
     if (window.skipSecondSteps){
         let slotBookRes = {}
         if(is_webinar_1o1_eligible){
             slotBookRes = await bookSlot();
         }
-console.log('slotBookRes', slotBookRes)
+
         if ($("input:radio[name='v2-slots-radio']").is(":checked") || (is_webinar_1o1_eligible && $('input[name="start-date"]').is(":checked") )) {
         try { paRegisteredCookie(); } catch (e) { console.error(e) }
 
@@ -637,7 +647,7 @@ console.log('slotBookRes', slotBookRes)
         $(".v2-second-form-block").hide();
         adjustFormStep("#2-step-indicator", "#3-step-indicator");
         setTimeout(function () {
-            // $('.v2-form-loading-bar').hide();
+            $('.v2-form-loading-bar').hide();
             // $(".v2-third-form-block").show();
             GQLFormVisible();
         }, 200);
@@ -738,7 +748,6 @@ console.log('slotBookRes', slotBookRes)
 
         const res = await fetch(url, requestOptions);
         const data = await res.json();
-        console.log('data', data)
         if (res.status === 201) {
           $('input[name="start-date"]:checked').data(
             "bookingid",
