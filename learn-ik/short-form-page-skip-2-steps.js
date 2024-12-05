@@ -175,29 +175,46 @@ function fillWebinarSlots(data) {
   };
 
   const slotMarkups = [];
-  data.slice(0, 6).map((slot, i) => {
-    let alertMessage;
-    if (i === 0) {
-      alertMessage = { class: "warning-color", text: "Filling fast" }
-    } else if (slot.weekday === "Saturday") {
-      alertMessage = { class: "danger-color", text: "Almost full" }
-    }
-    slotMarkups.push(generateSlotMarkup({
-      day: slot.weekday.slice(0, 3).toUpperCase(),
-      dayfull: slot.weekday,
-      month: slot.month,
-      date: slot.day,
-      time: `${slot.hour}:${slot.minute} ${slot.am_or_pm}`,
-      datetime: slot.start_time,
-      endDateTime: slot.end_time,
-      invitee_start_time: slot.invitee_start_time,
-      invitee_end_time: slot.invitee_end_time,
-      alert: alertMessage,
-      active: i === 0
-    }))
-  });
+  const firstSlot = data[0] ?? undefined;
+  console.log('firstSlot', firstSlot)
+  if(firstSlot) {
+  slotMarkups.push(generateSlotMarkup({
+    day: firstSlot.weekday.slice(0, 3).toUpperCase(),
+    dayfull: firstSlot.weekday,
+    month: firstSlot.month,
+    date: firstSlot.day,
+    time: `${firstSlot.hour}:${firstSlot.minute} ${firstSlot.am_or_pm}`,
+    datetime: firstSlot.start_time,
+    endDateTime: firstSlot.end_time,
+    invitee_start_time: firstSlot.invitee_start_time,
+    invitee_end_time: firstSlot.invitee_end_time,
+    alert: alertMessage,
+    active: true
+  }));
+}
+//   data.slice(0, 6).map((slot, i) => {
+//     let alertMessage;
+//     if (i === 0) {
+//       alertMessage = { class: "warning-color", text: "Filling fast" }
+//     } else if (slot.weekday === "Saturday") {
+//       alertMessage = { class: "danger-color", text: "Almost full" }
+//     }
+//     slotMarkups.push(generateSlotMarkup({
+//       day: firstSlot.weekday.slice(0, 3).toUpperCase(),
+//       dayfull: firstSlot.weekday,
+//       month: firstSlot.month,
+//       date: firstSlot.day,
+//       time: `${firstSlot.hour}:${firstSlot.minute} ${firstSlot.am_or_pm}`,
+//       datetime: firstSlot.start_time,
+//       endDateTime: firstSlot.end_time,
+//       invitee_start_time: firstSlot.invitee_start_time,
+//       invitee_end_time: firstSlot.invitee_end_time,
+//       alert: alertMessage,
+//       active: true
+//     }))
+//   });
   // handleSlotScroll();
-
+console.log('slotMarkups', slotMarkups)
   $(".v2-check-container").html(slotMarkups.join(""));
 }
 
@@ -439,7 +456,7 @@ $(document).ready(function () {
     adjustFormStep("#3-step-indicator", "#2-step-indicator");
   });
 
-  $('#v2-form-1st-submit').click(function (e) {
+  $('#v2-form-1st-submit').click(async function (e) {
     e.preventDefault();
     setHiddenFields();
     try { paRegisteredCookie(); } catch (e) { console.error(e) }
@@ -517,10 +534,17 @@ $(document).ready(function () {
       adjustFormStep("#1-step-indicator", "#2-step-indicator");
       setTimeout(function () {
         $('.v2-first-form-block').hide();
-        $(".v2-second-form-block").show();
+        if (window.skipSecondSteps){
+            $(".v2-second-form-block").hide();
+        }
+        else{
+            $(".v2-second-form-block").show();
+        }
+        $(".v2-third-form-block").show();
         $('.v2-form-loading-bar').hide();
       }, 200);
     }
+    console.log('is_webinar_1o1_eligible', is_webinar_1o1_eligible)
     if(is_webinar_1o1_eligible){
       $("input:radio[name='start-date']:first").attr("checked", true);
       $(".wr__event-start-time").val($("input:radio[name='start-date']:first").val());
@@ -535,6 +559,159 @@ $(document).ready(function () {
       $('.wr__invitee-start-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_starttime'));
       $('.wr__invitee-end-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_endtime'));
       $('.webinar-lead-type').val($("input:radio[name='v2-slots-radio']:first").data('webinar_lead_type'));
+    }
+console.log('window.skipSecondSteps', window.skipSecondSteps)
+    if (window.skipSecondSteps){
+        let slotBookRes = {}
+        if(is_webinar_1o1_eligible){
+            slotBookRes = await bookSlot();
+        }
+console.log('slotBookRes', slotBookRes)
+        if ($("input:radio[name='v2-slots-radio']").is(":checked") || (is_webinar_1o1_eligible && $('input[name="start-date"]').is(":checked") )) {
+        try { paRegisteredCookie(); } catch (e) { console.error(e) }
+
+        let startDate = "";
+        let endDate = "";
+
+        if(is_webinar_1o1_eligible){
+            const localDate = new Date(slotBookRes.start_datetime);
+
+            const day = localDate.toLocaleString('en-US', { weekday: 'long' });
+            const date = localDate.getDate();
+            const month = localDate.toLocaleString('en-US', { month: 'long' });
+            
+            let hours = localDate.getHours() % 12 || 12;
+            let minutes = localDate.getMinutes();
+            let period = localDate.getHours() >= 12 ? 'pm' : 'am';
+            let time = minutes === 0 ? `${hours}${period}` : `${hours}:${minutes.toString().padStart(2, '0')}${period}`;
+            
+            SELECTED_SLOT['day'] = day;
+            SELECTED_SLOT['date'] = date;
+            SELECTED_SLOT['time'] = time;
+            SELECTED_SLOT['month'] = month;
+
+            startDate = $('input[name="start-date"]:checked').val();
+            endDate = $('input[name="start-date"]:checked').data("endtime");
+        } else {
+            startDate = $('input[name="v2-slots-radio"]:checked').val();
+            endDate = $('input[name="v2-slots-radio"]:checked').data("endtime");
+        }
+
+        function updateFormFields() {
+            $(".wr__event-start-time").val(startDate);
+            $(".wr__event-end-time").val(endDate);
+            if(is_webinar_1o1_eligible){
+            $(".wr__event-start-time").val($("input:radio[name='start-date']:first").val());
+            $(".wr__event-end-time").val($("input:radio[name='start-date']:first").data("endtime"));
+            $(".wr__invitee-start-time").val($("input:radio[name='start-date']:first").data("invitee_starttime"));
+            $(".wr__invitee-end-time").val($("input:radio[name='start-date']:first").data("invitee_endtime"));
+            $(".webinar-lead-type").val($("input:radio[name='start-date']:first").data("webinar_lead_type"));
+            } else {
+            $(".wr__invitee-start-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_starttime"));
+            $(".wr__invitee-end-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_endtime"));
+            $(".webinar-lead-type").val($('input[name="v2-slots-radio"]:checked').data("webinar_lead_type"));
+            }
+        }
+
+        updateFormFields();
+        if(is_webinar_1o1_eligible){
+            pushToZap("https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/");
+        }else if (typeof paRegistered !== "undefined") {
+            $(".v2-form-loading-bar").show();
+            pushToZap("https://hooks.zapier.com/hooks/catch/11068981/307qti9/");
+        } else {
+            $(".v2-form-loading-bar").show();
+            pushToZap("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/");
+        }
+
+        bake_cookie("v_history", "");
+        bake_cookie("v_latest", "");
+
+        $('#wf-webinar-2-step-v2').submit();
+
+        // For A/B testing
+        VWO.event("gqlFormCompleted", {
+            "gqlFormCompleted": true
+        });
+
+        $(".v2-second-form-block").hide();
+        adjustFormStep("#2-step-indicator", "#3-step-indicator");
+        setTimeout(function () {
+            // $('.v2-form-loading-bar').hide();
+            // $(".v2-third-form-block").show();
+            GQLFormVisible();
+        }, 200);
+
+        }
+
+        try { gqlFormCookieData(); } catch (e) { console.error(e) }
+
+        // Lead Creation Time
+        const currentDateTime = new Date();
+        const leadCreatedTime = formatDate(currentDateTime);
+
+        function submitLeadData(leadCreatedTime) {
+        const formattedStartDateTime = formatDate($(".wr__event-start-time").val());
+        const formattedEndDateTime = formatDate($(".wr__event-end-time").val());
+
+        $.ajax({
+            url: "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
+            method: "POST",
+            headers: {
+            "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
+            "Content-Type": "application/json",
+            },
+            data: JSON.stringify({
+            dataset_id: "Marketing_data_new_logic",
+            table_id: "Leads_Click_history",
+            data: [{
+                Lead_Created_Time: leadCreatedTime,
+                Lead_Name: `${$(".wr__firstname").val()} ${$(".wr__lastname").val()}`,
+                Lead_First_Name: $(".wr__firstname").val(),
+                Lead_Last__Name: $(".wr__firstname").val(),
+                Lead_Email: $(".wr__email").val(),
+                Lead_Time_Zone: $(".user_timezone").val(),
+                Event_Type_Name: eventName,
+                Event_Start_Date_Time: formattedStartDateTime,
+                Event_End_Date_Time: formattedEndDateTime,
+                Cancellation_reason: "",
+                Mobile: $(".wr__phone").val(),
+                UTM_Campaign: $(".utm_campaign").val(),
+                UTM_Source: $(".utm_source").val(),
+                UTM_Medium: $(".utm_medium").val(),
+                UTM_Term: $(".utm_term").val(),
+                UTM_Content: $(".utm_content").val(),
+                Tracking_ID: "",
+                User_ID: encodeURIComponent($(".user_id").val()),
+                Page_URL: $(".page_url").val(),
+                Country: $(".v_country").val(),
+                Client_Timezone: $(".user_timezone").val(),
+                CTA_Page: encodeURIComponent($(".cta_page_url").val()),
+                Landing_Page: encodeURIComponent($(".l_page_url").val()),
+                Webinar_reg_type: $(".bye-calendly-type").val(),
+                Webinar_Type: $(".webinar-type").val(),
+                Switchup_Lead: $(".webinar-lead-type").val(),
+                UUID: $(".salesforce_uuid").val(),
+                Click_History: "",
+                City: $(".wr__city").val(),
+                Device: $(".wr__device").val(),
+                User_Agent: encodeURIComponent(navigator?.userAgent || ""),
+                Refferer: encodeURIComponent($(".wr__referrer").val()),
+                Region: $(".wr__region").val(),
+            }],
+            }),
+            success: function (response) {
+            console.log("Success Response:", response);
+            },
+            error: function (xhr, status, error) {
+            console.log("Error Response:", xhr.responseText);
+            console.log("Status:", status);
+            console.log("Error:", error);
+            },
+        });
+        }
+        // AJAX call to submit lead data
+        submitLeadData(leadCreatedTime);
     }
 
   })
@@ -561,6 +738,7 @@ $(document).ready(function () {
 
         const res = await fetch(url, requestOptions);
         const data = await res.json();
+        console.log('data', data)
         if (res.status === 201) {
           $('input[name="start-date"]:checked').data(
             "bookingid",
@@ -585,7 +763,7 @@ $(document).ready(function () {
       }
     });
   }
-
+if (!window.skipSecondSteps){
   $('#v2-form-2nd-submit').click(async function (e) {
     e.preventDefault();
     let slotBookRes = {}
@@ -738,7 +916,7 @@ $(document).ready(function () {
     }
     // AJAX call to submit lead data
     submitLeadData(leadCreatedTime);
-  });
+  });}
 
   function GQLFormVisible() {
     const data = {
