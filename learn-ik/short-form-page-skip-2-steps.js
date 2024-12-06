@@ -291,7 +291,6 @@ $(document).ready(function () {
   const SELECTED_SLOT = {};
   window.VWO = window.VWO || [];
   VWO.event = VWO.event || function () { VWO.push(["event"].concat([].slice.call(arguments))) };
-  
   function pushToZap(endpoint) {
     //Zap end point for step 1
     var formData = {
@@ -320,7 +319,7 @@ $(document).ready(function () {
 
       "cta_page_url": $('.cta_page_url').val(),
       "landing_page_url": $('.l_page_url').val(),
-      "event_name": eventName,
+      "event_name": window.eventNameForWebinarType,
       "user_timezone": $('.user_timezone').val(),
       "page_url": $('.page_url').val(),
       "site_url": $('.site_url').val(),
@@ -703,7 +702,7 @@ $(document).ready(function () {
                 Lead_Last__Name: $(".wr__firstname").val(),
                 Lead_Email: $(".wr__email").val(),
                 Lead_Time_Zone: $(".user_timezone").val(),
-                Event_Type_Name: eventName,
+                Event_Type_Name: window.eventNameForWebinarType,
                 Event_Start_Date_Time: formattedStartDateTime,
                 Event_End_Date_Time: formattedEndDateTime,
                 Cancellation_reason: "",
@@ -906,7 +905,7 @@ if (!window.skipSecondSteps){
             Lead_Last__Name: $(".wr__firstname").val(),
             Lead_Email: $(".wr__email").val(),
             Lead_Time_Zone: $(".user_timezone").val(),
-            Event_Type_Name: eventName,
+            Event_Type_Name: window.eventNameForWebinarType,
             Event_Start_Date_Time: formattedStartDateTime,
             Event_End_Date_Time: formattedEndDateTime,
             Cancellation_reason: "",
@@ -965,7 +964,7 @@ if (!window.skipSecondSteps){
       inviteeStartTime: $(".wr__invitee-start-time").val(),
       inviteeEndTime: $(".wr__invitee-end-time").val(),
       learnUserId: $(".user_id").val(),
-      event_name: eventName,
+      event_name: window.eventNameForWebinarType,
       cta_url: "learn.ik" + window.location.pathname,
     };
 
@@ -1026,7 +1025,7 @@ if (!window.skipSecondSteps){
       inviteeStartTime: $(".wr__invitee-start-time").val(),
       inviteeEndTime: $(".wr__invitee-end-time").val(),
       learnUserId: $(".user_id").val(),
-      event_name: eventName,
+      event_name: window.eventNameForWebinarType,
       cta_url: "learn.ik" + window.location.pathname,
     };
 
