@@ -1,5 +1,82 @@
 let upcomingWebinar;
 
+function adjustFormStep(currentStep, nextStep) {
+  $(currentStep).removeClass("v3-step-active")
+  $(nextStep).addClass("v3-step-active")
+}
+
+function openForm() {
+  $("body").css("overflow","hidden");
+  $(".v2-first-form-block").show();
+  $(".v2-second-form-block").hide();
+  $(".v2-third-form-block").hide();
+  $("#v2-form-container").show();
+  $("#form-popup-container").css("display", "flex");
+  $("#form-wrapper").css("display", "flex");
+  $("#form-submitted-div").css("display", "none");
+  adjustFormStep("#2-step-indicator", "#1-step-indicator");
+  adjustFormStep("#3-step-indicator", "#1-step-indicator");
+}
+
+function closeForm() {
+  $("body").css("overflow","scroll")
+  $("#form-popup-container").css("display", "none");
+}
+
+(function () {
+  let hasScrolledDown = false;
+
+  function getScrollPercentage() {
+      return (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  }
+
+  function showHeader() {
+      const headerWrapper = document.querySelector('.header-wrapper');
+      if (!headerWrapper) return;
+
+      const whiteLogo = headerWrapper.querySelector('.white-logo');
+      if (whiteLogo) whiteLogo.style.display = 'none';
+
+      const coloredLogo = headerWrapper.querySelector('.colored-logo');
+      if (coloredLogo) coloredLogo.style.display = 'inline-block';
+
+      const headerSection = headerWrapper.querySelector('.header-section');
+      if (headerSection) headerSection.style.backgroundColor = 'white';
+
+      const headerShadow = headerWrapper.querySelector('.header-shadow');
+      if (headerShadow) headerShadow.style.display = 'block';
+  }
+
+  function hideHeader() {
+      const headerWrapper = document.querySelector('.header-wrapper');
+      if (!headerWrapper) return;
+
+      const whiteLogo = headerWrapper.querySelector('.white-logo');
+      if (whiteLogo) whiteLogo.style.display = 'inline-block';
+
+      const coloredLogo = headerWrapper.querySelector('.colored-logo');
+      if (coloredLogo) coloredLogo.style.display = 'none';
+
+      const headerSection = headerWrapper.querySelector('.header-section');
+      if (headerSection) headerSection.style.backgroundColor = '';
+
+      const headerShadow = headerWrapper.querySelector('.header-shadow');
+      if (headerShadow) headerShadow.style.display = 'none';
+  }
+
+  window.addEventListener('scroll', () => {
+      const scrollPercentage = getScrollPercentage();
+
+      if (scrollPercentage >= 2 && !hasScrolledDown) {
+          showHeader();
+          hasScrolledDown = true;
+      } else if (scrollPercentage < 2 && hasScrolledDown) {
+          hideHeader();
+          hasScrolledDown = false;
+      }
+  });
+})();
+
 function findNextWebinar(webinars) {
   const now = new Date();
   return webinars
@@ -11,20 +88,36 @@ function findNextWebinar(webinars) {
 function fillNextWebinarTimer() {
   const countdownElement = $('#v2-webinar-countdown');
   const miniCountDownElement = $(".v2-next-webinar-in")
+  const timezoneElement = $("#v2-timezone");
   const now = new Date();
   const timeDifference = upcomingWebinar - now;
   const hours = Math.floor(timeDifference / (1000 * 60 * 60));
   const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+  timezoneElement.html(`Time Zone: ${timezone}`);
   countdownElement.html(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} Hrs`);
   miniCountDownElement.html(`${hours.toString().padStart(2, '0')} hrs`)
   setTimeout(fillNextWebinarTimer, 60000);
 }
 
+function fallbackToCelendlly() {
+  $(".v2-form-wrapper").hide();
+  $(".calendly-fallback-v2").show();
+}
+
 function fillWebinarSlots(data) {
-  if (!data) {
-    $(".v2-form-wrapper").hide();
-    $(".calendly-fallback-v2").show();
+  if(is_webinar_1o1_eligible){
+    $('.webinar__slots').show();
+    $(".v2-check-container").hide();
+    return;
+  } else {
+    $('.webinar__slots').remove();
+    $(".v2-check-container").css("display", "grid");
+  }
+  
+  if (!data || data.length == 0) {
+    fallbackToCelendlly();
     return;
   }
 
@@ -40,7 +133,8 @@ function fillWebinarSlots(data) {
     endDateTime,
     alert,
     invitee_start_time,
-    invitee_end_time
+    invitee_end_time,
+    active = false
   }) {
 
     let content = `
@@ -60,7 +154,7 @@ function fillWebinarSlots(data) {
           data-name="${datetime}"
           class="w-form-formradioinput checkbox v2-checkbox slot-checkbox slot-radiobutton w-radio-input" 
         >
-        <div class="div-block-59 time-slot-wrapper">
+        <div class="div-block-59 time-slot-wrapper ${active ? "selected-slot" : ""}">
           <div class="v2-day">${day}</div>
           <div class="v2-date">${date}</div>
           <div class="hr no-spacings"></div>
@@ -81,7 +175,7 @@ function fillWebinarSlots(data) {
   };
 
   const slotMarkups = [];
-  data.map((slot, i) => {
+  data.slice(0, 6).map((slot, i) => {
     let alertMessage;
     if (i === 0) {
       alertMessage = { class: "warning-color", text: "Filling fast" }
@@ -98,12 +192,25 @@ function fillWebinarSlots(data) {
       endDateTime: slot.end_time,
       invitee_start_time: slot.invitee_start_time,
       invitee_end_time: slot.invitee_end_time,
-      alert: alertMessage
+      alert: alertMessage,
+      active: i === 0
     }))
   });
-  handleSlotScroll();
+  // handleSlotScroll();
 
   $(".v2-check-container").html(slotMarkups.join(""));
+}
+
+function webinar1o1Fallback() {
+  try {
+    is_webinar_1o1_eligible = false;
+    webinarType = "REGULAR";
+    $(".webinar-lead-type").val("REGULAR");
+    $(".webinar-type").val("REGULAR");
+    callCreateWebinarSlot(webinarType);
+  } catch (error) {
+    fallbackToCelendlly();
+  }
 }
 
 function handleSlotScroll() {
@@ -143,6 +250,7 @@ function handleSlotScroll() {
   // Initial check
   updateArrows();
 }
+
 function getMonthName(monthNumber) {
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -151,6 +259,11 @@ function getMonthName(monthNumber) {
 
   return monthNames[monthNumber - 1];
 }
+
+function formatDate(dateTime) {
+  return dateTime.toISOString().replace(/T/, " ").replace(/\.\d+Z$/, " UTC");
+}
+
 $(document).ready(function () {
   const SELECTED_SLOT = {};
   window.VWO = window.VWO || [];
@@ -199,6 +312,7 @@ $(document).ready(function () {
       "Invitee End Time": $('.wr__invitee-end-time').val(),
       "Work Experience": $('.gql-work-experience').val(),
       "Domain or Role": $('.gql-role-domain').val(),
+      "Booking id": $('input[name="start-date"]:checked').data("bookingid")
     };
 
     const partnerDetails = read_cookie("partner_details");
@@ -207,7 +321,7 @@ $(document).ready(function () {
       formData["is_partnership_lead"] = partnerDetails?.is_partnership_lead
       formData["is_user_eligible_for_partnership_discount"] = partnerDetails?.is_user_eligible_for_partnership_discount
     }
-
+    
     $.ajax({
       type: "POST",
       url: endpoint,
@@ -232,35 +346,27 @@ $(document).ready(function () {
     utilsScript: "//cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/js/utils.js"
   });
 
+  function getPhoneNumber() {
+    let phone = "";
+    try {
+      if(typeof(intlTelInputUtils) == "undefined") {
+        phone = `+${v2PhoneNumber.getSelectedCountryData().dialCode}${$("#v2-phone-number").val()}`
+       } else {
+        phone = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
+    } catch (error) {
+      phone = $("#v2-phone-number")?.val();
+    }
+    return phone
+  }
+
   function showFormSuccessSection() {
     $("#v2-success-date").html(SELECTED_SLOT.date);
     $("#v2-success-day").html(SELECTED_SLOT.day);
     $("#v2-success-month").html(SELECTED_SLOT.month)
     $("#v2-success-time").html(SELECTED_SLOT.time)
-    $('.form-info').hide();
-    $(".form-submitted-div").css("display", "block");
-  }
-
-  function adjustFormStep(currentStep, nextStep, isBack) {
-    const currentStepContainer = $(currentStep);
-    currentStepContainer.removeClass("active-step");
-    currentStepContainer.children(".v2-step-count").removeClass("active-step-count");
-    currentStepContainer.children(".v2-step-name").removeClass("active-step-name");
-
-    if (isBack) {
-      currentStepContainer.children(".v2-step-checked").addClass("hide");
-      currentStepContainer.children(".v2-step-count").show();
-    } else {
-      currentStepContainer.children(".v2-step-checked").removeClass("hide");
-      currentStepContainer.children(".v2-step-count").hide();
-    }
-
-    const nextStepContainer = $(nextStep);
-    nextStepContainer.addClass("active-step");
-    nextStepContainer.children(".v2-step-checked").addClass("hide");
-    nextStepContainer.children(".v2-step-count").addClass("active-step-count");
-    nextStepContainer.children(".v2-step-name").addClass("active-step-name");
-    nextStepContainer.children(".v2-step-count").show();
+    $('#form-wrapper').hide();
+    $("#form-submitted-div").css("display", "block");
   }
 
   if (window.MutationObserver) {
@@ -283,11 +389,34 @@ $(document).ready(function () {
     // Configuration of the observer
     var config = { attributes: true, attributeFilter: ['style'] };
 
-    // Observe all forms under .v2-form-container
-    $('.v2-form-container form').each(function () {
+    // Observe all forms under #v2-form-container
+    $('#v2-form-container form').each(function () {
       observer.observe(this, config);
     });
   }
+
+  $(".open-form").click(openForm)
+  $(".close-form").click(closeForm)
+
+  $("#v2-full-name").on("input", function () {
+    var fullName = $.trim($(this).val());
+
+    if (fullName === "") {
+      $("#v2-fname").val("");
+      $("#v2-lname").val("");
+    } else {
+      var nameParts = fullName.split(/\s+/);
+      var firstName = nameParts[0];
+      var lastName = "";
+
+      if (nameParts.length > 1) {
+        lastName = nameParts.slice(1).join(" ");
+      }
+
+      $("#v2-fname").val(firstName);
+      $("#v2-lname").val(lastName || firstName);
+    }
+  });
 
   $(document).on('click', '.slot-radiobutton', function () {
     $('.time-slot-wrapper').removeClass('selected-slot');
@@ -301,40 +430,33 @@ $(document).ready(function () {
   $("#v2-form-2nd-back").click(function (e) {
     $(".v2-second-form-block").hide();
     $(".v2-first-form-block").show();
-    adjustFormStep("#form-step-2", "#form-step-1", true);
+    adjustFormStep("#2-step-indicator", "#1-step-indicator");
   });
 
   $("#v2-form-3rd-back").click(function (e) {
     $(".v2-third-form-block").hide();
     $(".v2-second-form-block").show();
-    adjustFormStep("#form-step-3", "#form-step-2", true);
+    adjustFormStep("#3-step-indicator", "#2-step-indicator");
   });
 
   $('#v2-form-1st-submit').click(function (e) {
     e.preventDefault();
     setHiddenFields();
     try { paRegisteredCookie(); } catch (e) { console.error(e) }
-    let fullphonenumber3 = "";
-    if(typeof(intlTelInputUtils) == "undefined") {
-      try {
-        fullphonenumber3 = `+${v2PhoneNumber.getSelectedCountryData().dialCode}${$("#v2-phone-number").val()}`
-      } catch (error) {
-        fullphonenumber3 = $("#v2-phone-number")?.val();
-      }
-    } else {
-      fullphonenumber3 = v2PhoneNumber.getNumber(intlTelInputUtils.numberFormat.E164);
-    }
+
+    let fullphonenumber3 = getPhoneNumber();
+
     $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
     $(".tno1").val(fullphonenumber3);
 
-    $("#v2-fname, #v2-lname, #v2-phone-number, #v2-email").keypress(function () {
-      $(".v2-fname-error, .v2-lname-error, .v2-email-id-error, .v2-phone-number-error").hide();
-      $("#v2-fname, #v2-lname, #v2-phone-number, #v2-email").removeClass("has-error");
+    $("#v2-full-name, #v2-phone-number, #v2-email").keypress(function () {
+      $(".v2-full-name-error, .v2-email-id-error, .v2-phone-number-error").hide();
+      $("#v2-full-name, #v2-phone-number, #v2-email").removeClass("has-error");
     })
 
-    $("#v2-fname, #v2-lname, #v2-phone-number, #v2-email").focus(function () {
-      $(".v2-fname-error, .v2-lname-error, .v2-email-id-error, .v2-phone-number-error").hide();
-      $("#v2-fname, #v2-lname, #v2-phone-number, #v2-email").removeClass("has-error");
+    $("#v2-full-name, #v2-phone-number, #v2-email").focus(function () {
+      $(".v2-full-name-error, .v2-email-id-error, .v2-phone-number-error").hide();
+      $("#v2-full-name, #v2-phone-number, #v2-email").removeClass("has-error");
     });
 
     let name_regex = new RegExp("^[a-zA-Z ]+$");
@@ -342,16 +464,12 @@ $(document).ready(function () {
     let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm;
 
     if (($("#v2-fname").val().length == 0) &&
-      ($("#v2-lname").val().length == 0) &&
       ($("#v2-email").val().length == 0) &&
       ($("#v2-phone-number").val().length == 0)) {
-      $('.v2-fname-error, .v2-lname-error, .v2-email-id-error, .v2-phone-number-error').show();
+      $('.v2-full-name-error, .v2-email-id-error, .v2-phone-number-error').show();
     } else if (!name_regex.test($("#v2-fname").val()) || $("#v2-fname").val().length == 0) {
-      $('.v2-fname-error').show();
-      $('#v2-fname').addClass('has-error');
-    } else if (!name_regex.test($("#v2-lname").val()) || $("#v2-lname").val().length == 0) {
-      $('.v2-lname-error').show();
-      $('#v2-lname').addClass('has-error');
+      $('.v2-full-name-error').show();
+      $('#v2-full-name').addClass('has-error');
     } else if (!phone_regex.test($("#v2-phone-number").val()) || $("#v2-phone-number").val().length == 0) {
       $('.v2-phone-number-error').show();
       $('#v2-phone-number').addClass('has-error');
@@ -367,7 +485,7 @@ $(document).ready(function () {
 
       dataLayer.push({
         'event': 'new_webinar_registration_form_submitted',
-        'webinar_name': (document.querySelector('.webinar__lightbox-title').innerHTML)
+        'webinar_name': eventName
       });
 
       if ($('.is_exit_intent_popup').val() == "On Scroll") {
@@ -388,52 +506,146 @@ $(document).ready(function () {
         });
       }
 
+      if (is_webinar_1o1_eligible) {
+        $(".webinar-lead-type").val("ONE_TO_ONE_CONNECT");
+      }
+
       pushToZap("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/");
 
       $('#wf-webinar-1-step-v2').submit();
       $('.v2-first-form-block').hide();
-      adjustFormStep("#form-step-1", "#form-step-2");
+      adjustFormStep("#1-step-indicator", "#2-step-indicator");
       setTimeout(function () {
         $('.v2-first-form-block').hide();
         $(".v2-second-form-block").show();
         $('.v2-form-loading-bar').hide();
       }, 200);
     }
-    $("input:radio[name='v2-slots-radio']:first").attr("checked", true);
-    $('.wr__event-start-time').val($("input:radio[name='v2-slots-radio']:first").val());
-    $('.wr__event-end-time').val($("input:radio[name='v2-slots-radio']:first").data('endtime'));
-    $('.wr__invitee-start-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_starttime'));
-    $('.wr__invitee-end-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_endtime'));
-    $('.webinar-lead-type').val($("input:radio[name='v2-slots-radio']:first").data('webinar_lead_type'));
+    if(is_webinar_1o1_eligible){
+      $("input:radio[name='start-date']:first").attr("checked", true);
+      $(".wr__event-start-time").val($("input:radio[name='start-date']:first").val());
+      $(".wr__event-end-time").val($("input:radio[name='start-date']:first").data("endtime"));
+      $(".wr__invitee-start-time").val($("input:radio[name='start-date']:first").data("invitee_starttime"));
+      $(".wr__invitee-end-time").val($("input:radio[name='start-date']:first").data("invitee_endtime"));
+      $(".webinar-lead-type").val($("input:radio[name='start-date']:first").data("webinar_lead_type"));
+    } else {
+      $("input:radio[name='v2-slots-radio']:first").attr("checked", true);
+      $('.wr__event-start-time').val($("input:radio[name='v2-slots-radio']:first").val());
+      $('.wr__event-end-time').val($("input:radio[name='v2-slots-radio']:first").data('endtime'));
+      $('.wr__invitee-start-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_starttime'));
+      $('.wr__invitee-end-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_endtime'));
+      $('.webinar-lead-type').val($("input:radio[name='v2-slots-radio']:first").data('webinar_lead_type'));
+    }
+
   })
 
-  $('#v2-form-2nd-submit').click(function (e) {
-    e.preventDefault();
+  function bookSlot() {
+    return new Promise(async (resolve, reject) => {
+      if (is_webinar_1o1_eligible) {
+        const url =
+          "https://uplevel.interviewkickstart.com/api/v1/webinar_connect/book-slot/";
+        const payload = {
+          slot_id: parseInt(
+            $('input[name="start-date"]:checked').data("slotid")
+          ),
+          email: $('#v2-email').val(),
+        };
+        const requestOptions = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+          redirect: "follow",
+        };
 
-    if ($("input:radio[name='v2-slots-radio']").is(":checked")) {
+        const res = await fetch(url, requestOptions);
+        const data = await res.json();
+        if (res.status === 201) {
+          $('input[name="start-date"]:checked').data(
+            "bookingid",
+            data.booking_id
+          );
+          resolve(data);
+        } else {
+          webinar1o1Fallback();
+          console.error(
+            "Something went wrong while calling webinar_connect/book-slot api",
+            res,
+            data
+          );
+          reject(
+            new Error(
+              "Something went wrong while calling webinar_connect/book-slot api"
+            )
+          );
+        }
+      } else {
+        resolve();
+      }
+    });
+  }
+
+  $('#v2-form-2nd-submit').click(async function (e) {
+    e.preventDefault();
+    let slotBookRes = {}
+    if(is_webinar_1o1_eligible){
+      slotBookRes = await bookSlot();
+    }
+
+    if ($("input:radio[name='v2-slots-radio']").is(":checked") || (is_webinar_1o1_eligible && $('input[name="start-date"]').is(":checked") )) {
       try { paRegisteredCookie(); } catch (e) { console.error(e) }
 
-      const startDate = $('input[name="v2-slots-radio"]:checked').val();
-      const endDate = $('input[name="v2-slots-radio"]:checked').data("endtime");
+      let startDate = "";
+      let endDate = "";
+
+      if(is_webinar_1o1_eligible){
+        const localDate = new Date(slotBookRes.start_datetime);
+
+        const day = localDate.toLocaleString('en-US', { weekday: 'long' });
+        const date = localDate.getDate();
+        const month = localDate.toLocaleString('en-US', { month: 'long' });
+        
+        let hours = localDate.getHours() % 12 || 12;
+        let minutes = localDate.getMinutes();
+        let period = localDate.getHours() >= 12 ? 'pm' : 'am';
+        let time = minutes === 0 ? `${hours}${period}` : `${hours}:${minutes.toString().padStart(2, '0')}${period}`;
+        
+        SELECTED_SLOT['day'] = day;
+        SELECTED_SLOT['date'] = date;
+        SELECTED_SLOT['time'] = time;
+        SELECTED_SLOT['month'] = month;
+
+        startDate = $('input[name="start-date"]:checked').val();
+        endDate = $('input[name="start-date"]:checked').data("endtime");
+      } else {
+        startDate = $('input[name="v2-slots-radio"]:checked').val();
+        endDate = $('input[name="v2-slots-radio"]:checked').data("endtime");
+      }
 
       function updateFormFields() {
         $(".wr__event-start-time").val(startDate);
         $(".wr__event-end-time").val(endDate);
-        $(".wr__invitee-start-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_starttime"));
-        $(".wr__invitee-end-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_endtime"));
-        $(".webinar-lead-type").val($('input[name="v2-slots-radio"]:checked').data("webinar_lead_type"));
+        if(is_webinar_1o1_eligible){
+          $(".wr__event-start-time").val($("input:radio[name='start-date']:first").val());
+          $(".wr__event-end-time").val($("input:radio[name='start-date']:first").data("endtime"));
+          $(".wr__invitee-start-time").val($("input:radio[name='start-date']:first").data("invitee_starttime"));
+          $(".wr__invitee-end-time").val($("input:radio[name='start-date']:first").data("invitee_endtime"));
+          $(".webinar-lead-type").val($("input:radio[name='start-date']:first").data("webinar_lead_type"));
+        } else {
+          $(".wr__invitee-start-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_starttime"));
+          $(".wr__invitee-end-time").val($('input[name="v2-slots-radio"]:checked').data("invitee_endtime"));
+          $(".webinar-lead-type").val($('input[name="v2-slots-radio"]:checked').data("webinar_lead_type"));
+        }
       }
 
-      function formatDate(dateTime) {
-        return dateTime.toISOString().replace(/T/, " ").replace(/\.\d+Z$/, " UTC");
-      }
-
-      if (typeof paRegistered !== "undefined") {
-        updateFormFields();
+      updateFormFields();
+      if(is_webinar_1o1_eligible){
+        pushToZap("https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/");
+      }else if (typeof paRegistered !== "undefined") {
         $(".v2-form-loading-bar").show();
         pushToZap("https://hooks.zapier.com/hooks/catch/11068981/307qti9/");
       } else {
-        updateFormFields();
         $(".v2-form-loading-bar").show();
         pushToZap("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/");
       }
@@ -449,7 +661,7 @@ $(document).ready(function () {
       });
 
       $(".v2-second-form-block").hide();
-      adjustFormStep("#form-step-2", "#form-step-3");
+      adjustFormStep("#2-step-indicator", "#3-step-indicator");
       setTimeout(function () {
         $('.v2-form-loading-bar').hide();
         $(".v2-third-form-block").show();
@@ -574,6 +786,8 @@ $(document).ready(function () {
 
   $('#v2-form-3rd-submit').click(function (e) {
     e.preventDefault();
+    let sf_uuid = v_timezone + ":learn.ik" +  cta_lp +  ":learn.ik" +  getCookie("ik-landingpage-v2");
+
     let utmparams = {
       "utm_source": $('.utm_source').val(),
       "utm_medium": $('.utm_medium').val(),
@@ -585,7 +799,7 @@ $(document).ready(function () {
       "msclkid": $('.msclkid').val(),
       "fbclid": $('.fbclid').val(),
       "user_id": $('.user_id').val(),
-      "salesforce_uuid": $('.salesforce_uuid').val(),
+      "salesforce_uuid": sf_uuid,
     }
 
     const data = {
@@ -685,7 +899,7 @@ $(document).ready(function () {
           },
           success: function (e) {
             if (e.status == "success") {
-              $(".v2-form-container").css("display", "none");
+              $("#v2-form-container").css("display", "none");
               showFormSuccessSection();
             }
           },

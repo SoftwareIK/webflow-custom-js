@@ -182,7 +182,7 @@ $(document).ready(function () {
       "Email Address": $('#v2-email').val(),
       "ByeCalendlyType": $('.bye-calendly-type').val(),
       "webinar-type": $('.webinar-type').val(),
-      "Webinar Lead Type": $('.webinar-lead-type').val(),
+      "Webinar Lead Type": $('.webinar-type').val(),
       "utm_source": $('.utm_source').val(),
       "utm_medium": $('.utm_medium').val(),
       "utm_campaign": $('.utm_campaign').val(),
