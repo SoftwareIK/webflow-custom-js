@@ -451,17 +451,6 @@ $(document).ready(function () {
     }
   });
 
-    // if you want daynammic date for single slot then uncomment code below
-    // const radioInput = $('input[name="v2-slots-radio"]:checked')
-    // const day = radioInput.data('day');
-    // const date = radioInput.data('date');
-    // const time = radioInput.data('time');
-    // const month = getMonthName(radioInput.data('month'))
-    // SELECTED_SLOT['day'] = day;
-    // SELECTED_SLOT['date'] = date;
-    // SELECTED_SLOT['time'] = time;
-    // SELECTED_SLOT['month'] = month;
-
     $(document).on('click', '.slot-radiobutton', function () {
       $('.time-slot-wrapper').removeClass('selected-slot');
       $(this).siblings('.time-slot-wrapper').addClass('selected-slot');
