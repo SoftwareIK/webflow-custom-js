@@ -384,6 +384,17 @@ $(document).ready(function () {
   }
 
   function showFormSuccessSection() {
+    if(window.skipSecondSteps) {
+        const radioInput = $('input[name="v2-slots-radio"]:checked')
+        const day = radioInput.data('day');
+        const date = radioInput.data('date');
+        const time = radioInput.data('time');
+        const month = getMonthName(radioInput.data('month'))
+        SELECTED_SLOT['day'] = day;
+        SELECTED_SLOT['date'] = date;
+        SELECTED_SLOT['time'] = time;
+        SELECTED_SLOT['month'] = month;
+    }
     $("#v2-success-date").html(SELECTED_SLOT.date);
     $("#v2-success-day").html(SELECTED_SLOT.day);
     $("#v2-success-month").html(SELECTED_SLOT.month)
@@ -441,14 +452,25 @@ $(document).ready(function () {
     }
   });
 
-  $(document).on('click', '.slot-radiobutton', function () {
-    $('.time-slot-wrapper').removeClass('selected-slot');
-    $(this).siblings('.time-slot-wrapper').addClass('selected-slot');
-    SELECTED_SLOT['day'] = $(this).data('day');
-    SELECTED_SLOT['date'] = $(this).data('date');
-    SELECTED_SLOT['time'] = $(this).data('time');
-    SELECTED_SLOT['month'] = getMonthName($(this).data('month'));
-  });
+    const radioInput = $('input[name="v2-slots-radio"]:checked')
+    const day = radioInput.data('day');
+    const date = radioInput.data('date');
+    const time = radioInput.data('time');
+    const month = getMonthName(radioInput.data('month'))
+    SELECTED_SLOT['day'] = day;
+    SELECTED_SLOT['date'] = date;
+    SELECTED_SLOT['time'] = time;
+    SELECTED_SLOT['month'] = month;
+    $(document).on('click', '.slot-radiobutton', function () {
+      $('.time-slot-wrapper').removeClass('selected-slot');
+      $(this).siblings('.time-slot-wrapper').addClass('selected-slot');
+      SELECTED_SLOT['day'] = $(this).data('day');
+      SELECTED_SLOT['date'] = $(this).data('date');
+      SELECTED_SLOT['time'] = $(this).data('time');
+      SELECTED_SLOT['month'] = getMonthName($(this).data('month'));
+    });
+
+
 
   $("#v2-form-2nd-back").click(function (e) {
     $(".v2-second-form-block").hide();
