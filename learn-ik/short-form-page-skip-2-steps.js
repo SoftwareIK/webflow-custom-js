@@ -384,15 +384,16 @@ $(document).ready(function () {
 
   function showFormSuccessSection() {
     if(window.skipSecondSteps) {
-        const radioInput = $('input[name="v2-slots-radio"]:checked')
-        const day = radioInput.data('day');
-        const date = radioInput.data('date');
-        const time = radioInput.data('time');
-        const month = getMonthName(radioInput.data('month'))
-        SELECTED_SLOT['day'] = day;
-        SELECTED_SLOT['date'] = date;
-        SELECTED_SLOT['time'] = time;
-        SELECTED_SLOT['month'] = month;
+        // if we want daynamic date piking on success model then uncomment bellow code 
+        // const radioInput = $('input[name="v2-slots-radio"]:checked')
+        // const day = radioInput.data('day');
+        // const date = radioInput.data('date');
+        // const time = radioInput.data('time');
+        // const month = getMonthName(radioInput.data('month'))
+        // SELECTED_SLOT['day'] = day;
+        // SELECTED_SLOT['date'] = date;
+        // SELECTED_SLOT['time'] = time;
+        // SELECTED_SLOT['month'] = month;
     }
     $("#v2-success-date").html(SELECTED_SLOT.date);
     $("#v2-success-day").html(SELECTED_SLOT.day);
