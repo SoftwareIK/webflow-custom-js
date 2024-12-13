@@ -220,6 +220,13 @@ $(document).ready(function () {
 
   $.getJSON("https://get.geojs.io/v1/ip/geo.json", function (t) { })
     .done(function (t) {
+      let local_timezone = v_timezone;
+      if(typeof(v_timezone) != "undefined") {
+        local_timezone = v_timezone;
+      } else {
+        local_timezone = "America/New_York"
+      }
+
       let forceUSwebinarFlag = getAllUrlParams();
       if (
         t.country_code3 == "IND" &&
@@ -241,7 +248,7 @@ $(document).ready(function () {
         });
       } else {
         createWebinarSlotsList("USA", t.timezone, (slots) => {
-          TimerHandler("America/New_York", slots);
+          TimerHandler(local_timezone, slots);
           if (typeof fillWebinarSlots === "function") {
             fillWebinarSlots(slots);
           }
