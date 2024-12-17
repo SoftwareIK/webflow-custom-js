@@ -5,14 +5,25 @@ const timerState = {
     currentDateSec: '',
     nextDateSec: '',
 };
-
 // This function will be in use when upcoming-slots api fails.
-function fallbackTimerDate() {
+function fallbackTimerDate(tz = "") {
+  const isIndia = tz == "IST" || tz == "Asia/Kolkata";
   const currentDate = new Date();
   const dayOfWeek = currentDate.getDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
   const dateString = currentDate.toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata', month: '2-digit', day: '2-digit', year: 'numeric' });
   let timeString;
 
+  if (isIndia) {
+    if (dayOfWeek === 6) {
+      // Saturday
+      timeString = "11:00:00 PM";
+    } else if (dayOfWeek === 0) {
+      // Sunday
+      return ""; // Skip on Sunday
+    } else {
+      timeString = "06:00:00 PM";
+    }
+  } else {
     if (dayOfWeek === 6) {
       // Saturday
       return ""; // Skip on Saturday
@@ -23,14 +34,15 @@ function fallbackTimerDate() {
       // Even days (Tuesday, Thursday)
       timeString = "08:30:00 PM";
     }
+  }
 
   return `${dateString}, ${timeString}`
 }
 
-function nextWebinar(currentDate, currentWebTime, slots) {
+function nextWebinar(currentDate, currentWebTime, tz, slots) {
     let nextWebinarDate = '';
     if (!slots) {
-      return fallbackTimerDate(currentDate)
+      return fallbackTimerDate(tz)
     }
     const formattedSlots = (slots || [])?.map((slot = {}) => ({
       date: `${slot.month}/${slot.day}/${slot.year}`, //"06/12/2024"
@@ -50,12 +62,15 @@ function nextWebinar(currentDate, currentWebTime, slots) {
     return nextWebinarDate;
 };
 
-function initStates(slots) {
-    timerState.currentDate = new Date().toLocaleString('en-US');
+function initStates(tz, slots) {
+    try {
+      timerState.currentDate = new Date().toLocaleString("en-US", { timeZone: tz });
+    } catch (error) {  }    
     timerState.currentDateSec = Date.parse(timerState.currentDate);
     timerState.nextDate = nextWebinar(
       timerState.currentDate.split(',')[0], 
       timerState.currentDateSec,
+      tz,
       slots
     );
     if (timerState.nextDate !== '') {
@@ -110,15 +125,21 @@ function updateTimerUI(day, hrs, min, sec) {
 };
 
 function TimerHandler(slots) {
+  let tz = "America/New_York"
+  if(typeof(v_timezone) != "undefined") {
+    tz = v_timezone;
+  }
   // initialize states
-    initStates(slots);
+    initStates(tz, slots);
 
     // start timer
     const webinarTimer = setInterval(() => {
         if (timerState.nextDate === '') {
             clearInterval(webinarTimer);
         }
-        timerState.currentDate = new Date().toLocaleString('en-US');
+        timerState.currentDate = new Date().toLocaleString("en-US", {
+          timeZone: tz,
+        });
         timerState.currentDateSec = Date.parse(timerState.currentDate);
 
         const distanceCount = timerState.nextDateSec - timerState.currentDateSec;
@@ -159,7 +180,7 @@ function TimerHandler(slots) {
 
         if (distanceCount <= 0) {
             // move timer to next date if reached 0
-            initStates(slots);
+            initStates(tz, slots);
 
             if (timerState.nextDate === '') {
                 clearInterval(webinarTimer);
