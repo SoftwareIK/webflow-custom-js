@@ -579,6 +579,7 @@ $(document).ready(function () {
     const authToken = "1Cgx6oYXkOlWkNDn7_tXO";
 
     const handleError = () => {
+      fallbackSlots()
       // if the API call fails, we'll show the default webinar slot
       if (is_webinar_1o1_eligible) {
         webinar1o1Fallback();
@@ -592,6 +593,13 @@ $(document).ready(function () {
       }
       registration_type = "calendly";
     };
+
+    const fallbackSlots = () => {
+      webinarType = "REGULAR";
+      const url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/`;
+      const timezone = "America/New_York"
+      callAPI(`${url}?country=USA&program=Backend&timezone=${timezone}&type=${webinarType}`);
+    }
 
     const processWebinarData = (data, webinarType) => {
       // Check if the webinar type is ONE_TO_ONE_CONNECT and if data contains any non-empty objects
@@ -636,10 +644,10 @@ $(document).ready(function () {
       xhr.onload = function () {
         if (this.status === 200) {
           try {
-            const response =
-              typeof this.response === "string"
-                ? JSON.parse(this.response)
-                : this.response;
+            const response = typeof this.response === "string" ? JSON.parse(this.response) : this.response;
+            if (response == null || response == undefined) {
+              fallbackSlots();
+            } 
             processWebinarData(response, webinarType);
           } catch (error) {
             console.error("Error:", error);

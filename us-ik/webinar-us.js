@@ -429,6 +429,40 @@ $(document).ready(function () {
     $(".webinar-type").val("REGULAR");
   }
 
+  function callAPI(url) {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.setRequestHeader("Authorization", "1Cgx6oYXkOlWkNDn7_tXO");
+  
+    xhr.onload = function () {
+      if (this.status === 200) {
+        let response = JSON.parse(this.response);
+        let webinarType = "REGULAR";
+  
+        if (webinarType === "REGULAR") {
+          response = response.map((slot) => ({
+            ...slot,
+            webinar_lead_type: "REGULAR",
+          }));
+        }
+  
+        populateWebinarSlots(response);
+      }
+    };
+    xhr.onerror = function (e) {
+      console.error("Error fetching webinar slots",e);
+    }
+    xhr.send();
+  }
+  
+  const fallbackSlots = () => {
+    let webinarType = "REGULAR";
+    const url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/`;
+    const timezone = "America/New_York";
+  
+    callAPI(`${url}?country=USA&program=Backend&timezone=${timezone}&type=${webinarType}`);
+  };
+
   function createWebinarSlotsList(country, timezone, callback = () => { }) {
     $(".webinar-type").val(webinarType);
 
@@ -507,12 +541,14 @@ $(document).ready(function () {
             populateWebinarSlots(resobj);
           }
         } else {
+          fallbackSlots();
           callback(null);
           registration_type = "calendly";
         }
       };
       xhr.onerror = function () {
         callback(null);
+        fallbackSlots();
         registration_type = "calendly";
       };
       xhr.send();
@@ -535,6 +571,7 @@ $(document).ready(function () {
           callback(data);
         })
         .catch(() => {
+          fallbackSlots();
           callback(null);
         });
     }
