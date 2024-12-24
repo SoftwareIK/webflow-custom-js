@@ -452,7 +452,7 @@ if (!ignorePath()) {
     initExitIntentPopup(eagerLoadImage, {
       downScrollThreshold: 1,
       upScrollThreshold: 5,
-      upScrollSpeedThreshold: 10,
+      upScrollSpeedThreshold: 30,
       popupTimeoutHours: 3,
       checkInterval: 100,
       initialScrollIgnore: 15,
