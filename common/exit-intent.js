@@ -450,7 +450,7 @@ if (!ignorePath()) {
 
     console.log("Current variant", "variant");
     initExitIntentPopup(eagerLoadImage, {
-      downScrollThreshold: 50,
+      downScrollThreshold: 1,
       upScrollThreshold: 5,
       upScrollSpeedThreshold: 5,
       popupTimeoutHours: 3,
