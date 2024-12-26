@@ -327,7 +327,9 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
       // Calculate the scroll-up speed
       const now = Date.now();
       const timeElapsed = (now - lastUpScrollTimestamp) / 1000; // Convert to seconds
-      const scrollUpSpeed = upScrollThreshold / timeElapsed;
+
+      const scrollDifference = maxScrollPercent - currentScrollPercent;
+      const scrollUpSpeed = scrollDifference / timeElapsed; // Percentage per second
 
       // Check if the scroll-up speed exceeds the threshold
       if (scrollUpSpeed >= upScrollSpeedThreshold) {
@@ -451,8 +453,8 @@ if (!ignorePath()) {
     console.log("Current variant", "variant");
     initExitIntentPopup(eagerLoadImage, {
       downScrollThreshold: 1,
-      upScrollThreshold: 5,
-      upScrollSpeedThreshold: 30,
+      upScrollThreshold: 10,
+      upScrollSpeedThreshold: 60,
       popupTimeoutHours: 3,
       checkInterval: 100,
       initialScrollIgnore: 15,
