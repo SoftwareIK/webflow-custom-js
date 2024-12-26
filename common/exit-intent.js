@@ -124,30 +124,6 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   let lastUpScrollTimestamp = Date.now(); // Timestamp of the last upward scroll detected
   let contextMenuOpen = false; // Flag to track if the context menu was opened
   let outsideViewportTimer; // Timer for tracking time outside viewport
-  let startY = 0; // Track the starting point of a touch event
-  let isScrollingUpAggressively = false; // Detect aggressive upward scrolling
-
-  const onTouchStart = (event) => {
-    startY = event.touches[0].clientY; // Capture the start position
-  };
-
-  const onTouchMove = (event) => {
-    const currentY = event.touches[0].clientY;
-    const deltaY = startY - currentY; // Distance moved upward
-
-    if (deltaY > upScrollThreshold) {
-      const now = Date.now();
-      const timeElapsed = (now - lastUpScrollTimestamp) / 1000; // Convert to seconds
-      const scrollSpeed = deltaY / timeElapsed; // Calculate speed in pixels/sec
-
-      if (scrollSpeed >= upScrollSpeedThreshold) {
-        isScrollingUpAggressively = true;
-        showPopup(); // Show popup for aggressive upward scroll
-      }
-
-      lastUpScrollTimestamp = now;
-    }
-  };
 
   // Utility to set a cookie with a specified expiry in hours
   const setCookie = (name, value, hours) => {
@@ -330,9 +306,12 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     // Calculate the current scroll percentage
     const currentScrollPercent =
       (scrollTop / (documentHeight - windowHeight)) * 100;
-
+  
+    console.log("Current Scroll Percent:", currentScrollPercent);
+  
     // Ignore initial scrolls if they haven't reached the initialScrollIgnore threshold
     if (currentScrollPercent < initialScrollIgnore) {
+      console.log(`Ignoring scroll. InitialScrollIgnore: ${initialScrollIgnore}`);
       return;
     }
 
@@ -357,6 +336,8 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
 
       // Check if the scroll-up speed exceeds the threshold
       if (scrollUpSpeed >= upScrollSpeedThreshold) {
+        console.log("Triggering Popup. Scroll-Up Speed:", scrollUpSpeed);
+        console.table(options)
         showPopup();
       }
 
@@ -365,10 +346,10 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     }
   };
 
-  // // Set interval for detecting scroll behavior
-  // const initializeScrollDetection = () => {
-  //   setInterval(detectExitIntentScroll, checkInterval);
-  // };
+  // Set interval for detecting scroll behavior
+  const initializeScrollDetection = () => {
+    setInterval(detectExitIntentScroll, checkInterval);
+  };
 
   // Mobile: Detect back button or history change attempt
   const detectBackButton = () => {
@@ -426,13 +407,8 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
       document.addEventListener("mouseenter", onMouseEnter); // Track re-entering viewport
     } else {
       // Mobile-specific exit intent triggers
-      document.addEventListener("touchstart", onTouchStart, { passive: true });
-      document.addEventListener("touchmove", onTouchMove, { passive: true });
-      document.addEventListener("scroll", detectExitIntentScroll, {
-        passive: true,
-      });
       detectBackButton();
-      // initializeScrollDetection(); // Only initialize scroll detection on mobile
+      initializeScrollDetection(); // Only initialize scroll detection on mobile
     }
 
     // General triggers for both mobile and desktop
@@ -482,8 +458,8 @@ if (!ignorePath()) {
     console.log("Current variant", "variant");
     initExitIntentPopup(eagerLoadImage, {
       downScrollThreshold: 1,
-      upScrollThreshold: 10,
-      upScrollSpeedThreshold: 60,
+      upScrollThreshold: 20,
+      upScrollSpeedThreshold: 120,
       popupTimeoutHours: 3,
       checkInterval: 100,
       initialScrollIgnore: 15,
