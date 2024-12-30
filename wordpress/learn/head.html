@@ -1,11 +1,14 @@
+<meta content="initial-scale=1, maximum-scale=1" name="viewport" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/gh/bijoyhassan23/interviewik/intlTelInput.min.js"></script>
 <!-- Google Tag Manager -->
-<script defer type="text/javascript">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-W6XP2VP');</script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P335R9N');</script>
 <!-- End Google Tag Manager -->
 
 
@@ -64,7 +67,7 @@ function getEventTitle(webinarType, event){
       case "ONE_TO_ONE_CONNECT":
         return eventTitleMap["ONE_TO_ONE_CONNECT"];
       default:
-        return eventTitleMap["DEFAULT"];
+        return eventTitleMap["REGULAR"];
     }
   };
 
@@ -72,15 +75,16 @@ const eventTitleMap = {
     CAREER_SESSION: "Seize the AI Advantage: Strengthen Your Resume",
     SWITCH_UP: "Uplevel your career with AI/ML/GenAI",
     ONE_TO_ONE_CONNECT: "How to Nail Your Next Tech/Product Interview",
-    DEFAULT: "How to Nail your next Technical Interview",
+    REGULAR: "How to Nail your next Technical Interview",
   };
 
 
 
 let currentURlPrms = getAllUrlParams();
-let webinarType = currentURlPrms.webinartype || "REGULAR";
+if(currentURlPrms.webinartype) webinarType = currentURlPrms.webinartype;
 let isSwitchUp = "No";
 let v_timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+if(v_timezone === "Asia/Calcutta") v_timezone = "Asia/Kolkata";
 
 let is_webinar_1o1_eligible = webinarType === "ONE_TO_ONE_CONNECT";
 
@@ -134,19 +138,22 @@ function create_UUID() {
 }
 
 
-let visitor_id = getCookie("unique_visitor_id");
+let visitor_id = getCookie("unique_visitor_id6");
 let gaid, vgid;
-if (visitor_id) {
+if (!visitor_id) {
+	visitor_id = create_UUID();
+	setCookie("unique_visitor_id6", visitor_id);
+	/*
     let tempInter = setInterval(function(){
         if(getCookie("_ga")){
             gaid = getCookie("_ga");
             vgid = gaid + "-uid-" + create_UUID();
-            setCookie("unique_visitor_id", vgid);
-            visitor_id = getCookie("unique_visitor_id");
+            setCookie("unique_visitor_id6", vgid);
+            visitor_id = getCookie("unique_visitor_id6");
             console.log(visitor_id);
             clearInterval(tempInter);
         }
-    }, 200);
+    }, 200);*/
 }
 // set the visitor id end-------------------------------
 
@@ -157,12 +164,12 @@ async function getCountry(){
     let country = await data.country;
     await setCookie("v_country", country);
     v_country = country;
+		v_timezone = data.timezone;
 }
 
 let v_country = getCookie('v_country');
-if (v_country == "") {
-    getCountry();
-}
+getCountry();
+
 // set the visitor Country End-------------------------------
 
 // organic cookie start ------------------------------------------------------------
@@ -179,13 +186,30 @@ let r_visit = read_cookie("v_latest");
 r_visit = {...r_visit, ...currentURlPrms};
 bake_cookie("v_latest", r_visit);
 // organic cookie end ------------------------------------------------------------
-
-if(getCookie("ik-landingpage")){
+/*
+if(!getCookie("ik-landingpage")){
     let landingPage = location.pathname != '/'  ? location.pathname : "/home";
+	  landingPage = landingPage.endsWith("/") ? landingPage.slice(0, -1) : landingPage;
     setCookie("ik-landingpage", landingPage);
 }
+*/
 
-let cta_lp = location.pathname;
+if((referrer != "") && (referrer.indexOf(window.location.host.toString()) == -1) && (referrer.indexOf("calendly.com") == -1)){
+    if(window.location.pathname == '/'){
+        setCookie("ik-landingpage",'/home');}
+    else{	
+        let landingPage = location.pathname;
+	    landingPage = landingPage.endsWith("/") ? landingPage.slice(0, -1) : landingPage;
+        setCookie("ik-landingpage", landingPage);
+    }
+}
+
+
+let page_url = window.location.href;
+page_url = ((location.pathname != "/") && page_url.endsWith("/")) ? page_url.slice(0, -1) : page_url;
+	
+let cta_lp = window.location.pathname;
+cta_lp = (cta_lp.endsWith("/") && (cta_lp != "/")) ? cta_lp.slice(0, -1) : cta_lp;
 
 function getDeviceType() {
     var userAgent = navigator.userAgent;
@@ -196,5 +220,116 @@ function getDeviceType() {
     } else {
         return 'Desktop';
     }
+}
+
+let webinarSlots = [];
+const webNearLoadedEv = new CustomEvent("webNearLoaded");
+</script>
+
+
+
+
+<script>
+// Ip address
+  const userIpAndBrowserInfo = {
+    ipAddress : "",
+    ...getBrowserDetails()
+  }
+
+    function getBrowserDetails() {
+        const ua = navigator.userAgent;
+        let browserName = "Unknown";
+        let version = "Unknown";
+
+        if (ua.indexOf("Firefox") > -1) {
+            browserName = "Firefox";
+            version = ua.split("Firefox/")[1];
+        } else if (ua.indexOf("Chrome") > -1 && ua.indexOf("Edg/") === -1) {
+            browserName = "Chrome";
+            version = ua.split("Chrome/")[1].split(" ")[0];
+        } else if (ua.indexOf("Safari") > -1 && ua.indexOf("Chrome") === -1) {
+            browserName = "Safari";
+            version = ua.split("Version/")[1].split(" ")[0];
+        } else if (ua.indexOf("Edg/") > -1) {
+            browserName = "Edge";
+            version = ua.split("Edg/")[1];
+        } else if (ua.indexOf("Trident/") > -1) {
+            browserName = "Internet Explorer";
+            version = ua.split("rv:")[1].split(")")[0];
+        }
+
+        return { browserName: browserName, browserVersion: version };
+    }
+
+    (async function(){
+        const apiURL = 'https://api.ipify.org?format=json';
+        try {
+            const response = await fetch(apiURL);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            userIpAndBrowserInfo.ipAddress = data.ip;
+
+        } catch (error) {
+            console.error('Error fetching IP address:', error);
+        }
+    })();
+
+    function intlTelInputCheckFun(callBack){
+        if(window.intlTelInput){
+            return callBack();
+        }else{
+            let temp = setTimeout(function(){
+                intlTelInputCheckFun(callBack);
+            }, 200)
+        }
+   }
+	
+	
+	async function bookSlot(email ,slotId) {
+    const url = "https://uplevel.interviewkickstart.com/api/v1/webinar_connect/book-slot/";
+    const payload = {
+            slot_id: parseInt(slotId),
+            email: email, 
+        };
+    const requestOptions = {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+            redirect: "follow",
+        };
+
+    try{
+        const res = await fetch(url, requestOptions);
+        const data = await res.json();
+        console.log("book Slot data");
+        console.log(data);
+        return data;
+    }catch(err){
+        console.log("Something went wrong while calling webinar_connect/book-slot api");
+        return new Promise((res, rej) => res());
+    }
+}
+	
+	
+function intlTelFunCheck(callBack){
+    return new Promise(function(res, rej){
+        if(typeof intlTelInputUtils !== "undefined"){
+            callBack();
+            res();
+        }else{
+            let temp = setInterval(function(){
+                if(typeof intlTelInputUtils !== "undefined"){
+                    callBack();
+                    clearInterval(temp);
+                    res();
+                }
+            }, 200)
+        }
+    })
 }
 </script>
