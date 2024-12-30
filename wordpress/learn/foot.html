@@ -241,8 +241,13 @@
   let slotFetchedTwice = false;
   let initnialWebinarType = webinarType;
   let initialTimezone = v_timezone;
-  let staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
-  slotLoaded(staticSlots);
+  let staticSlots = []
+  try {
+    let staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
+    slotLoaded(staticSlots);
+  } catch (error) {
+    console.error("P1: Error while generating static slots", error);
+  }
 
   function populateWebinarSlots(resobj) {
     const t_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -264,7 +269,7 @@
         .join("");
     }
 
-    const getWebinerSlots = document.querySelector('.webnear_regitration_fr .fr_stage_2 .web_near_slot');
+    const getWebinerSlots = document?.querySelector('.webnear_regitration_fr .fr_stage_2 .web_near_slot');
     getWebinerSlots.innerHTML = "";
 
     for (i = 0; i < nslots; i++) {
@@ -313,7 +318,7 @@
     TimerHandler(resobj);
   }
 
-  async function loadSlot(c_timezoon = "Asia/Kolkata") {
+  async function loadSlot(c_timezoon = "America/New_York") {
     let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${webinarType === "SWITCH_UP" ? webinarType : "REGULAR"}`;
 
     const option = {
@@ -503,19 +508,16 @@
   /*-----------------------------------------------------Time Functions End------------------------------------------------------------------------*/
 </script>
 
-
-
-
 <!------------------ Webnear Form Send ---------------------->
 <script>
   // get all from fild
-  const getThePopupFrom = document.querySelector('.webnear_regitration_fr');
+  const getThePopupFrom = document?.querySelector('.webnear_regitration_fr');
 
-  const webNearFullName = getThePopupFrom.querySelector('.web_full_name input#Full-Name');
-  const webNearEmailAddress = getThePopupFrom.querySelector('.web_em_address input#Email-Address-7');
-  const webNearPhoneNumber = getThePopupFrom.querySelector('.web_phone_number input#webinar_pnumber');
-  const webNearAccepTance = getThePopupFrom.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
-  const webNearSlots = getThePopupFrom.querySelector('.web_near_slot');
+  const webNearFullName = getThePopupFrom?.querySelector('.web_full_name input#Full-Name');
+  const webNearEmailAddress = getThePopupFrom?.querySelector('.web_em_address input#Email-Address-7');
+  const webNearPhoneNumber = getThePopupFrom?.querySelector('.web_phone_number input#webinar_pnumber');
+  const webNearAccepTance = getThePopupFrom?.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
+  const webNearSlots = getThePopupFrom?.querySelector('.web_near_slot');
   let webNearPhoneNumberWri;
 
   intlTelInputCheckFun(function () {
@@ -535,13 +537,9 @@
     });
   });
 
-
-
-
-
-  const getFnErrMsg = getThePopupFrom.querySelector('.web_full_name');
-  const getEmErrMsg = getThePopupFrom.querySelector('.web_em_address');
-  const getPhErrMsg = getThePopupFrom.querySelector('.web_phone_number');
+  const getFnErrMsg = getThePopupFrom?.querySelector('.web_full_name');
+  const getEmErrMsg = getThePopupFrom?.querySelector('.web_em_address');
+  const getPhErrMsg = getThePopupFrom?.querySelector('.web_phone_number');
 
   // name container
   const webNearInfo = {
@@ -637,7 +635,7 @@
     webNearInfo.wr__referrer = referrer;
     webNearInfo.wr__device = getDeviceType();
 
-    document.querySelector('.webinar__lightbox-title h2').innerHTML = eventName;
+    document?.querySelector('.webinar__lightbox-title h2').innerHTML = eventName;
 
     webNearInfo.webinar_lead_type = webinarType;
     webNearInfo.bye_calendly_type = "";
@@ -651,7 +649,7 @@
 
   // Push Data end point fun
   async function pushToEndPoint(endpoint, evLoad = true) {
-    let getCheckWebnear = webNearSlots.querySelector('input[name="start-date"]:checked');
+    let getCheckWebnear = webNearSlots?.querySelector('input[name="start-date"]:checked');
     webNearInfo.eventStartTime = getCheckWebnear ? getCheckWebnear.value : "";
     webNearInfo.eventEndTime = getCheckWebnear ? getCheckWebnear.getAttribute('data-endtime') : "";
     webNearInfo.inviteStartTime = getCheckWebnear ? getCheckWebnear.getAttribute('data-invitee_starttime') : "";
@@ -733,62 +731,62 @@
 
 
   function hideError() {
-    getFnErrMsg.setAttribute('err_status', false);
-    getEmErrMsg.setAttribute('err_status', false);
-    getPhErrMsg.setAttribute('err_status', false);
+    getFnErrMsg?.setAttribute('err_status', false);
+    getEmErrMsg?.setAttribute('err_status', false);
+    getPhErrMsg?.setAttribute('err_status', false);
   }
 
   // First Form Submittion
   function fromSend1stStep() {
     setHiddenFields();
-    getThePopupFrom.setAttribute("loader_status", true);
+    getThePopupFrom?.setAttribute("loader_status", true);
 
     let fullname = webNearFullName.value.trim();
     let wEmail = webNearEmailAddress.value;
     let fullPhoneNumber = webNearPhoneNumber.value;
 
     //Hide errors
-    webNearFullName.addEventListener('input', hideError);
-    webNearEmailAddress.addEventListener('input', hideError);
-    webNearPhoneNumber.addEventListener('input', hideError);
-    webNearFullName.addEventListener('focus', hideError);
-    webNearEmailAddress.addEventListener('focus', hideError);
-    webNearPhoneNumber.addEventListener('focus', hideError);
+    webNearFullName?.addEventListener('input', hideError);
+    webNearEmailAddress?.addEventListener('input', hideError);
+    webNearPhoneNumber?.addEventListener('input', hideError);
+    webNearFullName?.addEventListener('focus', hideError);
+    webNearEmailAddress?.addEventListener('focus', hideError);
+    webNearPhoneNumber?.addEventListener('focus', hideError);
 
 
     //Error check
-    if ((fullname.length == 0) && (wEmail.length == 0) && (fullPhoneNumber.length == 0)) {
-      getFnErrMsg.setAttribute('err_status', true);
-      getEmErrMsg.setAttribute('err_status', true);
-      getPhErrMsg.setAttribute('err_status', true);
-      getThePopupFrom.setAttribute("loader_status", false);
+    if ((fullname?.length == 0) && (wEmail?.length == 0) && (fullPhoneNumber?.length == 0)) {
+      getFnErrMsg?.setAttribute('err_status', true);
+      getEmErrMsg?.setAttribute('err_status', true);
+      getPhErrMsg?.setAttribute('err_status', true);
+      getThePopupFrom?.setAttribute("loader_status", false);
       return;
     } else if (!name_regex.test(fullname) || fullname.length == 0) {
-      getFnErrMsg.setAttribute('err_status', true);
-      getThePopupFrom.setAttribute("loader_status", false);
+      getFnErrMsg?.setAttribute('err_status', true);
+      getThePopupFrom?.setAttribute("loader_status", false);
       return;
     } else if (!email_regex.test(wEmail) || wEmail.length == 0) {
-      getEmErrMsg.setAttribute('err_status', true);
-      getThePopupFrom.setAttribute("loader_status", false);
+      getEmErrMsg?.setAttribute('err_status', true);
+      getThePopupFrom?.setAttribute("loader_status", false);
       return;
     } else if (!phone_regex.test(fullPhoneNumber) || fullPhoneNumber.length == 0) {
-      getPhErrMsg.setAttribute('err_status', true);
-      getThePopupFrom.setAttribute("loader_status", false);
+      getPhErrMsg?.setAttribute('err_status', true);
+      getThePopupFrom?.setAttribute("loader_status", false);
       return;
     } else if (typeof validateCaptcha !== "undefined" && !validateCaptcha()) {
-      getThePopupFrom.setAttribute("loader_status", false);
+      getThePopupFrom?.setAttribute("loader_status", false);
       return;
     } else {
 
-      if (fullname.substring(0, fullname.indexOf(' ')) == '') {
-        webNearInfo.firstName = fullname.substring(fullname.indexOf(' ') + 1);
-        webNearInfo.lastName = fullname.substring(fullname.indexOf(' ') + 1);
-      } else if (fullname.substring(fullname.indexOf(' ') + 1) == '') {
-        webNearInfo.firstName = fullname.substring(0, fullname.indexOf(' '));
-        webNearInfo.lastName = fullname.substring(0, fullname.indexOf(' '));
+      if (fullname?.substring(0, fullname?.indexOf(' ')) == '') {
+        webNearInfo.firstName = fullname?.substring(fullname?.indexOf(' ') + 1);
+        webNearInfo.lastName = fullname?.substring(fullname?.indexOf(' ') + 1);
+      } else if (fullname?.substring(fullname?.indexOf(' ') + 1) == '') {
+        webNearInfo.firstName = fullname?.substring(0, fullname?.indexOf(' '));
+        webNearInfo.lastName = fullname?.substring(0, fullname?.indexOf(' '));
       } else {
-        webNearInfo.firstName = fullname.substring(0, fullname.indexOf(' '));
-        webNearInfo.lastName = fullname.substring(fullname.indexOf(' ') + 1);
+        webNearInfo.firstName = fullname?.substring(0, fullname?.indexOf(' '));
+        webNearInfo.lastName = fullname?.substring(fullname?.indexOf(' ') + 1);
       }
 
       try {
@@ -804,12 +802,11 @@
 
       intlTelFunCheck(function () {
         webNearInfo.fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
-        console.log(Boolean(intlTelInputUtils));
       }).then(() => {
         pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/")
           .then(() => {
-            getThePopupFrom.setAttribute("ac_step", 2);
-            getThePopupFrom.setAttribute("loader_status", false);
+            getThePopupFrom?.setAttribute("ac_step", 2);
+            getThePopupFrom?.setAttribute("loader_status", false);
           });
       })
     }
@@ -817,9 +814,9 @@
 
   // Second Form Submition
   function fromSend2ndStep() {
-    getThePopupFrom.setAttribute("loader_status", true);
+    getThePopupFrom?.setAttribute("loader_status", true);
 
-    const getCheckWebnear = webNearSlots.querySelector('input[name="start-date"]:checked');
+    const getCheckWebnear = webNearSlots?.querySelector('input[name="start-date"]:checked');
 
     //           let utmm = visitor_id + ":" + webNearInfo.v_country;
     let utmm = `${visitor_id}${getCookie("_ga")}:${v_country}`;
@@ -953,25 +950,25 @@
 
 
   // get wn from btns
-  const get1stepBtn = getThePopupFrom.querySelector(".step_1_btn");
-  const get2stepfinishBtn = getThePopupFrom.querySelector(".step_2_btn");
-  const getBackBtn = getThePopupFrom.querySelector(".fr_btn_back");
+  const get1stepBtn = getThePopupFrom?.querySelector(".step_1_btn");
+  const get2stepfinishBtn = getThePopupFrom?.querySelector(".step_2_btn");
+  const getBackBtn = getThePopupFrom?.querySelector(".fr_btn_back");
 
-  getBackBtn.addEventListener('click', function () {
-    getThePopupFrom.setAttribute("ac_step", 1);
+  getBackBtn?.addEventListener('click', function () {
+    getThePopupFrom?.setAttribute("ac_step", 1);
   });
 
-  get1stepBtn.addEventListener('click', fromSend1stStep);
-  get2stepfinishBtn.addEventListener('click', fromSend2ndStep);
+  get1stepBtn?.addEventListener('click', fromSend1stStep);
+  get2stepfinishBtn?.addEventListener('click', fromSend2ndStep);
 
 
   try {
     if (is_webinar_1o1_eligible) {
       function render1o1Slots(resobj) {
-        const getWebiner101Slots = document.querySelector('.webnear_regitration_fr .webiner_101_slots');
-        const get101DateFild = getWebiner101Slots.querySelector('.select_date .date_list');
-        const get101TimeFild = getWebiner101Slots.querySelector('.time_slot .time_list');
-        const get101TimeZoneFild = document.querySelector('.webnear_regitration_fr .web_near_slot .time_zone');
+        const getWebiner101Slots = document?.querySelector('.webnear_regitration_fr .webiner_101_slots');
+        const get101DateFild = getWebiner101Slots?.querySelector('.select_date .date_list');
+        const get101TimeFild = getWebiner101Slots?.querySelector('.time_slot .time_list');
+        const get101TimeZoneFild = document?.querySelector('.webnear_regitration_fr .web_near_slot .time_zone');
         const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         get101DateFild.innerHTML = "";
         let defultSelect = true;
@@ -1037,7 +1034,7 @@
             render101Time(date);
             defultSelect = false;
           }
-          dataElement.addEventListener("click", function () {
+          dataElement?.addEventListener("click", function () {
             render101Time(date);
           })
         })
@@ -1205,12 +1202,10 @@
     return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
   }
 
-  document.addEventListener("webNearLoaded", function(){
-    
+  document?.addEventListener("webNearLoaded", function(){
     if(getDeviceType() == "Mobile") {
       initObservers();
     }
-    
   });
 
 
