@@ -136,9 +136,9 @@
           offset = offset.replace(/^([+-])(\d):/, "$10$2:");
         }
 
-        return dateString + offset;
+        return `${dateString}${offset}`;
       } catch {
-        return dateString + "+00:00";
+        return `${dateString}"+00:00"`;
       }
     };
 
