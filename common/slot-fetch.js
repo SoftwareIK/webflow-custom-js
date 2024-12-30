@@ -232,13 +232,3 @@ function generateWebinarSlots({ count, country, targetTimezone, webinarType }) {
   }
   return result;
 }
-
-// Example usage
-const slots = generateWebinarSlots({
-  count: 13,
-  country: "IND",
-  targetTimezone: "Asia/Kolkata",
-  webinarType: "REGULAR",
-});
-
-console.log(slots);
