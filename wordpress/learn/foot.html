@@ -241,13 +241,39 @@
   let slotFetchedTwice = false;
   let initnialWebinarType = webinarType;
   let initialTimezone = v_timezone;
-  let staticSlots = []
-  try {
-    let staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
-    slotLoaded(staticSlots);
-  } catch (error) {
-    console.error("P1: Error while generating static slots", error);
+  let api_status = "pending"; // "pending" | "on-going" | "completed" | "failed"
+  let staticSlots = [];
+
+  function observeWebinarType() {
+      let previousValue = "";
+
+      function checkForChange() {
+          if (webinarType !== previousValue) {
+              previousValue = webinarType;
+              if(webinarType){
+                try {
+                  let t_zone = v_timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+                  if(t_zone == 'Asia/Calcutta'){
+                    t_zone = 'Asia/Kolkata';
+                  }
+                  staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
+                  if(["pending", "failed"].includes(api_status)) {
+                    slotLoaded(staticSlots);
+                  }
+                } catch (error) {
+                  console.error("P1: Error while generating static slots", error);
+                }
+              }
+          }
+      }
+
+      const interval = setInterval(checkForChange, 100);
+
+      setTimeout(() => {
+          clearInterval(interval);
+      }, 5000);
   }
+  observeWebinarType();
 
   function populateWebinarSlots(resobj) {
     const t_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -306,6 +332,9 @@
     } else {
       webinarType = initnialWebinarType;
       v_timezone = initialTimezone;
+      if(staticSlots.length == 0) {
+        staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
+      }
       slotLoaded(staticSlots);
     }
   }
@@ -328,14 +357,17 @@
       }
     }
     try {
+      api_status = "on-going";
       const request = await fetch(api_url, option);
       let resobj = await request.json();
       resobj = resobj.map(item => ({ ...item, webinar_lead_type: webinarType }));
       slotLoaded(resobj);
+      api_status = "completed";
       if (!is_webinar_1o1_eligible) {
         populateWebinarSlots(resobj);
       }
     } catch (err) {
+      api_status = "failed";
       fallbackSlots()
     }
   }
