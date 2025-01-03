@@ -1,22 +1,10 @@
+<script>
+	
+let  weightageOfVariant = 30;
 let popupShown = false;
 let highIntentClickCount = 0; // Counter for high intent clicks
 const highIntentThreshold = 1; // Number of clicks to mark a user as high intent
 const highIntentCookieName = "highIntentUser";
-
-function fetchCookie(cname) {
-  var name = cname + "=";
-  var ca = document.cookie.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
 
 function getDeviceType() {
   var e = navigator.userAgent;
@@ -38,13 +26,13 @@ function desktopDevice() {
 function splitTraffic() {
   let isVarient = false;
   try {
-    uuid = fetchCookie("unique_visitor_id6") || "";
+    uuid = getCookie("unique_visitor_id6") || "";
     const trimmedUuid = uuid.slice(0, 50);
     const lastTwoDigits = parseInt(trimmedUuid.slice(-2)); // Defaults to base 10
     isVarient = lastTwoDigits >= weightageOfVariant;
 
     if(location.host.includes("learn") && !desktopDevice()){
-      isVarient = lastTwoDigits >= 0;
+      isVarient = lastTwoDigits >= 30;
     }
 
     if (window.clarity) {
@@ -79,6 +67,8 @@ function trackHighIntentClicks() {
       // Increment the high intent click counter
       highIntentClickCount++;
 
+      console.log(`Valid navigation link clicked. Total clicks: ${highIntentClickCount}`);
+
       if (highIntentClickCount >= highIntentThreshold) {
         // Set a cookie to suppress the popup for high intent users
         setCookie(highIntentCookieName, "true", 6); // Suppress popup for 6 hours
@@ -106,8 +96,9 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   const {
     downScrollThreshold = 50, // Minimum scroll down percentage to start tracking upward scroll
     upScrollThreshold = 5, // Minimum upward scroll percentage to trigger popup after scrolling down
-    upScrollSpeedThreshold = 1000 * 5, // pixel per seconds
+    upScrollSpeedThreshold = 10, // Minimum upward scroll speed in percentage per second
     popupTimeoutHours = 6, // Timeout duration to prevent reappearing in hours
+    checkInterval = 100, // Interval to check scroll status in milliseconds
     initialScrollIgnore = 10, // Initial scroll percentage to ignore (avoids accidental triggers on load)
     bottomIgnoreThreshold = 5, // Bottom 5% of the page to ignore upward scrolls
     outsideViewportDelay = 500, // Minimum time outside viewport to trigger popup (in ms)
@@ -117,10 +108,9 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   let popupInitialized = false;
   let exitPopup = null;
   let isTrackingUpScroll = false; // Flag to start tracking upward scroll only after downScrollThreshold is reached
-  let lastUpScrollTimestamp = 0; // Timestamp of the last upward scroll detected
+  let lastUpScrollTimestamp = Date.now(); // Timestamp of the last upward scroll detected
   let contextMenuOpen = false; // Flag to track if the context menu was opened
   let outsideViewportTimer; // Timer for tracking time outside viewport
-  let lastScrollY = 0;
 
   // Utility to set a cookie with a specified expiry in hours
   const setCookie = (name, value, hours) => {
@@ -130,7 +120,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   };
 
   // Utility to get the value of a specific cookie by name
-  const fetchCookie = (name) => {
+  const getCookie = (name) => {
     const cookies = document.cookie.split("; ");
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].split("=");
@@ -144,9 +134,9 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     overlay.style.display = "none";
 
     if (trackClick) {
-      saveClickActivity("exit_intent_close_button_clicked", new Date().getTime());
+      saveClickActivity("exit_intent_clicked", new Date().getTime());
     }
-  };
+  }
 
   const createExitIntentPopup = () => {
     // Overlay
@@ -203,18 +193,13 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
             targetUrl.searchParams.append(key, value)
           );
         } else {
-          const vLatestCookie = fetchCookie("v_latest");
+          const vLatestCookie = getCookie("v_latest");
           if (vLatestCookie) {
             try {
               const utmParams = JSON.parse(decodeURIComponent(vLatestCookie));
               Object.keys(utmParams).forEach((key) => {
                 if (utmParams[key]) {
-                  const isNonLearnSite = !window.location.host.includes("learn");
-                  if(isNonLearnSite && key === "utm_source" && utmParams[key] === "Organic") {
-                    targetUrl.searchParams.append("utm_source", "exit_intent_organic");
-                  } else {
-                    targetUrl.searchParams.append(key, utmParams[key]);
-                  }
+                  targetUrl.searchParams.append(key, utmParams[key]);
                 }
               });
             } catch (error) {
@@ -268,35 +253,19 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   const shouldShowPopup = () => {
     let isFormOpened = false;
     let isVideoOpened = false;
-    let isHighIntentUser = fetchCookie(highIntentCookieName) === "true";
+    let isHighIntentUser = getCookie(highIntentCookieName) === "true";
 
     try {
-      isFormOpened =
-        !!document.querySelector(".webinar__lightbox") &&
-        getComputedStyle(document.querySelector(".webinar__lightbox"))
-          .display != "none";
-      isVideoOpened =
-        !!document.querySelector(".w-lightbox-backdrop") &&
-        getComputedStyle(document.querySelector(".w-lightbox-backdrop"))
-          .display != "none";
+      isFormOpened = !!document.querySelector('.web_near_form') && document.querySelector('.web_near_form').getAttribute("show_status") != 'false';
+      isVideoOpened = !!document.querySelector('.video_popup') && document.querySelector('.video_popup').classList.contains("open");
     } catch (error) {
       console.error("Failed to check if form or video is opened:", error);
     }
 
     const isSwitchup = webinarType === "SWITCH_UP";
 
-    const shouldShow =
-      !fetchCookie(COOKIE_NAME) &&
-      !popupShown &&
-      !isFormOpened &&
-      !isVideoOpened &&
-      !isSwitchup &&
-      !isHighIntentUser;
-    if (
-      shouldShow &&
-      window.location.pathname.includes("/blogs/") &&
-      typeof blogPopupShown != undefined
-    ) {
+    const shouldShow = !getCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened && !isSwitchup && !isHighIntentUser;
+    if (shouldShow && window.location.pathname.includes("/blogs/") && typeof(blogPopupShown) != undefined) {
       return !blogPopupShown;
     }
     return shouldShow;
@@ -311,7 +280,6 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
       exitPopup.style.display = "flex";
       popupShown = true; // Mark the popup as shown in the current session
       setCookie(COOKIE_NAME, "true", popupTimeoutHours);
-      saveClickActivity("exit_intent_popup_shown", new Date().getTime());
       hideCurrentModalOnBlogPage();
     }
   };
@@ -321,20 +289,13 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
-    const currentScrollY = window.scrollY;
-    const currentTimestamp = performance.now();
 
     // Calculate the current scroll percentage
     const currentScrollPercent =
       (scrollTop / (documentHeight - windowHeight)) * 100;
 
-    console.log("Current Scroll Percent:", currentScrollPercent);
-
     // Ignore initial scrolls if they haven't reached the initialScrollIgnore threshold
     if (currentScrollPercent < initialScrollIgnore) {
-      console.log(
-        `Ignoring scroll. InitialScrollIgnore: ${initialScrollIgnore}`
-      );
       return;
     }
 
@@ -350,33 +311,24 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
       currentScrollPercent <= maxScrollPercent - upScrollThreshold &&
       currentScrollPercent < 100 - bottomIgnoreThreshold
     ) {
-      // Calculate the difference in scroll position and time
-      const scrollDelta = lastScrollY - currentScrollY;
-      const timeDelta = (currentTimestamp - lastUpScrollTimestamp) / 1000; // Convert to seconds
+      // Calculate the scroll-up speed
+      const now = Date.now();
+      const timeElapsed = (now - lastUpScrollTimestamp) / 1000; // Convert to seconds
+      const scrollUpSpeed = upScrollThreshold / timeElapsed;
 
-      // Avoid division by zero
-      if (timeDelta > 0) {
-        const scrollSpeed = scrollDelta / timeDelta; // pixels per second
-
-        const rapidScrollThreshold = upScrollSpeedThreshold;
-
-        if (scrollSpeed > rapidScrollThreshold) {
-          console.log("Triggering Popup. Scroll-Up Speed:", scrollSpeed);
-          console.table(options);
-          showPopup();
-        }
+      // Check if the scroll-up speed exceeds the threshold
+      if (scrollUpSpeed >= upScrollSpeedThreshold) {
+        showPopup();
       }
 
-      // Update the last scroll position and timestamp
-      lastScrollY = currentScrollY;
-      lastUpScrollTimestamp = currentTimestamp;
+      // Update timestamp
+      lastUpScrollTimestamp = now;
     }
   };
 
-
   // Set interval for detecting scroll behavior
   const initializeScrollDetection = () => {
-    window.addEventListener("scroll", detectExitIntentScroll);
+    setInterval(detectExitIntentScroll, checkInterval);
   };
 
   // Mobile: Detect back button or history change attempt
@@ -455,7 +407,7 @@ function ignorePath() {
     "signup-final-step-switchup",
     "signup-final-step-switchup-v6",
     "ikiq-webinar-registration",
-    "/webinar-registration",
+    "/webinar-registration"
   ];
 
   // Check if current URL matches any of the predefined final step pages
@@ -466,7 +418,7 @@ function ignorePath() {
   // Check for paths matching "/su/*"
   const isSuPage =
     window.location.pathname.startsWith("/su/") &&
-    window.location.hostname === "www.interviewkickstart.com";
+    window.location.hostname === "interviewkickstart.com";
 
   return isFinalStepPage || isSuPage;
 }
@@ -486,8 +438,8 @@ if (!ignorePath()) {
     console.log("Current variant", "variant");
     initExitIntentPopup(eagerLoadImage, {
       downScrollThreshold: 1,
-      upScrollThreshold: 20,
-      upScrollSpeedThreshold: 1000 * 10,
+      upScrollThreshold: 1,
+      upScrollSpeedThreshold: 5,
       popupTimeoutHours: 3,
       checkInterval: 100,
       initialScrollIgnore: 15,
@@ -500,3 +452,4 @@ if (!ignorePath()) {
 }
 
 trackHighIntentClicks();
+</script>
