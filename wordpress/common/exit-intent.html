@@ -1,6 +1,6 @@
 <script>
 	
-let  weightageOfVariant = 30;
+let weightageOfVariant = 30;
 let popupShown = false;
 let highIntentClickCount = 0; // Counter for high intent clicks
 const highIntentThreshold = 1; // Number of clicks to mark a user as high intent
@@ -92,13 +92,13 @@ function hideCurrentModalOnBlogPage() {
 function initExitIntentPopup(eagerLoadImage, options = {}) {
   const COOKIE_NAME = "exitIntentPopupShown";
 
+
   // Configurable parameters with default values
   const {
     downScrollThreshold = 50, // Minimum scroll down percentage to start tracking upward scroll
     upScrollThreshold = 5, // Minimum upward scroll percentage to trigger popup after scrolling down
-    upScrollSpeedThreshold = 10, // Minimum upward scroll speed in percentage per second
+    upScrollSpeedThreshold = 1000 * 5, // pixel per seconds
     popupTimeoutHours = 6, // Timeout duration to prevent reappearing in hours
-    checkInterval = 100, // Interval to check scroll status in milliseconds
     initialScrollIgnore = 10, // Initial scroll percentage to ignore (avoids accidental triggers on load)
     bottomIgnoreThreshold = 5, // Bottom 5% of the page to ignore upward scrolls
     outsideViewportDelay = 500, // Minimum time outside viewport to trigger popup (in ms)
@@ -108,9 +108,10 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
   let popupInitialized = false;
   let exitPopup = null;
   let isTrackingUpScroll = false; // Flag to start tracking upward scroll only after downScrollThreshold is reached
-  let lastUpScrollTimestamp = Date.now(); // Timestamp of the last upward scroll detected
+  let lastUpScrollTimestamp = 0; // Timestamp of the last upward scroll detected
   let contextMenuOpen = false; // Flag to track if the context menu was opened
   let outsideViewportTimer; // Timer for tracking time outside viewport
+  let lastScrollY = 0;
 
   // Utility to set a cookie with a specified expiry in hours
   const setCookie = (name, value, hours) => {
@@ -134,9 +135,9 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     overlay.style.display = "none";
 
     if (trackClick) {
-      saveClickActivity("exit_intent_clicked", new Date().getTime());
+      saveClickActivity("exit_intent_close_button_clicked", new Date().getTime());
     }
-  }
+  };
 
   const createExitIntentPopup = () => {
     // Overlay
@@ -199,7 +200,12 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
               const utmParams = JSON.parse(decodeURIComponent(vLatestCookie));
               Object.keys(utmParams).forEach((key) => {
                 if (utmParams[key]) {
-                  targetUrl.searchParams.append(key, utmParams[key]);
+                  const isNonLearnSite = !window.location.host.includes("learn");
+                  if(isNonLearnSite && key === "utm_source" && utmParams[key] === "Organic") {
+                    targetUrl.searchParams.append("utm_source", "exit_intent_organic");
+                  } else {
+                    targetUrl.searchParams.append(key, utmParams[key]);
+                  }
                 }
               });
             } catch (error) {
@@ -280,6 +286,7 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
       exitPopup.style.display = "flex";
       popupShown = true; // Mark the popup as shown in the current session
       setCookie(COOKIE_NAME, "true", popupTimeoutHours);
+      saveClickActivity("exit_intent_popup_shown", new Date().getTime());
       hideCurrentModalOnBlogPage();
     }
   };
@@ -289,10 +296,11 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
+    const currentScrollY = window.scrollY;
+    const currentTimestamp = performance.now();
 
     // Calculate the current scroll percentage
-    const currentScrollPercent =
-      (scrollTop / (documentHeight - windowHeight)) * 100;
+    const currentScrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
 
     // Ignore initial scrolls if they haven't reached the initialScrollIgnore threshold
     if (currentScrollPercent < initialScrollIgnore) {
@@ -311,24 +319,29 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
       currentScrollPercent <= maxScrollPercent - upScrollThreshold &&
       currentScrollPercent < 100 - bottomIgnoreThreshold
     ) {
-      // Calculate the scroll-up speed
-      const now = Date.now();
-      const timeElapsed = (now - lastUpScrollTimestamp) / 1000; // Convert to seconds
-      const scrollUpSpeed = upScrollThreshold / timeElapsed;
+      // Calculate the difference in scroll position and time
+      const scrollDelta = lastScrollY - currentScrollY;
+      const timeDelta = (currentTimestamp - lastUpScrollTimestamp) / 1000; // Convert to seconds
 
-      // Check if the scroll-up speed exceeds the threshold
-      if (scrollUpSpeed >= upScrollSpeedThreshold) {
-        showPopup();
+      // Avoid division by zero
+      if (timeDelta > 0) {
+        const scrollSpeed = scrollDelta / timeDelta; // pixels per second
+
+        const rapidScrollThreshold = upScrollSpeedThreshold;
+
+        if (scrollSpeed > rapidScrollThreshold) {
+          showPopup();
+        }
       }
 
-      // Update timestamp
-      lastUpScrollTimestamp = now;
+      // Update the last scroll position and timestamp
+      lastScrollY = currentScrollY;
+      lastUpScrollTimestamp = currentTimestamp;
     }
   };
 
-  // Set interval for detecting scroll behavior
   const initializeScrollDetection = () => {
-    setInterval(detectExitIntentScroll, checkInterval);
+    window.addEventListener("scroll", detectExitIntentScroll);
   };
 
   // Mobile: Detect back button or history change attempt
@@ -438,8 +451,8 @@ if (!ignorePath()) {
     console.log("Current variant", "variant");
     initExitIntentPopup(eagerLoadImage, {
       downScrollThreshold: 1,
-      upScrollThreshold: 1,
-      upScrollSpeedThreshold: 5,
+      upScrollThreshold: 20,
+      upScrollSpeedThreshold: 1000 * 10,
       popupTimeoutHours: 3,
       checkInterval: 100,
       initialScrollIgnore: 15,

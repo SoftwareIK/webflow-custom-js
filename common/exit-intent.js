@@ -325,16 +325,10 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     const currentTimestamp = performance.now();
 
     // Calculate the current scroll percentage
-    const currentScrollPercent =
-      (scrollTop / (documentHeight - windowHeight)) * 100;
-
-    console.log("Current Scroll Percent:", currentScrollPercent);
+    const currentScrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
 
     // Ignore initial scrolls if they haven't reached the initialScrollIgnore threshold
     if (currentScrollPercent < initialScrollIgnore) {
-      console.log(
-        `Ignoring scroll. InitialScrollIgnore: ${initialScrollIgnore}`
-      );
       return;
     }
 
@@ -361,8 +355,6 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
         const rapidScrollThreshold = upScrollSpeedThreshold;
 
         if (scrollSpeed > rapidScrollThreshold) {
-          console.log("Triggering Popup. Scroll-Up Speed:", scrollSpeed);
-          console.table(options);
           showPopup();
         }
       }
@@ -373,8 +365,6 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     }
   };
 
-
-  // Set interval for detecting scroll behavior
   const initializeScrollDetection = () => {
     window.addEventListener("scroll", detectExitIntentScroll);
   };
