@@ -102,7 +102,7 @@ let eventName = getEventTitle(webinarType, currentURlPrms.event);
 let referrer = document.referrer; // get refere page
 
 let expdate = new Date();
-expdate.setDate(expdate.getDate() + 1);
+expdate.setDate(expdate.getDate() + 90);
 
 // this function will return the json
 function read_cookie(name) {
@@ -130,9 +130,16 @@ function getCookie(cname) {
 // this will set the cookie
 function setCookie(cname, cvalue) {
     var d = new Date();
-    d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+    d.setTime(d.getTime() + (400 * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        
+    var domainParts = document.location.hostname.split('.');
+    var baseDomain = domainParts.slice(-2).join('.')
+    var domain = "domain=." + baseDomain;
+    var sameSite = "SameSite=None; Secure";
+
+    document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";" + domain + ";path=/;" + sameSite;
+    // document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
 // set the visitor id start-------------------------------
@@ -194,7 +201,18 @@ if(v_country === "India" && webinarType != "ONE_TO_ONE_CONNECT") webinarType = "
 function bake_cookie(name, value) {
     var utmstring = value;
     utmstring.timestamp = Date.now();
-    var cookie = [name, '=', JSON.stringify(utmstring), ';expires', '=', expdate.toGMTString(), '; domain=.', window.location.host.toString(), '; path=/;'].join('');
+
+    var domainParts = document.location.hostname.split('.');
+    var domain = domainParts.slice(-2).join('.')
+
+    var cookie = [
+      name, 
+      '=', JSON.stringify(utmstring), 
+      ';expires', '=', expdate.toGMTString(), 
+      '; domain=.', domain, 
+      '; path=/',
+      '; SameSite=None; Secure'    
+    ].join('');
     document.cookie = cookie;
     // setHiddenFields(utmstring);
 }
