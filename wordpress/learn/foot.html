@@ -234,8 +234,8 @@
     return result;
   }
 </script>
-<script>
 
+<script>
   let registration_type;
   let no_of_webinar_slots = 6;
   let slotFetchedTwice = false;
@@ -245,33 +245,33 @@
   let staticSlots = [];
 
   function observeWebinarType() {
-      let previousValue = "";
-
-      function checkForChange() {
-          if (webinarType !== previousValue) {
-              previousValue = webinarType;
-              if(webinarType){
-                try {
-                  let t_zone = v_timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
-                  if(t_zone == 'Asia/Calcutta'){
-                    t_zone = 'Asia/Kolkata';
-                  }
-                  staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
-                  if(["pending", "failed"].includes(api_status)) {
-                    slotLoaded(staticSlots);
-                  }
-                } catch (error) {
-                  console.error("P1: Error while generating static slots", error);
-                }
-              }
+    let previousValue = "";
+    let previousTimezone = v_timezone;
+    function checkForChange() {
+      if (webinarType !== previousValue || v_timezone !== previousTimezone) {
+        previousValue = webinarType;
+        if (webinarType) {
+          try {
+            let t_zone = v_timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+            if (t_zone == 'Asia/Calcutta') {
+              t_zone = 'Asia/Kolkata';
+            }
+            staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
+            if (["pending", "failed"].includes(api_status)) {
+              slotLoaded(staticSlots);
+            }
+          } catch (error) {
+            console.error("P1: Error while generating static slots", error);
           }
+        }
       }
+    }
 
-      const interval = setInterval(checkForChange, 100);
+    const interval = setInterval(checkForChange, 100);
 
-      setTimeout(() => {
-          clearInterval(interval);
-      }, 5000);
+    setTimeout(() => {
+      clearInterval(interval);
+    }, 5000);
   }
   observeWebinarType();
 
@@ -332,7 +332,7 @@
     } else {
       webinarType = initnialWebinarType;
       v_timezone = initialTimezone;
-      if(staticSlots.length == 0) {
+      if (staticSlots.length == 0) {
         staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
       }
       slotLoaded(staticSlots);
@@ -340,6 +340,7 @@
   }
 
   async function slotLoaded(slots) {
+    webinarSlots = slots
     document.dispatchEvent(webNearLoadedEv);
     if (!is_webinar_1o1_eligible) {
       populateWebinarSlots(slots);
@@ -361,6 +362,9 @@
       const request = await fetch(api_url, option);
       let resobj = await request.json();
       resobj = resobj.map(item => ({ ...item, webinar_lead_type: webinarType }));
+      if (resobj.length == 0) {
+        throw new Error(`P0: The Uplevel Webinar Slots API Returned No Data. (webinarType: ${webinarType}, timezone: ${c_timezoon})`);
+      }
       slotLoaded(resobj);
       api_status = "completed";
       if (!is_webinar_1o1_eligible) {
@@ -472,18 +476,20 @@
     return toTens() + toOnes();
   };
 
+  let webinarTimer;
+
   function TimerHandler(slots) {
 
     let tz = "America/New_York"
     if (typeof (v_timezone) != "undefined") {
       tz = v_timezone;
     }
-
+    clearInterval(webinarTimer);
     // initialize states
     initStates(slots, tz);
 
     // start timer
-    const webinarTimer = setInterval(() => {
+    webinarTimer = setInterval(() => {
       if (timerState.nextDate === '') {
         clearInterval(webinarTimer);
       }
@@ -534,7 +540,7 @@
       timer.textContent = min;
     });
     document.querySelectorAll('.webinar__timer--secs h2').forEach((timer) => {
-      timer.textContent = sec.slice(0,2);
+      timer.textContent = sec.slice(0, 2);
     });
   };
   /*-----------------------------------------------------Time Functions End------------------------------------------------------------------------*/
@@ -756,8 +762,7 @@
       console.log("Form submitted successfully!");
       return sendData;
     } catch (err) {
-      console.error("P0: The Zapier Webhook Failed.");
-      alert("Something is wrong");
+      throw new Error("P0: The Zapier Webhook Failed.");
     }
   }
 
@@ -831,16 +836,32 @@
         console.log(err);
       }
 
-
-      intlTelFunCheck(function () {
+      webNearInfo.fPhoneNumber = "";
+      if (typeof intlTelInputUtils == "undefined") {
+        try {
+          webNearInfo.fPhoneNumber = `+${webNearPhoneNumberWri.getSelectedCountryData().dialCode}${document.querySelector("#webinar_pnumber")?.value}`;
+        } catch (error) {
+          console.error("Error while getting phone number", error);
+          webNearInfo.fPhoneNumber = document.querySelector("#webinar_pnumber")?.value;
+        }
+      } else {
         webNearInfo.fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
-      }).then(() => {
-        pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/")
-          .then(() => {
-            getThePopupFrom?.setAttribute("ac_step", 2);
-            getThePopupFrom?.setAttribute("loader_status", false);
-          });
-      })
+      }
+
+      pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/").then(() => {
+        getThePopupFrom?.setAttribute("ac_step", 2);
+        getThePopupFrom?.setAttribute("loader_status", false);
+      });
+
+      // intlTelFunCheck(function () {
+      //   webNearInfo.fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
+      // }).then(() => {
+      //   pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/")
+      //     .then(() => {
+      //       getThePopupFrom?.setAttribute("ac_step", 2);
+      //       getThePopupFrom?.setAttribute("loader_status", false);
+      //     });
+      // })
     }
   }
 
@@ -1234,11 +1255,9 @@
     return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
   }
 
-  document?.addEventListener("webNearLoaded", function(){
-    if(getDeviceType() == "Mobile") {
+  document?.addEventListener("webNearLoaded", function () {
+    if (getDeviceType() == "Mobile") {
       initObservers();
     }
   });
-
-
 </script>
