@@ -1,3 +1,4 @@
+<!-- Learn head code start -->
 <meta content="initial-scale=1, maximum-scale=1" name="viewport" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
 
@@ -199,18 +200,35 @@ function bake_cookie(name, value) {
     // setHiddenFields(utmstring);
 }
 
-// set bake_organic_cookie
-let r_visit = read_cookie("v_latest");
-r_visit = {...r_visit, ...currentURlPrms};
-bake_cookie("v_latest", r_visit);
-// organic cookie end ------------------------------------------------------------
-/*
-if(!getCookie("ik-landingpage")){
-    let landingPage = location.pathname != '/'  ? location.pathname : "/home";
-	  landingPage = landingPage.endsWith("/") ? landingPage.slice(0, -1) : landingPage;
-    setCookie("ik-landingpage", landingPage);
+function bake_organic_cookie() {
+  const referrer = document.referrer;
+  const now = Date.now();
+  const organicEntry = {
+    utm_source: "Organic",
+    utm_medium: "",
+    utm_campaign: "",
+    utm_adset: "",
+    utm_content: "",
+    utm_term: "",
+    timestamp: now,
+  };
+
+  // Check if the referrer is from a different host
+  if (!referrer || referrer.indexOf(window.location.host.toString()) === -1) {
+    bake_cookie("v_latest", organicEntry);
+  }
 }
-*/
+// set bake_organic_cookie
+// let r_visit = read_cookie("v_latest");
+// r_visit = {...r_visit, ...currentURlPrms};
+let r_visit = currentURlPrms;
+if (Object.keys(r_visit).length === 0) {
+  bake_organic_cookie()
+} else {
+  bake_cookie("v_latest", r_visit);
+}
+
+// organic cookie end ------------------------------------------------------------
 
 if((referrer != "") && (referrer.indexOf(window.location.host.toString()) == -1) && (referrer.indexOf("calendly.com") == -1)){
     if(window.location.pathname == '/'){
@@ -351,3 +369,4 @@ function intlTelFunCheck(callBack){
     })
 }
 </script>
+<!-- Learn head code end -->

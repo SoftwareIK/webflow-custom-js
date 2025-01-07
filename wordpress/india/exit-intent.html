@@ -26,9 +26,8 @@ function desktopDevice() {
 function splitTraffic() {
   let isVarient = false;
   try {
-    uuid = getCookie("unique_visitor_id6") || "";
-    const trimmedUuid = uuid.slice(0, 50);
-    const lastTwoDigits = parseInt(trimmedUuid.slice(-2)); // Defaults to base 10
+    uuid = getCookie("unique_visitor_id") || "";
+    const lastTwoDigits = parseInt(uuid.slice(-2)); // Defaults to base 10
     isVarient = lastTwoDigits >= weightageOfVariant;
 
     if(location.host.includes("learn") && !desktopDevice()){

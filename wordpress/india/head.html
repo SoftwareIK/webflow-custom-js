@@ -1,3 +1,4 @@
+<!-- India head code start -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <!-- Google Tag Manager -->
@@ -94,9 +95,16 @@ function getCookie(cname) {
 // this will set the cookie
 function setCookie(cname, cvalue) {
     var d = new Date();
-    d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+    d.setTime(d.getTime() + (400 * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        
+    var domainParts = document.location.hostname.split('.');
+    var baseDomain = domainParts.slice(-2).join('.')
+    var domain = "domain=." + baseDomain;
+    var sameSite = "SameSite=None; Secure";
+
+    document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";" + domain + ";path=/;" + sameSite;
+    // document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
 
@@ -156,10 +164,33 @@ function bake_cookie(name, value) {
     // setHiddenFields(utmstring);
 }
 
+function bake_organic_cookie() {
+  const referrer = document.referrer;
+  const now = Date.now();
+  const organicEntry = {
+    utm_source: "Organic",
+    utm_medium: "",
+    utm_campaign: "",
+    utm_adset: "",
+    utm_content: "",
+    utm_term: "",
+    timestamp: now,
+  };
+
+  // Check if the referrer is from a different host
+  if (!referrer || referrer.indexOf(window.location.host.toString()) === -1) {
+    bake_cookie("v_latest", organicEntry);
+  }
+}
 // set bake_organic_cookie
-let r_visit = read_cookie("v_latest");
-r_visit = {...r_visit, ...currentURlPrms};
-bake_cookie("v_latest", r_visit);
+// let r_visit = read_cookie("v_latest");
+// r_visit = {...r_visit, ...currentURlPrms};
+let r_visit = currentURlPrms;
+if (Object.keys(r_visit).length === 0) {
+  bake_organic_cookie()
+} else {
+  bake_cookie("v_latest", r_visit);
+}
 // organic cookie end ------------------------------------------------------------
 
 if(!getCookie("ik-landingpage")){
@@ -180,3 +211,4 @@ function getDeviceType() {
     }
 }
 </script>
+<!-- India head code end -->

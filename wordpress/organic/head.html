@@ -1,3 +1,4 @@
+<!-- Organic head code start -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <!-- Google Tag Manager -->
@@ -93,7 +94,6 @@ if(currentURlPrms.webinartype) webinarType = currentURlPrms.webinartype;
 let isSwitchUp = "No";
 let v_timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 if(v_timezone === "Asia/Calcutta") v_timezone = "Asia/Kolkata";
-
 
 let is_webinar_1o1_eligible = webinarType === "ONE_TO_ONE_CONNECT";
 
@@ -217,17 +217,40 @@ function bake_cookie(name, value) {
     // setHiddenFields(utmstring);
 }
 
-// set bake_organic_cookie
-let r_visit = read_cookie("v_latest");
-r_visit = {...r_visit, ...currentURlPrms};
-bake_cookie("v_latest", r_visit);
-// organic cookie end ------------------------------------------------------------
+function bake_organic_cookie() {
+  var organicobj = {
+    utm_source: "Organic",
+    utm_medium: "",
+    utm_campaign: "",
+    utm_adset: "",
+    utm_content: "",
+    utm_term: "",
+    landing_page: window.location.pathname,
+    userAgent: encodeURIComponent(navigator.userAgent),
+    device: getDeviceType(),
+    visitor_id: visitor_id,
+    referrer: referrer,
+  };
 
-// if(!getCookie("ik-landingpage")){
-//     let landingPage = location.pathname != '/'  ? location.pathname : "/home";
-// 	  landingPage = landingPage.endsWith("/") ? landingPage.slice(0, -1) : landingPage;
-//     setCookie("ik-landingpage", landingPage);
-// }
+  if (
+    referrer == null ||
+    referrer.indexOf(window.location.host.toString()) == -1
+  ) {
+    bake_cookie_history("v_history", organicobj);
+    bake_cookie("v_latest", organicobj);
+  }
+}
+
+// set bake_organic_cookie
+// let r_visit = read_cookie("v_latest");
+// r_visit = {...r_visit, ...currentURlPrms};
+let r_visit = currentURlPrms;
+if (Object.keys(r_visit).length === 0) {
+  bake_organic_cookie()
+} else {
+  bake_cookie("v_latest", r_visit);
+}
+// organic cookie end ------------------------------------------------------------
 	
 if ((referrer != "") && (referrer.indexOf(window.location.host.toString()) == -1) && (referrer.indexOf("calendly.com") == -1)) {
     if (window.location.pathname == '/') {
@@ -340,3 +363,4 @@ async function bookSlot(email ,slotId) {
     }
 }
 </script>
+<!-- Organic head code end -->
