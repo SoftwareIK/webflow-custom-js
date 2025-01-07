@@ -119,19 +119,27 @@ function getCookie(cname) {
     return "";
 }
 
+// // this will set the cookie
+// function setCookie(cname, cvalue) {
+//     var d = new Date();
+//     d.setTime(d.getTime() + (400 * 24 * 60 * 60 * 1000));
+//     var expires = "expires=" + d.toUTCString();
+        
+//     var domainParts = document.location.hostname.split('.');
+//     var baseDomain = domainParts.slice(-2).join('.')
+//     var domain = "domain=." + baseDomain;
+//     var sameSite = "SameSite=None; Secure";
+
+//     document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";" + domain + ";path=/;" + sameSite;
+//     // document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+// }
+
 // this will set the cookie
 function setCookie(cname, cvalue) {
     var d = new Date();
-    d.setTime(d.getTime() + (400 * 24 * 60 * 60 * 1000));
+    d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
-        
-    var domainParts = document.location.hostname.split('.');
-    var baseDomain = domainParts.slice(-2).join('.')
-    var domain = "domain=." + baseDomain;
-    var sameSite = "SameSite=None; Secure";
-
-    document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";" + domain + ";path=/;" + sameSite;
-    // document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
 // set the visitor id start-------------------------------
@@ -180,22 +188,31 @@ getCountry();
 
 // set the visitor Country End-------------------------------
 
+// // organic cookie start ------------------------------------------------------------
+// function bake_cookie(name, value) {
+//     var utmstring = value;
+//     utmstring.timestamp = Date.now();
+
+//     var domainParts = document.location.hostname.split('.');
+//     var domain = domainParts.slice(-2).join('.')
+
+//     var cookie = [
+//       name, 
+//       '=', JSON.stringify(utmstring), 
+//       ';expires', '=', expdate.toGMTString(), 
+//       '; domain=.', domain, 
+//       '; path=/',
+//       '; SameSite=None; Secure'    
+//     ].join('');
+//     document.cookie = cookie;
+//     // setHiddenFields(utmstring);
+// }
+
 // organic cookie start ------------------------------------------------------------
 function bake_cookie(name, value) {
     var utmstring = value;
     utmstring.timestamp = Date.now();
-
-    var domainParts = document.location.hostname.split('.');
-    var domain = domainParts.slice(-2).join('.')
-
-    var cookie = [
-      name, 
-      '=', JSON.stringify(utmstring), 
-      ';expires', '=', expdate.toGMTString(), 
-      '; domain=.', domain, 
-      '; path=/',
-      '; SameSite=None; Secure'    
-    ].join('');
+    var cookie = [name, '=', JSON.stringify(utmstring), ';expires', '=', expdate.toGMTString(), '; domain=.', window.location.host.toString(), '; path=/;'].join('');
     document.cookie = cookie;
     // setHiddenFields(utmstring);
 }
@@ -219,14 +236,16 @@ function bake_organic_cookie() {
   }
 }
 // set bake_organic_cookie
-// let r_visit = read_cookie("v_latest");
-// r_visit = {...r_visit, ...currentURlPrms};
-let r_visit = currentURlPrms;
-if (Object.keys(r_visit).length === 0) {
-  bake_organic_cookie()
-} else {
-  bake_cookie("v_latest", r_visit);
-}
+let r_visit = read_cookie("v_latest");
+r_visit = {...r_visit, ...currentURlPrms};
+
+bake_cookie("v_latest", r_visit);
+// let r_visit = currentURlPrms;
+// if (Object.keys(r_visit).length === 0) {
+//   bake_organic_cookie()
+// } else {
+//   bake_cookie("v_latest", r_visit);
+// }
 
 // organic cookie end ------------------------------------------------------------
 

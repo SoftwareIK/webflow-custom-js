@@ -1200,7 +1200,10 @@
   }
 
   function initObservers() {
-    let scrollPosition = 0;
+  let scrollPosition = 0;
+
+  // Store the observer instance as a singleton
+  if (!window.__observerSingleton) {
     try {
       if (window.MutationObserver) {
         // Function to handle mutation
@@ -1238,6 +1241,9 @@
         // Create an observer instance
         const observer = new MutationObserver(handleMutation);
 
+        // Store the observer instance in a global variable
+        window.__observerSingleton = observer;
+
         // Configuration of the observer
         const config = { attributes: true, attributeFilter: ["show_status"] };
 
@@ -1247,10 +1253,12 @@
       } else {
         console.log("MutationObserver not supported");
       }
-    } catch (error) {
-      console.error("initObservers", error);
+      } catch (error) {
+        console.error("initObservers", error);
+      }
     }
   }
+
   function getDeviceType() {
     var e = navigator.userAgent;
     return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
