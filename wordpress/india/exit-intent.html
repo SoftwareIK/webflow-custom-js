@@ -1,6 +1,7 @@
 <script>
 	
-let weightageOfVariant = 30;
+let AB_BUCKET = "control";
+let weightageOfVariant = 50;
 let popupShown = false;
 let highIntentClickCount = 0; // Counter for high intent clicks
 const highIntentThreshold = 1; // Number of clicks to mark a user as high intent
@@ -26,13 +27,13 @@ function desktopDevice() {
 function splitTraffic() {
   let isVarient = false;
   try {
-    uuid = getCookie("unique_visitor_id") || "";
+    uuid = getCookie("unique_visitor_id") || visitor_id;
     const lastTwoDigits = parseInt(uuid.slice(-2)); // Defaults to base 10
     isVarient = lastTwoDigits >= weightageOfVariant;
 
-    if(location.host.includes("learn") && !desktopDevice()){
-      isVarient = lastTwoDigits >= 30;
-    }
+    // if(location.host.includes("learn") && !desktopDevice()){
+    //   isVarient = lastTwoDigits >= 30;
+    // }
 
     if (window.clarity) {
       window.clarity(
@@ -447,6 +448,7 @@ function ignorePath() {
 
 if (!ignorePath()) {
   const isVariant = splitTraffic();
+  AB_BUCKET = isVariant ? "variant" : "control";
   if (isVariant) {
     const eagerLoadImage = new Image();
     if (mobileDevice()) {

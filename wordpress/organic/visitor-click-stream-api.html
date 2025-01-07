@@ -1,72 +1,78 @@
 <script>
 
   setTimeout(() => {
-         let data1 = [
-           {
-             Lead_Created_Time: new Date(),
-             Lead_Time_Zone: v_timezone,
-             Event_Type_Name: eventName,
-             Cancellation_reason: "",
-             UTM_Campaign: webNearInfo.utm_campaign,
-             UTM_Source: webNearInfo.utm_source,
-             UTM_Medium: webNearInfo.utm_medium,
-             UTM_Term: webNearInfo.utm_term,
-             UTM_Content: webNearInfo.utm_content,
-             Tracking_ID: "",
-             User_ID: webNearInfo.user_id,
-             Page_URL: webNearInfo.page_url,
-             Country: webNearInfo.v_country,
-             Client_Timezone: v_timezone,
-             CTA_Page: webNearInfo.cta_page_url,
-             Landing_Page: webNearInfo.l_page_url,
-             Click_History: "",
-             City: webNearInfo.wr__city,
-             Device:  webNearInfo.wr__device,
-             User_Agent: encodeURIComponent(navigator?.userAgent || ""),
-             Refferer: webNearInfo.wr__referrer,
-             Region: webNearInfo.wr__region,
-             New_Lead_Created_Time: encodeURIComponent(newDateFun()),
-           },
-         ];
-  
-         (async function (params) {
-              let url = "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod";
-              let option = {
-                  method: "POST",
-                  headers: {
-                      "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
-                      "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({
-                          dataset_id: "Marketing_data_new_logic",
-                          table_id: "Leads_Click_history",
-                          data: data1,
-                      }),
-              };
-              try{
-                  let sendRequst = await fetch(url, option);
-                  console.log("data1 sended");
-              }catch(err){
-                  console.log("data1 sendeding error");
-              }
-  
-         })()
-        }, "3000");
-  
-  
-  
-  
-      function newDateFun(){
-          const now = new Date();
-          const year = now.getUTCFullYear();
-          const month = (now.getUTCMonth() + 1).toString().padStart(2, "0");
-          const day = now.getUTCDate().toString().padStart(2, "0");
-          const hours = now.getUTCHours().toString().padStart(2, "0");
-          const minutes = now.getUTCMinutes().toString().padStart(2, "0");
-          const seconds = now.getUTCSeconds().toString().padStart(2, "0");
-          const milliseconds = now.getUTCMilliseconds();
-          let newDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds} UTC`;
-          return newDate;
+    let AB_test_bucket = "control"
+
+    try {
+      if (typeof (AB_BUCKET) !== "undefined") {
+        AB_test_bucket = AB_BUCKET
       }
-  
-  </script>
+    } catch (error) { }
+
+    let data1 = [
+      {
+        Lead_Created_Time: new Date(),
+        Lead_Time_Zone: v_timezone,
+        Event_Type_Name: eventName,
+        Cancellation_reason: "",
+        UTM_Campaign: webNearInfo.utm_campaign,
+        UTM_Source: webNearInfo.utm_source,
+        UTM_Medium: webNearInfo.utm_medium,
+        UTM_Term: webNearInfo.utm_term,
+        UTM_Content: webNearInfo.utm_content,
+        Tracking_ID: "",
+        User_ID: webNearInfo.user_id,
+        Page_URL: webNearInfo.page_url,
+        Country: webNearInfo.v_country,
+        Client_Timezone: v_timezone,
+        CTA_Page: webNearInfo.cta_page_url,
+        Landing_Page: webNearInfo.l_page_url,
+        Click_History: "",
+        City: webNearInfo.wr__city,
+        Device: webNearInfo.wr__device,
+        User_Agent: encodeURIComponent(navigator?.userAgent || ""),
+        Refferer: webNearInfo.wr__referrer,
+        Region: webNearInfo.wr__region,
+        New_Lead_Created_Time: encodeURIComponent(newDateFun()),
+        AB_test_bucket: AB_test_bucket
+      },
+    ];
+
+    (async function (params) {
+      let url = "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod";
+      let option = {
+        method: "POST",
+        headers: {
+          "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          dataset_id: "Marketing_data_new_logic",
+          table_id: "Leads_Click_history",
+          data: data1,
+        }),
+      };
+      try {
+        let sendRequst = await fetch(url, option);
+        console.log("data1 sended");
+      } catch (err) {
+        console.log("data1 sendeding error");
+      }
+
+    })()
+  }, "3000");
+
+  function newDateFun() {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = (now.getUTCMonth() + 1).toString().padStart(2, "0");
+    const day = now.getUTCDate().toString().padStart(2, "0");
+    const hours = now.getUTCHours().toString().padStart(2, "0");
+    const minutes = now.getUTCMinutes().toString().padStart(2, "0");
+    const seconds = now.getUTCSeconds().toString().padStart(2, "0");
+    const milliseconds = now.getUTCMilliseconds();
+    let newDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds} UTC`;
+    return newDate;
+  }
+
+</script>
