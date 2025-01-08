@@ -166,7 +166,6 @@ if (!visitor_id) {
             vgid = gaid + "-uid-" + create_UUID();
             setCookie("unique_visitor_id6", vgid);
             visitor_id = getCookie("unique_visitor_id6");
-            console.log(visitor_id);
             clearInterval(tempInter);
         }
     }, 200);*/
@@ -361,11 +360,9 @@ const webNearLoadedEv = new CustomEvent("webNearLoaded");
     try{
         const res = await fetch(url, requestOptions);
         const data = await res.json();
-        console.log("book Slot data");
-        console.log(data);
         return data;
     }catch(err){
-        console.log("Something went wrong while calling webinar_connect/book-slot api");
+        console.error("Something went wrong while calling webinar_connect/book-slot api", err);
         return new Promise((res, rej) => res());
     }
 }

@@ -139,7 +139,6 @@ if (!visitor_id) {
             vgid = gaid + "-uid-" + visitor_id;
             setCookie("unique_visitor_id", vgid);
             visitor_id = getCookie("unique_visitor_id");
-            console.log(visitor_id);
             clearInterval(tempInter);
         }
     }, 200);

@@ -69,7 +69,6 @@
           if (webinarType == "REGULAR") {
               resobj = resobj.map(item => ({ ...item, webinar_lead_type: "REGULAR" }));
           }
-          console.log(resobj);
           populateWebinarSlots(resobj);
           TimerHandler(resobj);
       })()
@@ -113,7 +112,6 @@
               }
               }
           }
-          console.log(nextWebinarDate);
           return nextWebinarDate;
       };
   
@@ -369,7 +367,6 @@
   
       try{
           const sendData = await fetch(endpoint, options);
-          console.log("Form submitted successfully!");
           return sendData;
       }catch(err){
           console.error("P0: The Zapier Webhook Failed.");
@@ -440,8 +437,7 @@
               'webinar_name': webNearInfo.eventname
               });
           }catch(err){
-              console.log("Data Layer add faild");
-              console.log(err);
+              console.error(err);
           }
   
           webNearInfo.fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
@@ -484,8 +480,6 @@
       .then(() => {
           secondStepSecondRequest(getCheckWebnear)
           .then(function(){
-              console.log("redirection is called");
-              console.log(finalurl);
               location.href = finalurl;
           });
       });
@@ -563,10 +557,9 @@
   
       try{
           const response = await fetch('https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod', options);
-          console.log("Success Response");
           return response;
       }catch(err){
-          console.log(err);
+          console.error(err);
       };
   }
   

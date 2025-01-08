@@ -168,7 +168,6 @@
           }
           }
       }
-      console.log(nextWebinarDate);
       return nextWebinarDate;
   };
       
@@ -455,11 +454,9 @@
     
         try{
             const sendData = await fetch(endpoint, options);
-            console.log("Form submitted successfully!");
             return sendData;
         }catch(err){
-            console.error("P0: The Zapier Webhook Failed.");
-            alert("Something is wrong");
+            console.error("P0: The Zapier Webhook Failed.", err);
         }
     }
     
@@ -518,8 +515,7 @@
                 'webinar_name': webNearInfo.eventname
                 });
             }catch(err){
-                console.log("Data Layer add faild");
-                console.log(err);
+                console.error(err);
             }
           
             pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34c9jjz/")
@@ -561,8 +557,7 @@
               'webinar_name': webNearInfo.eventname
               });
           }catch(err){
-              console.log("Data Layer add faild");
-              console.log(err);
+              console.error(err);
           }
     
         let finalurl = webinarType === "SWITCH_UP" ? "/signup-final-step-switchup-v6" : "/signup-final-step-v6";
@@ -574,8 +569,6 @@
               .then(() => {
                   secondStepSecondRequest(getCheckWebnear)
                   .then(function(){
-                      console.log("redirection is called");
-                      console.log(finalurl);
                       location.href = finalurl;
                   });
               });
@@ -663,10 +656,9 @@
     
         try{
             const response = await fetch('https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod', options);
-            console.log("Success Response");
             return response;
         }catch(err){
-            console.log(err);
+            console.error(err);
         };
     }
     

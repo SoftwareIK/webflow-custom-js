@@ -44,7 +44,7 @@ function splitTraffic() {
       );
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
   return isVarient;
 }
@@ -68,12 +68,9 @@ function trackHighIntentClicks() {
       // Increment the high intent click counter
       highIntentClickCount++;
 
-      console.log(`Valid navigation link clicked. Total clicks: ${highIntentClickCount}`);
-
       if (highIntentClickCount >= highIntentThreshold) {
         // Set a cookie to suppress the popup for high intent users
         setCookie(highIntentCookieName, "true", 6); // Suppress popup for 6 hours
-        console.log("High intent user detected. Suppressing popup.");
       }
     }
   });
@@ -460,7 +457,6 @@ if (!ignorePath()) {
         "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6736c3bbc05aac9dc828b94f_exit-intent-web.webp";
     }
 
-    console.log("Current variant", "variant");
     initExitIntentPopup(eagerLoadImage, {
       downScrollThreshold: 1,
       upScrollThreshold: 20,
@@ -471,8 +467,6 @@ if (!ignorePath()) {
       bottomIgnoreThreshold: 5,
       outsideViewportDelay: 500, // Minimum time outside viewport to trigger popup (500ms)
     });
-  } else {
-    console.log("Current variant", "control");
   }
 }
 

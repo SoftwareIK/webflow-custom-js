@@ -52,9 +52,8 @@
       };
       try {
         let sendRequst = await fetch(url, option);
-        console.log("data1 sended");
       } catch (err) {
-        console.log("data1 sendeding error");
+        console.error("data1 sendeding error", err);
       }
 
     })()

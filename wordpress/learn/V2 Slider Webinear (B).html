@@ -314,11 +314,9 @@ async function pushToEndPoint2(endpoint) {
 
   try{
       const sendData = await fetch(endpoint, options);
-      console.log("Form submitted successfully!");
       return sendData;
   }catch(err){
-      console.error("P0: The Zapier Webhook Failed.");
-      alert("Something is wrong");
+      console.error("P0: The Zapier Webhook Failed.", err);
   }
 }
 
@@ -380,8 +378,7 @@ function fromSend1stStep2(){
           'webinar_name': webNearInfo.eventname
           });
       }catch(err){
-          console.log("Data Layer add faild");
-          console.log(err);
+          console.error("Data Layer add faild", err);
       }
 
       webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
@@ -520,8 +517,7 @@ function fromSend3rdStep2(){
                   expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
               })
           }catch(err){
-              console.log("Data Layer add faild");
-              console.log(err);
+              console.error("Data Layer add faild", err);
           }
           let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/" : "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/";
 
@@ -582,10 +578,8 @@ async function sendRequestZapiar(url, data) {
           item.setAttribute('show_status', true);
       });
       loadPageFild();
-      console.log('Form submitted successfully!');
-  }catch{
-      console.log('Form Summit faild');
-      alert("Something is wrong");
+  }catch(err) {
+      console.error('Form Summit faild', err);
   }
 }
 
@@ -661,10 +655,9 @@ async function secondStepSecondRequest2() {
 
   try{
       const response = await fetch('https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod', options);
-      console.log("Success Response");
       return response;
   }catch(err){
-      console.log(err);
+      console.error(err);
   };
 }
 

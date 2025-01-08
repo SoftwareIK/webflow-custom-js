@@ -126,8 +126,7 @@
                       expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
                   })
               }catch(err){
-                  console.log("Data Layer add faild");
-                  console.log(err);
+                  console.error(err);
               }
               sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3409hxu/", GQLformData);
           });            
@@ -198,8 +197,7 @@
                   expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
               })
           }catch(err){
-              console.log("Data Layer add faild");
-              console.log(err);
+              console.error(err);
           }
           sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/340rvpf/", GQLformData);
       }
@@ -247,8 +245,7 @@
                   expected_revenue: expectedRev,
               })	
       }catch(err){
-          console.log("Data Layer add faild");
-          console.log(err);
+          console.error(err);
       }
       sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3sxtz40/", GQLformData);
   }
@@ -302,10 +299,8 @@
       try{
           let response = await fetch(url, options);
           moveNextStep();
-          console.log('Form submitted successfully!');
-      }catch{
-          console.log('Form Summit faild');
-          alert("Something is wrong");
+      }catch (err){
+         console.error("sendRequestZapiar", err);
       }
   }
 
