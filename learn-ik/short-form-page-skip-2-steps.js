@@ -292,6 +292,10 @@ $(document).ready(function () {
   window.VWO = window.VWO || [];
   VWO.event = VWO.event || function () { VWO.push(["event"].concat([].slice.call(arguments))) };
   function pushToZap(endpoint) {
+    const eventStartTime = window?.defaultSlotForShortPage?.eventStartTime;
+	const eventEndTime = window?.defaultSlotForShortPage?.eventEndTime;
+	const inviteeStartTime =  window?.defaultSlotForShortPage?.inviteeStartTime;
+	const inviteeEndTime = window?.defaultSlotForShortPage?.inviteeEndTime;
     //Zap end point for step 1
     var formData = {
       "First Name": $('#v2-fname').val(),
@@ -328,10 +332,10 @@ $(document).ready(function () {
       "phone_number_full": $('.tno1').val(),
       "is_exit_intent_popup": $('.is_exit_intent_popup').val(),
 
-      "Event Start Time": $('.wr__event-start-time').val(),
-      "Event End Time": $('.wr__event-end-time').val(),
-      "Invitee Start Time": $('.wr__invitee-start-time').val(),
-      "Invitee End Time": $('.wr__invitee-end-time').val(),
+      "Event Start Time": $('.wr__event-start-time').val() ? $('.wr__event-start-time').val() : eventStartTime,
+      "Event End Time": $('.wr__event-end-time').val() ? $('.wr__event-end-time').val() : eventEndTime,
+      "Invitee Start Time": $('.wr__invitee-start-time').val() ? $('.wr__invitee-start-time').val() : inviteeStartTime,
+      "Invitee End Time": $('.wr__invitee-end-time').val() ? $('.wr__invitee-end-time').val() : inviteeEndTime,
       "Work Experience": $('.gql-work-experience').val(),
       "Domain or Role": $('.gql-role-domain').val(),
       "Booking id": $('input[name="start-date"]:checked').data("bookingid")
