@@ -332,10 +332,10 @@ $(document).ready(function () {
       "phone_number_full": $('.tno1').val(),
       "is_exit_intent_popup": $('.is_exit_intent_popup').val(),
 
-      "Event Start Time": '' ? '' : eventStartTime,
-      "Event End Time": '' ? '' : eventEndTime,
-      "Invitee Start Time": '' ? '' : inviteeStartTime,
-      "Invitee End Time": '' ? '' : inviteeEndTime,
+      "Event Start Time": $('.wr__event-start-time').val() ? $('.wr__event-start-time').val() : eventStartTime,
+      "Event End Time": $('.wr__event-end-time').val() ? $('.wr__event-end-time').val() : eventEndTime,
+      "Invitee Start Time": $('.wr__invitee-start-time').val() ? $('.wr__invitee-start-time').val() : inviteeStartTime,
+      "Invitee End Time": $('.wr__invitee-end-time').val() ? $('.wr__invitee-end-time').val() : inviteeEndTime,
       "Work Experience": $('.gql-work-experience').val(),
       "Domain or Role": $('.gql-role-domain').val(),
       "Booking id": $('input[name="start-date"]:checked').data("bookingid")
