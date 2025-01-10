@@ -370,7 +370,11 @@
         webNearInfo.wr__referrer = referrer;
         webNearInfo.wr__device = getDeviceType();
     
-        document.querySelector('.webinar__lightbox-title h2').innerHTML = eventName;
+        try {
+            document.querySelector('.webinar__lightbox-title h2').innerHTML = eventName;
+        } catch (error) {
+            document.querySelector('.webinar__lightbox-title h3').innerHTML = eventName;
+        }
     
         webNearInfo.webinar_lead_type = webinarType;
         webNearInfo.bye_calendly_type = "NoPhoneInTheFirstStep";
