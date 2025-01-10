@@ -82,7 +82,9 @@ const eventTitleMap = {
 
 
 let currentURlPrms = getAllUrlParams();
-if(currentURlPrms.webinartype) webinarType = currentURlPrms.webinartype;
+if(currentURlPrms.webinartype){
+  webinarType = currentURlPrms?.webinartype?.toLocaleUpperCase();
+}
 let isSwitchUp = "No";
 let v_timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 if(v_timezone === "Asia/Calcutta") v_timezone = "Asia/Kolkata";
