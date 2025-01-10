@@ -1,0 +1,357 @@
+<script nitro-exclude>
+  // webinar-type code start  ---------------------------------------------------------
+
+  let webinarSlots = [];
+  const webNearLoadedEv = new CustomEvent("webNearLoaded");
+  // Get all URl Params
+  function getAllUrlParams(url) {
+    let queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+    let utmobj = {};
+    if (queryString) {
+      queryString = queryString.split('#')[0];
+      let arr = queryString.split('&');
+      for (let i = 0; i < arr.length; i++) {
+        let a = arr[i].split('=');
+        let paramName = a[0];
+        let paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
+        paramName = paramName.toLowerCase();
+        if (paramName.match(/\[(\d+)?\]$/)) {
+          let key = paramName.replace(/\[(\d+)?\]/, '');
+          if (!utmobj[key]) utmobj[key] = [];
+          if (paramName.match(/\[\d+\]$/)) {
+            let index = /\[(\d+)\]/.exec(paramName)[1];
+            utmobj[key][index] = paramValue;
+          } else {
+            utmobj[key].push(paramValue);
+          }
+        } else {
+          if (!utmobj[paramName]) {
+            utmobj[paramName] = paramValue;
+          } else if (utmobj[paramName] && typeof utmobj[paramName] === 'string') {
+            utmobj[paramName] = [utmobj[paramName]];
+            utmobj[paramName].push(paramValue);
+          } else {
+            utmobj[paramName].push(paramValue);
+          }
+        }
+      }
+    }
+    return utmobj;
+  }
+
+  function getEventTitle(webinarType, event) {
+    // If the event exists, decode it and return
+    if (event) {
+      return decodeURIComponent(event);
+    }
+
+    // Use the appropriate default title based on webinarType
+    switch (webinarType) {
+      case "CAREER_SESSION":
+        return eventTitleMap["CAREER_SESSION"];
+      case "SWITCH_UP":
+        return eventTitleMap["SWITCH_UP"];
+      case "ONE_TO_ONE_CONNECT":
+        return eventTitleMap["ONE_TO_ONE_CONNECT"];
+      default:
+        return eventTitleMap["REGULAR"];
+    }
+  };
+
+  const eventTitleMap = {
+    CAREER_SESSION: "Seize the AI Advantage: Strengthen Your Resume",
+    SWITCH_UP: "Uplevel your career with AI/ML/GenAI",
+    ONE_TO_ONE_CONNECT: "How to Nail Your Next Tech/Product Interview",
+    REGULAR: "How to Nail your next Technical Interview",
+  };
+
+  let currentURlPrms = getAllUrlParams();
+  if (currentURlPrms.webinartype) {
+    webinarType = currentURlPrms?.webinartype?.toLocaleUpperCase();
+  }
+  let isSwitchUp = "No";
+  let v_timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if (v_timezone === "Asia/Calcutta") v_timezone = "Asia/Kolkata";
+
+  let is_webinar_1o1_eligible = webinarType === "ONE_TO_ONE_CONNECT";
+
+  let eventName = getEventTitle(webinarType, currentURlPrms.event);
+
+  // webinar-type code end ---------------------------------------------------------
+  // Slot related code start ---------------------------------------------------------
+  let registration_type;
+  let no_of_webinar_slots = 6;
+  let slotFetchedTwice = false;
+
+  function populateWebinarSlots(resobj) {
+    const t_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    if (resobj.length == 0) {
+      console.error("P0: The Uplevel Webinar Slots API Returned No Data.");
+      registration_type = "calendly";
+    } else {
+      registration_type = "byecalendly";
+    }
+
+    no_of_webinar_slots = (no_of_webinar_slots == undefined) ? 4 : no_of_webinar_slots;
+    let nslots = (resobj.length > no_of_webinar_slots) ? no_of_webinar_slots : resobj.length;
+    var tz = new Date().toString().match(/\((.+)\)/);
+    if (tz[1].includes(" ")) {
+      tz = tz[1]
+        .split(" ")
+        .map(([first]) => first)
+        .join("");
+    }
+
+    const getWebinerSlots = document.querySelector('.webnear_regitration_fr .fr_stage_2 .web_near_slot');
+    getWebinerSlots.innerHTML = "";
+
+    for (i = 0; i < nslots; i++) {
+      let hdate = resobj[i].weekday + ", " + resobj[i].day + " " + t_months[parseInt(resobj[i].month) - 1] + " " + resobj[i].year + " | " + resobj[i].hour + ":" + resobj[i].minute + " " + resobj[i].am_or_pm;
+
+      let checkStatus = i == 0 ? "checked" : "";
+      let radiohtml = document.createElement('label');
+      radiohtml.innerHTML = `
+              <input type="radio" 
+              name="start-date"
+              value="${resobj[i].start_time}" 
+              data-endtime="${resobj[i].end_time}" 
+              data-invitee_starttime="${resobj[i].invitee_start_time}" 
+              data-invitee_endtime="${resobj[i].invitee_end_time}" 
+              data-name="${resobj[i].start_time}" 
+              data-webinar_lead_type="${resobj[i].webinar_lead_type}"
+              ${checkStatus} 
+              required="required">
+              <span class="text">${hdate}</span>
+          `;
+
+      getWebinerSlots.append(radiohtml);
+    }
+
+    document.querySelector(".webnear_regitration_fr .time_zone").innerHTML = `*All webinar slots are in the ${v_timezone} timezone`;
+  }
+
+  async function fallbackSlots(timezone) {
+    slotFetchedTwice = true;
+    webinarType = "REGULAR";
+    v_timezone = "America/New_York"
+    loadSlot("USA", v_timezone, function (resobj) {
+      TimerHandler(resobj, v_timezone);
+    });
+  }
+
+  async function loadSlot(country = "USA", c_timezoon = "US/Pacific", callBack) {
+
+    let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=${country}&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${webinarType === "SWITCH_UP" ? webinarType : "REGULAR"}`;
+
+    const option = {
+      method: "GET",
+      headers: {
+        "Authorization": "1Cgx6oYXkOlWkNDn7_tXO",
+      }
+    }
+
+    try {
+      const request = await fetch(api_url, option);
+      let resobj = await request.json();
+      if (resobj.length == 0) {
+        throw new Error("P0: The Uplevel Webinar Slots API Returned No Data.");
+      }
+      resobj = resobj.map(item => ({ ...item, webinar_lead_type: webinarType }));
+      webinarSlots = resobj;
+      document.dispatchEvent(webNearLoadedEv);
+      if (!is_webinar_1o1_eligible) {
+        populateWebinarSlots(resobj);
+      }
+
+      if (typeof callBack === "function") {
+        callBack(resobj);
+      } else {
+        TimerHandler(resobj);
+      }
+    } catch (err) {
+      if (!slotFetchedTwice) {
+        fallbackSlots()
+      }
+      TimerHandler();
+    }
+  }
+
+  getGeo().then((geo) => {
+    if (geo.country_code3 == "IND" && currentURlPrms["forceuswebinar"] == undefined) {
+      loadSlot("IND", geo.timezone, function (resobj) {
+        TimerHandler(resobj, "Asia/Kolkata");
+      });
+    } else if (currentURlPrms["forceuswebinar"] == "true") {
+      loadSlot("USA", "US/Pacific", function (resobj) {
+        TimerHandler(resobj, "America/New_York");
+      });
+    } else {
+      loadSlot("USA", geo.timezone, function (resobj) {
+        if (typeof (v_timezone) != "undefined") {
+          TimerHandler(resobj, v_timezone);
+        } else {
+          TimerHandler(resobj, "America/New_York");
+        }
+
+      });
+    }
+  }).catch(() => {
+    loadSlot("USA", "US/Pacific", function (resobj) {
+      TimerHandler(resobj, "America/New_York");
+    });
+  })
+
+
+  async function getGeo() {
+    let response = await fetch("https://get.geojs.io/v1/ip/geo.json");
+    let data = await response.json();
+    return data;
+  }
+  // Slot related code end ---------------------------------------------------------
+  // Timer related code start ---------------------------------------------------------
+  const timerState = {
+    currentDate: '',
+    nextDate: '',
+    currentDateSec: '',
+    nextDateSec: '',
+  };
+
+  function initStates(slots, currentTimeZoon) {
+    timerState.currentDate = new Date().toLocaleString('en-US');
+    timerState.currentDateSec = Date.parse(timerState.currentDate);
+    timerState.nextDate = nextWebinar(timerState.currentDate.split(',')[0], timerState.currentDateSec, slots, currentTimeZoon);
+    if (timerState.nextDate !== '') {
+      timerState.nextDateSec = Date.parse(timerState.nextDate);
+    }
+  };
+
+  function nextWebinar(currentDate, currentWebTime, slots, currentTimeZoon) {
+    let nextWebinarDate = '';
+    if (!slots) {
+      return fallbackTimerDate(currentTimeZoon)
+    }
+
+    const formattedSlots = (slots || [])?.map((slot = {}) => ({
+      date: `${slot.month}/${slot.day}/${slot.year}`, //"06/12/2024"
+      time: `${slot.hour}:${slot.minute}:${slot.second} ${slot.am_or_pm}`, //"07:30:00 PM"
+    }))
+
+    for (let idx = 0; idx < formattedSlots.length; idx++) {
+      if (formattedSlots[idx]) {
+        const currentDateWeb = Date.parse(new Date(`${formattedSlots[idx].date}, ${formattedSlots[idx].time}`));
+        if (currentDateWeb > currentWebTime) {
+          nextWebinarDate = `${formattedSlots[idx].date}, ${formattedSlots[idx].time}`;
+          break;
+        }
+      }
+    }
+    return nextWebinarDate;
+  };
+
+  // Fall back time
+  function fallbackTimerDate(currentTimeZoon = "") {
+    const isIndia = currentTimeZoon == "IST" || currentTimeZoon == "Asia/Kolkata";
+    const currentDate = new Date();
+    const dayOfWeek = currentDate.getDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
+    const dateString = currentDate.toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata', month: '2-digit', day: '2-digit', year: 'numeric' });
+    let timeString;
+
+    if (isIndia) {
+      if (dayOfWeek === 6) {
+        // Saturday
+        timeString = "11:00:00 PM";
+      } else if (dayOfWeek === 0) {
+        // Sunday
+        return ""; // Skip on Sunday
+      } else {
+        timeString = "06:00:00 PM";
+      }
+    } else {
+      if (dayOfWeek === 6) {
+        // Saturday
+        return ""; // Skip on Saturday
+      } else if (dayOfWeek % 2 === 1) {
+        // Odd days (Monday, Wednesday, Friday, Sunday)
+        timeString = "07:30:00 PM";
+      } else {
+        // Even days (Tuesday, Thursday)
+        timeString = "08:30:00 PM";
+      }
+    }
+
+    return `${dateString}, ${timeString}`
+  }
+
+  function unitCount(unit) {
+    const toTens = () => String(Number.parseInt(unit / 10));
+    const toOnes = () => String(unit % 10);
+    return toTens() + toOnes();
+  };
+
+  function TimerHandler(slots, currentTimeZoon = "America/New_York") {
+    // initialize states
+    initStates(slots, currentTimeZoon);
+
+    // start timer
+    const webinarTimer = setInterval(() => {
+      if (timerState.nextDate === '') {
+        clearInterval(webinarTimer);
+      }
+      timerState.currentDate = new Date().toLocaleString('en-US', { timeZone: currentTimeZoon });
+      timerState.currentDateSec = Date.parse(timerState.currentDate);
+
+      const distanceCount = timerState.nextDateSec - timerState.currentDateSec;
+
+      const day = Math.floor(distanceCount / (1000 * 60 * 60 * 24));
+      const hrs = Math.floor((distanceCount % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const min = Math.floor((distanceCount % (1000 * 60 * 60)) / (1000 * 60));
+      const sec = Math.floor((distanceCount % (1000 * 60)) / 1000);
+
+      // separating into tens and ones
+
+      const dayCount = unitCount(day);
+      const hrCount = unitCount(hrs);
+      const minCount = unitCount(min);
+      const secCount = unitCount(sec);
+
+      // update UI
+      updateTimerUI(dayCount, hrCount, minCount, secCount);
+
+      if (distanceCount <= 0) {
+        // move timer to next date if reached 0
+        initStates(slots, currentTimeZoon);
+
+        if (timerState.nextDate === '') {
+          clearInterval(webinarTimer);
+          // hide the fild if nothing
+          document.querySelectorAll('.webinar__timer').forEach((timer) => {
+            timer.classList.add('is-hidden');
+          });
+        }
+      }
+    }, 1000);
+  };
+
+  // set the next webnear value
+  function updateTimerUI(day, hrs, min, sec) {
+    document.querySelectorAll('.webinar__timer--days .elementor-heading-title').forEach((timer) => {
+      timer.textContent = day.slice(0, 2);
+    }
+    );
+    document.querySelectorAll('.webinar__timer--hours .elementor-heading-title').forEach((timer) => {
+      timer.textContent = hrs.slice(0, 2);
+    }
+    );
+    document.querySelectorAll('.webinar__timer--mins .elementor-heading-title').forEach((timer) => {
+      timer.textContent = min.slice(0, 2);
+    }
+    );
+    document.querySelectorAll('.webinar__timer--secs .elementor-heading-title').forEach((timer) => {
+      timer.textContent = sec.slice(0, 2);
+    }
+    );
+  }
+
+  // Timer related code end ---------------------------------------------------------
+</script>
