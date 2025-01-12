@@ -678,8 +678,11 @@ $(document).ready(function () {
         const leadCreatedTime = formatDate(currentDateTime);
 
         function submitLeadData(leadCreatedTime) {
-        const formattedStartDateTime = formatDate($(".wr__event-start-time").val());
-        const formattedEndDateTime = formatDate($(".wr__event-end-time").val());
+        const defaultValue =  window.defaultSlotForShortPage;
+        const StartDate = $(".wr__event-start-time").val() ? $(".wr__event-start-time").val() : defaultValue?.eventStartTime;
+        const EndDate = $(".wr__event-end-time").val() ? $(".wr__event-end-time").val() : defaultValue?.eventEndTime;
+        const formattedStartDateTime = formatDate(StartDate);
+        const formattedEndDateTime = formatDate(EndDate);
 
         $.ajax({
             url: "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
@@ -1005,7 +1008,10 @@ if (!window.skipSecondSteps){
       "user_id": $('.user_id').val(),
       "salesforce_uuid": sf_uuid,
     }
-
+    const eventStartTime = window?.defaultSlotForShortPage?.eventStartTime;
+	const eventEndTime = window?.defaultSlotForShortPage?.eventEndTime;
+	const inviteeStartTime =  window?.defaultSlotForShortPage?.inviteeStartTime;
+	const inviteeEndTime = window?.defaultSlotForShortPage?.inviteeEndTime;
     const data = {
       firstName: $(".wr__firstname").val(),
       lastName: $(".wr__lastname").val(),
@@ -1016,10 +1022,10 @@ if (!window.skipSecondSteps){
       region: $(".wr__region").val(),
       referrer: $(".wr__referrer").val(),
       site_url: $(".site_url").val(),
-      eventStartTime: $(".wr__event-start-time").val(),
-      eventEndTime: $(".wr__event-end-time").val(),
-      inviteeStartTime: $(".wr__invitee-start-time").val(),
-      inviteeEndTime: $(".wr__invitee-end-time").val(),
+      eventStartTime: $(".wr__event-start-time").val() ? $(".wr__event-start-time").val() : eventStartTime,
+      eventEndTime: $(".wr__event-end-time").val() ? $(".wr__event-end-time").val() : eventEndTime,
+      inviteeStartTime: $(".wr__invitee-start-time").val() ? $(".wr__invitee-start-time").val() :inviteeStartTime,
+      inviteeEndTime: $(".wr__invitee-end-time").val() ? $(".wr__invitee-end-time").val() : inviteeEndTime,
       learnUserId: $(".user_id").val(),
       event_name: window.eventNameForWebinarType,
       cta_url: "learn.ik" + window.location.pathname,
