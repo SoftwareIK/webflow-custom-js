@@ -292,6 +292,10 @@ $(document).ready(function () {
   window.VWO = window.VWO || [];
   VWO.event = VWO.event || function () { VWO.push(["event"].concat([].slice.call(arguments))) };
   function pushToZap(endpoint) {
+    const eventStartTime = window?.defaultSlotForShortPage?.eventStartTime;
+	const eventEndTime = window?.defaultSlotForShortPage?.eventEndTime;
+	const inviteeStartTime =  window?.defaultSlotForShortPage?.inviteeStartTime;
+	const inviteeEndTime = window?.defaultSlotForShortPage?.inviteeEndTime;
     //Zap end point for step 1
     var formData = {
       "First Name": $('#v2-fname').val(),
@@ -328,10 +332,10 @@ $(document).ready(function () {
       "phone_number_full": $('.tno1').val(),
       "is_exit_intent_popup": $('.is_exit_intent_popup').val(),
 
-      "Event Start Time": $('.wr__event-start-time').val(),
-      "Event End Time": $('.wr__event-end-time').val(),
-      "Invitee Start Time": $('.wr__invitee-start-time').val(),
-      "Invitee End Time": $('.wr__invitee-end-time').val(),
+      "Event Start Time": $('.wr__event-start-time').val() ? $('.wr__event-start-time').val() : eventStartTime,
+      "Event End Time": $('.wr__event-end-time').val() ? $('.wr__event-end-time').val() : eventEndTime,
+      "Invitee Start Time": $('.wr__invitee-start-time').val() ? $('.wr__invitee-start-time').val() : inviteeStartTime,
+      "Invitee End Time": $('.wr__invitee-end-time').val() ? $('.wr__invitee-end-time').val() : inviteeEndTime,
       "Work Experience": $('.gql-work-experience').val(),
       "Domain or Role": $('.gql-role-domain').val(),
       "Booking id": $('input[name="start-date"]:checked').data("bookingid")
@@ -486,18 +490,20 @@ $(document).ready(function () {
     try { paRegisteredCookie(); } catch (e) { console.error(e) }
 
     let fullphonenumber3 = getPhoneNumber();
-
+    let validationError = false;
     $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
     $(".tno1").val(fullphonenumber3);
 
     $("#v2-full-name, #v2-phone-number, #v2-email").keypress(function () {
       $(".v2-full-name-error, .v2-email-id-error, .v2-phone-number-error").hide();
       $("#v2-full-name, #v2-phone-number, #v2-email").removeClass("has-error");
+      validationError = false;
     })
 
     $("#v2-full-name, #v2-phone-number, #v2-email").focus(function () {
       $(".v2-full-name-error, .v2-email-id-error, .v2-phone-number-error").hide();
       $("#v2-full-name, #v2-phone-number, #v2-email").removeClass("has-error");
+      validationError = false;
     });
 
     let name_regex = new RegExp("^[a-zA-Z ]+$");
@@ -508,15 +514,19 @@ $(document).ready(function () {
       ($("#v2-email").val().length == 0) &&
       ($("#v2-phone-number").val().length == 0)) {
       $('.v2-full-name-error, .v2-email-id-error, .v2-phone-number-error').show();
+      validationError = true;
     } else if (!name_regex.test($("#v2-fname").val()) || $("#v2-fname").val().length == 0) {
       $('.v2-full-name-error').show();
       $('#v2-full-name').addClass('has-error');
+      validationError = true;
     } else if (!phone_regex.test($("#v2-phone-number").val()) || $("#v2-phone-number").val().length == 0) {
       $('.v2-phone-number-error').show();
       $('#v2-phone-number').addClass('has-error');
+      validationError = true;
     } else if (!email_regex.test($("#v2-email").val()) || $("#v2-email").val().length == 0) {
       $('.v2-email-id-error').show();
       $('#v2-email').addClass('has-error');
+      validationError = true;
     } else {
       $('.v2-form-loading-bar').css("display", "flex");
       $('.wr__firstname').val($("#v2-fname").val());
@@ -583,7 +593,7 @@ $(document).ready(function () {
       $('.wr__invitee-end-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_endtime'));
       $('.webinar-lead-type').val($("input:radio[name='v2-slots-radio']:first").data('webinar_lead_type'));
     }
-
+    if (validationError) return;
     if (window.skipSecondSteps){
         let slotBookRes = {}
         if(is_webinar_1o1_eligible){
@@ -674,8 +684,11 @@ $(document).ready(function () {
         const leadCreatedTime = formatDate(currentDateTime);
 
         function submitLeadData(leadCreatedTime) {
-        const formattedStartDateTime = formatDate($(".wr__event-start-time").val());
-        const formattedEndDateTime = formatDate($(".wr__event-end-time").val());
+        const defaultValue =  window.defaultSlotForShortPage;
+        const StartDate = $(".wr__event-start-time").val() ? $(".wr__event-start-time").val() : defaultValue?.eventStartTime;
+        const EndDate = $(".wr__event-end-time").val() ? $(".wr__event-end-time").val() : defaultValue?.eventEndTime;
+        const formattedStartDateTime = formatDate(StartDate);
+        const formattedEndDateTime = formatDate(EndDate);
 
         $.ajax({
             url: "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod",
@@ -1001,7 +1014,10 @@ if (!window.skipSecondSteps){
       "user_id": $('.user_id').val(),
       "salesforce_uuid": sf_uuid,
     }
-
+    const eventStartTime = window?.defaultSlotForShortPage?.eventStartTime;
+	const eventEndTime = window?.defaultSlotForShortPage?.eventEndTime;
+	const inviteeStartTime =  window?.defaultSlotForShortPage?.inviteeStartTime;
+	const inviteeEndTime = window?.defaultSlotForShortPage?.inviteeEndTime;
     const data = {
       firstName: $(".wr__firstname").val(),
       lastName: $(".wr__lastname").val(),
@@ -1012,10 +1028,10 @@ if (!window.skipSecondSteps){
       region: $(".wr__region").val(),
       referrer: $(".wr__referrer").val(),
       site_url: $(".site_url").val(),
-      eventStartTime: $(".wr__event-start-time").val(),
-      eventEndTime: $(".wr__event-end-time").val(),
-      inviteeStartTime: $(".wr__invitee-start-time").val(),
-      inviteeEndTime: $(".wr__invitee-end-time").val(),
+      eventStartTime: $(".wr__event-start-time").val() ? $(".wr__event-start-time").val() : eventStartTime,
+      eventEndTime: $(".wr__event-end-time").val() ? $(".wr__event-end-time").val() : eventEndTime,
+      inviteeStartTime: $(".wr__invitee-start-time").val() ? $(".wr__invitee-start-time").val() :inviteeStartTime,
+      inviteeEndTime: $(".wr__invitee-end-time").val() ? $(".wr__invitee-end-time").val() : inviteeEndTime,
       learnUserId: $(".user_id").val(),
       event_name: window.eventNameForWebinarType,
       cta_url: "learn.ik" + window.location.pathname,
