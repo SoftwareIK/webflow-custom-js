@@ -1,3 +1,4 @@
+<!-- Webinar Body end -->
 <!-- India foot code start -->
 <!-- Webinar slots  -->
 <script>
@@ -237,7 +238,7 @@
       firstName: "",
       lastName: "",
       fPhoneNumber: "",
-      utm_source: "",
+      utm_source: "Organic",
       utm_medium: "",
       utm_campaign: "",
       utm_adset: "",
@@ -282,8 +283,15 @@
   })();
   
   function setHiddenFields() {
-      let params = read_cookie("v_latest");
-      webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "");
+      // let params = read_cookie("v_latest");
+      let params = [];
+      try {
+        params = read_cookie("v_latest") || getParams()
+        bake_cookie("v_latest", params);
+      } catch (error) {
+        console.error("Error while reading cookie", error);
+      }
+      webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
       webNearInfo.utm_medium = decodeURIComponent(params['utm_medium'] || "");
       webNearInfo.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
       webNearInfo.utm_content = decodeURIComponent(params['utm_content'] || "");
