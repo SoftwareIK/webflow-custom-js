@@ -13,6 +13,81 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 
 <script>
+// Get all URl Params
+function getAllUrlParams(url) {
+    let queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+    let utmobj = {};
+    if (queryString) {
+        queryString = queryString.split('#')[0];
+        let arr = queryString.split('&');
+        for (let i = 0; i < arr.length; i++) {
+        let a = arr[i].split('=');
+        let paramName = a[0];
+        let paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
+        paramName = paramName.toLowerCase();
+        if (paramName.match(/\[(\d+)?\]$/)) {
+            let key = paramName.replace(/\[(\d+)?\]/, '');
+            if (!utmobj[key]) utmobj[key] = [];
+            if (paramName.match(/\[\d+\]$/)) {
+            let index = /\[(\d+)\]/.exec(paramName)[1];
+            utmobj[key][index] = paramValue;
+            } else {
+            utmobj[key].push(paramValue);
+            }
+        } else {
+            if (!utmobj[paramName]) {
+            utmobj[paramName] = paramValue;
+            } else if (utmobj[paramName] && typeof utmobj[paramName] === 'string'){
+            utmobj[paramName] = [utmobj[paramName]];
+            utmobj[paramName].push(paramValue);
+            } else {
+            utmobj[paramName].push(paramValue);
+            }
+        }
+        }
+    }
+    return utmobj;
+}
+
+function getEventTitle(webinarType, event){
+    // If the event exists, decode it and return
+    if (event) {
+      return decodeURIComponent(event);
+    }
+
+    // Use the appropriate default title based on webinarType
+    switch (webinarType) {
+      case "CAREER_SESSION":
+        return eventTitleMap["CAREER_SESSION"];
+      case "SWITCH_UP":
+        return eventTitleMap["SWITCH_UP"];
+      case "ONE_TO_ONE_CONNECT":
+        return eventTitleMap["ONE_TO_ONE_CONNECT"];
+      default:
+        return eventTitleMap["REGULAR"];
+    }
+  };
+
+const eventTitleMap = {
+    CAREER_SESSION: "Seize the AI Advantage: Strengthen Your Resume",
+    SWITCH_UP: "Uplevel your career with AI/ML/GenAI",
+    ONE_TO_ONE_CONNECT: "How to Nail Your Next Tech/Product Interview",
+    REGULAR: "How to Nail your next Technical Interview",
+  };
+
+
+
+let currentURlPrms = getAllUrlParams();
+if(currentURlPrms.webinartype){
+  webinarType = currentURlPrms?.webinartype?.toLocaleUpperCase();
+}
+let isSwitchUp = "No";
+let v_timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+if(v_timezone === "Asia/Calcutta") v_timezone = "Asia/Kolkata";
+
+let is_webinar_1o1_eligible = webinarType === "ONE_TO_ONE_CONNECT";
+
+let eventName = getEventTitle(webinarType, currentURlPrms.event);
 
 let referrer = document.referrer; // get refere page
 
@@ -158,16 +233,16 @@ function bake_organic_cookie() {
   }
 }
 // set bake_organic_cookie
-// let r_visit = read_cookie("v_latest");
-// r_visit = {...r_visit, ...currentURlPrms};
+let r_visit = read_cookie("v_latest");
+r_visit = {...r_visit, ...currentURlPrms};
 
-// bake_cookie("v_latest", r_visit);
-let r_visit = currentURlPrms;
-if (Object.keys(r_visit).length === 0) {
-  bake_organic_cookie()
-} else {
-  bake_cookie("v_latest", r_visit);
-}
+bake_cookie("v_latest", r_visit);
+// let r_visit = currentURlPrms;
+// if (Object.keys(r_visit).length === 0) {
+//   bake_organic_cookie()
+// } else {
+//   bake_cookie("v_latest", r_visit);
+// }
 
 // organic cookie end ------------------------------------------------------------
 
@@ -199,7 +274,8 @@ function getDeviceType() {
     }
 }
 
-
+let webinarSlots = [];
+const webNearLoadedEv = new CustomEvent("webNearLoaded");
 </script>
 
 
