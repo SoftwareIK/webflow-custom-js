@@ -490,18 +490,20 @@ $(document).ready(function () {
     try { paRegisteredCookie(); } catch (e) { console.error(e) }
 
     let fullphonenumber3 = getPhoneNumber();
-
+    let validationError = false;
     $("input[name='phone_number[intphone_full]'").val(fullphonenumber3);
     $(".tno1").val(fullphonenumber3);
 
     $("#v2-full-name, #v2-phone-number, #v2-email").keypress(function () {
       $(".v2-full-name-error, .v2-email-id-error, .v2-phone-number-error").hide();
       $("#v2-full-name, #v2-phone-number, #v2-email").removeClass("has-error");
+      validationError = false;
     })
 
     $("#v2-full-name, #v2-phone-number, #v2-email").focus(function () {
       $(".v2-full-name-error, .v2-email-id-error, .v2-phone-number-error").hide();
       $("#v2-full-name, #v2-phone-number, #v2-email").removeClass("has-error");
+      validationError = false;
     });
 
     let name_regex = new RegExp("^[a-zA-Z ]+$");
@@ -512,15 +514,19 @@ $(document).ready(function () {
       ($("#v2-email").val().length == 0) &&
       ($("#v2-phone-number").val().length == 0)) {
       $('.v2-full-name-error, .v2-email-id-error, .v2-phone-number-error').show();
+      validationError = true;
     } else if (!name_regex.test($("#v2-fname").val()) || $("#v2-fname").val().length == 0) {
       $('.v2-full-name-error').show();
       $('#v2-full-name').addClass('has-error');
+      validationError = true;
     } else if (!phone_regex.test($("#v2-phone-number").val()) || $("#v2-phone-number").val().length == 0) {
       $('.v2-phone-number-error').show();
       $('#v2-phone-number').addClass('has-error');
+      validationError = true;
     } else if (!email_regex.test($("#v2-email").val()) || $("#v2-email").val().length == 0) {
       $('.v2-email-id-error').show();
       $('#v2-email').addClass('has-error');
+      validationError = true;
     } else {
       $('.v2-form-loading-bar').css("display", "flex");
       $('.wr__firstname').val($("#v2-fname").val());
@@ -587,7 +593,7 @@ $(document).ready(function () {
       $('.wr__invitee-end-time').val($("input:radio[name='v2-slots-radio']:first").data('invitee_endtime'));
       $('.webinar-lead-type').val($("input:radio[name='v2-slots-radio']:first").data('webinar_lead_type'));
     }
-
+    if (validationError) return;
     if (window.skipSecondSteps){
         let slotBookRes = {}
         if(is_webinar_1o1_eligible){
