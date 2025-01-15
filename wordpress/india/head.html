@@ -71,10 +71,30 @@ let expdate = new Date();
 expdate.setDate(expdate.getDate() + 1);
 
 // this function will return the json
-function read_cookie(name) {
+function read_cookie_lagacy(name) {
     var result = document.cookie.match(new RegExp(name + '=([^;]+)'));
     result && (result = JSON.parse(result[1]));
     return result;
+}
+
+function read_cookie(name) {
+  try {
+    const cookies = document.cookie.split(';').map(c => c.trim());
+    let currentDomainCookie = null, parentDomainCookie = null;
+
+    cookies.forEach(cookie => {
+      const [key, value] = cookie.split('=');
+      if (key === name) {
+        const parsed = JSON.parse(decodeURIComponent(value));
+        if (document.domain === location.hostname) currentDomainCookie = parsed;
+        else parentDomainCookie = parsed;
+      }
+    });
+
+    return currentDomainCookie || parentDomainCookie || null;
+  } catch (e) {
+    return read_cookie_lagacy(name);
+  }
 }
 
 // this return the cookie
