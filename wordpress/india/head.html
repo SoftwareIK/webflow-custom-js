@@ -213,6 +213,8 @@ function bake_organic_cookie() {
 // set bake_organic_cookie
 let r_visit = read_cookie("v_latest");
 r_visit = {...r_visit, ...currentURlPrms};
+bake_cookie("v_latest", r_visit);
+
 // let r_visit = currentURlPrms;
 // if (Object.keys(r_visit).length === 0) {
 //   bake_organic_cookie()
