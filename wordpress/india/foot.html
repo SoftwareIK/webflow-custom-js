@@ -485,6 +485,9 @@
       bake_cookie("from_cookie", utmstring);
   
       let finalurl = "/signup-final-step";
+      if(location.pathname.startsWith("/applied-generative-ai-for-software-engineers-course") || location.pathname.startsWith("/applied-generative-ai-for-tech-leaders-engineering-managers-course")){
+        finalurl += "-switchup";
+      }
   
       pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34xpujj/")
       .then(() => {
