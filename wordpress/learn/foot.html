@@ -104,9 +104,6 @@
       }
       slotLoaded(resobj);
       api_status = "completed";
-      if (!is_webinar_1o1_eligible) {
-        populateWebinarSlots(resobj);
-      }
     } catch (err) {
       api_status = "failed";
       fallbackSlots()
