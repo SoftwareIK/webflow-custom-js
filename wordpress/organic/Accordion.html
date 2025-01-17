@@ -1,0 +1,51 @@
+<!-- Accordion -->
+<script>
+document.querySelectorAll('.accordion-header').forEach((header) => {
+    const accordionContent = header.nextElementSibling;
+    const rotatingIcon = header.querySelector('.bar-2');
+    const colorHeading = header.querySelector('.color-heading');
+
+    accordionContent.style.maxHeight = '0px';
+
+    header.addEventListener('click', () => {
+        // Close other accordion contents
+        document.querySelectorAll('.accordion-content').forEach((content) => {
+            if (content !== accordionContent) {
+                content.style.maxHeight = '0px';
+
+                // Reset rotation for other icons
+                const otherHeader = content.previousElementSibling;
+                const otherIcon = otherHeader.querySelector('.bar-2');
+                const otherColorHeading = otherHeader.querySelector('.color-heading');
+                
+                if (otherIcon) {
+                    otherIcon.classList.remove('rotatation');
+                }
+
+                // Reset color for other headings
+                if (otherColorHeading) {
+                    otherColorHeading.classList.remove('color-142631');
+                }
+            }
+        });
+
+        // Toggle the accordion content
+        if (accordionContent.style.maxHeight === '0px') {
+            accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+        } else {
+            accordionContent.style.maxHeight = '0px';
+        }
+
+        // Toggle rotation for the current icon
+        if (rotatingIcon) {
+            rotatingIcon.classList.toggle('rotatation');
+        }
+
+        // Toggle color for the current heading
+        if (colorHeading) {
+            colorHeading.classList.toggle('color-142631');
+        }
+    });
+});
+
+</script>

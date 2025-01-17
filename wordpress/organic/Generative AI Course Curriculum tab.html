@@ -1,0 +1,26 @@
+<!-- Generative AI Course Curriculum tab -->
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+    function toggleContainers(btn1, btn2, container1, container2) {
+        document.getElementById(btn1).addEventListener('click', function () {
+            document.getElementById(container1).style.display = 'block';
+            document.getElementById(container2).style.display = 'none';
+
+            this.classList.add('active-btn');
+            document.getElementById(btn2).classList.remove('active-btn');
+        });
+
+        document.getElementById(btn2).addEventListener('click', function () {
+            document.getElementById(container1).style.display = 'none';
+            document.getElementById(container2).style.display = 'block';
+
+            this.classList.add('active-btn');
+            document.getElementById(btn1).classList.remove('active-btn');
+        });
+    }
+	
+    toggleContainers('btn1', 'btn2', 'container1', 'container2');
+    toggleContainers('cap_btn1', 'cap_btn2', 'cap_container1', 'cap_container2');
+});
+
+</script>

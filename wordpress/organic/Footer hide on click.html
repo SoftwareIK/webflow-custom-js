@@ -1,0 +1,31 @@
+<!-- Footer hide on click -->
+<script>
+  const footerHideIcon = document.getElementById('footer_hide_icon');
+  const footerHideIconContainer = document.getElementById('footer_hide_container');
+  // footerHideIconContainer.classList.add('max_height_0');
+  // footerHideIcon.classList.toggle('icon_rotate');
+  
+  footerHideIcon.addEventListener('click', () => {
+      footerHideIconContainer.classList.toggle('max_height_0');
+      footerHideIcon.classList.toggle('icon_rotate');
+      footerHideIconContainer.classList.toggle('lock');
+  })
+  
+  window.addEventListener('scroll', () => {
+      if(!(footerHideIconContainer.classList.contains('lock'))){
+          let distanceFromBottom = document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
+      if(window.scrollY < 1000 || distanceFromBottom < 600){
+          if(!footerHideIconContainer.classList.contains("max_height_0")){
+              footerHideIconContainer.classList.add('max_height_0');
+              footerHideIcon.classList.toggle('icon_rotate');
+          }
+      }
+      else{
+          if(footerHideIconContainer.classList.contains("max_height_0")){
+              footerHideIconContainer.classList.remove('max_height_0');
+              footerHideIcon.classList.toggle('icon_rotate');
+          }
+      }
+      }
+  })
+  </script>
