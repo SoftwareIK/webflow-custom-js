@@ -230,7 +230,15 @@
   })();
 
   function setHiddenFields() {
-    let params = read_cookie("v_latest");
+    //  let params = read_cookie("v_latest");
+    let params = [];
+    try {
+      params = read_cookie("v_latest") || getParams()
+      bake_cookie("v_latest", params);
+    } catch (error) {
+      console.error("Error while reading cookie", error);
+    }
+
     webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
     webNearInfo.utm_medium = decodeURIComponent(params['utm_medium'] || `${visitor_id}${getCookie("_ga")}:${v_country}`);
     webNearInfo.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");

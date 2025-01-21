@@ -60,6 +60,21 @@
 
     const err_temp = {};
 
+    function getPhoneNumberOrDefault() {
+      let fPhoneNumber = "";
+      if (typeof intlTelInputUtils == "undefined") {
+        try {
+          fPhoneNumber = `+${webNearPhoneNumberWri.getSelectedCountryData().dialCode}${document.querySelector("#webinar_pnumber")?.value}`;
+        } catch (error) {
+          console.error("Error while getting phone number", error);
+          fPhoneNumber = document.querySelector("#webinar_pnumber")?.value;
+        }
+      } else {
+        fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
+      return fPhoneNumber
+    }
+
     // First step
     function finalFrStep1(btn){
         let errorStatus = false;
@@ -124,7 +139,8 @@
             user_id: visitor_id,
             user_timezone: v_timezone,
             v_country: v_country,
-            phone_number_full: webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164),
+            // phone_number_full: webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164),
+            phone_number_full: getPhoneNumberOrDefault(),
             'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
             'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
             'Work Experience': getWorkExperience.value,
@@ -184,7 +200,8 @@
             user_id: visitor_id,
             user_timezone: v_timezone,
             v_country: v_country,
-            phone_number_full: webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164),
+            // phone_number_full: webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164),
+            phone_number_full: getPhoneNumberOrDefault(),
             'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
             'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
             'Work Experience': getWorkExperience.value,
@@ -212,7 +229,7 @@
             sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/340arrq/", GQLformData);
         }
     }
-    
+
     // Thard step
     function finalFrStep3(btn){
         btn.disabled = true;
@@ -231,7 +248,8 @@
             user_id: visitor_id,
             user_timezone: v_timezone,
             v_country: v_country,
-            phone_number_full: webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164),
+            // phone_number_full: webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164),
+            phone_number_full: getPhoneNumberOrDefault(),
             'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
             'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
             'Work Experience': getWorkExperience.value,
