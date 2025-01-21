@@ -211,7 +211,11 @@
   // function bake_cookie(name, value) {
   //   var utmstring = value;
   //   utmstring.timestamp = Date.now();
-  //   var cookie = [name, '=', JSON.stringify(utmstring), ';expires', '=', expdate.toGMTString(), '; domain=.', window.location.host.toString(), '; path=/;'].join('');
+  //   var cookie = [
+  //       name, '=', JSON.stringify(utmstring),
+  //       ';expires=', expdate.toUTCString(),
+  //       ';path=/'
+  //   ].join('');
   //   document.cookie = cookie;
   //   // setHiddenFields(utmstring);
   // }
