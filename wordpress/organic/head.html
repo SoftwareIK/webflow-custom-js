@@ -200,7 +200,7 @@ if(v_country === "India" && webinarType != "ONE_TO_ONE_CONNECT") webinarType = "
 		}
 // set the visitor Country End-------------------------------
 
-// // organic cookie start ------------------------------------------------------------
+// // synced organic cookie start ------------------------------------------------------------
 // function bake_cookie(name, value) {
 //     var utmstring = value;
 //     utmstring.timestamp = Date.now();
@@ -220,10 +220,25 @@ if(v_country === "India" && webinarType != "ONE_TO_ONE_CONNECT") webinarType = "
 //     // setHiddenFields(utmstring);
 // }
 // organic cookie start ------------------------------------------------------------
+// function bake_cookie(name, value) {
+//     var utmstring = value;
+//     utmstring.timestamp = Date.now();
+//     var cookie = [name, '=', JSON.stringify(utmstring), ';expires', '=', expdate.toGMTString(), '; domain=.', window.location.host.toString(), '; path=/;'].join('');
+//     document.cookie = cookie;
+//     // setHiddenFields(utmstring);
+// }
+
 function bake_cookie(name, value) {
     var utmstring = value;
     utmstring.timestamp = Date.now();
-    var cookie = [name, '=', JSON.stringify(utmstring), ';expires', '=', expdate.toGMTString(), '; domain=.', window.location.host.toString(), '; path=/;'].join('');
+
+    // Construct the cookie string
+    var cookie = [
+        name, '=', JSON.stringify(utmstring),
+        ';expires=', expdate.toUTCString(),
+        ';path=/'
+    ].join('');
+
     document.cookie = cookie;
     // setHiddenFields(utmstring);
 }
