@@ -127,7 +127,7 @@
   // this will set the cookie
   function setCookie(cname, cvalue) {
       var d = new Date();
-      d.setTime(d.getTime() + (400 * 24 * 60 * 60 * 1000));
+      d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
       var expires = "expires=" + d.toUTCString();
 
       var domainParts = document.location.hostname.split('.');
@@ -210,7 +210,7 @@
       var cookie = [
         name, 
         '=', JSON.stringify(utmstring), 
-        ';expires', '=', expdate.toGMTString(), 
+        ';expires', '=', expdate.toUTCString(), 
         '; domain=.', domain, 
         '; path=/',
         '; SameSite=None; Secure'    
