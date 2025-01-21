@@ -1,11 +1,11 @@
 <!-- Sing Up final from (B) -->
 <!-- Final page body start -->
- <!-- signup-final-step -->
- <script>
+<!-- signup-final-step -->
+<script>
   const getFinalForm = document.querySelector('.final_step_fr');
-  let utmparams =  {...read_cookie("v_latest"), ...read_cookie("from_cookie")};
+  let utmparams = { ...read_cookie("v_latest"), ...read_cookie("from_cookie") };
 
-  if(!utmparams['utm_source']) utmparams['utm_source'] = "Organic";
+  if (!utmparams['utm_source']) utmparams['utm_source'] = "Organic";
 
   // getFrom Filds 1st step
   const getWorkExperience = getFinalForm.querySelector("#experience");
@@ -21,27 +21,27 @@
 
   // getFrom filds 3rd step
   const multiSelect = new Choices('#Hear-About-IK', {
-              removeItemButton: true,
-              searchEnabled: true,
-              placeholderValue: 'Select all that apply',
-              noResultsText: 'No results found',
-              itemSelectText: '', // No text when selecting an option
-          });
-  
+    removeItemButton: true,
+    searchEnabled: true,
+    placeholderValue: 'Select all that apply',
+    noResultsText: 'No results found',
+    itemSelectText: '', // No text when selecting an option
+  });
+
   // Step Buttons
   const StepBtn1 = getFinalForm.querySelector("#step_1_btn");
   const StepBtn2 = getFinalForm.querySelector("#step_2_btn");
   const StepBtn3 = getFinalForm.querySelector("#step_3_btn");
 
   // Buttons click listener
-  StepBtn1.addEventListener("click", function(){
-      finalFrStep1(this);
+  StepBtn1.addEventListener("click", function () {
+    finalFrStep1(this);
   });
-  StepBtn2.addEventListener("click", function(){
-      finalFrStep2(this);
+  StepBtn2.addEventListener("click", function () {
+    finalFrStep2(this);
   });
-  StepBtn3.addEventListener("click", function(){
-      finalFrStep3(this);
+  StepBtn3.addEventListener("click", function () {
+    finalFrStep3(this);
   });
 
   const err_temp = {};
@@ -49,208 +49,208 @@
   let leadScoreData = {};
 
   // First step
-  function finalFrStep1(btn){
-      let errorStatus = false;
-      btn.disabled = !errorStatus;
-      // check conditions
-      if(!getWorkExperience.value){
-          errorStatus = true;
-          errorFun( ".exp_fild", errorStatus);
-          if(!err_temp.exp_fild){
-              err_temp.exp_fild = errorStatus;
-              getWorkExperience.addEventListener("input", function () {
-                  errorFun( ".exp_fild", false);
-              })
-          }
+  function finalFrStep1(btn) {
+    let errorStatus = false;
+    btn.disabled = !errorStatus;
+    // check conditions
+    if (!getWorkExperience.value) {
+      errorStatus = true;
+      errorFun(".exp_fild", errorStatus);
+      if (!err_temp.exp_fild) {
+        err_temp.exp_fild = errorStatus;
+        getWorkExperience.addEventListener("input", function () {
+          errorFun(".exp_fild", false);
+        })
       }
+    }
 
-      if(!getDomainRole.value){
-          errorStatus = true;
-          errorFun( ".domain_role_fild", errorStatus);
-          if(!err_temp.domain_role_fild){
-              err_temp.domain_role_fild = errorStatus;
-              getDomainRole.addEventListener("input", function () {
-                  errorFun( ".domain_role_fild", false);
-              })
-          }
+    if (!getDomainRole.value) {
+      errorStatus = true;
+      errorFun(".domain_role_fild", errorStatus);
+      if (!err_temp.domain_role_fild) {
+        err_temp.domain_role_fild = errorStatus;
+        getDomainRole.addEventListener("input", function () {
+          errorFun(".domain_role_fild", false);
+        })
       }
+    }
 
-      if(!getStartIn.value){
-          errorStatus = true;
-          errorFun( ".start_interviewing_fild", errorStatus);
-          if(!err_temp.start_interviewing_fild){
-              err_temp.start_interviewing_fild = errorStatus;
-              getStartIn.addEventListener("input", function () {
-                  errorFun( ".start_interviewing_fild", false);
-              })
-          }
+    if (!getStartIn.value) {
+      errorStatus = true;
+      errorFun(".start_interviewing_fild", errorStatus);
+      if (!err_temp.start_interviewing_fild) {
+        err_temp.start_interviewing_fild = errorStatus;
+        getStartIn.addEventListener("input", function () {
+          errorFun(".start_interviewing_fild", false);
+        })
       }
-      btn.disabled = !errorStatus;
-      if(!errorStatus){
-          let GQLformData = {
-          'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
-          'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
-          'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
-          utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
-          utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
-          utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
-          utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
-          gclid: decodeURIComponent(utmparams['gclid'] || ""),
-          msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
-          fbclid: decodeURIComponent(utmparams['fbclid'] || ""),
-          user_id: visitor_id,
-          user_timezone: v_timezone,
-          v_country: v_country,
-          phone_number_full: decodeURIComponent(utmparams['answer_1'] || ""),
-          'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
-          'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
-          'Work Experience': getWorkExperience.value,
-          'Role Domain': getDomainRole.value,
-          // 'PA Consult Time': "",
-          // 'PA Consult Time Other': "",
-          'Interview Start Time': getStartIn.value,
-          'Laid Off': getLaidOff.checked,
-          'Is Student': getIsStudent.checked,
-          // 'Domain Switch': '',
-          salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
-          };
-
-          leadScoreService()
-          .then(function(data){
-              leadScoreData = data;
-          }).then(function(){
-              GQLformData = {...GQLformData, ...leadScoreData};
-              try{
-                  dataLayer.push({
-                      event: "wordpress_form_submitted",
-                      formName: "Lead Qualifier Form",
-                      expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
-                  })
-              }catch(err){
-                  console.error(err);
-              }
-              sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3409hxu/", GQLformData);
-          });            
-      }
-  }
-  
-  // Second step
-  function finalFrStep2(btn){
-      let errorStatus = false;
-      btn.disabled = !errorStatus;
-      // check conditions
-      if(!getSwDomainRole.value){
-          errorStatus = true;
-          errorFun( ".sw_domain_role_fild", errorStatus);
-          if(!err_temp.sw_domain_role_fild){
-              err_temp.sw_domain_role_fild = errorStatus;
-              getSwDomainRole.addEventListener("input", function () {
-                  errorFun( ".sw_domain_role_fild", false);
-              })
-          }
-      }
-
-      // if(!getStgCrCh.value){
-      //     errorStatus = true;
-      //     errorFun( ".st_of_yr_cr_fild", errorStatus);
-      //     if(!err_temp.st_of_yr_cr_fild){
-      //         err_temp.st_of_yr_cr_fild = errorStatus;
-      //         getStgCrCh.addEventListener("input", function () {
-      //             errorFun( ".st_of_yr_cr_fild", false);
-      //         })
-      //     }
-      // }
-      btn.disabled = !errorStatus;
-      if(!errorStatus){
-          let GQLformData = {
-          'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
-          'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
-          'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
-          utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
-          utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
-          utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
-          utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
-          gclid: decodeURIComponent(utmparams['gclid'] || ""),
-          msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
-          fbclid: decodeURIComponent(utmparams['fbclid'] || ""),
-          user_id: visitor_id,
-          user_timezone: v_timezone,
-          v_country: v_country,
-          phone_number_full: decodeURIComponent(utmparams['answer_1'] || ""),
-          'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
-          'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
-          'Work Experience': getWorkExperience.value,
-          'Role Domain': getDomainRole.value,
-          'Interview Start Time': getStartIn.value,
-          'Laid Off': getLaidOff.checked,
-          'Is Student': getIsStudent.checked,
-          'Domain Switch': getSwDomainRole.value,
-          // 'Stage of Career Change': getStgCrCh.value,
-          salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
-          // 'Switch to Engineering Management': false ? 'Yes': 'No',
-          };
-
-
-          try{
-              dataLayer.push({
-                  event: "wordpress_form_submitted", 
-                  formName: "Switch Domain Form",
-                  expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
-              })
-          }catch(err){
-              console.error(err);
-          }
-          sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/340rvpf/", GQLformData);
-      }
-  }
-  
-  // Thard step
-  function finalFrStep3(btn){
-      btn.disabled = true;
-      btn.innerHTML = "Please wait...";
+    }
+    btn.disabled = !errorStatus;
+    if (!errorStatus) {
       let GQLformData = {
-          'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
-          'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
-          'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
-          utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
-          utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
-          utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
-          utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
-          gclid: decodeURIComponent(utmparams['gclid'] || ""),
-          msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
-          fbclid: decodeURIComponent(utmparams['fbclid'] || ""),
-          user_id: visitor_id,
-          user_timezone: v_timezone,
-          v_country: v_country,
-          phone_number_full: decodeURIComponent(utmparams['answer_1'] || ""),
-          'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
-          'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
-          'Work Experience': getWorkExperience.value,
-          'Role Domain': getDomainRole.value,
-          // 'PA Consult Time': "",
-          // 'PA Consult Time Other': "",
-          'Interview Start Time': getStartIn.value,
-          'Laid Off': getLaidOff.checked,
-          'Is Student': getIsStudent.checked,
-          'Domain Switch': getSwDomainRole.value,
-          // 'Stage of Career Change': getStgCrCh.value,
-          'hear about IK[]': multiSelect.getValue(true),
-          salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
-          // 'Switch to Engineering Management': false ? 'Yes': 'No',
+        'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
+        'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
+        'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
+        utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
+        utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
+        utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
+        utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
+        gclid: decodeURIComponent(utmparams['gclid'] || ""),
+        msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
+        fbclid: decodeURIComponent(utmparams['fbclid'] || ""),
+        user_id: visitor_id,
+        user_timezone: v_timezone,
+        v_country: v_country,
+        phone_number_full: decodeURIComponent(utmparams['answer_1'] || ""),
+        'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
+        'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
+        'Work Experience': getWorkExperience.value,
+        'Role Domain': getDomainRole.value,
+        // 'PA Consult Time': "",
+        // 'PA Consult Time Other': "",
+        'Interview Start Time': getStartIn.value,
+        'Laid Off': getLaidOff.checked,
+        'Is Student': getIsStudent.checked,
+        // 'Domain Switch': '',
+        salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
       };
-      GQLformData = {...GQLformData, ...leadScoreData};
-      try{
-          dataLayer.push({
-                  event: "wordpress_form_submitted", 
-                  formName: "Source Form",
-                  expected_revenue: expectedRev,
-              })	
-      }catch(err){
-          console.error(err);
-      }
-      sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3sxtz40/", GQLformData);
+
+      leadScoreService()
+        .then(function (data) {
+          leadScoreData = data;
+        }).then(function () {
+          GQLformData = { ...GQLformData, ...leadScoreData };
+          try {
+            dataLayer.push({
+              event: "wordpress_form_submitted",
+              formName: "Lead Qualifier Form",
+              expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
+            })
+          } catch (err) {
+            console.error(err);
+          }
+          sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3409hxu/", GQLformData);
+        });
+    }
   }
-      
+
+  // Second step
+  function finalFrStep2(btn) {
+    let errorStatus = false;
+    btn.disabled = !errorStatus;
+    // check conditions
+    if (!getSwDomainRole.value) {
+      errorStatus = true;
+      errorFun(".sw_domain_role_fild", errorStatus);
+      if (!err_temp.sw_domain_role_fild) {
+        err_temp.sw_domain_role_fild = errorStatus;
+        getSwDomainRole.addEventListener("input", function () {
+          errorFun(".sw_domain_role_fild", false);
+        })
+      }
+    }
+
+    // if(!getStgCrCh.value){
+    //     errorStatus = true;
+    //     errorFun( ".st_of_yr_cr_fild", errorStatus);
+    //     if(!err_temp.st_of_yr_cr_fild){
+    //         err_temp.st_of_yr_cr_fild = errorStatus;
+    //         getStgCrCh.addEventListener("input", function () {
+    //             errorFun( ".st_of_yr_cr_fild", false);
+    //         })
+    //     }
+    // }
+    btn.disabled = !errorStatus;
+    if (!errorStatus) {
+      let GQLformData = {
+        'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
+        'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
+        'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
+        utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
+        utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
+        utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
+        utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
+        gclid: decodeURIComponent(utmparams['gclid'] || ""),
+        msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
+        fbclid: decodeURIComponent(utmparams['fbclid'] || ""),
+        user_id: visitor_id,
+        user_timezone: v_timezone,
+        v_country: v_country,
+        phone_number_full: decodeURIComponent(utmparams['answer_1'] || ""),
+        'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
+        'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
+        'Work Experience': getWorkExperience.value,
+        'Role Domain': getDomainRole.value,
+        'Interview Start Time': getStartIn.value,
+        'Laid Off': getLaidOff.checked,
+        'Is Student': getIsStudent.checked,
+        'Domain Switch': getSwDomainRole.value,
+        // 'Stage of Career Change': getStgCrCh.value,
+        salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
+        // 'Switch to Engineering Management': false ? 'Yes': 'No',
+      };
+
+
+      try {
+        dataLayer.push({
+          event: "wordpress_form_submitted",
+          formName: "Switch Domain Form",
+          expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
+        })
+      } catch (err) {
+        console.error(err);
+      }
+      sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/340rvpf/", GQLformData);
+    }
+  }
+
+  // Thard step
+  function finalFrStep3(btn) {
+    btn.disabled = true;
+    btn.innerHTML = "Please wait...";
+    let GQLformData = {
+      'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
+      'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
+      'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
+      utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
+      utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
+      utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
+      utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
+      gclid: decodeURIComponent(utmparams['gclid'] || ""),
+      msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
+      fbclid: decodeURIComponent(utmparams['fbclid'] || ""),
+      user_id: visitor_id,
+      user_timezone: v_timezone,
+      v_country: v_country,
+      phone_number_full: decodeURIComponent(utmparams['answer_1'] || ""),
+      'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
+      'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
+      'Work Experience': getWorkExperience.value,
+      'Role Domain': getDomainRole.value,
+      // 'PA Consult Time': "",
+      // 'PA Consult Time Other': "",
+      'Interview Start Time': getStartIn.value,
+      'Laid Off': getLaidOff.checked,
+      'Is Student': getIsStudent.checked,
+      'Domain Switch': getSwDomainRole.value,
+      // 'Stage of Career Change': getStgCrCh.value,
+      'hear about IK[]': multiSelect.getValue(true),
+      salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
+      // 'Switch to Engineering Management': false ? 'Yes': 'No',
+    };
+    GQLformData = { ...GQLformData, ...leadScoreData };
+    try {
+      dataLayer.push({
+        event: "wordpress_form_submitted",
+        formName: "Source Form",
+        expected_revenue: expectedRev,
+      })
+    } catch (err) {
+      console.error(err);
+    }
+    sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3sxtz40/", GQLformData);
+  }
+
   async function leadScoreService() {
     const API_KEY = "cT8YFc92uylyqfQXWMMrFdLTiMA";
     const urlParamsx = new URLSearchParams(window.location.search);
@@ -269,54 +269,54 @@
       time_zone_2: v_timezone,
       device: getDeviceType(),
     }
-  
+
     let options = {
       method: "POST",
       body: JSON.stringify(data),
       headers: { 'x-api-key': API_KEY, 'Content-Type': 'application/json' },
     }
-  
-    try{
+
+    try {
       const response = await fetch('https://j466lvsvmbogck6ejb7vwogo6m0kuwjy.lambda-url.us-west-1.on.aws/', options);
       const result = await response.json();
-      if(!result.email) result.email = decodeURIComponent(utmparams['invitee_email'] || "");
+      if (!result.email) result.email = decodeURIComponent(utmparams['invitee_email'] || "");
       return result;
-    }catch(e){
+    } catch (e) {
       console.error(e)
     }
   }
-  
+
   // send request fun
   async function sendRequestZapiar(url, data) {
-      let options = {
-          method: 'POST',
-          mode: "no-cors",
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-      };
-  
-      try{
-          let response = await fetch(url, options);
-          moveNextStep();
-      }catch (err){
-         console.error("sendRequestZapiar", err);
-      }
+    let options = {
+      method: 'POST',
+      mode: "no-cors",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+
+    try {
+      let response = await fetch(url, options);
+      moveNextStep();
+    } catch (err) {
+      console.error("sendRequestZapiar", err);
+    }
   }
 
 
-  function moveNextStep(){
-      let getCurrentStep = parseInt(getFinalForm.getAttribute("active_step"));
-      getCurrentStep++;
-      getFinalForm.setAttribute("active_step", getCurrentStep);
+  function moveNextStep() {
+    let getCurrentStep = parseInt(getFinalForm.getAttribute("active_step"));
+    getCurrentStep++;
+    getFinalForm.setAttribute("active_step", getCurrentStep);
   }
 
-  function errorFun(targetTedClass, status = false){
-      getFinalForm.querySelector(targetTedClass).setAttribute("err_status", status);
+  function errorFun(targetTedClass, status = false) {
+    getFinalForm.querySelector(targetTedClass).setAttribute("err_status", status);
   }
 
 
 
-  </script>
+</script>
 <!-- Final page body end -->

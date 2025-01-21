@@ -239,8 +239,8 @@
   }
 
   function observeWebinarType() {
-    let timezone = typeof(v_timezone) == "undefined" ? Intl.DateTimeFormat().resolvedOptions().timeZone : v_timezone;
-    let webinar_type = typeof(webinarType) == "undefined" ? "REGULAR" : webinarType;
+    let timezone = typeof (v_timezone) == "undefined" ? Intl.DateTimeFormat().resolvedOptions().timeZone : v_timezone;
+    let webinar_type = typeof (webinarType) == "undefined" ? "REGULAR" : webinarType;
     let previousTimezone = "";
     let previousWebinarType = "";
     function checkForChange() {

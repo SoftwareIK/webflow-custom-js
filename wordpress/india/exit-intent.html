@@ -1,473 +1,473 @@
 <script>
-	
-let AB_BUCKET = "control";
-let weightageOfVariant = 50;
-let popupShown = false;
-let highIntentClickCount = 0; // Counter for high intent clicks
-const highIntentThreshold = 1; // Number of clicks to mark a user as high intent
-const highIntentCookieName = "highIntentUser";
 
-function getDeviceType() {
-  var e = navigator.userAgent;
-  return /mobile/i.test(e)
-    ? "Mobile"
-    : /iPad|Android|Touch/i.test(e)
-      ? "Tablet"
-      : "Desktop";
-}
+  let AB_BUCKET = "control";
+  let weightageOfVariant = 50;
+  let popupShown = false;
+  let highIntentClickCount = 0; // Counter for high intent clicks
+  const highIntentThreshold = 1; // Number of clicks to mark a user as high intent
+  const highIntentCookieName = "highIntentUser";
 
-function mobileDevice() {
-  return getDeviceType() === "Mobile";
-}
-
-function desktopDevice() {
-  return getDeviceType() == "Desktop";
-}
-
-function splitTraffic() {
-  let isVarient = false;
-  try {
-    uuid = getCookie("unique_visitor_id") || visitor_id;
-    const lastTwoDigits = parseInt(uuid.slice(-2)); // Defaults to base 10
-    isVarient = lastTwoDigits >= weightageOfVariant;
-
-    // if(location.host.includes("learn") && !desktopDevice()){
-    //   isVarient = lastTwoDigits >= 30;
-    // }
-
-    if (window.clarity) {
-      window.clarity(
-        "set",
-        "intent-variant",
-        isVarient ? "variant" : "control"
-      );
-    }
-  } catch (error) {
-    console.error(error);
+  function getDeviceType() {
+    var e = navigator.userAgent;
+    return /mobile/i.test(e)
+      ? "Mobile"
+      : /iPad|Android|Touch/i.test(e)
+        ? "Tablet"
+        : "Desktop";
   }
-  return isVarient;
-}
 
-function trackHighIntentClicks() {
-  document.addEventListener("click", (e) => {
-    // Check if the clicked element is a link
-    const target = e.target.closest("a");
-    if (target) {
-      const href = target.getAttribute("href");
+  function mobileDevice() {
+    return getDeviceType() === "Mobile";
+  }
 
-      // Ignore in-page links and JavaScript links
-      if (
-        !href || // No href attribute
-        href.startsWith("#") || // In-page links
-        target.pathname === window.location.pathname // Same page links
-      ) {
-        return;
+  function desktopDevice() {
+    return getDeviceType() == "Desktop";
+  }
+
+  function splitTraffic() {
+    let isVarient = false;
+    try {
+      uuid = getCookie("unique_visitor_id") || visitor_id;
+      const lastTwoDigits = parseInt(uuid.slice(-2)); // Defaults to base 10
+      isVarient = lastTwoDigits >= weightageOfVariant;
+
+      // if(location.host.includes("learn") && !desktopDevice()){
+      //   isVarient = lastTwoDigits >= 30;
+      // }
+
+      if (window.clarity) {
+        window.clarity(
+          "set",
+          "intent-variant",
+          isVarient ? "variant" : "control"
+        );
       }
-
-      // Increment the high intent click counter
-      highIntentClickCount++;
-
-      if (highIntentClickCount >= highIntentThreshold) {
-        // Set a cookie to suppress the popup for high intent users
-        setCookie(highIntentCookieName, "true", 6); // Suppress popup for 6 hours
-      }
+    } catch (error) {
+      console.error(error);
     }
-  });
-}
+    return isVarient;
+  }
 
-function hideCurrentModalOnBlogPage() {
-  const pathname = window.location.pathname;
+  function trackHighIntentClicks() {
+    document.addEventListener("click", (e) => {
+      // Check if the clicked element is a link
+      const target = e.target.closest("a");
+      if (target) {
+        const href = target.getAttribute("href");
 
-  if (pathname.includes("/blogs/")) {
-    const modalElements = document.querySelectorAll(".fs_modal-2_component");
-    modalElements.forEach((element) => {
-      element.style.display = "none";
+        // Ignore in-page links and JavaScript links
+        if (
+          !href || // No href attribute
+          href.startsWith("#") || // In-page links
+          target.pathname === window.location.pathname // Same page links
+        ) {
+          return;
+        }
+
+        // Increment the high intent click counter
+        highIntentClickCount++;
+
+        if (highIntentClickCount >= highIntentThreshold) {
+          // Set a cookie to suppress the popup for high intent users
+          setCookie(highIntentCookieName, "true", 6); // Suppress popup for 6 hours
+        }
+      }
     });
   }
-}
 
-function initExitIntentPopup(eagerLoadImage, options = {}) {
-  const COOKIE_NAME = "exitIntentPopupShown";
+  function hideCurrentModalOnBlogPage() {
+    const pathname = window.location.pathname;
 
-
-  // Configurable parameters with default values
-  const {
-    downScrollThreshold = 50, // Minimum scroll down percentage to start tracking upward scroll
-    upScrollThreshold = 5, // Minimum upward scroll percentage to trigger popup after scrolling down
-    upScrollSpeedThreshold = 1000 * 5, // pixel per seconds
-    popupTimeoutHours = 6, // Timeout duration to prevent reappearing in hours
-    initialScrollIgnore = 10, // Initial scroll percentage to ignore (avoids accidental triggers on load)
-    bottomIgnoreThreshold = 5, // Bottom 5% of the page to ignore upward scrolls
-    outsideViewportDelay = 500, // Minimum time outside viewport to trigger popup (in ms)
-  } = options;
-
-  let maxScrollPercent = 0; // Maximum scroll percentage reached by the user
-  let popupInitialized = false;
-  let exitPopup = null;
-  let isTrackingUpScroll = false; // Flag to start tracking upward scroll only after downScrollThreshold is reached
-  let lastUpScrollTimestamp = 0; // Timestamp of the last upward scroll detected
-  let contextMenuOpen = false; // Flag to track if the context menu was opened
-  let outsideViewportTimer; // Timer for tracking time outside viewport
-  let lastScrollY = 0;
-
-  // Utility to set a cookie with a specified expiry in hours
-  const setCookie = (name, value, hours) => {
-    const date = new Date();
-    date.setTime(date.getTime() + hours * 60 * 60 * 1000);
-    var expires = "expires=" + date.toUTCString();
-        
-    var domainParts = document.location.hostname.split('.');
-    var baseDomain = domainParts.slice(-2).join('.')
-    var domain = "domain=." + baseDomain;
-    var sameSite = "SameSite=None; Secure";
-
-    document.cookie = name + "=" + encodeURIComponent(value) + ";" + expires + ";" + domain + ";path=/;" + sameSite;
+    if (pathname.includes("/blogs/")) {
+      const modalElements = document.querySelectorAll(".fs_modal-2_component");
+      modalElements.forEach((element) => {
+        element.style.display = "none";
+      });
+    }
   }
 
-  // Utility to get the value of a specific cookie by name
-  const getCookie = (name) => {
-    const cookies = document.cookie.split("; ");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].split("=");
-      if (cookie[0] === name) return cookie[1];
+  function initExitIntentPopup(eagerLoadImage, options = {}) {
+    const COOKIE_NAME = "exitIntentPopupShown";
+
+
+    // Configurable parameters with default values
+    const {
+      downScrollThreshold = 50, // Minimum scroll down percentage to start tracking upward scroll
+      upScrollThreshold = 5, // Minimum upward scroll percentage to trigger popup after scrolling down
+      upScrollSpeedThreshold = 1000 * 5, // pixel per seconds
+      popupTimeoutHours = 6, // Timeout duration to prevent reappearing in hours
+      initialScrollIgnore = 10, // Initial scroll percentage to ignore (avoids accidental triggers on load)
+      bottomIgnoreThreshold = 5, // Bottom 5% of the page to ignore upward scrolls
+      outsideViewportDelay = 500, // Minimum time outside viewport to trigger popup (in ms)
+    } = options;
+
+    let maxScrollPercent = 0; // Maximum scroll percentage reached by the user
+    let popupInitialized = false;
+    let exitPopup = null;
+    let isTrackingUpScroll = false; // Flag to start tracking upward scroll only after downScrollThreshold is reached
+    let lastUpScrollTimestamp = 0; // Timestamp of the last upward scroll detected
+    let contextMenuOpen = false; // Flag to track if the context menu was opened
+    let outsideViewportTimer; // Timer for tracking time outside viewport
+    let lastScrollY = 0;
+
+    // Utility to set a cookie with a specified expiry in hours
+    const setCookie = (name, value, hours) => {
+      const date = new Date();
+      date.setTime(date.getTime() + hours * 60 * 60 * 1000);
+      var expires = "expires=" + date.toUTCString();
+
+      var domainParts = document.location.hostname.split('.');
+      var baseDomain = domainParts.slice(-2).join('.')
+      var domain = "domain=." + baseDomain;
+      var sameSite = "SameSite=None; Secure";
+
+      document.cookie = name + "=" + encodeURIComponent(value) + ";" + expires + ";" + domain + ";path=/;" + sameSite;
     }
-    return null;
-  };
 
-  const closePopup = (overlay, trackClick = true) => {
-    // Close popup
-    overlay.style.display = "none";
+    // Utility to get the value of a specific cookie by name
+    const getCookie = (name) => {
+      const cookies = document.cookie.split("; ");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].split("=");
+        if (cookie[0] === name) return cookie[1];
+      }
+      return null;
+    };
 
-    if (trackClick) {
-      saveClickActivity("exit_intent_close_button_clicked", new Date().getTime());
-    }
-  };
+    const closePopup = (overlay, trackClick = true) => {
+      // Close popup
+      overlay.style.display = "none";
 
-  const createExitIntentPopup = () => {
-    // Overlay
-    const overlay = document.createElement("div");
-    overlay.id = "exit-intent-overlay";
-    overlay.style.position = "fixed";
-    overlay.style.top = "0";
-    overlay.style.left = "0";
-    overlay.style.width = "100%";
-    overlay.style.height = "100%";
-    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
-    overlay.style.display = "flex";
-    overlay.style.alignItems = "center";
-    overlay.style.justifyContent = "center";
-    overlay.style.zIndex = "9999";
+      if (trackClick) {
+        saveClickActivity("exit_intent_close_button_clicked", new Date().getTime());
+      }
+    };
 
-    // Popup container
-    const popup = document.createElement("div");
-    popup.id = "exit-intent-popup";
-    popup.style.position = "relative";
-    popup.style.backgroundColor = "white";
-    popup.style.borderRadius = "8px";
-    if (mobileDevice()) {
-      popup.style.paddingTop = "30px";
-      popup.style.paddingBottom = "30px";
-      popup.style.maxWidth = "80%";
-    } else {
-      popup.style.maxWidth = "800px";
-    }
-    popup.style.maxHeight = "80%";
-    popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
-    popup.style.textAlign = "center";
+    const createExitIntentPopup = () => {
+      // Overlay
+      const overlay = document.createElement("div");
+      overlay.id = "exit-intent-overlay";
+      overlay.style.position = "fixed";
+      overlay.style.top = "0";
+      overlay.style.left = "0";
+      overlay.style.width = "100%";
+      overlay.style.height = "100%";
+      overlay.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
+      overlay.style.display = "flex";
+      overlay.style.alignItems = "center";
+      overlay.style.justifyContent = "center";
+      overlay.style.zIndex = "9999";
 
-    // Image element
-    const image = document.createElement("img");
-    image.src = eagerLoadImage.src;
-    image.alt = "IKIQ thumbnail";
-    image.style.maxWidth = "100%";
-    image.style.height = "auto";
-    image.style.cursor = "pointer";
-    image.style.borderRadius = "8px";
+      // Popup container
+      const popup = document.createElement("div");
+      popup.id = "exit-intent-popup";
+      popup.style.position = "relative";
+      popup.style.backgroundColor = "white";
+      popup.style.borderRadius = "8px";
+      if (mobileDevice()) {
+        popup.style.paddingTop = "30px";
+        popup.style.paddingBottom = "30px";
+        popup.style.maxWidth = "80%";
+      } else {
+        popup.style.maxWidth = "800px";
+      }
+      popup.style.maxHeight = "80%";
+      popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+      popup.style.textAlign = "center";
 
-    // Image click event to redirect, close popup, and track activity
-    image.onclick = () => {
-      const targetUrl = new URL(
-        "https://ikiq.interviewkickstart.com/resume-analysis"
-      );
+      // Image element
+      const image = document.createElement("img");
+      image.src = eagerLoadImage.src;
+      image.alt = "IKIQ thumbnail";
+      image.style.maxWidth = "100%";
+      image.style.height = "auto";
+      image.style.cursor = "pointer";
+      image.style.borderRadius = "8px";
 
-      const appendUTMParams = () => {
-        let params = window.location.search;
-        params = params.replaceAll("stayhere=1", "");
-        const urlParams = new URLSearchParams(params);
+      // Image click event to redirect, close popup, and track activity
+      image.onclick = () => {
+        const targetUrl = new URL(
+          "https://ikiq.interviewkickstart.com/resume-analysis"
+        );
 
-        if ([...urlParams].length > 0) {
-          urlParams.forEach((value, key) =>
-            targetUrl.searchParams.append(key, value)
-          );
-        } else {
-          const vLatestCookie = getCookie("v_latest");
-          if (vLatestCookie) {
-            try {
-              const utmParams = JSON.parse(decodeURIComponent(vLatestCookie));
-              utmParams["utm_source"] = utmParams["utm_source"] || "Organic"
-              Object.keys(utmParams).forEach((key) => {
-                if (utmParams[key]) {
-                  const isNonLearnSite = !window.location.host.includes("learn");
-                  if(isNonLearnSite && key === "utm_source" && (utmParams[key] === "Organic" || !utmParams[key])) {
-                    targetUrl.searchParams.append("utm_source", "exit_intent_organic");
-                  } else {
-                    targetUrl.searchParams.append(key, utmParams[key]);
+        const appendUTMParams = () => {
+          let params = window.location.search;
+          params = params.replaceAll("stayhere=1", "");
+          const urlParams = new URLSearchParams(params);
+
+          if ([...urlParams].length > 0) {
+            urlParams.forEach((value, key) =>
+              targetUrl.searchParams.append(key, value)
+            );
+          } else {
+            const vLatestCookie = getCookie("v_latest");
+            if (vLatestCookie) {
+              try {
+                const utmParams = JSON.parse(decodeURIComponent(vLatestCookie));
+                utmParams["utm_source"] = utmParams["utm_source"] || "Organic"
+                Object.keys(utmParams).forEach((key) => {
+                  if (utmParams[key]) {
+                    const isNonLearnSite = !window.location.host.includes("learn");
+                    if (isNonLearnSite && key === "utm_source" && (utmParams[key] === "Organic" || !utmParams[key])) {
+                      targetUrl.searchParams.append("utm_source", "exit_intent_organic");
+                    } else {
+                      targetUrl.searchParams.append(key, utmParams[key]);
+                    }
                   }
-                }
-              });
-            } catch (error) {
-              console.error("Failed to parse v_latest cookie:", error);
+                });
+              } catch (error) {
+                console.error("Failed to parse v_latest cookie:", error);
+              }
             }
           }
+        };
+
+        appendUTMParams();
+        window.open(targetUrl.toString(), "_blank");
+
+        // Track image click activity
+        saveClickActivity("exit_intent_image_clicked", new Date().getTime());
+
+        closePopup(overlay, false);
+      };
+
+      popup.appendChild(image);
+
+      // Close button
+      const closeButton = document.createElement("span");
+      closeButton.innerHTML = "&times;";
+      closeButton.style.position = "absolute";
+      closeButton.style.top = "0";
+      closeButton.style.right = "14px";
+      closeButton.style.cursor = "pointer";
+      closeButton.style.fontSize = "32px";
+      closeButton.style.color = "#555";
+
+      // Close button click event to close popup and track activity
+      closeButton.onclick = () => {
+        closePopup(overlay);
+      };
+
+      popup.appendChild(closeButton);
+
+      overlay.appendChild(popup);
+      document.body.appendChild(overlay);
+
+      // Close popup when clicking outside
+      overlay.onclick = (event) => {
+        if (event.target === overlay) {
+          closePopup(overlay);
         }
       };
 
-      appendUTMParams();
-      window.open(targetUrl.toString(), "_blank");
-
-      // Track image click activity
-      saveClickActivity("exit_intent_image_clicked", new Date().getTime());
-
-      closePopup(overlay, false);
+      return overlay;
     };
 
-    popup.appendChild(image);
+    const shouldShowPopup = () => {
+      let isFormOpened = false;
+      let isVideoOpened = false;
+      let isHighIntentUser = getCookie(highIntentCookieName) === "true";
 
-    // Close button
-    const closeButton = document.createElement("span");
-    closeButton.innerHTML = "&times;";
-    closeButton.style.position = "absolute";
-    closeButton.style.top = "0";
-    closeButton.style.right = "14px";
-    closeButton.style.cursor = "pointer";
-    closeButton.style.fontSize = "32px";
-    closeButton.style.color = "#555";
+      try {
+        isFormOpened = !!document.querySelector('.web_near_form') && document.querySelector('.web_near_form').getAttribute("show_status") != 'false';
+        isVideoOpened = !!document.querySelector('.video_popup') && document.querySelector('.video_popup').classList.contains("open");
+      } catch (error) {
+        console.error("Failed to check if form or video is opened:", error);
+      }
 
-    // Close button click event to close popup and track activity
-    closeButton.onclick = () => {
-      closePopup(overlay);
+      const isSwitchup = webinarType === "SWITCH_UP";
+
+      const shouldShow = !getCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened && !isSwitchup && !isHighIntentUser;
+      if (shouldShow && window.location.pathname.includes("/blogs/") && typeof (blogPopupShown) != undefined) {
+        return !blogPopupShown;
+      }
+      return shouldShow;
     };
 
-    popup.appendChild(closeButton);
-
-    overlay.appendChild(popup);
-    document.body.appendChild(overlay);
-
-    // Close popup when clicking outside
-    overlay.onclick = (event) => {
-      if (event.target === overlay) {
-        closePopup(overlay);
+    const showPopup = () => {
+      if (!popupInitialized && shouldShowPopup()) {
+        exitPopup = createExitIntentPopup();
+        popupInitialized = true;
+      }
+      if (shouldShowPopup()) {
+        exitPopup.style.display = "flex";
+        popupShown = true; // Mark the popup as shown in the current session
+        setCookie(COOKIE_NAME, "true", popupTimeoutHours);
+        saveClickActivity("exit_intent_popup_shown", new Date().getTime());
+        hideCurrentModalOnBlogPage();
       }
     };
 
-    return overlay;
-  };
+    // Detect scroll behavior to trigger popup on exit intent
+    const detectExitIntentScroll = () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const currentScrollY = window.scrollY;
+      const currentTimestamp = performance.now();
 
-  const shouldShowPopup = () => {
-    let isFormOpened = false;
-    let isVideoOpened = false;
-    let isHighIntentUser = getCookie(highIntentCookieName) === "true";
+      // Calculate the current scroll percentage
+      const currentScrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
 
-    try {
-      isFormOpened = !!document.querySelector('.web_near_form') && document.querySelector('.web_near_form').getAttribute("show_status") != 'false';
-      isVideoOpened = !!document.querySelector('.video_popup') && document.querySelector('.video_popup').classList.contains("open");
-    } catch (error) {
-      console.error("Failed to check if form or video is opened:", error);
-    }
+      // Ignore initial scrolls if they haven't reached the initialScrollIgnore threshold
+      if (currentScrollPercent < initialScrollIgnore) {
+        return;
+      }
 
-    const isSwitchup = webinarType === "SWITCH_UP";
+      // Track max scroll percentage and start tracking upward scroll after downScrollThreshold
+      maxScrollPercent = Math.max(maxScrollPercent, currentScrollPercent);
+      if (maxScrollPercent >= downScrollThreshold) {
+        isTrackingUpScroll = true;
+      }
 
-    const shouldShow = !getCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened && !isSwitchup && !isHighIntentUser;
-    if (shouldShow && window.location.pathname.includes("/blogs/") && typeof(blogPopupShown) != undefined) {
-      return !blogPopupShown;
-    }
-    return shouldShow;
-  };
+      // Check for upward scroll only if downScrollThreshold was reached and not within the bottom ignore threshold
+      if (
+        isTrackingUpScroll &&
+        currentScrollPercent <= maxScrollPercent - upScrollThreshold &&
+        currentScrollPercent < 100 - bottomIgnoreThreshold
+      ) {
+        // Calculate the difference in scroll position and time
+        const scrollDelta = lastScrollY - currentScrollY;
+        const timeDelta = (currentTimestamp - lastUpScrollTimestamp) / 1000; // Convert to seconds
 
-  const showPopup = () => {
-    if (!popupInitialized && shouldShowPopup()) {
-      exitPopup = createExitIntentPopup();
-      popupInitialized = true;
-    }
-    if (shouldShowPopup()) {
-      exitPopup.style.display = "flex";
-      popupShown = true; // Mark the popup as shown in the current session
-      setCookie(COOKIE_NAME, "true", popupTimeoutHours);
-      saveClickActivity("exit_intent_popup_shown", new Date().getTime());
-      hideCurrentModalOnBlogPage();
-    }
-  };
+        // Avoid division by zero
+        if (timeDelta > 0) {
+          const scrollSpeed = scrollDelta / timeDelta; // pixels per second
 
-  // Detect scroll behavior to trigger popup on exit intent
-  const detectExitIntentScroll = () => {
-    const scrollTop = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
-    const currentScrollY = window.scrollY;
-    const currentTimestamp = performance.now();
+          const rapidScrollThreshold = upScrollSpeedThreshold;
 
-    // Calculate the current scroll percentage
-    const currentScrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
-
-    // Ignore initial scrolls if they haven't reached the initialScrollIgnore threshold
-    if (currentScrollPercent < initialScrollIgnore) {
-      return;
-    }
-
-    // Track max scroll percentage and start tracking upward scroll after downScrollThreshold
-    maxScrollPercent = Math.max(maxScrollPercent, currentScrollPercent);
-    if (maxScrollPercent >= downScrollThreshold) {
-      isTrackingUpScroll = true;
-    }
-
-    // Check for upward scroll only if downScrollThreshold was reached and not within the bottom ignore threshold
-    if (
-      isTrackingUpScroll &&
-      currentScrollPercent <= maxScrollPercent - upScrollThreshold &&
-      currentScrollPercent < 100 - bottomIgnoreThreshold
-    ) {
-      // Calculate the difference in scroll position and time
-      const scrollDelta = lastScrollY - currentScrollY;
-      const timeDelta = (currentTimestamp - lastUpScrollTimestamp) / 1000; // Convert to seconds
-
-      // Avoid division by zero
-      if (timeDelta > 0) {
-        const scrollSpeed = scrollDelta / timeDelta; // pixels per second
-
-        const rapidScrollThreshold = upScrollSpeedThreshold;
-
-        if (scrollSpeed > rapidScrollThreshold) {
-          showPopup();
+          if (scrollSpeed > rapidScrollThreshold) {
+            showPopup();
+          }
         }
+
+        // Update the last scroll position and timestamp
+        lastScrollY = currentScrollY;
+        lastUpScrollTimestamp = currentTimestamp;
+      }
+    };
+
+    const initializeScrollDetection = () => {
+      window.addEventListener("scroll", detectExitIntentScroll);
+    };
+
+    // Mobile: Detect back button or history change attempt
+    const detectBackButton = () => {
+      window.addEventListener("popstate", () => {
+        showPopup();
+      });
+
+      // Push a state to history to capture 'back' press
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    // Mobile & Desktop: Detect visibility change (tab or app going to background)
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        showPopup();
+      }
+    };
+
+    // Mobile & Desktop: Detect blur event when focus leaves the browser window
+    const onWindowBlur = () => {
+      showPopup();
+    };
+
+    // Desktop: Detect mouseleave event to identify exit intent
+    const onMouseLeave = (e) => {
+      if (contextMenuOpen) return; // Ignore if context menu is open
+
+      if (e.clientY <= 0 || e.relatedTarget === null) {
+        // Set a timeout to show popup if user stays outside viewport for more than the specified delay
+        outsideViewportTimer = setTimeout(() => {
+          showPopup();
+        }, outsideViewportDelay);
+      }
+    };
+
+    // Cancel the popup if the user re-enters within 500ms
+    const onMouseEnter = () => {
+      clearTimeout(outsideViewportTimer); // Clear the timer if user returns within delay
+    };
+
+    // Track context menu open/close state
+    window.addEventListener("contextmenu", () => {
+      contextMenuOpen = true;
+    });
+
+    window.addEventListener("click", () => {
+      contextMenuOpen = false;
+    });
+
+    // Add event listeners based on device type
+    const initializeExitIntentDetection = () => {
+      if (!mobileDevice()) {
+        // Desktop-specific exit intent triggers
+        document.addEventListener("mouseleave", onMouseLeave);
+        document.addEventListener("mouseenter", onMouseEnter); // Track re-entering viewport
+      } else {
+        // Mobile-specific exit intent triggers
+        detectBackButton();
+        initializeScrollDetection(); // Only initialize scroll detection on mobile
       }
 
-      // Update the last scroll position and timestamp
-      lastScrollY = currentScrollY;
-      lastUpScrollTimestamp = currentTimestamp;
-    }
-  };
+      // General triggers for both mobile and desktop
+      document.addEventListener("visibilitychange", onVisibilityChange);
+      window.addEventListener("blur", onWindowBlur);
+    };
 
-  const initializeScrollDetection = () => {
-    window.addEventListener("scroll", detectExitIntentScroll);
-  };
-
-  // Mobile: Detect back button or history change attempt
-  const detectBackButton = () => {
-    window.addEventListener("popstate", () => {
-      showPopup();
-    });
-
-    // Push a state to history to capture 'back' press
-    window.history.pushState(null, "", window.location.href);
-  };
-
-  // Mobile & Desktop: Detect visibility change (tab or app going to background)
-  const onVisibilityChange = () => {
-    if (document.visibilityState === "hidden") {
-      showPopup();
-    }
-  };
-
-  // Mobile & Desktop: Detect blur event when focus leaves the browser window
-  const onWindowBlur = () => {
-    showPopup();
-  };
-
-  // Desktop: Detect mouseleave event to identify exit intent
-  const onMouseLeave = (e) => {
-    if (contextMenuOpen) return; // Ignore if context menu is open
-
-    if (e.clientY <= 0 || e.relatedTarget === null) {
-      // Set a timeout to show popup if user stays outside viewport for more than the specified delay
-      outsideViewportTimer = setTimeout(() => {
-        showPopup();
-      }, outsideViewportDelay);
-    }
-  };
-
-  // Cancel the popup if the user re-enters within 500ms
-  const onMouseEnter = () => {
-    clearTimeout(outsideViewportTimer); // Clear the timer if user returns within delay
-  };
-
-  // Track context menu open/close state
-  window.addEventListener("contextmenu", () => {
-    contextMenuOpen = true;
-  });
-
-  window.addEventListener("click", () => {
-    contextMenuOpen = false;
-  });
-
-  // Add event listeners based on device type
-  const initializeExitIntentDetection = () => {
-    if (!mobileDevice()) {
-      // Desktop-specific exit intent triggers
-      document.addEventListener("mouseleave", onMouseLeave);
-      document.addEventListener("mouseenter", onMouseEnter); // Track re-entering viewport
-    } else {
-      // Mobile-specific exit intent triggers
-      detectBackButton();
-      initializeScrollDetection(); // Only initialize scroll detection on mobile
-    }
-
-    // General triggers for both mobile and desktop
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    window.addEventListener("blur", onWindowBlur);
-  };
-
-  // Run the initialization function when DOM is fully loaded
-  document.addEventListener("DOMContentLoaded", initializeExitIntentDetection);
-}
-
-function ignorePath() {
-  const finalStepPages = [
-    "signup-final-step",
-    "signup-final-step-v6",
-    "signup-final-step-switchup",
-    "signup-final-step-switchup-v6",
-    "ikiq-webinar-registration",
-    "/webinar-registration"
-  ];
-
-  // Check if current URL matches any of the predefined final step pages
-  const isFinalStepPage = finalStepPages.some((step) =>
-    window.location.pathname.includes(step)
-  );
-
-  // Check for paths matching "/su/*"
-  const isSuPage =
-    window.location.pathname.startsWith("/su/") &&
-    window.location.hostname === "interviewkickstart.com";
-
-  return isFinalStepPage || isSuPage;
-}
-
-if (!ignorePath()) {
-  const isVariant = splitTraffic();
-  AB_BUCKET = isVariant ? "variant" : "control";
-  if (isVariant) {
-    const eagerLoadImage = new Image();
-    if (mobileDevice()) {
-      eagerLoadImage.src =
-        "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6735d41ebced5e2946456b47_Mobile.webp";
-    } else {
-      eagerLoadImage.src =
-        "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6736c3bbc05aac9dc828b94f_exit-intent-web.webp";
-    }
-
-    initExitIntentPopup(eagerLoadImage, {
-      downScrollThreshold: 1,
-      upScrollThreshold: 20,
-      upScrollSpeedThreshold: 1000 * 10,
-      popupTimeoutHours: 3,
-      checkInterval: 100,
-      initialScrollIgnore: 15,
-      bottomIgnoreThreshold: 5,
-      outsideViewportDelay: 500, // Minimum time outside viewport to trigger popup (500ms)
-    });
+    // Run the initialization function when DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", initializeExitIntentDetection);
   }
-}
 
-trackHighIntentClicks();
+  function ignorePath() {
+    const finalStepPages = [
+      "signup-final-step",
+      "signup-final-step-v6",
+      "signup-final-step-switchup",
+      "signup-final-step-switchup-v6",
+      "ikiq-webinar-registration",
+      "/webinar-registration"
+    ];
+
+    // Check if current URL matches any of the predefined final step pages
+    const isFinalStepPage = finalStepPages.some((step) =>
+      window.location.pathname.includes(step)
+    );
+
+    // Check for paths matching "/su/*"
+    const isSuPage =
+      window.location.pathname.startsWith("/su/") &&
+      window.location.hostname === "interviewkickstart.com";
+
+    return isFinalStepPage || isSuPage;
+  }
+
+  if (!ignorePath()) {
+    const isVariant = splitTraffic();
+    AB_BUCKET = isVariant ? "variant" : "control";
+    if (isVariant) {
+      const eagerLoadImage = new Image();
+      if (mobileDevice()) {
+        eagerLoadImage.src =
+          "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6735d41ebced5e2946456b47_Mobile.webp";
+      } else {
+        eagerLoadImage.src =
+          "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6736c3bbc05aac9dc828b94f_exit-intent-web.webp";
+      }
+
+      initExitIntentPopup(eagerLoadImage, {
+        downScrollThreshold: 1,
+        upScrollThreshold: 20,
+        upScrollSpeedThreshold: 1000 * 10,
+        popupTimeoutHours: 3,
+        checkInterval: 100,
+        initialScrollIgnore: 15,
+        bottomIgnoreThreshold: 5,
+        outsideViewportDelay: 500, // Minimum time outside viewport to trigger popup (500ms)
+      });
+    }
+  }
+
+  trackHighIntentClicks();
 </script>

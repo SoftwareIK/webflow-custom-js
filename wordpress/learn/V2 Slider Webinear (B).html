@@ -1,59 +1,59 @@
 <!-- V2 Slider Webinear (B) -->
 <script>
 
-  function v2SlotSlider(mainConatiner){
-      const sliderContainer = mainConatiner.querySelector(".slots_container");
-      const getLeftArrow = sliderContainer.querySelector(".left_arrow");
-      const getRightArrow = sliderContainer.querySelector(".right_arrow");
+  function v2SlotSlider(mainConatiner) {
+    const sliderContainer = mainConatiner.querySelector(".slots_container");
+    const getLeftArrow = sliderContainer.querySelector(".left_arrow");
+    const getRightArrow = sliderContainer.querySelector(".right_arrow");
 
-      const slideFlid = sliderContainer.querySelector(".slot_fild");
-      const slotItems = slideFlid.querySelectorAll("label.slot");
+    const slideFlid = sliderContainer.querySelector(".slot_fild");
+    const slotItems = slideFlid.querySelectorAll("label.slot");
 
-      let eachTransFrom = 91;
-      let maxTransFrom = (eachTransFrom * slotItems.length) + ((slotItems.length - 1) * 38) -  slideFlid.offsetWidth;
-      let currntPosi = 0;
+    let eachTransFrom = 91;
+    let maxTransFrom = (eachTransFrom * slotItems.length) + ((slotItems.length - 1) * 38) - slideFlid.offsetWidth;
+    let currntPosi = 0;
 
-      getRightArrow.addEventListener("click", function(){
+    getRightArrow.addEventListener("click", function () {
 
-          eachTransFrom = slotItems[0].offsetWidth;
-          maxTransFrom = (eachTransFrom * slotItems.length) + ((slotItems.length - 1) * 38) -  slideFlid.offsetWidth;
+      eachTransFrom = slotItems[0].offsetWidth;
+      maxTransFrom = (eachTransFrom * slotItems.length) + ((slotItems.length - 1) * 38) - slideFlid.offsetWidth;
 
-          currntPosi = currntPosi + eachTransFrom + 19;
-          if(currntPosi >= maxTransFrom){
-              currntPosi = maxTransFrom;
-              getRightArrow.setAttribute("ac_status", false);
-          }
-          if(currntPosi > 0){
-              getLeftArrow.setAttribute("ac_status", true);
-          }
-          if(currntPosi < 0) currntPosi = 0;
-          slideFlid.style.transform = `translateX(-${currntPosi}px)`;
-      })
+      currntPosi = currntPosi + eachTransFrom + 19;
+      if (currntPosi >= maxTransFrom) {
+        currntPosi = maxTransFrom;
+        getRightArrow.setAttribute("ac_status", false);
+      }
+      if (currntPosi > 0) {
+        getLeftArrow.setAttribute("ac_status", true);
+      }
+      if (currntPosi < 0) currntPosi = 0;
+      slideFlid.style.transform = `translateX(-${currntPosi}px)`;
+    })
 
-      getLeftArrow.addEventListener("click", function(){
-          currntPosi = currntPosi - eachTransFrom - 19;
-          if(currntPosi <= 0){
-              currntPosi = 0;
-              getLeftArrow.setAttribute("ac_status", false);
-          }
-          if(currntPosi < maxTransFrom){
-              getRightArrow.setAttribute("ac_status", true);
-          }
-          slideFlid.style.transform = `translateX(-${currntPosi}px)`;
-      })
+    getLeftArrow.addEventListener("click", function () {
+      currntPosi = currntPosi - eachTransFrom - 19;
+      if (currntPosi <= 0) {
+        currntPosi = 0;
+        getLeftArrow.setAttribute("ac_status", false);
+      }
+      if (currntPosi < maxTransFrom) {
+        getRightArrow.setAttribute("ac_status", true);
+      }
+      slideFlid.style.transform = `translateX(-${currntPosi}px)`;
+    })
   }
 
-  
 
-  document.addEventListener("webNearLoaded", function(){
-      const mainConatiner = document.querySelector(".v2_from_wrapper");
-      const slideFlid = mainConatiner.querySelector(".slot_fild");
-      slideFlid.innerHTML = "";
-      webinarSlots.forEach(function(slot, index){
-          let createWebniarSlot = document.createElement("label");
-          createWebniarSlot.classList.add("slot");
 
-          let slotInner = `
+  document.addEventListener("webNearLoaded", function () {
+    const mainConatiner = document.querySelector(".v2_from_wrapper");
+    const slideFlid = mainConatiner.querySelector(".slot_fild");
+    slideFlid.innerHTML = "";
+    webinarSlots.forEach(function (slot, index) {
+      let createWebniarSlot = document.createElement("label");
+      createWebniarSlot.classList.add("slot");
+
+      let slotInner = `
                   <input type="radio" 
                   name="v2_slot" 
                   class="v2_slot_radio"
@@ -74,24 +74,24 @@
 
           `;
 
-          if(index === 0 ){
-              slotInner += `
+      if (index === 0) {
+        slotInner += `
                   <div class="v2_timer_alart" alart_type="warning">
                       Filling fast
                   </div>
               `;
-          }else if(slot.weekday === "Saturday"){
-              slotInner += `
+      } else if (slot.weekday === "Saturday") {
+        slotInner += `
                   <div class="v2_timer_alart" alart_type="danger">
                       Almost full
                   </div>
               `;
-          }
+      }
 
-          createWebniarSlot.innerHTML = slotInner;
-          slideFlid.appendChild(createWebniarSlot);
-      })
-      v2SlotSlider(mainConatiner);
+      createWebniarSlot.innerHTML = slotInner;
+      slideFlid.appendChild(createWebniarSlot);
+    })
+    v2SlotSlider(mainConatiner);
   })
 
 </script>
@@ -100,376 +100,376 @@
 <!-- From send -->
 <script>
   let isPartner = location.pathname.startsWith("/partner/");
-window.addEventListener("DOMContentLoaded", function(){
-const getThePopupFrom2 = document.querySelector('.v2_from_wrapper');
+  window.addEventListener("DOMContentLoaded", function () {
+    const getThePopupFrom2 = document.querySelector('.v2_from_wrapper');
 
-const webNearFullName2 = getThePopupFrom2.querySelector('input.fr_name_fl');
-const webNearEmailAddress2 = getThePopupFrom2.querySelector('.fr_email_fl');
-const webNearPhoneNumber2 = getThePopupFrom2.querySelector('.fr_phone_fl');
+    const webNearFullName2 = getThePopupFrom2.querySelector('input.fr_name_fl');
+    const webNearEmailAddress2 = getThePopupFrom2.querySelector('.fr_email_fl');
+    const webNearPhoneNumber2 = getThePopupFrom2.querySelector('.fr_phone_fl');
 
-const webNearSlots2 = getThePopupFrom2.querySelector('.slot_sl_con .slot_fild');
-let webNearPhoneNumberWri2;
-intlTelInputCheckFun(function(){
-  webNearPhoneNumberWri2 = window.intlTelInput(webNearPhoneNumber2, {
-      initialCountry: "auto",
-      geoIpLookup: function(callback) {
+    const webNearSlots2 = getThePopupFrom2.querySelector('.slot_sl_con .slot_fild');
+    let webNearPhoneNumberWri2;
+    intlTelInputCheckFun(function () {
+      webNearPhoneNumberWri2 = window.intlTelInput(webNearPhoneNumber2, {
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
           fetch('https://ipinfo.io', { headers: { 'Accept': 'application/json' } })
-              .then((resp) => resp.json())
-              .then((resp) => { callback(resp.country); })
-              .catch(() => callback('in'));
-      },
-      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
-  });
-})
+            .then((resp) => resp.json())
+            .then((resp) => { callback(resp.country); })
+            .catch(() => callback('in'));
+        },
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+      });
+    })
 
-const getFnErrMsg2 = getThePopupFrom2.querySelector('.v2_full_name');
-const getEmErrMsg2 = getThePopupFrom2.querySelector('.v2_email');
-const getPhErrMsg2 = getThePopupFrom2.querySelector('.v2_phone_number');
+    const getFnErrMsg2 = getThePopupFrom2.querySelector('.v2_full_name');
+    const getEmErrMsg2 = getThePopupFrom2.querySelector('.v2_email');
+    const getPhErrMsg2 = getThePopupFrom2.querySelector('.v2_phone_number');
 
-// name container
-const webNearInfo2 = {
-  firstName: "",
-  lastName: "",
-  fPhoneNumber: "",
-  utm_source: "",
-  utm_medium: "",
-  utm_campaign: "",
-  utm_adset: "",
-  utm_content: "",
-  utm_term: "",
-  page_url: page_url,
-  site_url: window.location.hostname,
-  user_id: "",
-  gclid: "",
-  salesforce_uuid: "",
-  msclkid: "",
-  fbclid: "",
-  li_fat_id: "",
-  user_timezone: "",
-  l_page_url: "",
-  cta_page_url: "",
-  webinar_type: "",
-  eventname: "",
-  wr__referrer: "",
-  wr__device: "",
-  webinar_lead_type: "",
-  bye_calendly_type: "",
-  is_exit_intent_popup: "",
-  v_country: "",
-  wr__region: "",
-  wr__city: "",
-          irclickid: "",
+    // name container
+    const webNearInfo2 = {
+      firstName: "",
+      lastName: "",
+      fPhoneNumber: "",
+      utm_source: "",
+      utm_medium: "",
+      utm_campaign: "",
+      utm_adset: "",
+      utm_content: "",
+      utm_term: "",
+      page_url: page_url,
+      site_url: window.location.hostname,
+      user_id: "",
+      gclid: "",
+      salesforce_uuid: "",
+      msclkid: "",
+      fbclid: "",
+      li_fat_id: "",
+      user_timezone: "",
+      l_page_url: "",
+      cta_page_url: "",
+      webinar_type: "",
+      eventname: "",
+      wr__referrer: "",
+      wr__device: "",
+      webinar_lead_type: "",
+      bye_calendly_type: "",
+      is_exit_intent_popup: "",
+      v_country: "",
+      wr__region: "",
+      wr__city: "",
+      irclickid: "",
 
-  eventStartTime: "",
-  eventEndTime: "",
-  inviteStartTime: "",
-  inviteEndTime: "",
-};
+      eventStartTime: "",
+      eventEndTime: "",
+      inviteStartTime: "",
+      inviteEndTime: "",
+    };
 
-//check regex
-let name_regex2 = new RegExp("^[a-zA-Z ]+$");
-let email_regex2 = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-let phone_regex2 = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+    //check regex
+    let name_regex2 = new RegExp("^[a-zA-Z ]+$");
+    let email_regex2 = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    let phone_regex2 = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
-// getlocation json
-(async function(){
-  let response = await fetch("https://get.geojs.io/v1/ip/geo.json");
-  let data = await response.json();
-  webNearInfo2.v_country = data.country;
-  webNearInfo2.wr__region = data.region;
-  webNearInfo2.wr__city = data.city;
-})();
+    // getlocation json
+    (async function () {
+      let response = await fetch("https://get.geojs.io/v1/ip/geo.json");
+      let data = await response.json();
+      webNearInfo2.v_country = data.country;
+      webNearInfo2.wr__region = data.region;
+      webNearInfo2.wr__city = data.city;
+    })();
 
-// Partner info
-const partnerInfo = {};
+    // Partner info
+    const partnerInfo = {};
 
-if(location.pathname.startsWith('/partner/')){
-  function setPartnerCookies(partner_name, is_partnership_lead = "yes", is_user_eligible_for_partnership_discount = "yes") {
-      bake_cookie("partner_details", {
+    if (location.pathname.startsWith('/partner/')) {
+      function setPartnerCookies(partner_name, is_partnership_lead = "yes", is_user_eligible_for_partnership_discount = "yes") {
+        bake_cookie("partner_details", {
           partner_name,
           is_partnership_lead,
           is_user_eligible_for_partnership_discount
-      })
-  }
+        })
+      }
 
-  partnerInfo["is Partnership Lead"] = "yes";
-  partnerInfo["isUserEligibleForPartnershipDiscount"] = "yes";
-  partnerInfo["Partner Name"] = document.title.split("|")[0].trim();
+      partnerInfo["is Partnership Lead"] = "yes";
+      partnerInfo["isUserEligibleForPartnershipDiscount"] = "yes";
+      partnerInfo["Partner Name"] = document.title.split("|")[0].trim();
 
-  if(!getCookie("partner_details")){
-      setPartnerCookies(partnerInfo["Partner Name"], partnerInfo["is Partnership Lead"], partnerInfo["isUserEligibleForPartnershipDiscount"] )
-  }
-}
+      if (!getCookie("partner_details")) {
+        setPartnerCookies(partnerInfo["Partner Name"], partnerInfo["is Partnership Lead"], partnerInfo["isUserEligibleForPartnershipDiscount"])
+      }
+    }
 
-function getParams(t) { var t = t ? t.split("?")[1] : window.location.search.slice(1), r = {}; if (t) for (var s = (t = t.split("#")[0]).split("&"), e = 0; e < s.length; e++) { var a, n = s[e].split("="), i = n[0], o = void 0 === n[1] || n[1]; (i = i.toLowerCase()).match(/\[(\d+)?\]$/) ? (r[a = i.replace(/\[(\d+)?\]/, "")] || (r[a] = []), i.match(/\[\d+\]$/) ? (n = /\[(\d+)\]/.exec(i)[1], r[a][n] = o) : r[a].push(o)) : r[i] ? (r[i] && "string" == typeof r[i] && (r[i] = [r[i]]), r[i].push(o)) : r[i] = o } return r }
-function setHiddenFields2() {
-  //  let params = read_cookie("v_latest");
-  let params = [];
-  try {
-    params = read_cookie("v_latest") || getParams()
-    bake_cookie("v_latest", params);
-  } catch (error) {
-    console.error("Error while reading cookie", error);
-  }
-  webNearInfo2.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
-  webNearInfo2.utm_medium = decodeURIComponent(params['utm_medium'] || "");
-  webNearInfo2.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
-  webNearInfo2.utm_content = decodeURIComponent(params['utm_content'] || "");
-  webNearInfo2.utm_term = decodeURIComponent(params['utm_term'] || "");
-  webNearInfo2.utm_adset = decodeURIComponent(params['utm_adset'] || "");
-  webNearInfo2.gclid = decodeURIComponent(params['gclid'] || "");
-  webNearInfo2.salesforce_uuid = decodeURIComponent(params['salesforce_uuid'] || "");
-  webNearInfo2.msclkid = decodeURIComponent(params['msclkid'] || "");
-  webNearInfo2.fbclid = decodeURIComponent(params['fbclid'] || "");
-  webNearInfo2.li_fat_id = decodeURIComponent(params['li_fat_id'] || "");
-  
-  webNearInfo2.user_id = visitor_id;
-  webNearInfo2.user_timezone = v_timezone;
-//     webNearInfo2.l_page_url = "learn.ik" + getCookie("ik-landingpage");
-  if((referrer || '') != "") {
-    webNearInfo2.l_page_url = "learn.ik/" + (referrer || '').split("/").pop();
-  } else { 
-    webNearInfo2.l_page_url = "learn.ik/" + page_url.split("/").pop()
-  }
-  webNearInfo2.cta_page_url = "learn.ik" + cta_lp;
-  webNearInfo2.webinar_type = webinarType;
-  webNearInfo2.eventname = eventName;
-  webNearInfo2.wr__referrer = referrer;
-  webNearInfo2.wr__device = getDeviceType();
+    function getParams(t) { var t = t ? t.split("?")[1] : window.location.search.slice(1), r = {}; if (t) for (var s = (t = t.split("#")[0]).split("&"), e = 0; e < s.length; e++) { var a, n = s[e].split("="), i = n[0], o = void 0 === n[1] || n[1]; (i = i.toLowerCase()).match(/\[(\d+)?\]$/) ? (r[a = i.replace(/\[(\d+)?\]/, "")] || (r[a] = []), i.match(/\[\d+\]$/) ? (n = /\[(\d+)\]/.exec(i)[1], r[a][n] = o) : r[a].push(o)) : r[i] ? (r[i] && "string" == typeof r[i] && (r[i] = [r[i]]), r[i].push(o)) : r[i] = o } return r }
+    function setHiddenFields2() {
+      //  let params = read_cookie("v_latest");
+      let params = [];
+      try {
+        params = read_cookie("v_latest") || getParams()
+        bake_cookie("v_latest", params);
+      } catch (error) {
+        console.error("Error while reading cookie", error);
+      }
+      webNearInfo2.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
+      webNearInfo2.utm_medium = decodeURIComponent(params['utm_medium'] || "");
+      webNearInfo2.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
+      webNearInfo2.utm_content = decodeURIComponent(params['utm_content'] || "");
+      webNearInfo2.utm_term = decodeURIComponent(params['utm_term'] || "");
+      webNearInfo2.utm_adset = decodeURIComponent(params['utm_adset'] || "");
+      webNearInfo2.gclid = decodeURIComponent(params['gclid'] || "");
+      webNearInfo2.salesforce_uuid = decodeURIComponent(params['salesforce_uuid'] || "");
+      webNearInfo2.msclkid = decodeURIComponent(params['msclkid'] || "");
+      webNearInfo2.fbclid = decodeURIComponent(params['fbclid'] || "");
+      webNearInfo2.li_fat_id = decodeURIComponent(params['li_fat_id'] || "");
 
-  webNearInfo2.webinar_lead_type = webinarType;
-  webNearInfo2.bye_calendly_type = "";
-  webNearInfo2.is_exit_intent_popup = "No";
+      webNearInfo2.user_id = visitor_id;
+      webNearInfo2.user_timezone = v_timezone;
+      //     webNearInfo2.l_page_url = "learn.ik" + getCookie("ik-landingpage");
+      if ((referrer || '') != "") {
+        webNearInfo2.l_page_url = "learn.ik/" + (referrer || '').split("/").pop();
+      } else {
+        webNearInfo2.l_page_url = "learn.ik/" + page_url.split("/").pop()
+      }
+      webNearInfo2.cta_page_url = "learn.ik" + cta_lp;
+      webNearInfo2.webinar_type = webinarType;
+      webNearInfo2.eventname = eventName;
+      webNearInfo2.wr__referrer = referrer;
+      webNearInfo2.wr__device = getDeviceType();
+
+      webNearInfo2.webinar_lead_type = webinarType;
+      webNearInfo2.bye_calendly_type = "";
+      webNearInfo2.is_exit_intent_popup = "No";
       webNearInfo2.irclickid = decodeURIComponent(params['irclickid'] || "");
-}
-setHiddenFields2();
+    }
+    setHiddenFields2();
 
-async function pushToEndPoint2(endpoint) {
-  let getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
-  webNearInfo2.eventStartTime = getCheckWebnear.value;
-  webNearInfo2.eventEndTime = getCheckWebnear.getAttribute('data-endtime');
-  webNearInfo2.inviteStartTime = getCheckWebnear.getAttribute('data-invitee_starttime');
-  webNearInfo2.inviteEndTime = getCheckWebnear.getAttribute('data-invitee_endtime');
-  
-  let formData = {
-  "First Name": webNearInfo2.firstName,
-  "Last Name": webNearInfo2.lastName,
-  "Email Address": webNearEmailAddress2.value,
-  "ByeCalendlyType": webNearInfo2.bye_calendly_type,
-  "webinar-type": webNearInfo2.webinar_type,
-  "Webinar Lead Type": webNearInfo2.webinar_lead_type,
-  "utm_source": webNearInfo2.utm_source,
-  "utm_medium": webNearInfo2.utm_medium,
-  "utm_campaign": webNearInfo2.utm_campaign,
-  "utm_content": webNearInfo2.utm_content,
-  "utm_adset": webNearInfo2.utm_adset,
-  "utm_term": webNearInfo2.utm_term,
+    async function pushToEndPoint2(endpoint) {
+      let getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      webNearInfo2.eventStartTime = getCheckWebnear.value;
+      webNearInfo2.eventEndTime = getCheckWebnear.getAttribute('data-endtime');
+      webNearInfo2.inviteStartTime = getCheckWebnear.getAttribute('data-invitee_starttime');
+      webNearInfo2.inviteEndTime = getCheckWebnear.getAttribute('data-invitee_endtime');
 
-  "City": webNearInfo2.wr__city,
-  "Device": webNearInfo2.wr__device,
-  "Referrer": webNearInfo2.wr__referrer,
-  "Region": webNearInfo2.wr__region,
+      let formData = {
+        "First Name": webNearInfo2.firstName,
+        "Last Name": webNearInfo2.lastName,
+        "Email Address": webNearEmailAddress2.value,
+        "ByeCalendlyType": webNearInfo2.bye_calendly_type,
+        "webinar-type": webNearInfo2.webinar_type,
+        "Webinar Lead Type": webNearInfo2.webinar_lead_type,
+        "utm_source": webNearInfo2.utm_source,
+        "utm_medium": webNearInfo2.utm_medium,
+        "utm_campaign": webNearInfo2.utm_campaign,
+        "utm_content": webNearInfo2.utm_content,
+        "utm_adset": webNearInfo2.utm_adset,
+        "utm_term": webNearInfo2.utm_term,
 
-  "gclid": webNearInfo2.gclid,
-  "msclkid": webNearInfo2.msclkid,
-  "fbclid": webNearInfo2.fbclid,
-  "user_id": webNearInfo2.user_id,
-  "li_fat_id": webNearInfo2.li_fat_id,
+        "City": webNearInfo2.wr__city,
+        "Device": webNearInfo2.wr__device,
+        "Referrer": webNearInfo2.wr__referrer,
+        "Region": webNearInfo2.wr__region,
 
-  "cta_page_url": webNearInfo2.cta_page_url,
-  "landing_page_url": webNearInfo2.l_page_url,
-  "event_name": webNearInfo2.eventname,
-  "user_timezone": webNearInfo2.user_timezone,
-  "page_url": webNearInfo2.page_url,
-  "site_url": webNearInfo2.site_url,
-  "v_country": webNearInfo2.v_country,
-  "salesforce_uuid": webNearInfo2.salesforce_uuid,
-  "phone_number_full": webNearInfo2.fPhoneNumber,
-  "is_exit_intent_popup": webNearInfo2.is_exit_intent_popup,
-              "irclickid" : webNearInfo2.irclickid,
+        "gclid": webNearInfo2.gclid,
+        "msclkid": webNearInfo2.msclkid,
+        "fbclid": webNearInfo2.fbclid,
+        "user_id": webNearInfo2.user_id,
+        "li_fat_id": webNearInfo2.li_fat_id,
 
-  "Event Start Time": webNearInfo2.eventStartTime,
-  "Event End Time": webNearInfo2.eventEndTime,
-  "Invitee Start Time": webNearInfo2.inviteStartTime,
-  "Invitee End Time": webNearInfo2.inviteEndTime,
-              ...partnerInfo
-  };
+        "cta_page_url": webNearInfo2.cta_page_url,
+        "landing_page_url": webNearInfo2.l_page_url,
+        "event_name": webNearInfo2.eventname,
+        "user_timezone": webNearInfo2.user_timezone,
+        "page_url": webNearInfo2.page_url,
+        "site_url": webNearInfo2.site_url,
+        "v_country": webNearInfo2.v_country,
+        "salesforce_uuid": webNearInfo2.salesforce_uuid,
+        "phone_number_full": webNearInfo2.fPhoneNumber,
+        "is_exit_intent_popup": webNearInfo2.is_exit_intent_popup,
+        "irclickid": webNearInfo2.irclickid,
 
-            try{
-              formData["ipAddress"] = userIpAndBrowserInfo.ipAddress;
-              formData["browserName"] = userIpAndBrowserInfo.browserName;
-              formData["browserVersion"] = userIpAndBrowserInfo.browserVersion;
-          }catch(err){
-              formData["browserName"] = "";
-              formData["browserVersion"] = "";
-              formData["ipAddress"] = "";
-          }
+        "Event Start Time": webNearInfo2.eventStartTime,
+        "Event End Time": webNearInfo2.eventEndTime,
+        "Invitee Start Time": webNearInfo2.inviteStartTime,
+        "Invitee End Time": webNearInfo2.inviteEndTime,
+        ...partnerInfo
+      };
 
-  let options = {
-      method: 'POST',
-      mode: "no-cors",
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(formData),
-  };
+      try {
+        formData["ipAddress"] = userIpAndBrowserInfo.ipAddress;
+        formData["browserName"] = userIpAndBrowserInfo.browserName;
+        formData["browserVersion"] = userIpAndBrowserInfo.browserVersion;
+      } catch (err) {
+        formData["browserName"] = "";
+        formData["browserVersion"] = "";
+        formData["ipAddress"] = "";
+      }
 
-  try{
-      const sendData = await fetch(endpoint, options);
-      return sendData;
-  }catch(err){
-      console.error("P0: The Zapier Webhook Failed.", err);
-  }
-}
+      let options = {
+        method: 'POST',
+        mode: "no-cors",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      };
+
+      try {
+        const sendData = await fetch(endpoint, options);
+        return sendData;
+      } catch (err) {
+        console.error("P0: The Zapier Webhook Failed.", err);
+      }
+    }
 
 
-function hideError2(){
-  getFnErrMsg2.setAttribute('err_status', false);
-  getEmErrMsg2.setAttribute('err_status', false);
-  getPhErrMsg2.setAttribute('err_status', false);
-}
+    function hideError2() {
+      getFnErrMsg2.setAttribute('err_status', false);
+      getEmErrMsg2.setAttribute('err_status', false);
+      getPhErrMsg2.setAttribute('err_status', false);
+    }
 
-// First Form Submittion
-function fromSend1stStep2(){
-  setHiddenFields2();
+    // First Form Submittion
+    function fromSend1stStep2() {
+      setHiddenFields2();
 
-  let fullname = webNearFullName2.value.trim();
-  let wEmail = webNearEmailAddress2.value;
-  let fullPhoneNumber = webNearPhoneNumber2.value;
+      let fullname = webNearFullName2.value.trim();
+      let wEmail = webNearEmailAddress2.value;
+      let fullPhoneNumber = webNearPhoneNumber2.value;
 
-  //Hide errors
-  webNearFullName2.addEventListener('input', hideError2);
-  webNearEmailAddress2.addEventListener('input', hideError2);
-  webNearPhoneNumber2.addEventListener('input', hideError2);
-  webNearFullName2.addEventListener('focus', hideError2);
-  webNearEmailAddress2.addEventListener('focus', hideError2);
-  webNearPhoneNumber2.addEventListener('focus', hideError2);
-  
+      //Hide errors
+      webNearFullName2.addEventListener('input', hideError2);
+      webNearEmailAddress2.addEventListener('input', hideError2);
+      webNearPhoneNumber2.addEventListener('input', hideError2);
+      webNearFullName2.addEventListener('focus', hideError2);
+      webNearEmailAddress2.addEventListener('focus', hideError2);
+      webNearPhoneNumber2.addEventListener('focus', hideError2);
 
-  //Error check
-  if((fullname.length == 0) && (wEmail.length == 0) && (fullPhoneNumber.length == 0)){
-      getFnErrMsg2.setAttribute('err_status', true);
-      getEmErrMsg2.setAttribute('err_status', true);
-      getPhErrMsg2.setAttribute('err_status', true);
-      return;
-  }else if(!name_regex2.test(fullname) || fullname.length == 0){
-      getFnErrMsg2.setAttribute('err_status', true);
-      return;
-  }else if(!email_regex2.test(wEmail) || wEmail.length == 0) {
-      getEmErrMsg2.setAttribute('err_status', true);
-      return;
-  }else if(!phone_regex2.test(fullPhoneNumber) || fullPhoneNumber.length == 0) {
-      getPhErrMsg2.setAttribute('err_status', true);
-      return;
-  }else{
 
-      if (fullname.substring(0, fullname.indexOf(' ')) == '') {
+      //Error check
+      if ((fullname.length == 0) && (wEmail.length == 0) && (fullPhoneNumber.length == 0)) {
+        getFnErrMsg2.setAttribute('err_status', true);
+        getEmErrMsg2.setAttribute('err_status', true);
+        getPhErrMsg2.setAttribute('err_status', true);
+        return;
+      } else if (!name_regex2.test(fullname) || fullname.length == 0) {
+        getFnErrMsg2.setAttribute('err_status', true);
+        return;
+      } else if (!email_regex2.test(wEmail) || wEmail.length == 0) {
+        getEmErrMsg2.setAttribute('err_status', true);
+        return;
+      } else if (!phone_regex2.test(fullPhoneNumber) || fullPhoneNumber.length == 0) {
+        getPhErrMsg2.setAttribute('err_status', true);
+        return;
+      } else {
+
+        if (fullname.substring(0, fullname.indexOf(' ')) == '') {
           webNearInfo2.firstName = fullname.substring(fullname.indexOf(' ') + 1);
           webNearInfo2.lastName = fullname.substring(fullname.indexOf(' ') + 1);
-      } else if (fullname.substring(fullname.indexOf(' ') + 1) == '') {
+        } else if (fullname.substring(fullname.indexOf(' ') + 1) == '') {
           webNearInfo2.firstName = fullname.substring(0, fullname.indexOf(' '));
           webNearInfo2.lastName = fullname.substring(0, fullname.indexOf(' '));
-      } else {
+        } else {
           webNearInfo2.firstName = fullname.substring(0, fullname.indexOf(' '));
           webNearInfo2.lastName = fullname.substring(fullname.indexOf(' ') + 1);
-      }
+        }
 
-      try{
+        try {
           dataLayer.push({
-          'event': 'pa_new_webinar_registration_form_submitted',
-          'webinar_name': webNearInfo.eventname
+            'event': 'pa_new_webinar_registration_form_submitted',
+            'webinar_name': webNearInfo.eventname
           });
-      }catch(err){
+        } catch (err) {
           console.error("Data Layer add faild", err);
+        }
+
+        webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
+        let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/21gkn2x/" : "https://hooks.zapier.com/hooks/catch/11068981/340hd4j/";
+
+        pushToEndPoint2(zapUrl)
+          .then(() => {
+            getThePopupFrom2.setAttribute("active_step", 2);
+          });
+      }
+    }
+
+
+    // Second Form Submition
+    function fromSend2ndStep2() {
+      const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+
+      //     let utmm = visitor_id + ":" + webNearInfo2.v_country;
+      let utmm = `${visitor_id}${getCookie("_ga")}:${v_country}`;
+      let sf_uuid = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage");
+      webNearInfo2.salesforce_uuid = sf_uuid;
+      let utmstring = {
+        assigned_to: "Interview Kickstart",
+        invitee_first_name: webNearInfo2.firstName,
+        invitee_last_name: webNearInfo2.lastName,
+        invitee_email: webNearEmailAddress2.value,
+        answer_1: webNearInfo2.fPhoneNumber,
+        event_start_time: getCheckWebnear.value,
+        event_end_time: getCheckWebnear.getAttribute('data-endtime'),
+        utm_medium: utmm,
+        salesforce_uuid: sf_uuid,
+        whatsapp_consent: true
+      };
+
+      bake_cookie("from_cookie", utmstring);
+
+      let pushUrl = is_webinar_1o1_eligible ? "https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/" : "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/";
+      pushUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/" : pushUrl;
+      pushToEndPoint2(pushUrl)
+        .then(() => {
+          getThePopupFrom2.setAttribute("active_step", 3);
+        });
+    }
+
+
+    const getWorkExperience = getThePopupFrom2.querySelector('.gql_exp_select');
+    const getDomainRole = getThePopupFrom2.querySelector('.gql_domain_select');
+    const getStartIn = getThePopupFrom2.querySelector('.gql_int_select');
+    const getIsStudent = getThePopupFrom2.querySelector('.v2-checkbox-is-student');
+
+    const errWorkEx = getThePopupFrom2.querySelector('.v2_exp_fild');
+    const errDomEx = getThePopupFrom2.querySelector('.v2_dom_fild');
+    const errInEx = getThePopupFrom2.querySelector('.v2_int_fild');
+
+    let leadScoreData = {};
+
+    getWorkExperience.addEventListener('change', function () {
+      errWorkEx.setAttribute('err_status', false);
+    })
+
+    getDomainRole.addEventListener('change', function () {
+      errDomEx.setAttribute('err_status', false);
+    })
+
+    getStartIn.addEventListener('change', function () {
+      errInEx.setAttribute('err_status', false);
+    })
+
+    function fromSend3rdStep2() {
+      let v2WorkExp = getWorkExperience.value;
+      let v2DomExp = getDomainRole.value;
+      let v2StarExp = getStartIn.value;
+      let v2IsStudent = getIsStudent.checked;
+
+      let gqlErrStatus = false;
+
+      if (!v2WorkExp) {
+        gqlErrStatus = true;
+        errWorkEx.setAttribute('err_status', gqlErrStatus);
+      }
+      if (!v2DomExp) {
+        gqlErrStatus = true;
+        errDomEx.setAttribute('err_status', gqlErrStatus);
+      }
+      if (!v2StarExp) {
+        gqlErrStatus = true;
+        errInEx.setAttribute('err_status', gqlErrStatus);
       }
 
-      webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
-      let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/21gkn2x/" : "https://hooks.zapier.com/hooks/catch/11068981/340hd4j/";
-
-      pushToEndPoint2(zapUrl)
-      .then(() => {
-          getThePopupFrom2.setAttribute("active_step", 2);
-      });
-  }
-}
-
-
-// Second Form Submition
-function fromSend2ndStep2(){    
-  const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
-      
-//     let utmm = visitor_id + ":" + webNearInfo2.v_country;
-   let utmm = `${visitor_id}${getCookie("_ga")}:${v_country}`;
-  let sf_uuid = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage");
-  webNearInfo2.salesforce_uuid = sf_uuid;
-  let utmstring = {
-      assigned_to: "Interview Kickstart",
-      invitee_first_name: webNearInfo2.firstName,
-      invitee_last_name: webNearInfo2.lastName,
-      invitee_email: webNearEmailAddress2.value,
-      answer_1: webNearInfo2.fPhoneNumber,
-      event_start_time: getCheckWebnear.value,
-      event_end_time: getCheckWebnear.getAttribute('data-endtime'),
-      utm_medium: utmm,
-      salesforce_uuid: sf_uuid,
-      whatsapp_consent: true
-  };
-
-  bake_cookie("from_cookie", utmstring);
-
-  let pushUrl = is_webinar_1o1_eligible ? "https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/" : "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/";
-  pushUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/" : pushUrl;
-  pushToEndPoint2(pushUrl)
-  .then(() => {
-      getThePopupFrom2.setAttribute("active_step", 3);
-  });
-}
-
-
-const getWorkExperience = getThePopupFrom2.querySelector('.gql_exp_select');
-const getDomainRole = getThePopupFrom2.querySelector('.gql_domain_select');
-const getStartIn = getThePopupFrom2.querySelector('.gql_int_select');
-const getIsStudent = getThePopupFrom2.querySelector('.v2-checkbox-is-student');
-
-const errWorkEx = getThePopupFrom2.querySelector('.v2_exp_fild');
-const errDomEx = getThePopupFrom2.querySelector('.v2_dom_fild');
-const errInEx = getThePopupFrom2.querySelector('.v2_int_fild');
-
-let leadScoreData = {};
-
-getWorkExperience.addEventListener('change', function(){
-  errWorkEx.setAttribute('err_status', false);
-})
-
-getDomainRole.addEventListener('change', function(){
-  errDomEx.setAttribute('err_status', false);
-})
-
-getStartIn.addEventListener('change', function(){
-  errInEx.setAttribute('err_status', false);
-})
-
-function fromSend3rdStep2(){
-  let v2WorkExp =  getWorkExperience.value;
-  let v2DomExp =  getDomainRole.value;
-  let v2StarExp =  getStartIn.value;
-  let v2IsStudent =  getIsStudent.checked;
-
-  let gqlErrStatus = false;
-
-  if(!v2WorkExp){
-      gqlErrStatus = true;
-      errWorkEx.setAttribute('err_status', gqlErrStatus);
-  }
-  if(!v2DomExp){
-      gqlErrStatus = true;
-      errDomEx.setAttribute('err_status', gqlErrStatus);
-  }
-  if(!v2StarExp){
-      gqlErrStatus = true;
-      errInEx.setAttribute('err_status', gqlErrStatus);
-  }
-
-  if(!gqlErrStatus){
-      let GQLformData = {
+      if (!gqlErrStatus) {
+        let GQLformData = {
           'First Name': webNearInfo2.firstName,
           'Last Name': webNearInfo2.lastName,
           'Email Address': webNearEmailAddress2.value,
@@ -494,208 +494,208 @@ function fromSend3rdStep2(){
           'Laid Off': false,
           'Is Student': v2IsStudent,
           salesforce_uuid: webNearInfo2.salesforce_uuid,
-      };
+        };
 
-      leadScoreService()
-      .then(function(data){
-          leadScoreData = data;
-      }).then(function(){
-          GQLformData = {...GQLformData, ...leadScoreData};
-          if(location.pathname.startsWith('/partner/')){
+        leadScoreService()
+          .then(function (data) {
+            leadScoreData = data;
+          }).then(function () {
+            GQLformData = { ...GQLformData, ...leadScoreData };
+            if (location.pathname.startsWith('/partner/')) {
               let partNarCookie = read_cookie("partner_details");
-              if(typeof partNarCookie == "object" && partNarCookie != null){
-                  GQLformData = {
-                      ...GQLformData, ...partNarCookie, 
-                      "irclickid" : webNearInfo2.irclickid,
-                  };
+              if (typeof partNarCookie == "object" && partNarCookie != null) {
+                GQLformData = {
+                  ...GQLformData, ...partNarCookie,
+                  "irclickid": webNearInfo2.irclickid,
+                };
               }
-          }
-          try{
+            }
+            try {
               dataLayer.push({
-                  event: "wordpress_form_submitted",
-                  formName: "Lead Qualifier Form",
-                  expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
+                event: "wordpress_form_submitted",
+                formName: "Lead Qualifier Form",
+                expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
               })
-          }catch(err){
+            } catch (err) {
               console.error("Data Layer add faild", err);
-          }
-          let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/" : "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/";
+            }
+            let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/" : "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/";
 
-          sendRequestZapiar(zapUrl, GQLformData);
-      }); 
-  }
-}
+            sendRequestZapiar(zapUrl, GQLformData);
+          });
+      }
+    }
 
-async function leadScoreService() {
-const API_KEY = "cT8YFc92uylyqfQXWMMrFdLTiMA";
-const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+    async function leadScoreService() {
+      const API_KEY = "cT8YFc92uylyqfQXWMMrFdLTiMA";
+      const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
 
-let data = {
-  formatted_date: getCheckWebnear.value,
-  lead_email: webNearEmailAddress2.value,
-  channel: webNearInfo2.utm_medium,
-  role_domain: getDomainRole.value,
-  interview_start_time: getCheckWebnear.value,
-  sale_date: null,
-  alumni_stats: 'New_Lead',
-}
-const payload = JSON.stringify({
-  leads_stats: isSwitchUp !== "No" ? "SU" : "Others",
-  ...data
-});
-
-let options = {
-  method: "POST",
-  body: payload,
-  headers: { 'x-api-key': API_KEY, 'Content-Type': 'application/json' },
-}
-
-try{
-  const response = await fetch('https://j466lvsvmbogck6ejb7vwogo6m0kuwjy.lambda-url.us-west-1.on.aws/', options);
-  const result = await response.json();
-  if(!result.email) result.email = webNearEmailAddress2.value;
-  return result;
-}catch(e){
-  console.error(e)
-}
-}
-
-async function sendRequestZapiar(url, data) {
-  let options = {
-      method: 'POST',
-      mode: "no-cors",
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-  };
-
-  try{
-      let response = await fetch(url, options);
-      secondStepSecondRequest2();
-      getThePopupFrom2.setAttribute('show_status', false);
-      document.querySelectorAll('.af_content').forEach((item) => {
-          item.setAttribute('show_status', true);
+      let data = {
+        formatted_date: getCheckWebnear.value,
+        lead_email: webNearEmailAddress2.value,
+        channel: webNearInfo2.utm_medium,
+        role_domain: getDomainRole.value,
+        interview_start_time: getCheckWebnear.value,
+        sale_date: null,
+        alumni_stats: 'New_Lead',
+      }
+      const payload = JSON.stringify({
+        leads_stats: isSwitchUp !== "No" ? "SU" : "Others",
+        ...data
       });
-      loadPageFild();
-  }catch(err) {
-      console.error('Form Summit faild', err);
-  }
-}
 
-async function secondStepSecondRequest2() {
-  const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      let options = {
+        method: "POST",
+        body: payload,
+        headers: { 'x-api-key': API_KEY, 'Content-Type': 'application/json' },
+      }
 
-  //lead LeadCreatedTime
-  const currentDateTime = new Date();
-  const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
+      try {
+        const response = await fetch('https://j466lvsvmbogck6ejb7vwogo6m0kuwjy.lambda-url.us-west-1.on.aws/', options);
+        const result = await response.json();
+        if (!result.email) result.email = webNearEmailAddress2.value;
+        return result;
+      } catch (e) {
+        console.error(e)
+      }
+    }
 
-  function formatDateTime(dateTimeString) {
-      const date = new Date(dateTimeString);
-      const year = date.getUTCFullYear();
-      const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-      const day = date.getUTCDate().toString().padStart(2, '0');
-      const hours = date.getUTCHours().toString().padStart(2, '0');
-      const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-      const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} UTC`;
-  }
-
-  const formattedStartDateTime = formatDateTime(getCheckWebnear.value);
-  const formattedEndDateTime = formatDateTime(getCheckWebnear.getAttribute('data-endtime'));
-
-  let data = [{
-      "Lead_Created_Time": LeadCreatedTime,
-      "Lead_Name": webNearInfo2.firstName + ' ' + webNearInfo2.lastName,
-      "Lead_First_Name": webNearInfo2.firstName,
-      "Lead_Last__Name": webNearInfo2.lastName,
-      "Lead_Email": webNearEmailAddress2.value,
-      "Lead_Time_Zone": webNearInfo2.user_timezone,
-      "Event_Type_Name": eventName,
-      "Event_Start_Date_Time": formattedStartDateTime,
-      "Event_End_Date_Time": formattedEndDateTime,
-      "Cancellation_reason": "",
-      "Mobile": webNearInfo2.fPhoneNumber,
-      "UTM_Campaign": webNearInfo2.utm_campaign,
-      "UTM_Source": webNearInfo2.utm_source,
-      "UTM_Medium": webNearInfo2.utm_medium,
-      "UTM_Term": webNearInfo2.utm_term,
-      "UTM_Content": webNearInfo2.utm_content,
-      "Tracking_ID": "",
-      "User_ID": webNearInfo2.user_id,
-      "Page_URL": encodeURIComponent(webNearInfo2.page_url),
-      "Country": webNearInfo2.v_country,
-      "Client_Timezone": webNearInfo2.user_timezone,
-      "CTA_Page": encodeURIComponent(webNearInfo2.cta_page_url),
-      "Landing_Page": encodeURIComponent(webNearInfo2.l_page_url),
-      "Webinar_reg_type": "",
-      "Webinar_Type": webNearInfo2.webinar_type,
-      "Switchup_Lead": webNearInfo2.webinar_lead_type,
-      "UUID": webNearInfo2.salesforce_uuid,
-      "Click_History": "",
-      "City": webNearInfo2.wr__city,
-      "Device": webNearInfo.wr__device,
-      "User_Agent" : encodeURIComponent(navigator?.userAgent || ""),
-      "Refferer": encodeURIComponent(webNearInfo2.wr__referrer),
-      "Region": webNearInfo2.wr__region
-  }];
-  
-  let options = {
-              method: 'POST',
-              headers: {
-                      'x-api-key': 'fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN',
-                      'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                      dataset_id: "Marketing_data_new_logic",
-                      table_id: "Leads_Click_history",
-                      data: data,
-              }),
+    async function sendRequestZapiar(url, data) {
+      let options = {
+        method: 'POST',
+        mode: "no-cors",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       };
 
-  try{
-      const response = await fetch('https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod', options);
-      return response;
-  }catch(err){
-      console.error(err);
-  };
-}
+      try {
+        let response = await fetch(url, options);
+        secondStepSecondRequest2();
+        getThePopupFrom2.setAttribute('show_status', false);
+        document.querySelectorAll('.af_content').forEach((item) => {
+          item.setAttribute('show_status', true);
+        });
+        loadPageFild();
+      } catch (err) {
+        console.error('Form Summit faild', err);
+      }
+    }
+
+    async function secondStepSecondRequest2() {
+      const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+
+      //lead LeadCreatedTime
+      const currentDateTime = new Date();
+      const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
+
+      function formatDateTime(dateTimeString) {
+        const date = new Date(dateTimeString);
+        const year = date.getUTCFullYear();
+        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+        const day = date.getUTCDate().toString().padStart(2, '0');
+        const hours = date.getUTCHours().toString().padStart(2, '0');
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+        const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} UTC`;
+      }
+
+      const formattedStartDateTime = formatDateTime(getCheckWebnear.value);
+      const formattedEndDateTime = formatDateTime(getCheckWebnear.getAttribute('data-endtime'));
+
+      let data = [{
+        "Lead_Created_Time": LeadCreatedTime,
+        "Lead_Name": webNearInfo2.firstName + ' ' + webNearInfo2.lastName,
+        "Lead_First_Name": webNearInfo2.firstName,
+        "Lead_Last__Name": webNearInfo2.lastName,
+        "Lead_Email": webNearEmailAddress2.value,
+        "Lead_Time_Zone": webNearInfo2.user_timezone,
+        "Event_Type_Name": eventName,
+        "Event_Start_Date_Time": formattedStartDateTime,
+        "Event_End_Date_Time": formattedEndDateTime,
+        "Cancellation_reason": "",
+        "Mobile": webNearInfo2.fPhoneNumber,
+        "UTM_Campaign": webNearInfo2.utm_campaign,
+        "UTM_Source": webNearInfo2.utm_source,
+        "UTM_Medium": webNearInfo2.utm_medium,
+        "UTM_Term": webNearInfo2.utm_term,
+        "UTM_Content": webNearInfo2.utm_content,
+        "Tracking_ID": "",
+        "User_ID": webNearInfo2.user_id,
+        "Page_URL": encodeURIComponent(webNearInfo2.page_url),
+        "Country": webNearInfo2.v_country,
+        "Client_Timezone": webNearInfo2.user_timezone,
+        "CTA_Page": encodeURIComponent(webNearInfo2.cta_page_url),
+        "Landing_Page": encodeURIComponent(webNearInfo2.l_page_url),
+        "Webinar_reg_type": "",
+        "Webinar_Type": webNearInfo2.webinar_type,
+        "Switchup_Lead": webNearInfo2.webinar_lead_type,
+        "UUID": webNearInfo2.salesforce_uuid,
+        "Click_History": "",
+        "City": webNearInfo2.wr__city,
+        "Device": webNearInfo.wr__device,
+        "User_Agent": encodeURIComponent(navigator?.userAgent || ""),
+        "Refferer": encodeURIComponent(webNearInfo2.wr__referrer),
+        "Region": webNearInfo2.wr__region
+      }];
+
+      let options = {
+        method: 'POST',
+        headers: {
+          'x-api-key': 'fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          dataset_id: "Marketing_data_new_logic",
+          table_id: "Leads_Click_history",
+          data: data,
+        }),
+      };
+
+      try {
+        const response = await fetch('https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod', options);
+        return response;
+      } catch (err) {
+        console.error(err);
+      };
+    }
 
 
-function loadPageFild(){
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    function loadPageFild() {
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 
-  const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
-  const getFullData = webinarSlots[parseInt(getCheckWebnear.getAttribute("slot-index"))];
+      const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      const getFullData = webinarSlots[parseInt(getCheckWebnear.getAttribute("slot-index"))];
 
-  const getDayFild = document.querySelector('#v2-success-day');
-  const getDateFild = document.querySelector('#v2-success-date');
-  const getMonthFild = document.querySelector('#v2-success-month');
-  const getTimeFild = document.querySelector('#v2-success-time');
+      const getDayFild = document.querySelector('#v2-success-day');
+      const getDateFild = document.querySelector('#v2-success-date');
+      const getMonthFild = document.querySelector('#v2-success-month');
+      const getTimeFild = document.querySelector('#v2-success-time');
 
-  getDayFild.innerHTML = getFullData.weekday;
-  getDateFild.innerHTML = getFullData.day;
-  getMonthFild.innerHTML = months[parseInt(getFullData.month) - 1];
-  getTimeFild.innerHTML = `${getFullData.hour}:${getFullData.minute} ${getFullData.am_or_pm}`;
+      getDayFild.innerHTML = getFullData.weekday;
+      getDateFild.innerHTML = getFullData.day;
+      getMonthFild.innerHTML = months[parseInt(getFullData.month) - 1];
+      getTimeFild.innerHTML = `${getFullData.hour}:${getFullData.minute} ${getFullData.am_or_pm}`;
 
-}
-const getV2Btn1 = getThePopupFrom2.querySelector('.step_btn_1');
-const getV2Btn2 = getThePopupFrom2.querySelector('.step_btn_2');
-const getV2Btn3 = getThePopupFrom2.querySelector('.step_btn_3');
+    }
+    const getV2Btn1 = getThePopupFrom2.querySelector('.step_btn_1');
+    const getV2Btn2 = getThePopupFrom2.querySelector('.step_btn_2');
+    const getV2Btn3 = getThePopupFrom2.querySelector('.step_btn_3');
 
-const getV2Back2 = getThePopupFrom2.querySelector('.step_back_2');
-const getV2Back3 = getThePopupFrom2.querySelector('.step_back_3');
+    const getV2Back2 = getThePopupFrom2.querySelector('.step_back_2');
+    const getV2Back3 = getThePopupFrom2.querySelector('.step_back_3');
 
-getV2Btn1.addEventListener("click", fromSend1stStep2);
-getV2Btn2.addEventListener("click", fromSend2ndStep2);
-getV2Btn3.addEventListener("click", fromSend3rdStep2);
+    getV2Btn1.addEventListener("click", fromSend1stStep2);
+    getV2Btn2.addEventListener("click", fromSend2ndStep2);
+    getV2Btn3.addEventListener("click", fromSend3rdStep2);
 
-getV2Back2.addEventListener("click", function(){
-  getThePopupFrom2.setAttribute("active_step", 1);
-})
-getV2Back3.addEventListener("click", function(){
-  getThePopupFrom2.setAttribute("active_step", 2);
-})
-})
+    getV2Back2.addEventListener("click", function () {
+      getThePopupFrom2.setAttribute("active_step", 1);
+    })
+    getV2Back3.addEventListener("click", function () {
+      getThePopupFrom2.setAttribute("active_step", 2);
+    })
+  })
 </script>
