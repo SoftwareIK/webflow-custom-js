@@ -59,12 +59,16 @@
 
 
   function showCookieConsent(geo) {
-    const learnGQLPages = ['/signup-final-step', '/signup-final-step-switchup',]
+    try {
+      if (window.location.search.includes("hideCookiesConsent=true")) return;
+    } catch (e) { console.error(e) }
+
+    const GQLPages = ['/signup-final-step', '/signup-final-step-switchup',]
 
     // Check if the current path is in the excluded paths
     const currentPath = window.location.pathname;
 
-    if (learnGQLPages.includes(currentPath)) {
+    if (GQLPages.includes(currentPath)) {
       return;
     }
 
