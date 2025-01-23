@@ -1,0 +1,121 @@
+<!-- Cookie Foot -->
+<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+
+<script>
+	
+	function initCookieConsentScrollBehavior() {
+  try {
+    let lastScrollTop = 0;
+    const cookieBanner = document.querySelector('.cc-window');
+    
+    // Calculate 5% of the scrollable height
+    const fivePercentScroll = document.documentElement.scrollHeight * 0.05;
+
+    // Throttle helper function
+    function throttle(fn, wait) {
+      let lastTime = 0;
+      return function (...args) {
+        const now = new Date().getTime();
+        if (now - lastTime >= wait) {
+          lastTime = now;
+          fn(...args);
+        }
+      };
+    }
+
+    // Scroll handler
+    function handleScroll() {
+      const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+      // Check if body has position fixed (i.e., when a popup is open)
+      const isBodyFixed = window.getComputedStyle(document.body).position === 'fixed';
+
+      // Only toggle banner visibility if the body is not fixed
+      if (!isBodyFixed) {
+        if (currentScroll > lastScrollTop && currentScroll > fivePercentScroll) {
+          // User has scrolled down more than 5% of the screen - hide the banner
+          cookieBanner.classList.remove('cc-visible');
+          cookieBanner.classList.add('cc-hidden');
+        } else if (currentScroll < lastScrollTop && currentScroll <= fivePercentScroll) {
+          // User has scrolled up near the top - show the banner
+          cookieBanner.classList.remove('cc-hidden');
+          cookieBanner.classList.add('cc-visible');
+        }
+      }
+
+      lastScrollTop = currentScroll;
+    }
+
+    // Check if the banner exists
+    if (cookieBanner) {
+      // Initial state, banner is visible
+      cookieBanner.classList.add('cc-visible');
+
+      // Attach the throttled scroll event handler
+      window.addEventListener('scroll', throttle(handleScroll, 200)); // Throttle to 200ms
+    }
+  } catch (error) { console.error(error) }
+}
+	
+	
+function showCookieConsent (geo) {
+		    const learnGQLPages = ['/signup-final-step', '/signup-final-step-switchup', ]
+
+        // Check if the current path is in the excluded paths
+        const currentPath = window.location.pathname;
+
+        if (learnGQLPages.includes(currentPath)) {
+            return;
+        }
+	
+    const allowedUSRegions = [
+      'California',
+      'Colorado',
+      'Virginia',
+      'Connecticut',
+      'Utah',
+    ]
+    
+    if (geo && (geo.country === 'United States' && ( !geo.region || !allowedUSRegions.includes(geo.region) ))) {
+      // Don't show banner (for other US states)
+      return;
+    }
+    
+    window.cookieconsent.initialise({
+      palette: {
+        popup: { background: "#3996d2", text: "#ffffff" },
+        button: { background: "#00d1b4", text: "#ffffff" },
+      },
+      theme: "classic",
+      content: {
+        message:
+          "We use cookies to enable the best possible experience on our site and to optimize the content for you. If you continue surfing you agree.",
+        href: "https://www.interviewkickstart.com/privacy-policy",
+      },
+      onPopupOpen: function() {
+        initCookieConsentScrollBehavior();
+        document.querySelector(".cc-window .cc-btn").setAttribute("id", "cookie-got-it-button");
+        document.querySelector(".cc-window .cc-link").setAttribute("id", "cookie-learn-more-privacy-policy-button");
+
+      },
+      onPopupClose: function() {
+        let style = document.getElementById('cookie-consent-styles');
+        document.querySelector(".cc-window").style.display = "none";
+        if (style) { style.disabled = true; }
+      },
+      onInitialise: function (status) {
+        if (status == "dismiss") {
+          let style = document.getElementById('cookie-consent-styles');
+          if (style) { style.disabled = true; }
+        }
+      }
+    });
+  }
+	
+	(async function(){
+    let response = await fetch("https://get.geojs.io/v1/ip/geo.json");
+    let data = await response.json();
+    showCookieConsent(data);
+})();
+	
+</script>
