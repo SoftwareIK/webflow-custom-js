@@ -1,45 +1,45 @@
 <!-- Cookie Foot -->
 <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
 <script>
-    function showCookieConsent(geo) {
+  function showCookieConsent(geo) {
 
-			try { 
-				if(window.location.search.includes("hideCookiesConsent=true")) return;
-			}catch (e) {console.error(e)}
-			
-        const allowedUSRegions = ['California', 'Colorado', 'Virginia', 'Connecticut', 'Utah', ];
+    try {
+      if (window.location.search.includes("hideCookiesConsent=true")) return;
+    } catch (e) { console.error(e) }
 
-        if (geo && (geo.country === 'United States' && (!geo.region || !allowedUSRegions.includes(geo.region)))) {
-            // Don't show banner (for other US states)
-            return;
-        }
+    const allowedUSRegions = ['California', 'Colorado', 'Virginia', 'Connecticut', 'Utah',];
 
-        window.cookieconsent.initialise({
-            palette: {
-                popup: {
-                    background: "#3996d2",
-                    text: "#ffffff"
-                },
-                button: {
-                    background: "#00d1b4",
-                    text: "#ffffff"
-                },
-            },
-            theme: "classic",
-            content: {
-                message: "We use cookies to enable the best possible experience on our site and to optimize the content for you. If you continue surfing you agree.",
-                href: "https://interviewkickstart.com/privacy-policy",
-            },
-            onPopupOpen: function() {
-                document.querySelector(".cc-window .cc-btn").setAttribute("id", "cookie-got-it-button");
-                document.querySelector(".cc-window .cc-link").setAttribute("id", "cookie-learn-more-privacy-policy-button");
-            },
-        });
+    if (geo && (geo.country === 'United States' && (!geo.region || !allowedUSRegions.includes(geo.region)))) {
+      // Don't show banner (for other US states)
+      return;
     }
-	
-		(async function(){
-			let response = await fetch("https://get.geojs.io/v1/ip/geo.json");
-			let data = await response.json();
-			showCookieConsent(data);
-		})();
+
+    window.cookieconsent.initialise({
+      palette: {
+        popup: {
+          background: "#3996d2",
+          text: "#ffffff"
+        },
+        button: {
+          background: "#00d1b4",
+          text: "#ffffff"
+        },
+      },
+      theme: "classic",
+      content: {
+        message: "We use cookies to enable the best possible experience on our site and to optimize the content for you. If you continue surfing you agree.",
+        href: "https://interviewkickstart.com/privacy-policy",
+      },
+      onPopupOpen: function () {
+        document.querySelector(".cc-window .cc-btn").setAttribute("id", "cookie-got-it-button");
+        document.querySelector(".cc-window .cc-link").setAttribute("id", "cookie-learn-more-privacy-policy-button");
+      },
+    });
+  }
+
+  (async function () {
+    let response = await fetch("https://get.geojs.io/v1/ip/geo.json");
+    let data = await response.json();
+    showCookieConsent(data);
+  })();
 </script>
