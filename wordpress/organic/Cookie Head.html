@@ -1,57 +1,24 @@
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
-<style id="cookie-consent-styles"> 
-  @media only screen and (max-width: 600px) {
-    .cc-window {
-      display: flex !important;
-      flex-direction: row !important;
-      padding: 10px !important;
-      color: #201845 !important;
-      box-shadow: 4px -1px 13px -7px rgba(0, 0, 0, 0.75) !important;
-      background-color: rgb(216 234 246) !important;
-    }
-    .cc-theme-classic .cc-btn {
-      min-width: auto !important;
-      text-wrap: nowrap;
-      margin-left: 5px;
-      background-color: #3996d2 !important;
-    }
-    .cc-message.cc-message {
-      margin-bottom: 0px !important;
-      font-size: 14px !important;
-      line-height: 16px !important;
-    }
-    .cc-message .cc-link {
-      padding: 0 !important;
-      color: #201845 !important;
-    }
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css"
+  media="print" onload="this.media='all'" />
+<style>
+  .cc-link {
+    opacity: 1;
   }
-</style>
 
-<style> 
-  .hide{display:none}
-  .iti--allow-dropdown{grid-column-end: span 2;margin-bottom:10px;width:100%;} body{background-color:transparent!important}
-  	.cc-bottom {
-		bottom: 0 !important;
-	}
-  	.cc-window.cc-floating {
-		max-width: none !important;
-	}
-  @media only screen and (max-width: 600px) {
-    /* Initially make the banner visible */
-    .cc-window.cc-visible {
-        opacity: 1;
-        transform: translateY(0);
-        transition: opacity 0.5s ease, transform 0.5s ease;
-    }
+  .cc-window {
+    font-family: Inter, Arial, sans-serif;
+    font-weight: 500;
+  }
 
-    /* When hidden, slide it down */
-    .cc-window.cc-hidden {
-        opacity: 0;
-        transform: translateY(100%);
-        transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-    .footer-popout-cta {
-      display: none;
-    }
+  .cc-bottom {
+    bottom: 0 !important;
+  }
+
+  .cc-window.cc-floating {
+    max-width: none !important;
+  }
+
+  body {
+    display: block !important;
   }
 </style>
