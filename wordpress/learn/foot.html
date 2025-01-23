@@ -1,277 +1,18 @@
+<!-- Body end (B) -->
 <!-- Learn foot code start -->
 <script>
-  function generateWebinarSlots({ count, country, targetTimezone, webinarType }) {
-    const getSlotConfigs = (region) => {
-      switch (region) {
-        case "IND":
-          return {
-            skipDay: 0, // Skip Sunday
-            timeSlots: {
-              0: null, // Skip Sunday
-              1: "18:00:00", // Monday
-              2: "18:00:00", // Tuesday
-              3: "18:00:00", // Wednesday
-              4: "18:00:00", // Thursday
-              5: "18:00:00", // Friday
-              6: "11:00:00", // Saturday
-            },
-            timeZone: "Asia/Kolkata",
-            utcOffset: 5.5, // Offset in hours
-          };
-        default:
-          return {
-            skipDay: 6, // Skip Saturday
-            timeSlots: {
-              0: "20:30:00", // Sunday
-              1: "19:30:00", // Monday
-              2: "20:30:00", // Tuesday
-              3: "19:30:00", // Wednesday
-              4: "20:30:00", // Thursday
-              5: "19:30:00", // Friday
-              6: null, // Skip Saturday
-            },
-            timeZone: "America/New_York",
-            utcOffset: -5, // Offset in hours
-          };
-      }
-    };
-    const formatDateWithTimezone = (date, offsetHours) => {
-      // Get the year, month, day, hours, minutes, and seconds from the date
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      const hours = String(date.getHours()).padStart(2, "0");
-      const minutes = String(date.getMinutes()).padStart(2, "0");
-      const seconds = String(date.getSeconds()).padStart(2, "0");
-
-      // Calculate the absolute offset in hours and minutes
-      const totalMinutesOffset = offsetHours * 60; // Convert fractional offset to total minutes
-      const offsetHoursPart = Math.floor(Math.abs(totalMinutesOffset) / 60); // Integer hours
-      const offsetMinutesPart = Math.abs(totalMinutesOffset) % 60; // Remainder as minutes
-
-      // Construct the offset string in ±HH:mm format
-      const formattedOffset = `${offsetHours >= 0 ? "+" : "-"}${String(
-        offsetHoursPart
-      ).padStart(2, "0")}:${String(offsetMinutesPart).padStart(2, "0")}`;
-
-      // Combine into the final ISO format
-      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${formattedOffset}`;
-    };
-    const convertToUTC = (dateString) => {
-      // Parse the date using the timezone in the input string
-      const localDate = new Date(dateString);
-
-      // Convert to UTC components
-      const utcYear = localDate.getUTCFullYear();
-      const utcMonth = String(localDate.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-      const utcDate = String(localDate.getUTCDate()).padStart(2, "0");
-      const utcHours = String(localDate.getUTCHours()).padStart(2, "0");
-      const utcMinutes = String(localDate.getUTCMinutes()).padStart(2, "0");
-      const utcSeconds = String(localDate.getUTCSeconds()).padStart(2, "0");
-
-      // Construct the UTC string in the desired format
-      return `${utcYear}-${utcMonth}-${utcDate}T${utcHours}:${utcMinutes}:${utcSeconds}+00:00`;
-    };
-    const toTargetTimezone = (dateString, targetTimezone) => {
-      // Parse the input date string
-      const date = new Date(dateString);
-
-      // Use Intl.DateTimeFormat to format the date in the target timezone
-      const formatter = new Intl.DateTimeFormat("en-US", {
-        timeZone: targetTimezone,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hourCycle: "h23", // 24-hour format
-      });
-
-      // Format the date to the target timezone
-      const parts = formatter.formatToParts(date);
-
-      // Extract parts and construct ISO string
-      const year = parts.find((p) => p.type === "year").value;
-      const month = parts.find((p) => p.type === "month").value;
-      const day = parts.find((p) => p.type === "day").value;
-      const hour = parts.find((p) => p.type === "hour").value;
-      const minute = parts.find((p) => p.type === "minute").value;
-      const second = parts.find((p) => p.type === "second").value;
-
-      return `${year}-${month}-${day}T${hour.padStart(2, "0")}:${minute.padStart(
-        2,
-        "0"
-      )}:${second.padStart(2, "0")}`;
-    };
-    const formatTime = (date) => {
-      return date
-        .toLocaleString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
-        ?.replaceAll(" ", "");
-    };
-    const formatDate = (date) => {
-      const day = String(date.getDate()).padStart(2, "0"); // Pad day with leading zero
-      const month = date.toLocaleString("en-US", { month: "long" });
-      const year = date.getFullYear();
-      const weekday = date.toLocaleString("en-US", { weekday: "long" });
-
-      return `${weekday}, ${month} ${day}, ${year}`;
-    };
-    const addOffset = (dateString, timezone) => {
-      try {
-        const date = new Date();
-        const options = { timeZone: timezone, timeZoneName: "longOffset" };
-
-        let offset =
-          Intl.DateTimeFormat("en-US", options)
-            .formatToParts(date)
-            .find((part) => part.type === "timeZoneName")
-            ?.value?.replace("GMT", "") || "+00:00";
-
-        // Add padding to hours if needed
-        if (offset.match(/^[+-]\d:/)) {
-          offset = offset.replace(/^([+-])(\d):/, "$10$2:");
-        }
-
-        return `${dateString}${offset}`;
-      } catch {
-        return `${dateString}"+00:00"`;
-      }
-    };
-
-    const slotConfig = getSlotConfigs(country);
-
-    if (!slotConfig) {
-      throw new Error("Invalid country.");
-    }
-
-    const {
-      skipDay,
-      timeSlots,
-      utcOffset: slotUTCOffset,
-      timeZone: slotTimezone,
-    } = slotConfig;
-
-    const result = [];
-    const now = new Date(
-      new Date().toLocaleString("en-US", { timeZone: slotTimezone })
-    );
-
-    for (let i = 0; i < count; i++) {
-      const startSlotTime = new Date(now);
-      startSlotTime.setDate(startSlotTime.getDate() + i);
-
-      const day = startSlotTime.getDay();
-      if (day === skipDay) {
-        continue;
-      }
-
-      const slotTime = timeSlots[day];
-      if (!slotTime) {
-        continue;
-      }
-
-      const [hours, minutes, seconds] = slotTime.split(":").map(Number);
-      startSlotTime.setHours(hours);
-      startSlotTime.setMinutes(minutes);
-      startSlotTime.setSeconds(seconds);
-
-      // Skip past slots
-      if (startSlotTime < new Date(now)) {
-        continue;
-      }
-
-      const endSlotTime = new Date(startSlotTime);
-      endSlotTime.setHours(endSlotTime.getHours() + 1);
-
-      const formatted_start_slot_time = formatDateWithTimezone(
-        startSlotTime,
-        slotUTCOffset
-      );
-      const formatted_end_slot_time = formatDateWithTimezone(
-        endSlotTime,
-        slotUTCOffset
-      );
-
-      const user_start_time_obj = new Date(
-        toTargetTimezone(formatted_start_slot_time, targetTimezone)
-      );
-      const user_end_time_obj = new Date(
-        toTargetTimezone(formatted_end_slot_time, targetTimezone)
-      );
-
-      result.push({
-        start_time: addOffset(
-          toTargetTimezone(formatted_start_slot_time, targetTimezone),
-          targetTimezone
-        ),
-        end_time: addOffset(
-          toTargetTimezone(formatted_end_slot_time, targetTimezone),
-          targetTimezone
-        ),
-        utc_start_time: convertToUTC(formatted_start_slot_time),
-        utc_end_time: convertToUTC(formatted_end_slot_time),
-        day: String(user_start_time_obj.getDate()).padStart(2, "0"),
-        month: String(user_start_time_obj.getMonth() + 1).padStart(2, "0"),
-        year: String(user_start_time_obj.getFullYear()),
-        hour: String(user_start_time_obj.getHours() % 12 || 12).padStart(2, "0"),
-        minute: String(user_start_time_obj.getMinutes()).padStart(2, "0"),
-        second: String(user_start_time_obj.getSeconds()).padStart(2, "0"),
-        am_or_pm: user_start_time_obj.getHours() >= 12 ? "PM" : "AM",
-        weekday: user_start_time_obj.toLocaleString("en-US", { weekday: "long" }),
-        invitee_start_time: `${formatTime(user_start_time_obj)} - ${formatDate(
-          user_start_time_obj
-        )}`,
-        invitee_end_time: `${formatTime(user_end_time_obj)} - ${formatDate(
-          user_end_time_obj
-        )}`,
-        webinar_lead_type: webinarType,
-      });
-    }
-    return result;
-  }
   let registration_type;
   let no_of_webinar_slots = 6;
   let slotFetchedTwice = false;
   let initnialWebinarType = webinarType;
   let initialTimezone = v_timezone;
-  let api_status = "pending"; // "pending" | "on-going" | "completed" | "failed"
-  let staticSlots = [];
-
-  function observeWebinarType() {
-    let previousValue = "";
-    let previousTimezone = v_timezone;
-    function checkForChange() {
-      if (webinarType !== previousValue || v_timezone !== previousTimezone) {
-        previousValue = webinarType;
-        if (webinarType) {
-          try {
-            let t_zone = v_timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
-            if (t_zone == 'Asia/Calcutta') {
-              t_zone = 'Asia/Kolkata';
-            }
-            staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
-            if (["pending", "failed"].includes(api_status)) {
-              slotLoaded(staticSlots);
-            }
-          } catch (error) {
-            console.error("P1: Error while generating static slots", error);
-          }
-        }
-      }
+  try {
+    if (typeof (staticSlots) != undefined && staticSlots.length == 0) {
+      slotLoaded(staticSlots, false)
     }
-
-    const interval = setInterval(checkForChange, 100);
-
-    setTimeout(() => {
-      clearInterval(interval);
-    }, 5000);
+  } catch (error) {
+    console.error("Error: ", error)
   }
-  observeWebinarType();
 
   function populateWebinarSlots(resobj) {
     const t_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -330,24 +71,22 @@
     } else {
       webinarType = initnialWebinarType;
       v_timezone = initialTimezone;
-      if (staticSlots.length == 0) {
-        staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
-      }
+      staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: v_timezone, webinarType: webinarType });
       slotLoaded(staticSlots);
     }
   }
 
-  async function slotLoaded(slots) {
+  async function slotLoaded(slots, resetTimer = true) {
     webinarSlots = slots
     document.dispatchEvent(webNearLoadedEv);
     if (!is_webinar_1o1_eligible) {
       populateWebinarSlots(slots);
     }
-    TimerHandler(slots);
+    resetTimer && TimerHandler(slots, v_timezone);
   }
 
   async function loadSlot(c_timezoon = "America/New_York") {
-    let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${webinarType === "SWITCH_UP" ? webinarType : "REGULAR"}`;
+    let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${(webinarType === "SWITCH_UP") || (webinarType === "CAREER_SESSION") ? webinarType : "REGULAR"}`;
 
     const option = {
       method: "GET",
@@ -365,9 +104,6 @@
       }
       slotLoaded(resobj);
       api_status = "completed";
-      if (!is_webinar_1o1_eligible) {
-        populateWebinarSlots(resobj);
-      }
     } catch (err) {
       api_status = "failed";
       fallbackSlots()
@@ -385,162 +121,6 @@
     let data = await response.json();
     return data;
   }
-
-
-  /*-----------------------------------------------------Time Functions Start------------------------------------------------------------------------*/
-  const timerState = {
-    currentDate: '',
-    nextDate: '',
-    currentDateSec: '',
-    nextDateSec: '',
-  };
-
-  function initStates(slots, tz) {
-    try {
-      timerState.currentDate = new Date().toLocaleString('en-US', { timeZone: tz });
-    } catch (err) {
-      console.error(err);
-    }
-
-    timerState.currentDateSec = Date.parse(timerState.currentDate);
-    timerState.nextDate = nextWebinar(timerState.currentDate.split(',')[0], timerState.currentDateSec, slots, tz);
-    if (timerState.nextDate !== '') {
-      timerState.nextDateSec = Date.parse(timerState.nextDate);
-    }
-  };
-
-  function nextWebinar(currentDate, currentWebTime, slots, tz) {
-    let nextWebinarDate = '';
-    if (!slots) {
-      return fallbackTimerDate(tz)
-    }
-
-    const formattedSlots = (slots || [])?.map((slot = {}) => ({
-      date: `${slot.month}/${slot.day}/${slot.year}`, //"06/12/2024"
-      time: `${slot.hour}:${slot.minute}:${slot.second} ${slot.am_or_pm}`, //"07:30:00 PM"
-    }))
-
-    for (let idx = 0; idx < formattedSlots.length; idx++) {
-      if (formattedSlots[idx]) {
-        const currentDateWeb = Date.parse(new Date(`${formattedSlots[idx].date}, ${formattedSlots[idx].time}`));
-        if (currentDateWeb > currentWebTime) {
-          nextWebinarDate = `${formattedSlots[idx].date}, ${formattedSlots[idx].time}`;
-          break;
-        }
-      }
-    }
-    return nextWebinarDate;
-  };
-
-  // Fall back time
-  function fallbackTimerDate(tz) {
-    const isIndia = tz == "IST" || tz == "Asia/Kolkata";
-
-    const currentDate = new Date();
-    const dayOfWeek = currentDate.getDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
-    const dateString = currentDate.toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata', month: '2-digit', day: '2-digit', year: 'numeric' });
-    let timeString;
-
-    if (isIndia) {
-      if (dayOfWeek === 6) {
-        // Saturday
-        timeString = "11:00:00 PM";
-      } else if (dayOfWeek === 0) {
-        // Sunday
-        return ""; // Skip on Sunday
-      } else {
-        timeString = "06:00:00 PM";
-      }
-    } else {
-      if (dayOfWeek === 6) {
-        // Saturday
-        return ""; // Skip on Saturday
-      } else if (dayOfWeek % 2 === 1) {
-        // Odd days (Monday, Wednesday, Friday, Sunday)
-        timeString = "07:30:00 PM";
-      } else {
-        // Even days (Tuesday, Thursday)
-        timeString = "08:30:00 PM";
-      }
-    }
-
-    return `${dateString}, ${timeString}`
-  }
-
-  function unitCount(unit) {
-    const toTens = () => String(Number.parseInt(unit / 10));
-    const toOnes = () => String(unit % 10);
-    return toTens() + toOnes();
-  };
-
-  let webinarTimer;
-
-  function TimerHandler(slots) {
-
-    let tz = "America/New_York"
-    if (typeof (v_timezone) != "undefined") {
-      tz = v_timezone;
-    }
-    clearInterval(webinarTimer);
-    // initialize states
-    initStates(slots, tz);
-
-    // start timer
-    webinarTimer = setInterval(() => {
-      if (timerState.nextDate === '') {
-        clearInterval(webinarTimer);
-      }
-      timerState.currentDate = new Date().toLocaleString('en-US', { timeZone: tz });
-      timerState.currentDateSec = Date.parse(timerState.currentDate);
-
-      const distanceCount = timerState.nextDateSec - timerState.currentDateSec;
-
-      const day = Math.floor(distanceCount / (1000 * 60 * 60 * 24));
-      const hrs = Math.floor((distanceCount % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const min = Math.floor((distanceCount % (1000 * 60 * 60)) / (1000 * 60));
-      const sec = Math.floor((distanceCount % (1000 * 60)) / 1000);
-
-      // separating into tens and ones
-
-      const dayCount = unitCount(day);
-      const hrCount = unitCount(hrs);
-      const minCount = unitCount(min);
-      const secCount = unitCount(sec);
-
-      // update UI
-      updateTimerUI(dayCount, hrCount, minCount, secCount);
-
-      if (distanceCount <= 0) {
-        // move timer to next date if reached 0
-        initStates(slots, tz);
-
-        if (timerState.nextDate === '') {
-          clearInterval(webinarTimer);
-          // hide the fild if nothing
-          document.querySelectorAll('.webinar__timer').forEach((timer) => {
-            timer.classList.add('is-hidden');
-          });
-        }
-      }
-    }, 1000);
-  };
-
-  // set the next webnear value
-  function updateTimerUI(day, hrs, min, sec) {
-    document.querySelectorAll('.webinar__timer--days h2').forEach((timer) => {
-      timer.textContent = day;
-    });
-    document.querySelectorAll('.webinar__timer--hours h2').forEach((timer) => {
-      timer.textContent = hrs;
-    });
-    document.querySelectorAll('.webinar__timer--mins h2').forEach((timer) => {
-      timer.textContent = min;
-    });
-    document.querySelectorAll('.webinar__timer--secs h2').forEach((timer) => {
-      timer.textContent = sec.slice(0, 2);
-    });
-  };
-  /*-----------------------------------------------------Time Functions End------------------------------------------------------------------------*/
 
   //  Webnear Form Send
   // get all from fild
@@ -668,8 +248,11 @@
     webNearInfo.wr__referrer = referrer;
     webNearInfo.wr__device = getDeviceType();
 
-    document.querySelector('.webinar__lightbox-title h2').innerHTML = eventName;
-
+    try {
+      document.querySelector('.webinar__lightbox-title h2').innerHTML = eventName;
+    } catch (error) {
+      document.querySelector('.webinar__lightbox-title h3').innerHTML = eventName;
+    }
     webNearInfo.webinar_lead_type = webinarType;
     webNearInfo.bye_calendly_type = "";
     webNearInfo.is_exit_intent_popup = "No";
@@ -1188,57 +771,57 @@
   }
 
   function initObservers() {
-  let scrollPosition = 0;
+    let scrollPosition = 0;
 
-  // Store the observer instance as a singleton
-  if (!window.__observerSingleton) {
-    try {
-      if (window.MutationObserver) {
-        // Function to handle mutation
-        function handleMutation(mutations) {
-          mutations.forEach(function (mutation) {
-            if (
-              mutation.type === "attributes" &&
-              mutation.attributeName === "show_status"
-            ) {
-              const target = mutation.target;
+    // Store the observer instance as a singleton
+    if (!window.__observerSingleton) {
+      try {
+        if (window.MutationObserver) {
+          // Function to handle mutation
+          function handleMutation(mutations) {
+            mutations.forEach(function (mutation) {
+              if (
+                mutation.type === "attributes" &&
+                mutation.attributeName === "show_status"
+              ) {
+                const target = mutation.target;
 
-              if (target.classList.contains("web_near_form")) {
-                const showStatus = target.getAttribute("show_status");
+                if (target.classList.contains("web_near_form")) {
+                  const showStatus = target.getAttribute("show_status");
 
-                if (showStatus == "true") {
-                  scrollPosition = window.scrollY;
-                  document.body.style.overflow = "hidden";
-                  document.body.style.position = "fixed";
-                  document.body.style.top = `-${scrollPosition}px`;
-                  document.body.style.width = "100%";
-                } else {
-                  const originalScrollBehavior = document.documentElement.style.scrollBehavior;
-                  document.documentElement.style.scrollBehavior = "auto";
-                  document.body.style.overflow = "";
-                  document.body.style.position = "";
-                  document.body.style.top = "";
-                  window.scrollTo(0, scrollPosition);
-                  document.documentElement.style.scrollBehavior = originalScrollBehavior;
+                  if (showStatus == "true") {
+                    scrollPosition = window.scrollY;
+                    document.body.style.overflow = "hidden";
+                    document.body.style.position = "fixed";
+                    document.body.style.top = `-${scrollPosition}px`;
+                    document.body.style.width = "100%";
+                  } else {
+                    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+                    document.documentElement.style.scrollBehavior = "auto";
+                    document.body.style.overflow = "";
+                    document.body.style.position = "";
+                    document.body.style.top = "";
+                    window.scrollTo(0, scrollPosition);
+                    document.documentElement.style.scrollBehavior = originalScrollBehavior;
+                  }
                 }
               }
-            }
+            });
+          }
+
+          // Create an observer instance
+          const observer = new MutationObserver(handleMutation);
+
+          // Store the observer instance in a global variable
+          window.__observerSingleton = observer;
+
+          // Configuration of the observer
+          const config = { attributes: true, attributeFilter: ["show_status"] };
+
+          document.querySelectorAll(".web_near_form").forEach(function (form) {
+            observer.observe(form, config);
           });
         }
-
-        // Create an observer instance
-        const observer = new MutationObserver(handleMutation);
-
-        // Store the observer instance in a global variable
-        window.__observerSingleton = observer;
-
-        // Configuration of the observer
-        const config = { attributes: true, attributeFilter: ["show_status"] };
-
-        document.querySelectorAll(".web_near_form").forEach(function (form) {
-          observer.observe(form, config);
-        });
-      }
       } catch (error) {
         console.error("initObservers", error);
       }

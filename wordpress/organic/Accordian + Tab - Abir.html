@@ -1,0 +1,23 @@
+<!-- Accordian + Tab - Abir -->
+<script>
+  const tabImages = {
+    StyleLens_btn: 'StyleLens_img',
+    MediWatch_btn: 'MediWatch_img',
+    BinSense_btn: 'BinSense_img',
+    Resume_Coach_btn: 'Resume_Coach_img',
+    ShopTalk_btn: 'ShopTalk_img',
+  };
+  function showImage(imageId) {
+    Object.values(tabImages).forEach((id) => {
+      document.getElementById(id).style.opacity = id === imageId ? '1' : '0';
+    });
+  }
+
+  Object.keys(tabImages).forEach((buttonId) => {
+    document.getElementById(buttonId).addEventListener('click', () => {
+      showImage(tabImages[buttonId]);
+    });
+  });
+
+  showImage('StyleLens_img');
+</script>

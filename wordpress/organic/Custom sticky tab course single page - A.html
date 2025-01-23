@@ -1,0 +1,27 @@
+<!-- Custom sticky tab course single page - Abir -->
+<script>
+  const cstButtons = document.querySelectorAll('.cst_tb_btn');
+  const cstContents = document.querySelectorAll('.content_bx');
+
+  function hideAllContent() {
+    cstContents.forEach(content => content.style.display = 'none');
+  }
+
+  function removeActiveClass() {
+    cstButtons.forEach(button => button.classList.remove('active'));
+  }
+
+  hideAllContent();
+  cstContents[0].style.display = 'flex';
+  cstButtons[0].classList.add('active');
+
+  // Add event listeners to each button
+  cstButtons.forEach((button, index) => {
+    button.addEventListener('click', function () {
+      hideAllContent();
+      cstContents[index].style.display = 'flex';
+      removeActiveClass();
+      button.classList.add('active');
+    });
+  });
+</script>
