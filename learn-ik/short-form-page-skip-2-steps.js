@@ -296,6 +296,10 @@ $(document).ready(function () {
 	const eventEndTime = window?.defaultSlotForShortPage?.eventEndTime;
 	const inviteeStartTime =  window?.defaultSlotForShortPage?.inviteeStartTime;
 	const inviteeEndTime = window?.defaultSlotForShortPage?.inviteeEndTime;
+    const EventStartTime = $('.wr__event-start-time').val() && $('.wr__event-start-time').val() !== "slot" ? $('.wr__event-start-time').val() : eventStartTime;
+    const EventEndTime = $('.wr__event-end-time').val() && $('.wr__event-end-time').val() !== "slot" ? $('.wr__event-end-time').val() : eventEndTime;
+    const InviteeStartTime= $('.wr__invitee-start-time').val() && $('.wr__invitee-start-time').val() !== "slot" ? $('.wr__invitee-start-time').val() : inviteeStartTime;
+    const InviteeEndTime= $('.wr__invitee-end-time').val() && $('.wr__invitee-end-time').val() !== "slot" ? $('.wr__invitee-end-time').val() : inviteeEndTime;
     //Zap end point for step 1
     var formData = {
       "First Name": $('#v2-fname').val(),
@@ -332,10 +336,10 @@ $(document).ready(function () {
       "phone_number_full": $('.tno1').val(),
       "is_exit_intent_popup": $('.is_exit_intent_popup').val(),
 
-      "Event Start Time": $('.wr__event-start-time').val() ? $('.wr__event-start-time').val() : eventStartTime,
-      "Event End Time": $('.wr__event-end-time').val() ? $('.wr__event-end-time').val() : eventEndTime,
-      "Invitee Start Time": $('.wr__invitee-start-time').val() ? $('.wr__invitee-start-time').val() : inviteeStartTime,
-      "Invitee End Time": $('.wr__invitee-end-time').val() ? $('.wr__invitee-end-time').val() : inviteeEndTime,
+      "Event Start Time": EventStartTime,
+      "Event End Time": EventEndTime,
+      "Invitee Start Time": InviteeStartTime,
+      "Invitee End Time": InviteeEndTime,
       "Work Experience": $('.gql-work-experience').val(),
       "Domain or Role": $('.gql-role-domain').val(),
       "Booking id": $('input[name="start-date"]:checked').data("bookingid")
@@ -685,8 +689,8 @@ $(document).ready(function () {
 
         function submitLeadData(leadCreatedTime) {
         const defaultValue =  window.defaultSlotForShortPage;
-        const StartDate = $(".wr__event-start-time").val() ? $(".wr__event-start-time").val() : defaultValue?.eventStartTime;
-        const EndDate = $(".wr__event-end-time").val() ? $(".wr__event-end-time").val() : defaultValue?.eventEndTime;
+        const StartDate = $(".wr__event-start-time").val() && $(".wr__event-start-time").val() !== "slot" ? $(".wr__event-start-time").val() : defaultValue?.eventStartTime;
+        const EndDate = $(".wr__event-end-time").val() && $(".wr__event-end-time").val() !== "slot" ? $(".wr__event-end-time").val() : defaultValue?.eventEndTime;
         const formattedStartDateTime = formatDate(StartDate);
         const formattedEndDateTime = formatDate(EndDate);
 
