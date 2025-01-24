@@ -1,0 +1,160 @@
+<script>
+  // Function to check if the user is a bot
+  function isBot(userAgent) {
+    try {
+      userAgent = userAgent || navigator.userAgent;
+      const botUserAgents = [
+        /bot/i, /crawl/i, /slurp/i, /spider/i, /mediapartners/i, /googlebot/i,
+        /adsbot/i, /bingbot/i, /msnbot/i, /baiduspider/i, /duckduckbot/i,
+        /yandexbot/i, /sogou/i, /exabot/i, /facebot/i, /ia_archiver/i,
+        /telegrambot/i, /whatsapp/i, /twitterbot/i, /pinterest/i,
+        /skypeuripsniffer/i, /slackbot/i, /vkshare/i, /discordbot/i
+      ];
+      return botUserAgents.some(botRegex => botRegex.test(userAgent));
+    } catch (error) {
+      return false;
+    }
+  }
+
+  // Function to save click activity
+  function saveClickActivity(clickID, timestamp, callback = null) {
+    if (isBot()) return;
+
+    timestamp = timestamp || Date.now();
+
+    fetch("https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod", {
+      method: "POST",
+      headers: {
+        "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        dataset_id: "Marketing_data_new_logic",
+        table_id: "all_clickstream_data",
+        data: [
+          {
+            page_value_url: window.location.href,
+            student_uuid: visitor_id,
+            timestamp: timestamp,
+            ClickID: clickID
+          }
+        ]
+      })
+    })
+      .then(response => response.json())
+      .then(data => console.log("Success Response:", data))
+      .catch(error => console.error("Error Response:", error))
+      .finally(() => {
+        if (callback) {
+          try {
+            callback();
+          } catch (error) {
+            console.error("Error in callback function:", error);
+          }
+        }
+      });
+  }
+
+  // Add data-click-id attributes to sliders
+  const sliders = [
+    { selector: ".tpc-offer-slider .course__offer-slider-left", id: "tpc-offer_slider_arrow-right" },
+    { selector: ".tpc-offer-slider .course__offer-slider-right", id: "tpc-offer_slider_arrow-left" },
+    { selector: ".tpc-career-slide .course__offer-slider-left", id: "tpc-career_slider_arrow-right" },
+    { selector: ".tpc-career-slide .course__offer-slider-right", id: "tpc-career_slider_arrow-left" },
+    { selector: ".tpc-instructor-slider-right, .tpc-instructor-slider .course__offer-slider-right-v1", id: "tpc-instructor_slider_arrow-left" },
+    { selector: ".tpc-instructor-slider-left, .tpc-instructor-slider .course__offer-slider-left-v1", id: "tpc-instructor_slider_arrow-right" },
+    { selector: ".student-swiper-block-v1 .slider-prev-btn-v3", id: "success-stories_slider_arrow-right" },
+    { selector: ".student-swiper-block-v1 .slider-prev-btn-v4", id: "success-stories_slider_arrow-left" },
+    { selector: ".student-swiper-block .slider-next-btn", id: "success-stories_slider_arrow-right" },
+    { selector: ".student-swiper-block .slider-prev-btn", id: "success-stories_slider_arrow-left" },
+    { selector: ".logo-slider-2 .prev-logo-slide", id: "in-ik-logo_slider_arrow-left" },
+    { selector: ".logo-slider-2 .next-logo-slide", id: "in-ik-logo_slider_arrow-right" },
+    { selector: ".tech-lead-block .left-slide", id: "tech-lead_slider_arrow-left" },
+    { selector: ".tech-lead-block .right-slide", id: "tech-lead_slider_arrow-right" },
+    { selector: ".interview-course-block .left-slide2", id: "alumni-slider_slider_arrow-left" },
+    { selector: ".interview-course-block .right-slide-2", id: "alumni-slider_slider_arrow-right" }
+  ];
+
+  sliders.forEach(item => {
+    document.querySelectorAll(item.selector)?.forEach(element => {
+      element.setAttribute("data-click-id", item.id);
+    });
+  });
+
+  // Function to add data-click-id to elements
+  function addIdToElement(selector, textPrefix, postfix = '_link_redirect-new-page') {
+    document.querySelectorAll(selector)?.forEach(element => {
+      const linkText = element.textContent.trim().toLowerCase();
+      const hyphenatedText = linkText.split(' ').join('-');
+      const linkID = `${textPrefix}${hyphenatedText}${postfix}`;
+      element.setAttribute("data-click-id", linkID);
+    });
+  }
+
+  // Add IDs to specific selectors
+  addIdToElement('.eng-role-link-v2', "course-list_course-");
+  addIdToElement('.indian-footer-links', "footer-");
+  addIdToElement('.new-footer-link', "footer-");
+  addIdToElement('.footer-link-new', "footer-");
+  addIdToElement('.jk-footer-link', "footer-");
+  addIdToElement('.footer-link', "footer-");
+  addIdToElement('.footer-nav-link', "footer-");
+  addIdToElement('.dropdown-link-v1', "course-card_");
+  addIdToElement('.course__sections-menu-link', "course-sec-menu-");
+  addIdToElement('.course__sections-menu-link-2', "course-sec-menu-");
+  addIdToElement('.blog-post-body a, .blog-post-body-2 a', "blog-post-");
+  addIdToElement('.nav-link', 'header-nav-link-');
+  addIdToElement('.link_privacy_policy', 'webinar-modal-popup-');
+  addIdToElement('.w-tab-link', 'tabs-', '_in-page');
+  addIdToElement('.brand', 'logo_', '_clicked_redirect');
+
+  // Event listener for clicks
+  let tempCtaF;
+  document.addEventListener("click", event => {
+      const target = event.target;
+
+      if(tempCtaF) clearTimeout(tempCtaF);
+      tempCtaF = setTimeout(function(){
+          mlCtaCheck(target);
+      }, 500);
+
+  });
+
+  function mlCtaCheck(target){
+
+      let clickID = target.getAttribute("data-click-id") || (/\d/.test(target.id) ? false : target.id);
+
+      if (!clickID) {
+        console.warn("No click ID found for this element.");
+        return;
+      }
+
+      const timestamp = Date.now();
+      saveClickActivity(clickID, timestamp);
+  }
+</script>
+
+<script>
+// Handle CTA Traking code for wordpress
+function addCtaId(element, value){
+  if(!element.getAttribute("data-click-id")){
+    element.setAttribute("data-click-id", value);
+  }
+}
+
+document.querySelectorAll("[data-cta-id], [data-click-id]")?.forEach(function(item){
+  const ctaId = item.getAttribute("data-click-id") || item.id || item.getAttribute("data-cta-id");
+  addIdChild(item, ctaId)
+})
+
+function addIdChild(item, ctaId){
+  addCtaId(item, ctaId);
+  const getChild = item.children;
+  for(let eachChild of getChild){
+    addIdChild(eachChild, ctaId);
+  }
+  return;
+}
+</script>
+
+
