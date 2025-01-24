@@ -111,50 +111,48 @@
   // Event listener for clicks
   let tempCtaF;
   document.addEventListener("click", event => {
-      const target = event.target;
+    const target = event.target;
 
-      if(tempCtaF) clearTimeout(tempCtaF);
-      tempCtaF = setTimeout(function(){
-          mlCtaCheck(target);
-      }, 500);
+    if (tempCtaF) clearTimeout(tempCtaF);
+    tempCtaF = setTimeout(function () {
+      mlCtaCheck(target);
+    }, 500);
 
   });
 
-  function mlCtaCheck(target){
+  function mlCtaCheck(target) {
 
-      let clickID = target.getAttribute("data-click-id") || (/\d/.test(target.id) ? false : target.id);
+    let clickID = target.getAttribute("data-click-id") || (/\d/.test(target.id) ? false : target.id);
 
-      if (!clickID) {
-        console.warn("No click ID found for this element.");
-        return;
-      }
+    if (!clickID) {
+      console.warn("No click ID found for this element.");
+      return;
+    }
 
-      const timestamp = Date.now();
-      saveClickActivity(clickID, timestamp);
+    const timestamp = Date.now();
+    saveClickActivity(clickID, timestamp);
   }
 </script>
 
 <script>
-// Handle CTA Traking code for wordpress
-function addCtaId(element, value){
-  if(!element.getAttribute("data-click-id")){
-    element.setAttribute("data-click-id", value);
+  // Handle CTA Traking code for wordpress
+  function addCtaId(element, value) {
+    if (!element.getAttribute("data-click-id")) {
+      element.setAttribute("data-click-id", value);
+    }
   }
-}
 
-document.querySelectorAll("[data-cta-id], [data-click-id]")?.forEach(function(item){
-  const ctaId = item.getAttribute("data-click-id") || item.id || item.getAttribute("data-cta-id");
-  addIdChild(item, ctaId)
-})
+  document.querySelectorAll("[data-cta-id], [data-click-id]")?.forEach(function (item) {
+    const ctaId = item.getAttribute("data-click-id") || item.id || item.getAttribute("data-cta-id");
+    addIdChild(item, ctaId)
+  })
 
-function addIdChild(item, ctaId){
-  addCtaId(item, ctaId);
-  const getChild = item.children;
-  for(let eachChild of getChild){
-    addIdChild(eachChild, ctaId);
+  function addIdChild(item, ctaId) {
+    addCtaId(item, ctaId);
+    const getChild = item.children;
+    for (let eachChild of getChild) {
+      addIdChild(eachChild, ctaId);
+    }
+    return;
   }
-  return;
-}
 </script>
-
-
