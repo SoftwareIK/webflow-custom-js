@@ -27,7 +27,8 @@
   function splitTraffic() {
     let isVarient = false;
     try {
-      uuid = getCookie("unique_visitor_id") || visitor_id;
+       // TODO: in future we need to remove the getCookie("unique_visitor_id").
+      uuid = getCookie("unique_visitor_id") || getCookie("unique_visitor_id6") || visitor_id;
       const lastTwoDigits = parseInt(uuid.slice(-2)); // Defaults to base 10
       isVarient = lastTwoDigits >= weightageOfVariant;
 
