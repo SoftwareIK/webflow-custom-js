@@ -1,5 +1,6 @@
 <!-- Head Code (B) -->
 <!-- Organic head code start -->
+<meta content="initial-scale=1, maximum-scale=1" name="viewport" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <!-- Google Tag Manager -->
@@ -124,27 +125,27 @@
     return "";
   }
 
-  // // this will set the cookie
-  // function setCookie(cname, cvalue) {
-  //     var d = new Date();
-  //     d.setTime(d.getTime() + (400 * 24 * 60 * 60 * 1000));
-  //     var expires = "expires=" + d.toUTCString();
-
-  //     var domainParts = document.location.hostname.split('.');
-  //     var baseDomain = domainParts.slice(-2).join('.')
-  //     var domain = "domain=." + baseDomain;
-  //     var sameSite = "SameSite=None; Secure";
-
-  //     document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";" + domain + ";path=/;" + sameSite;
-  //     // document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  // }
   // this will set the cookie
   function setCookie(cname, cvalue) {
-    var d = new Date();
-    d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
-    var expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+      var d = new Date();
+      d.setTime(d.getTime() + (400 * 24 * 60 * 60 * 1000));
+      var expires = "expires=" + d.toUTCString();
+
+      var domainParts = document.location.hostname.split('.');
+      var baseDomain = domainParts.slice(-2).join('.')
+      var domain = "domain=." + baseDomain;
+      var sameSite = "SameSite=None; Secure";
+
+      document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";" + domain + ";path=/;" + sameSite;
+      // document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
   }
+  // // this will set the cookie
+  // function setCookie(cname, cvalue) {
+  //   var d = new Date();
+  //   d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+  //   var expires = "expires=" + d.toUTCString();
+  //   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  // }
 
   // set the visitor id start-------------------------------
   function create_UUID() {
@@ -163,16 +164,6 @@
   if (!visitor_id) {
     visitor_id = create_UUID();
     setCookie("unique_visitor_id6", visitor_id);
-    /*
-      let tempInter = setInterval(function(){
-          if(getCookie("_ga")){
-              gaid = getCookie("_ga");
-              vgid = gaid + "-uid-" + create_UUID();
-              setCookie("unique_visitor_id6", vgid);
-              visitor_id = getCookie("unique_visitor_id6");
-              clearInterval(tempInter);
-          }
-      }, 200);*/
   }
   // set the visitor id end-------------------------------
 
@@ -200,48 +191,41 @@
   }
   // set the visitor Country End-------------------------------
 
-  // // synced organic cookie start ------------------------------------------------------------
-  // function bake_cookie(name, value) {
-  //     var utmstring = value;
-  //     utmstring.timestamp = Date.now();
-
-  //     var domainParts = document.location.hostname.split('.');
-  //     var domain = domainParts.slice(-2).join('.')
-
-  //     var cookie = [
-  //       name, 
-  //       '=', JSON.stringify(utmstring), 
-  //       ';expires', '=', expdate.toGMTString(), 
-  //       '; domain=.', domain, 
-  //       '; path=/',
-  //       '; SameSite=None; Secure'    
-  //     ].join('');
-  //     document.cookie = cookie;
-  //     // setHiddenFields(utmstring);
-  // }
-  // organic cookie start ------------------------------------------------------------
-  // function bake_cookie(name, value) {
-  //     var utmstring = value;
-  //     utmstring.timestamp = Date.now();
-  //     var cookie = [name, '=', JSON.stringify(utmstring), ';expires', '=', expdate.toGMTString(), '; domain=.', window.location.host.toString(), '; path=/;'].join('');
-  //     document.cookie = cookie;
-  //     // setHiddenFields(utmstring);
-  // }
-
+  // synced organic cookie start ------------------------------------------------------------
   function bake_cookie(name, value) {
-    var utmstring = value;
-    utmstring.timestamp = Date.now();
+      var utmstring = value;
+      utmstring.timestamp = Date.now();
 
-    // Construct the cookie string
-    var cookie = [
-      name, '=', JSON.stringify(utmstring),
-      ';expires=', expdate.toUTCString(),
-      ';path=/'
-    ].join('');
+      var domainParts = document.location.hostname.split('.');
+      var domain = domainParts.slice(-2).join('.')
 
-    document.cookie = cookie;
-    // setHiddenFields(utmstring);
+      var cookie = [
+        name, 
+        '=', JSON.stringify(utmstring), 
+        ';expires', '=', expdate.toGMTString(), 
+        '; domain=.', domain, 
+        '; path=/',
+        '; SameSite=None; Secure'    
+      ].join('');
+      document.cookie = cookie;
+      // setHiddenFields(utmstring);
   }
+  // // organic cookie start ------------------------------------------------------------
+
+  // function bake_cookie(name, value) {
+  //   var utmstring = value;
+  //   utmstring.timestamp = Date.now();
+
+  //   // Construct the cookie string
+  //   var cookie = [
+  //     name, '=', JSON.stringify(utmstring),
+  //     ';expires=', expdate.toUTCString(),
+  //     ';path=/'
+  //   ].join('');
+
+  //   document.cookie = cookie;
+  //   // setHiddenFields(utmstring);
+  // }
 
   function bake_organic_cookie() {
     var organicobj = {
