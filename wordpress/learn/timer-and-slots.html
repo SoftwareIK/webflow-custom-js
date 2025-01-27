@@ -375,8 +375,7 @@
     // initialize states
     initStates(slots, tz);
 
-    // start timer
-    webinarTimer = setInterval(() => {
+    const timeRunner = () => {
       if (timerState.nextDate === '') {
         clearInterval(webinarTimer);
       }
@@ -412,7 +411,11 @@
           });
         }
       }
-    }, 1000);
+    }
+
+    timeRunner()
+    // start timer
+    webinarTimer = setInterval(timeRunner, 1000);
   };
 
   // set the next webnear value
