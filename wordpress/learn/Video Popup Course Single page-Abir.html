@@ -1,0 +1,24 @@
+<!-- Video Popup Course Single page-Abir -->
+<script>
+  const getVideoPoup = document.querySelector(".video_popup");
+  if (getVideoPoup) {
+    const videoSingleCourse = getVideoPoup.querySelector("iframe");
+    const videoPopupbutton = document.querySelector('.video_popup_btn');
+    const player = new Vimeo.Player(videoSingleCourse);
+    player.pause();
+
+    videoPopupbutton.addEventListener("click", function () {
+      getVideoPoup.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      player.play();
+    })
+
+    getVideoPoup.addEventListener("click", function (e) {
+      if (e.target.tagName != "IFRAME") {
+        getVideoPoup.classList.remove('open');
+        document.body.style.overflow = '';
+        player.pause();
+      }
+    })
+  }
+</script>

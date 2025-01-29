@@ -1,0 +1,18 @@
+<!-- Webinar From open close (B) -->
+<script>
+  const getWebNearShowBtn = document.querySelectorAll('[href="#webinar_form"]');
+
+  const getWebNearForm = document.querySelector('.web_near_form');
+  const getWebNearFormClose = document.querySelector('.web_near_close');
+  for (let eachWebNearBtn of getWebNearShowBtn) {
+    eachWebNearBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      getWebNearForm.setAttribute('show_status', true);
+      getWebNearForm.querySelector(".webnear_regitration_fr").setAttribute("ac_step", 1);
+      getWebNearForm.querySelector(".webnear_regitration_fr").setAttribute("loader_status", false);
+    })
+  }
+  getWebNearFormClose.addEventListener('click', function () {
+    getWebNearForm.setAttribute('show_status', false);
+  })
+</script>

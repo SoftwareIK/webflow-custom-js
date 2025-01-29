@@ -1,0 +1,35 @@
+<!-- Home Page Program show hide - Abir -->
+<script>
+  const buttons = document.querySelectorAll('.p_switch_up_btn');
+  const contents = document.querySelectorAll('.p_switch_up_cntnt');
+
+  contents.forEach(content => content.style.display = 'none');
+
+  buttons.forEach((btn, index) => {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const content = contents[index];
+
+      const isContentVisible = content.style.display === 'block';
+
+      contents.forEach(content => content.style.display = 'none');
+
+      if (!isContentVisible) {
+        content.style.display = 'block';
+      }
+      e.stopPropagation();
+    });
+  });
+
+  document.addEventListener('click', function () {
+    contents.forEach(content => {
+      content.style.display = 'none';
+    });
+  });
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+    });
+  });
+
+</script>

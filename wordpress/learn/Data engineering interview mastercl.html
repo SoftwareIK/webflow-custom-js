@@ -1,0 +1,32 @@
+<!-- Data engineering interview masterclass AB test -->
+<script nitro-exclude>
+  const splitValue = 70;
+
+  function getOrSetCookie(name, defaultValue) {
+    const cookie = document.cookie.match(`(?:^|; )${name}=([^;]*)`);
+    if (cookie) return cookie[1];
+    const value = defaultValue || Date.now().toString();
+    document.cookie = `${name}=${value}; expires=${new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString()}; path=/`;
+    return value;
+  }
+
+  function isVariant() {
+    try {
+      const uuid = getOrSetCookie("split_id");
+      return parseInt(uuid.slice(-2)) >= splitValue;
+    } catch {
+      console.error("Error determining variant.");
+      return false;
+    }
+  }
+
+  function appendUrlParams(url) {
+    const currentParams = window.location.search;
+    return currentParams ? `${url}${currentParams}` : url;
+  }
+
+  if (isVariant()) {
+    const redirectUrl = "/course/data-engineering-interview-masterclass-v2";
+    window.location.href = appendUrlParams(redirectUrl);
+  }
+</script>

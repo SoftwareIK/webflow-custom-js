@@ -1,0 +1,14 @@
+<!-- Course Single page Title -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const outerDiv = document.getElementById("title_color");
+    if (outerDiv) {
+      // Find the nested h1 inside the div with ID title_color
+      const title = outerDiv.querySelector("div > h1");
+      if (title) {
+        // Use a regular expression to wrap "Interview Course" in a <span> with the class "title_color_span"
+        title.innerHTML = title.innerHTML.replace(/(Interview Course)/, "<span class='title_color_span'>$1</span>");
+      }
+    }
+  });
+</script>

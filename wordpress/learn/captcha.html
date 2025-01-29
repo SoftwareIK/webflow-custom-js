@@ -1,0 +1,99 @@
+<!-- captcha -->
+<script>
+  let capChaElement;
+
+  (function () {
+    capChaElement = document.createElement("div");
+    capChaElement.classList.add("fr_webnear_fild");
+    capChaElement.classList.add("recapCha");
+    capChaElement.setAttribute("err_status", false);
+
+    capChaElement.innerHTML = `
+                <label for="captchaInput">
+                    <span class="text">Almost there! Enter the text in the image to proceed.</span>
+                    <span class="err_msg">*Invalid value</span>
+                </label>
+                <div class="captcha-container">
+                    <canvas id="captchaCanvas" width="200" height="70"></canvas>
+                    <button type="button" id="refreshCaptcha">&#x21bb;</button>
+                    <input class="fr_in_fild" placeholder="Enter value" type="text" id="captchaInput">
+                </div>
+        `;
+
+    const privacyTextFild = document.querySelector(".webnear_regitration_fr .fr_stage_1 .privacy_text");
+    privacyTextFild.parentNode.insertBefore(capChaElement, privacyTextFild);
+  })();
+
+  // Captcha variables
+  let captchaCode;
+
+  // Generate a new captcha and draw it on canvas
+  function generateCaptcha() {
+    const canvas = document.getElementById('captchaCanvas');
+    const ctx = canvas.getContext('2d');
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    captchaCode = '';
+
+    // Generate random captcha text
+    for (let i = 0; i < 6; i++) {
+      captchaCode += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    // Draw the captcha on the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#f3f3f3';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw each character with random styles
+    for (let i = 0; i < captchaCode.length; i++) {
+      const fontSize = Math.floor(Math.random() * 10) + 24;
+      const fontWeight = Math.random() > 0.5 ? 'bold' : 'normal';
+      const rotation = (Math.random() * 30 - 15) * (Math.PI / 180);
+      const x = 20 + i * 30;
+      const y = 40 + Math.random() * 10;
+
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.font = `${fontWeight} ${fontSize}px Arial`;
+      ctx.fillStyle = `#000`;
+      ctx.fillText(captchaCode[i], 0, 0);
+      ctx.restore();
+    }
+
+    // Add some noise
+    for (let i = 0; i < 10; i++) {
+      ctx.strokeStyle = `#ccc`;
+      ctx.beginPath();
+      ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+      ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+      ctx.stroke();
+    }
+  }
+
+  let capchaErrStatus = false;
+
+  // Validate the captcha input
+  function validateCaptcha() {
+    const userCaptchaInput = document.getElementById('captchaInput');
+    let capChatStatus = userCaptchaInput.value === captchaCode;
+    if (!capChatStatus) capChaElement.setAttribute("err_status", true);
+
+    if (!capchaErrStatus && !capChatStatus) {
+      capchaErrStatus = true;
+      userCaptchaInput.addEventListener("focus", function () {
+        capChaElement.setAttribute("err_status", false);
+      })
+    }
+    return capChatStatus;
+  }
+
+  // Initial Call
+  generateCaptcha();
+
+  // Reload
+  document.getElementById("refreshCaptcha").addEventListener("click", generateCaptcha);
+
+
+
+</script>

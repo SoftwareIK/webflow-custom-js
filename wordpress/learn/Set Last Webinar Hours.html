@@ -1,0 +1,16 @@
+<!-- Set Last Webinar Hours -->
+<script>
+  function lsWebinarHours(hour) {
+    const getAllFilds = document.querySelectorAll(".ls_webinar_hours");
+    for (let eachFild of getAllFilds) {
+      eachFild.innerHTML = hour;
+    }
+  }
+
+  document.addEventListener("webNearLoaded", function () {
+    if (webinarSlots[0]["start_time"]) {
+      let nextWebinarTime = new Date(webinarSlots[0]["start_time"]);
+      lsWebinarHours(`${nextWebinarTime.getHours()} hours`);
+    }
+  })
+</script>

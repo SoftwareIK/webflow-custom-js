@@ -1,0 +1,16 @@
+<!-- Read more button -->
+<script>  const readMoreCons = document.querySelectorAll('.read_more-content');
+
+  readMoreCons.forEach((item) => {
+    const btn = item.querySelector('.read_more-btn h2');
+    btn.addEventListener('click', () => {
+      const toggleText = item.querySelector('.toggle_text');
+      toggleText.classList.toggle('active');
+
+      if (toggleText.classList.contains('active')) {
+        btn.textContent = 'Read Less..';
+      } else {
+        btn.textContent = 'Read More..';
+      }
+    });
+  });</script>
