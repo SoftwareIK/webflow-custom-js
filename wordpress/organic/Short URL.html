@@ -1,0 +1,30 @@
+<!-- Short URL -->
+<script>
+  let short_url = window.location.pathname;
+  if (short_url.indexOf("/su/") != -1) {
+    document.querySelector("html").style.display = "none";
+    document.title = "Short URL | Interview Kickstart Organic"
+    let hashcode = short_url.substring(short_url.indexOf("/su/") + 4);
+    let api_url = "https://uplevel.interviewkickstart.com/api/v1/shorten_url/" + hashcode;
+    fetch(api_url, {
+      method: 'GET',
+      headers: {
+        "X-Api-Key": "gEgBhrCG.K8GNtHzbd81hUggTIrDoWgQtbu1w092L"
+      }
+    }).then((data) => {
+      if (data.ok) {
+        return data.json();
+      } else {
+        throw new Error();
+      }
+    }).then((data) => {
+      if (data.long_url) {
+        location.href = data.long_url;
+      } else {
+        throw new Error();
+      }
+    }).catch(() => {
+      location.href = "https://" + window.location.hostname;
+    })
+  }
+</script>

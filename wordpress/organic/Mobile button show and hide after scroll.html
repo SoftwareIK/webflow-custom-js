@@ -1,0 +1,39 @@
+<!-- Mobile button show and hide after scroll -->
+<script>
+  jQuery(document).ready(function ($) {
+    const mobileButtonContainer = $('.mobile-button-hide');
+    let isVisible = false;
+
+    // Hide the container by default
+    mobileButtonContainer.hide();
+
+    $(window).scroll(function () {
+      const scrollTop = $(this).scrollTop();
+      const documentHeight = $(document).height();
+      const windowHeight = $(window).height();
+      const bottomThreshold = documentHeight - windowHeight - 100;
+
+      // Check for mobile screen size
+      if ($(window).width() <= 768) { // Adjust the width threshold as needed
+        // Check if we are past 200px and not near the bottom
+        if (scrollTop > 200 && scrollTop < bottomThreshold) {
+          if (!isVisible) {
+            mobileButtonContainer.fadeIn();
+            isVisible = true;
+          }
+        } else if (scrollTop < 200 || scrollTop >= bottomThreshold) {
+          if (isVisible) {
+            mobileButtonContainer.fadeOut();
+            isVisible = false;
+          }
+        }
+      } else {
+        // Ensure the container is hidden on larger screens
+        if (isVisible) {
+          mobileButtonContainer.fadeOut();
+          isVisible = false;
+        }
+      }
+    });
+  });
+</script>

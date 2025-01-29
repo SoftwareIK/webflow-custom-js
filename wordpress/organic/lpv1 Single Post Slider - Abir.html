@@ -1,0 +1,26 @@
+<!-- lpv1 Single Post Slider - Abir -->
+<script>
+  const slidesInIpv1 = document.querySelectorAll('.slider-con-ipv1 > div');
+  let currentIndex = 0;
+
+  function changeSlide() {
+    slidesInIpv1.forEach(slide => {
+      slide.style.opacity = '0';
+      slide.style.transition = 'opacity 1s';
+    });
+
+    currentIndex = (currentIndex + 1) % slidesInIpv1.length;
+
+    slidesInIpv1[currentIndex].style.opacity = '1';
+  }
+
+  slidesInIpv1.forEach(slide => {
+    slide.style.opacity = '0';
+    slide.style.position = 'absolute';
+    slide.style.transition = 'opacity 1s';
+  });
+
+  slidesInIpv1[currentIndex].style.opacity = '1';
+
+  setInterval(changeSlide, 5000);
+</script>

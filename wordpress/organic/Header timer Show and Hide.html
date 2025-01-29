@@ -1,0 +1,22 @@
+<!-- Header timer Show and Hide -->
+<script>
+  jQuery(document).ready(function ($) {
+    // Apply the scroll effect on all pages
+    $(window).scroll(function () {
+      // Check if we have scrolled more than 500px
+      if ($(this).scrollTop() > 250) {
+        // Show the .hedr_show div after scrolling 500px
+        $('.hedr_show').fadeIn(); // You can also use .css('opacity', '1') if you prefer
+        // Optionally, you can add a class to the body or other elements, if needed
+        $('body').addClass('header-scrolled');
+      } else {
+        // Hide the .hedr_show div if less than 500px
+        $('.hedr_show').fadeOut(); // You can also use .css('opacity', '0') if you prefer
+        $('body').removeClass('header-scrolled');
+      }
+    });
+
+    // Ensure the .hedr_show section is initially hidden (in case the page is already scrolled)
+    $('.hedr_show').hide();  // Ensure it is hidden by default
+  });
+</script>

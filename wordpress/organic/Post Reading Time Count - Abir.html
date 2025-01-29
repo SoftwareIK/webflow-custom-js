@@ -1,0 +1,14 @@
+<!-- Post Reading Time Count - Abir -->
+<script>
+  const WPM = 183;
+  const contentElementReadingTime = document.querySelector(".reading_time_count_content");
+  const readingTimeContainer = document.querySelector(".reading-time-custom");
+
+  if (contentElementReadingTime && readingTimeContainer) {
+    const textContent = contentElementReadingTime.innerText || contentElementReadingTime.textContent;
+    const wordCount = textContent.trim().split(/\s+/).length;
+    const readingTimeMinutes = Math.ceil(wordCount / WPM);
+
+    readingTimeContainer.textContent = ` | Reading Time: ${readingTimeMinutes} minute${readingTimeMinutes > 1 ? 's' : ''}`;
+  }
+</script>

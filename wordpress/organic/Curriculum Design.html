@@ -1,0 +1,183 @@
+<!-- Curriculum Design -->
+<style>
+  .text-center {
+    text-align: center;
+  }
+
+  .course-curriculums .curriculum {
+    background-color: #f7f7f7;
+    border: 1px solid #e2e2e2;
+    border-radius: 12px;
+    padding: 20px 40px;
+    box-shadow: 1px 1px 20px #0000001a;
+    margin-top: 35px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 767px) {
+    .course-curriculums .curriculum {
+      padding: 15px 15px;
+    }
+  }
+
+  .course-curriculums .w-dropdown {
+    padding: 10px 0;
+  }
+
+  .course-curriculums .w-dropdown-toggle {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    flex-direction: row-reverse;
+    color: #2e3261;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .course-curriculums .w-dropdown-list {
+    display: none;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 10px 20px 10px 40px;
+    line-height: 120%;
+    position: relative;
+  }
+
+  @media (max-width: 767px) {
+    .course-curriculums .w-dropdown-list {
+      padding: 10px 15px 10px 15px;
+    }
+  }
+
+  .course-curriculums .w-dropdown-list.active {
+    display: block;
+    text-align: left;
+  }
+
+  .course-curriculums .w-icon-dropdown-toggle {
+    margin-left: auto;
+    /* Ensure icon is on the right side */
+    transition: transform 0.3s;
+    height: 15px;
+    width: 15px;
+    position: relative;
+  }
+
+  .course-curriculums .w-icon-dropdown-toggle::after {
+    content: '';
+    background-image: url(/wp-content/uploads/2024/11/down-arrow-svgrepo-com-1.png);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 6;
+    width: 15px;
+    height: 15px;
+    background-size: 15px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .course-curriculums .w-dropdown-toggle[aria-expanded="true"] .w-icon-dropdown-toggle {
+    transform: rotate(180deg);
+    /* Rotate icon when expanded */
+  }
+
+
+  .course-curriculums .mocinterview-list {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    gap: 80px;
+    width: fit-content;
+  }
+
+  @media (max-width: 767px) {
+    .course-curriculums .mocinterview-list {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+
+  .course-curriculums .item-mocinterview {
+    color: #324158;
+    text-align: left;
+    background-image: url(/wp-content/uploads/2024/11/svgexport-1-1.png);
+    background-position: 0 11px;
+    background-repeat: no-repeat;
+    background-size: 24px 24px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 32px;
+    font-weight: 400;
+  }
+
+  .course-curriculums .data-drop-list {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    color: #2e3261;
+  }
+
+  .course-curriculums .curriculum-list li {
+    margin-bottom: 15px;
+  }
+
+  .course-curriculums .curriculum-list {
+    color: #2e3261;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .course-curriculums .lpv5-h3 {
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 130%;
+    color: #2e3261;
+  }
+
+  @media (max-width: 767px) {
+    .course-curriculums .lpv5-h3 {
+      font-size: 24px;
+    }
+  }
+</style>
+
+
+
+
+<script>
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const faqItems = document.querySelectorAll(".w-dropdown");
+
+    faqItems.forEach(function (item) {
+      const questionToggle = item.querySelector(".w-dropdown-toggle");
+      const answer = item.querySelector(".w-dropdown-list");
+      const icon = item.querySelector(".w-icon-dropdown-toggle");
+
+      questionToggle.addEventListener("click", function () {
+        const isExpanded = questionToggle.getAttribute("aria-expanded") === "true";
+
+        // Toggle the aria-expanded attribute
+        questionToggle.setAttribute("aria-expanded", !isExpanded);
+
+        // Toggle the visibility of the answer
+        answer.classList.toggle("active", !isExpanded);
+
+        // Optionally, rotate the icon (handled by CSS through aria-expanded attribute)
+        icon.style.transform = !isExpanded ? "rotate(180deg)" : "rotate(0deg)";
+      });
+    });
+  });
+
+</script>

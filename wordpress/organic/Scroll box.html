@@ -1,0 +1,30 @@
+<!-- Scroll box -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const scrollContainer = document.querySelector('.scroll_container');
+
+    const items = document.querySelectorAll('.item_box .scroll_item');
+    const buttons = document.querySelectorAll('.button_dev .elementor-button');
+
+    if (buttons.length > 0) {
+      buttons[0].classList.add('btn_active');
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const index = Array.from(items).indexOf(entry.target);
+          if (index !== -1) {
+            buttons.forEach(button => button.classList.remove('btn_active'));
+            buttons[index].classList.add('btn_active');
+          }
+        }
+      });
+    }, {
+      root: scrollContainer,
+      threshold: 0.5
+    });
+
+    items.forEach(item => observer.observe(item));
+  });
+</script>

@@ -1,0 +1,28 @@
+<!-- Side Bar free interview course -->
+<script>
+  const icon_600 = document.querySelector(".icon_class_600");
+  const header_600 = document.querySelector(".header_600");
+  const sidebar_container_600 = document.querySelector(".sidebar_container_600");
+  const sidebar_600 = document.querySelector(".sidebar_600");
+
+  let counter_600 = 1;
+
+  icon_600.addEventListener('click', () => {
+    header_600.classList.toggle('header_border_660');
+    icon_600.classList.toggle('icon_660');
+    sidebar_container_600.classList.toggle('sidebar_transform_out_660');
+    sidebar_container_600.classList.toggle('sidebar_transform_in_660');
+
+    if (counter_600 % 2 == 0) {
+      setTimeout(() => {
+        sidebar_600.classList.toggle('display_none_600');
+      }, 1500);
+    }
+    else {
+      sidebar_600.classList.toggle('display_none_600');
+    }
+
+    counter_600++;
+  })
+
+</script>

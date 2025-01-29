@@ -1,0 +1,35 @@
+<!-- Uplevel Page Scroll Effect -->
+<script>
+  const containers = [];
+  const imagesArray = Array.from(document.querySelectorAll('.img-001'));
+  let i = 1;
+  const imgBox001 = document.getElementById('images-00');
+
+
+  while (i <= 5) {
+    const container = document.getElementById(`icon-box-${i}`);
+    containers.push(container);
+    i++;
+  }
+
+  window.addEventListener('scroll', () => {
+    const boxPosition = window.getComputedStyle(imgBox001).position;
+    if (boxPosition == "fixed") {
+      imgBox001.style.top = "50%";
+      imgBox001.style.transform = "translateY(-20%)"
+    }
+    const middleScreenPoint = window.innerHeight / 2;
+
+
+    containers.forEach((container, index) => {
+      if (container) {
+        const rect = container.getBoundingClientRect();
+
+        if (rect.top <= middleScreenPoint && rect.bottom > middleScreenPoint) {
+          imagesArray.forEach(img => img.classList.remove('opacity-001'));
+          imagesArray[index].classList.add('opacity-001');
+        }
+      }
+    });
+  });
+</script>

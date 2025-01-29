@@ -1,0 +1,118 @@
+<!-- Upworth form -->
+<script>
+  (function () {
+
+    const getUpworthFrom = document.querySelector('.upworth_from');
+
+    const webNearWorkExp = getUpworthFrom.querySelector('.fild_work_experince select#Experience');
+    const webNearDomain = getUpworthFrom.querySelector('.fild_domain select#domain-role');
+
+    const webNearFirstName = getUpworthFrom.querySelector('.web_first_name input#up-first-name');
+    const webNearLastName = getUpworthFrom.querySelector('.web_first_last_name input#up-last-name');
+    const webNearEmailAddress = getUpworthFrom.querySelector('.web_em_address input#up-Email-Address-7');
+
+    // For showing/heiding error message
+    function showHideError(ele = null, value = false) {
+      if (!ele) return;
+      if (ele.hasAttribute("err_status")) {
+        ele.setAttribute("err_status", value);
+        return;
+      } else {
+        showHideError(ele.parentElement, value);
+        return;
+      }
+    }
+
+    //Hide error message onchange
+    function hideErrorFun(allEle = []) {
+      for (let eachEle of allEle) {
+        eachEle.addEventListener("focus", function () {
+          showHideError(eachEle);
+        })
+      }
+    }
+
+    hideErrorFun([webNearWorkExp, webNearDomain, webNearFirstName, webNearLastName, webNearEmailAddress]);
+
+    //check regex
+    let name_regex = new RegExp("^[a-zA-Z ]+$");
+    let email_regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+
+    function upWorthFromStep1() {
+      let errStatus = false;
+      if (!webNearWorkExp.value) {
+        errStatus = true;
+        showHideError(webNearWorkExp, errStatus)
+      };
+
+      if (!webNearDomain.value) {
+        errStatus = true;
+        showHideError(webNearDomain, errStatus);
+      }
+      if (!errStatus) getUpworthFrom.setAttribute("ac_step", 2);
+    }
+
+    function upWorthFromStep2() {
+      setHiddenFields();
+      getUpworthFrom.setAttribute("loader_status", true);
+
+      let f_name = webNearFirstName.value.trim();
+      let l_name = webNearLastName.value.trim();
+      let wEmail = webNearEmailAddress.value;
+
+
+      //Error check
+      if ((f_name.length == 0) && (l_name.length == 0) && (wEmail.length == 0)) {
+        showHideError(webNearEmailAddress, true);
+        showHideError(webNearFirstName, true);
+        showHideError(webNearLastName, true);
+        getThePopupFrom.setAttribute("loader_status", false);
+        return;
+      } else if (!name_regex.test(f_name) || f_name.length == 0) {
+        showHideError(webNearFirstName, true);
+        getThePopupFrom.setAttribute("loader_status", false);
+        return;
+      } else if (!name_regex.test(l_name) || l_name.length == 0) {
+        showHideError(webNearLastName, true);
+        getThePopupFrom.setAttribute("loader_status", false);
+        return;
+      } else if (!email_regex.test(wEmail) || wEmail.length == 0) {
+        showHideError(webNearEmailAddress, true);
+        getThePopupFrom.setAttribute("loader_status", false);
+        return;
+      } else {
+
+        webNearInfo.firstName = f_name;
+        webNearInfo.lastName = l_name;
+
+        try {
+          dataLayer.push({
+            'event': 'new_webinar_registration_form_submitted',
+            'webinar_name': webNearInfo.eventname
+          });
+        } catch (err) {
+          console.log("Data Layer add faild");
+          console.log(err);
+        }
+
+        let upWrothCokkie = {
+          domain: webNearDomain.value,
+          workexp: webNearWorkExp.value,
+          fname: f_name,
+          lname: l_name,
+          email: wEmail
+        }
+
+        bake_cookie("up_wroth_cookie", upWrothCokkie);
+        location.href = `/upworth-profile-analysis?domain=${upWrothCokkie.domain}&workexp=${upWrothCokkie.workexp}&fname=${upWrothCokkie.fname}&lname=${upWrothCokkie.lname}&email=${upWrothCokkie.email}`;
+      }
+    }
+
+    const upWorthFrBtn1 = getUpworthFrom.querySelector('.upworth_rg_button_1');
+    const upWorthFrBtn2 = getUpworthFrom.querySelector('.upworth_rg_button_2');
+
+    upWorthFrBtn1.addEventListener('click', upWorthFromStep1);
+    upWorthFrBtn2.addEventListener('click', upWorthFromStep2);
+  })();
+</script>

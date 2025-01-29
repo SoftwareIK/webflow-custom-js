@@ -1,0 +1,241 @@
+<!-- Upworth Profile Analysis -->
+<script>
+  const upWorthData = { ...read_cookie("up_wroth_cookie"), ...currentURlPrms };
+  for (let i in upWorthData) {
+    upWorthData[i] = decodeURIComponent(upWorthData[i]);
+  }
+
+  function firstStepCompletFun() {
+    if (upWorthData.fname && upWorthData.lname && upWorthData.email) {
+      webNearFirstName.value = upWorthData.fname;
+      webNearLastName.value = upWorthData.lname;
+      webNearEmailAddress.value = upWorthData.email;
+      getWebNearForm.querySelector(".webnear_regitration_fr").setAttribute("ac_step", 2);
+      getWebNearForm.querySelector(".webnear_regitration_fr").setAttribute("loader_status", false);
+    }
+  }
+
+  for (let eachWebNearBtn of getWebNearShowBtn) {
+    eachWebNearBtn.addEventListener('click', function (e) {
+      firstStepCompletFun();
+    })
+  }
+
+  document.addEventListener("webNearLoaded", function () {
+    setTimeout(function () {
+      firstStepCompletFun();
+      fromSend1stStep();
+    }, 1000);
+  })
+
+  getWebNearForm.querySelector(".step_card.step_2 .step_number").innerHTML = "3";
+  getWebNearForm.querySelector(".step_card.step_2 .step_text").innerHTML = "Select webinar slot";
+</script>
+
+
+<script>
+
+  function replaceNewLinesWithHTML(htmlstr) {
+    htmlstr = htmlstr.replace(/\\n|\n|\u000A|\u000D/g, '<br>');
+    return htmlstr;
+  }
+
+  function indianNumberFormat(num) {
+    var x = num.toString();
+    var lastThree = x.substring(x.length - 3);
+    var otherNumbers = x.substring(0, x.length - 3);
+    if (otherNumbers !== '') lastThree = ',' + lastThree;
+    var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+    return res;
+  }
+
+  function formatCurrency(input) {
+    let currencyCode, symbol;
+    input = input.trim();
+    console.log("input: " + input);
+    if (input.startsWith('₹')) {
+      currencyCode = 'INR';
+      symbol = '₹';
+      input = input.slice(1);
+    } else if (input.startsWith('Rs.')) {
+      currencyCode = 'INR';
+      symbol = '₹';
+      input = input.slice(3);
+    } else if (input.startsWith('$')) {
+      currencyCode = 'USD';
+      symbol = '$';
+      input = input.slice(1);
+    } else if (input.startsWith("\u20b9")) {
+      currencyCode = 'INR';
+      symbol = '₹';
+      input = input.slice(6);
+    } else {
+      throw new Error('Unknown currency');
+    }
+
+    input = input.trim();
+
+    const numberAmount = parseFloat(input.replace(/[^0-9.-]+/g, ""));
+    const truncatedNumber = Math.floor(numberAmount);
+
+    if (currencyCode === 'INR') {
+      return symbol + ' ' + indianNumberFormat(truncatedNumber);
+    } else {
+      const locale = navigator.language;
+      const formatter = new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: currencyCode,
+        minimumFractionDigits: 0,  // Remove decimals
+        maximumFractionDigits: 0  // Remove decimals
+      });
+
+      return formatter.format(truncatedNumber);
+    }
+  }
+
+
+
+  window.addEventListener("DOMContentLoaded", function () {
+    // Loader message
+    const getLoader = document.querySelector(".data-loading");
+    const loadingMessage = getLoader.querySelector('.loadingmessages span');
+    const loadingicon = getLoader.querySelector('.loading-icon');
+
+    let errormsg = "Uh-oh! It seems a mischievous gremlin has infiltrated our systems and caused a technical hiccup. We're chasing it with a broomstick as we speak!";
+    let messages = [
+      "Assembling cyborg minions...",
+      "Processing bytes and bits...",
+      "Sit back and watch the magic unfold..."
+    ];
+
+    let currentMessage = 0;
+
+    function updateMessage() {
+      if (currentMessage >= messages.length) {
+        clearInterval(messagChange);
+        return;
+      }
+      loadingMessage.style.opacity = 0;
+      setTimeout(() => {
+        loadingMessage.textContent = messages[currentMessage++];
+        loadingMessage.style.opacity = 1;
+      }, 320);
+    }
+    let messagChange = setInterval(updateMessage, 1200);
+
+    function loadErrorFun(err) {
+      loadingicon.style.display = "none";
+      loadingMessage.innerHTML = errormsg;
+    }
+
+
+    document.querySelector(".profile__firstname span").innerHTML = upWorthData.fname;
+
+    fetch("https://get.geojs.io/v1/ip/country.json").then(res => res.json())
+      .then((t) => {
+        let endpoint_url = "https://awgxoko84b.execute-api.us-west-2.amazonaws.com/default/free_profile_analysis";
+        let ucountry = t.country_3;
+        ucountry = (ucountry == 'IND') ? 'IND' : 'USA';
+
+        let formInput = {
+          "domain": decodeURIComponent(upWorthData['domain']),
+          "work_experience": decodeURIComponent(upWorthData['workexp']),
+          "country": ucountry
+        };
+
+        let options = {
+          method: 'POST',
+          body: JSON.stringify(formInput),
+        };
+
+        fetch(endpoint_url, options).then(resp => resp.json())
+          .then((e) => {
+            if (e['roles'] == null) {
+              loadingicon.style.display = "none";
+              loadingMessage.innerHTML = errormsg;
+            }
+
+            let roles = JSON.parse(e['roles'].replace(/'/g, '"'));
+            let salary_range = JSON.parse(e['salary_range'].replace(/'/g, '"'));
+            let growth_path_roles = JSON.parse(e['growth_path_roles'].replace(/'/g, '"'));
+            let open_jobs_linkedIn = e['open_jobs_linkedIn'];
+            let top_3_question_answer = e['top_3_question_answer'];
+            let growth_path = e['growth_path'];
+
+            // Role
+            const getRoleGrid = document.querySelector(".upworth-role-grid");
+            const roleDesignDemo = document.querySelector(".upworth-role-card");
+            getRoleGrid.innerHTML = "";
+            for (let value of roles) {
+              const roleDiv = roleDesignDemo.cloneNode(true);
+              roleDiv.querySelector(".role_title span").innerHTML = value;
+              getRoleGrid.append(roleDiv);
+            }
+
+            // Jobs
+            const getJobsGrid = document.querySelector(".jobs-board");
+            const jobDesignDemo = document.querySelector(".jobs-board__row");
+            const getJobBoardHeader = getJobsGrid.firstElementChild;
+            getJobsGrid.innerHTML = "";
+            getJobsGrid.append(getJobBoardHeader);
+
+            for (let job of open_jobs_linkedIn) {
+              const jobDiv = jobDesignDemo.cloneNode(true);
+              jobDiv.querySelector(".jobs-company span").innerHTML = job.Company;
+              jobDiv.querySelector(".jobs-role span").innerHTML = job.Title;
+              jobDiv.querySelector(".jobs-location span").innerHTML = job.Location;
+              jobDiv.querySelector(".jobs-apply-cta a").href = job["Post Link"];
+              getJobsGrid.append(jobDiv);
+            }
+
+            // Faq
+            const getFaqQuestionCon = document.querySelector(".upworth-tab-faq-questions ul.elementor-icon-list-items");
+            const getFaqQuestionDemoDesign = getFaqQuestionCon.querySelector("li.elementor-icon-list-item");
+
+            const getFaqAwnserCon = document.querySelector(".upworth-tab-faq-answers");
+            const getFaqAwnserConQuesDemoDesign = getFaqAwnserCon.querySelector(".faq_question_demo");
+            const getFaqAwnserConAwnserDemoDesign = getFaqAwnserCon.querySelector(".faq_awnser_demo");
+
+            getFaqQuestionCon.innerHTML = "";
+            getFaqAwnserCon.innerHTML = "";
+
+            top_3_question_answer.forEach(function (faq, index) {
+              const faqAnsCardQuest = getFaqAwnserConQuesDemoDesign.cloneNode(true);
+              faqAnsCardQuest.id = "faqsec-" + index;
+              faqAnsCardQuest.querySelector("h4").innerHTML = faq.question;
+              getFaqAwnserCon.append(faqAnsCardQuest);
+
+              const faqAnsCardAns = getFaqAwnserConAwnserDemoDesign.cloneNode(true);
+              faqAnsCardAns.querySelector("p").innerHTML = faq.answer;
+              getFaqAwnserCon.append(faqAnsCardAns);
+
+              const faqquestions = getFaqQuestionDemoDesign.cloneNode(true);
+              faqquestions.querySelector(".elementor-icon-list-text").innerHTML = faq.question;
+              faqquestions.querySelector("a").href = "#faqsec-" + index;
+              getFaqQuestionCon.append(faqquestions);
+            });
+
+
+
+            let temphtml = replaceNewLinesWithHTML(growth_path);
+            let formattedHtml = temphtml;
+
+            document.querySelector(".salary-range-low span").innerHTML = formatCurrency(e['estimated_salary_low']);
+            document.querySelector(".salary-range-medium span").innerHTML = formatCurrency(e['median_salary']);
+            document.querySelector(".salary-range-high span").innerHTML = formatCurrency(e['estimated_salary_high']);
+            document.querySelector(".salary-range-target span").innerHTML = formatCurrency(e['targeted_salary']);
+
+            document.querySelector(".growth_path .scrollable-content").innerHTML = formattedHtml;
+
+            document.querySelector(".growth_path_role1 span").innerHTML = growth_path_roles[0];
+            document.querySelector(".growth_path_role2 span").innerHTML = growth_path_roles[1];
+            document.querySelector(".growth_path_role3 span").innerHTML = growth_path_roles[2];
+
+            return true;
+          }).then(r => { if (r) getLoader.setAttribute("show_status", false) })
+          .catch(loadErrorFun);
+      }).catch(loadErrorFun);
+  });
+
+
+</script>
