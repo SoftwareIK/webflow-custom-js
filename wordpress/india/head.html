@@ -58,6 +58,9 @@
 
 
 <script defer type="text/javascript">
+  let webinarSlots = [];
+  const webNearLoadedEv = new CustomEvent("webNearLoaded");
+  
   let isSwitchUp = "No";
   let webinarType = currentURlPrms.webinartype || "REGULAR";
   let eventName = currentURlPrms.event || "How to Nail your next Technical Interview";

@@ -4,6 +4,15 @@
 <script>
   let registration_type;
   let no_of_webinar_slots = 6;
+  let slotFetchedTwice = false;
+  let initialTimezone = v_timezone;
+  try {
+    if (typeof (staticSlots) != undefined && staticSlots.length == 0) {
+      slotLoaded(staticSlots, false)
+    }
+  } catch (error) {
+    console.error("Error: ", error)
+  }
 
   function populateWebinarSlots(resobj) {
     const t_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -52,156 +61,71 @@
   }
 
 
-
-
   // webnear time
-  let api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=" + webinarType;
+  // let api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=" + webinarType;
 
-  (async function () {
+  // (async function () {
+  //   const option = {
+  //     method: "GET",
+  //     headers: {
+  //       "Authorization": "1Cgx6oYXkOlWkNDn7_tXO",
+  //     }
+  //   }
+
+  //   const request = await fetch(api_url, option);
+  //   let resobj = await request.json();
+  //   if (webinarType == "REGULAR") {
+  //     resobj = resobj.map(item => ({ ...item, webinar_lead_type: "REGULAR" }));
+  //   }
+  //   populateWebinarSlots(resobj);
+  //   TimerHandler(resobj);
+  // })()
+
+  async function fallbackSlots() {
+    if (!slotFetchedTwice) {
+      let initialTimezone = v_timezone;
+      webinarType = "REGULAR";
+      v_timezone = "Asia/Kolkata"
+      loadSlot(v_timezone)
+      slotFetchedTwice = true;
+    } else {
+      v_timezone = initialTimezone;
+      staticSlots = generateWebinarSlots({ count: 13, country: "IND", targetTimezone: v_timezone, webinarType: webinarType });
+      slotLoaded(staticSlots);
+    }
+  }
+
+  async function slotLoaded(slots, resetTimer = true) {
+    webinarSlots = slots
+    populateWebinarSlots(slots);
+    resetTimer && TimerHandler(slots, v_timezone);
+  }
+
+  async function loadSlot(c_timezoon = "Asia/Kolkata") {
+    let api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=" + webinarType;
+
     const option = {
       method: "GET",
       headers: {
         "Authorization": "1Cgx6oYXkOlWkNDn7_tXO",
       }
     }
-
-    const request = await fetch(api_url, option);
-    let resobj = await request.json();
-    if (webinarType == "REGULAR") {
+    try {
+      api_status = "on-going";
+      const request = await fetch(api_url, option);
+      let resobj = await request.json();
       resobj = resobj.map(item => ({ ...item, webinar_lead_type: "REGULAR" }));
-    }
-    populateWebinarSlots(resobj);
-    TimerHandler(resobj);
-  })()
-
-
-
-  // webinar-india-schedule.js
-  const timerState = {
-    currentDate: '',
-    nextDate: '',
-    currentDateSec: '',
-    nextDateSec: '',
-  };
-
-  function initStates(slots) {
-    timerState.currentDate = new Date().toLocaleString('en-US', { timeZone: 'IST' });
-    timerState.currentDateSec = Date.parse(timerState.currentDate);
-    timerState.nextDate = nextWebinar(timerState.currentDate.split(',')[0], timerState.currentDateSec, slots);
-    if (timerState.nextDate !== '') {
-      timerState.nextDateSec = Date.parse(timerState.nextDate);
-    }
-  };
-
-  function nextWebinar(currentDate, currentWebTime, slots) {
-    let nextWebinarDate = '';
-    if (!slots) {
-      return fallbackTimerDate()
-    }
-
-    const formattedSlots = (slots || [])?.map((slot = {}) => ({
-      date: `${slot.month}/${slot.day}/${slot.year}`, //"06/12/2024"
-      time: `${slot.hour}:${slot.minute}:${slot.second} ${slot.am_or_pm}`, //"07:30:00 PM"
-    }))
-
-    for (let idx = 0; idx < formattedSlots.length; idx++) {
-      if (formattedSlots[idx]) {
-        const currentDateWeb = Date.parse(new Date(`${formattedSlots[idx].date}, ${formattedSlots[idx].time}`));
-        if (currentDateWeb > currentWebTime) {
-          nextWebinarDate = `${formattedSlots[idx].date}, ${formattedSlots[idx].time}`;
-          break;
-        }
+      if (resobj.length == 0) {
+        throw new Error(`P0: The Uplevel Webinar Slots API Returned No Data. (webinarType: ${webinarType}, timezone: ${c_timezoon})`);
       }
+      slotLoaded(resobj);
+      api_status = "completed";
+    } catch (err) {
+      api_status = "failed";
+      fallbackSlots()
     }
-    return nextWebinarDate;
-  };
-
-  // Fall back time
-  function fallbackTimerDate() {
-    const currentDate = new Date();
-    const dayOfWeek = currentDate.getDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
-    const dateString = currentDate.toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata', month: '2-digit', day: '2-digit', year: 'numeric' });
-    let timeString;
-
-    if (dayOfWeek === 6) {
-      // Saturday
-      timeString = "11:00:00 PM";
-    } else if (dayOfWeek === 0) {
-      // Sunday
-      return ""; // Skip on Sunday
-    } else {
-      timeString = "06:00:00 PM";
-    }
-
-    return `${dateString}, ${timeString}`
   }
-
-  function unitCount(unit) {
-    const toTens = () => String(Number.parseInt(unit / 10));
-    const toOnes = () => String(unit % 10);
-    return toTens() + toOnes();
-  };
-
-  function TimerHandler(slots) {
-    // initialize states
-    initStates(slots);
-
-    // start timer
-    const webinarTimer = setInterval(() => {
-      if (timerState.nextDate === '') {
-        clearInterval(webinarTimer);
-      }
-      timerState.currentDate = new Date().toLocaleString('en-US', { timeZone: 'IST' });
-      timerState.currentDateSec = Date.parse(timerState.currentDate);
-
-      const distanceCount = timerState.nextDateSec - timerState.currentDateSec;
-
-      const day = Math.floor(distanceCount / (1000 * 60 * 60 * 24));
-      const hrs = Math.floor((distanceCount % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const min = Math.floor((distanceCount % (1000 * 60 * 60)) / (1000 * 60));
-      const sec = Math.floor((distanceCount % (1000 * 60)) / 1000);
-
-      // separating into tens and ones
-
-      const dayCount = unitCount(day);
-      const hrCount = unitCount(hrs);
-      const minCount = unitCount(min);
-      const secCount = unitCount(sec);
-
-      // update UI
-      updateTimerUI(dayCount, hrCount, minCount, secCount);
-
-      if (distanceCount <= 0) {
-        // move timer to next date if reached 0
-        initStates(slots);
-
-        if (timerState.nextDate === '') {
-          clearInterval(webinarTimer);
-          // hide the fild if nothing
-          document.querySelectorAll('.webinar__timer').forEach((timer) => {
-            timer.classList.add('is-hidden');
-          });
-        }
-      }
-    }, 1000);
-  };
-
-
-  // set the next webnear value
-  function updateTimerUI(day, hrs, min, sec) {
-    document.querySelectorAll('.webinar__timer--days span').forEach((timer) => {
-      timer.textContent = day;
-    });
-    document.querySelectorAll('.webinar__timer--hours span').forEach((timer) => {
-      timer.textContent = hrs;
-    });
-    document.querySelectorAll('.webinar__timer--mins span').forEach((timer) => {
-      timer.textContent = min;
-    });
-    document.querySelectorAll('.webinar__timer--secs span').forEach((timer) => {
-      timer.textContent = sec;
-    });
-  };
+  loadSlot();
 </script>
 
 
