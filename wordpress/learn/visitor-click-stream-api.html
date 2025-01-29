@@ -1,6 +1,6 @@
 <!-- nlhtyrnugl execute api -->
 <script>
-  const timestampOfUserVisit = Date.now();
+  const timestampofUserVisit = new Date();
   setTimeout(() => {
     let AB_test_bucket = "control"
 
@@ -12,7 +12,7 @@
 
     let data1 = [
       {
-        Lead_Created_Time: timestampOfUserVisit,
+        Lead_Created_Time: timestampofUserVisit,
         Lead_Time_Zone: v_timezone,
         Event_Type_Name: eventName,
         Cancellation_reason: "",
