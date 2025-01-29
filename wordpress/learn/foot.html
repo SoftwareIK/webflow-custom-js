@@ -424,6 +424,7 @@
         webNearInfo.fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
       }
 
+      typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("info") : console.error("saveFormEventsActivity is not a function");
       pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/").then(() => {
         getThePopupFrom?.setAttribute("ac_step", 2);
         getThePopupFrom?.setAttribute("loader_status", false);
@@ -486,6 +487,7 @@
         });
     }
 
+    typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("slot") : console.error("saveFormEventsActivity is not a function");
     if (is_webinar_1o1_eligible) {
       bookSlot(webNearEmailAddress.value, getCheckWebnear.getAttribute('slot_id')).then(function (data) {
         if (data.booking_id) webNearInfo.booking_id = data.booking_id;

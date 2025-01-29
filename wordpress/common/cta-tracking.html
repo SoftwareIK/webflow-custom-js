@@ -146,7 +146,7 @@
           pathname = pathname.join('_');
         }
 
-        return `${hostname.substring(0,25)}_${pathname}`;
+        return `${hostname.substring(0, 25)}_${pathname}`;
       }
 
       if (targetAttr) {
@@ -183,13 +183,13 @@
     let clickID = target.getAttribute("data-click-id") || (/\d/.test(target.id) ? false : target.id);
 
     if (!clickID) {
-      if(target.tagName != "A") {
-         target = target.closest("a");
+      if (target.tagName != "A") {
+        target = target.closest("a");
       }
 
       if (target.tagName === "A" || (target.tagName === "INPUT" && target.type === "submit")) {
         clickID = fallbackClickID(target);
-      } 
+      }
       if (!clickID) {
         return;
       }
@@ -220,5 +220,47 @@
       addIdChild(eachChild, ctaId);
     }
     return;
+  }
+
+  function saveFormEventsActivity(step, ctaid = "", callback = null) {
+    try {
+      let clickid = ""
+      if (!step) {
+        console.warn("Step is required to track form events");
+        return;
+      }
+
+      switch (step) {
+        case "info": {
+          clickid = "webinar-modal_button_show-webinar-slots";
+          break
+        }
+        case "slot": {
+          clickid = "Webinar-modal_button_open-gql";
+          break
+        }
+        case "gql": {
+          clickid = "Gql-form_button_gpl-registration-step";
+          break
+        }
+        case "domain": {
+          clickid = "Gql-form_button_gql-domain-switch-stepr";
+          break
+        }
+        case "source": {
+          clickid = "Gql-form_button_gql-final-step";
+          break
+        }
+        default: {
+          clickid = ctaid;
+          break
+        }
+      }
+
+      saveClickActivity(clickid, Date.now(), callback);
+    } catch (error) {
+      console.error("Error in saveFormEventsActivity:", error);
+    }
+
   }
 </script>

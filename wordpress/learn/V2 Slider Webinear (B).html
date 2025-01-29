@@ -381,6 +381,7 @@
           console.error("Data Layer add faild", err);
         }
 
+        typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("info") : console.error("saveFormEventsActivity is not a function");
         webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
         let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/21gkn2x/" : "https://hooks.zapier.com/hooks/catch/11068981/340hd4j/";
 
@@ -415,6 +416,7 @@
 
       bake_cookie("from_cookie", utmstring);
 
+      typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("slot") : console.error("saveFormEventsActivity is not a function");
       let pushUrl = is_webinar_1o1_eligible ? "https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/" : "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/";
       pushUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/" : pushUrl;
       pushToEndPoint2(pushUrl)
@@ -496,6 +498,7 @@
           salesforce_uuid: webNearInfo2.salesforce_uuid,
         };
 
+        typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("gql") : console.error("saveFormEventsActivity is not a function");
         leadScoreService()
           .then(function (data) {
             leadScoreData = data;

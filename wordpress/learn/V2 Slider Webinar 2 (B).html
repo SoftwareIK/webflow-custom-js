@@ -439,6 +439,7 @@
 
         webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
 
+        typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("info") : console.error("saveFormEventsActivity is not a function");
         pushToEndPoint2("https://hooks.zapier.com/hooks/catch/11068981/340hd4j/")
           .then(() => {
             getThePopupFrom2.setAttribute("active_step", 2);
@@ -479,6 +480,7 @@
           });
       }
 
+      typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("slot") : console.error("saveFormEventsActivity is not a function");
       if (is_webinar_1o1_eligible) {
         bookSlot(webNearEmailAddress2.value, getCheckWebnear.getAttribute('slot_id')).then(function (data) {
           if (data.booking_id) webNearInfo2.booking_id = data.booking_id;
@@ -561,6 +563,8 @@
           'Is Student': v2IsStudent,
           salesforce_uuid: webNearInfo2.salesforce_uuid,
         };
+
+        typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("gql") : console.error("saveFormEventsActivity is not a function");
 
         leadScoreService()
           .then(function (data) {

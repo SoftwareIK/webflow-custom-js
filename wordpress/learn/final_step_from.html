@@ -115,6 +115,7 @@
         salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
       };
 
+      typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("gql") : console.error("saveFormEventsActivity is not a function");
       leadScoreService()
         .then(function (data) {
           leadScoreData = data;
@@ -190,7 +191,7 @@
         // 'Switch to Engineering Management': false ? 'Yes': 'No',
       };
 
-
+      typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("domain") : console.error("saveFormEventsActivity is not a function");
       try {
         dataLayer.push({
           event: "wordpress_form_submitted",
@@ -248,6 +249,7 @@
     } catch (err) {
       console.error(err);
     }
+    typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("source") : console.error("saveFormEventsActivity is not a function");
     sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3sxtz40/", GQLformData);
   }
 
