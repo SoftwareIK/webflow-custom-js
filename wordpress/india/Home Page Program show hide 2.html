@@ -1,0 +1,16 @@
+<!-- Home Page Program show hide 2 -->
+<script>
+  const btn = document.getElementById('p_switch_up_btn');
+  const content = document.getElementById('p_switch_up_cntnt');
+
+  content.style.display = 'none';
+
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (content.style.display === 'none') {
+      content.style.display = 'block';
+    } else {
+      content.style.display = 'none';
+    }
+  });
+</script>

@@ -1,0 +1,137 @@
+<!-- FAQ design -->
+<style>
+  .course-faqs .ipv8-1_hero_title {
+    color: #324158;
+    letter-spacing: -1.2px;
+    margin-bottom: 10px;
+    font-size: 40px;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  @media (max-width: 767px) {
+    .course-faqs .ipv8-1_hero_title {
+      font-size: 26px;
+    }
+  }
+
+  .course-faqs .ipv8-1-faq {
+    border-bottom: 2px solid #f0f3f6;
+    padding-bottom: 24px;
+  }
+
+  .course-faqs .faq-ipv8-1 {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .course-faqs .faq-question-block {
+    background-color: #FFF;
+    padding: 24px 0 0 0;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+
+  .course-faqs .faq-question-block>div:first-child {
+    width: 90%;
+  }
+
+  .course-faqs .faq-answeripv8-1 {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    padding: 0px 24px;
+    background-color: #fff;
+    margin-bottom: 0px;
+    text-align: left;
+    color: #324158;
+  }
+
+  @media (max-width: 767px) {
+    .course-faqs .faq-answeripv8-1 {
+      padding: 0px 15px;
+    }
+  }
+
+  .course-faqs .faq-answeripv8-1.open {
+    padding: 24px 24px;
+    max-height: 100000px;
+  }
+
+  @media (max-width: 767px) {
+    .course-faqs .faq-answeripv8-1.open {
+      padding: 15px 15px;
+    }
+  }
+
+  .accordion-item-iconipv8-1 {
+    position: relative;
+    /* Position relative to allow absolute positioning of child elements */
+    width: 16px;
+    /* Define a width for the icon container */
+    height: 16px;
+    /* Define a height for the icon container */
+  }
+
+  .course-faqs .vline-ipv8-1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 16px;
+    background-color: #9496a1;
+    transform: translate(-50%, -50%);
+    /* Center the vertical line */
+    transition: transform 0.3s ease-out;
+    /* Smooth rotation */
+  }
+
+  .course-faqs .hline-ipv8-1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 2px;
+    background-color: #9496a1;
+    transform: translate(-50%, -50%);
+    /* Center the horizontal line */
+  }
+</style>
+
+
+
+<script>
+  document.querySelectorAll('.faq-question-block').forEach((question) => {
+    question.addEventListener('click', () => {
+      const answer = question.nextElementSibling;
+      const vline = question.querySelector('.vline-ipv8-1');
+
+      if (answer.classList.contains('open')) {
+        // Close the current open answer
+        answer.classList.remove('open');
+        vline.style.transform = 'translate(-50%, -50%)'; // Reset rotation
+        answer.style.maxHeight = null; // Remove max-height to close
+      } else {
+        // Close all other open answers
+        document.querySelectorAll('.faq-answeripv8-1').forEach((ans) => {
+          ans.classList.remove('open');
+          ans.style.maxHeight = null; // Remove max-height from other answers
+          ans.previousElementSibling.querySelector('.vline-ipv8-1').style.transform = 'translate(-50%, -50%)'; // Reset rotation
+        });
+
+        // Open the clicked answer
+        answer.classList.add('open');
+        //       answer.style.maxHeight = answer.scrollHeight + "px"; // Ensure full content is shown
+        answer.style.maxHeight = 'answer.offsetHeight + "px"';
+        vline.style.transform = 'translate(-50%, -50%) rotate(90deg)'; // Rotate vertical line to horizontal
+      }
+    });
+  });
+
+
+
+</script>

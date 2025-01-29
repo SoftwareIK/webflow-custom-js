@@ -1,0 +1,42 @@
+<!-- Custom Tab Home -->
+<script>
+  const headingBtns = document.querySelectorAll('.courses_heading');
+  const courseContents = document.querySelectorAll('.courses_content');
+  const courseArrows = document.querySelectorAll('.arrow_courses');
+
+  courseContents.forEach(content => {
+    content.style.maxHeight = '0px';
+    content.style.overflow = 'hidden';
+    content.style.paddingTop = '0px';
+    content.style.paddingBottom = '0px';
+  });
+
+  headingBtns.forEach((btn, index) => {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const content = courseContents[index];
+      const arrow = courseArrows[index];
+
+      if (content.style.maxHeight === '0px') {
+        courseContents.forEach((c, i) => {
+          if (c !== content) {
+            c.style.maxHeight = '0px';
+            c.style.paddingTop = '0px';
+            c.style.paddingBottom = '0px';
+            courseArrows[i].style.transform = 'rotate(90deg)';
+          }
+        });
+        content.style.maxHeight = '1000px';
+        content.style.paddingTop = '24px';
+        content.style.paddingBottom = '24px';
+        arrow.style.transform = 'rotate(270deg)';
+      } else {
+        content.style.maxHeight = '0px';
+        content.style.paddingTop = '0px';
+        content.style.paddingBottom = '0px';
+        arrow.style.transform = 'rotate(90deg)';
+      }
+    });
+  });
+
+</script>

@@ -1,0 +1,20 @@
+<!-- Career page Read More/Less Button -->
+<script>
+  const readMoreBtn = document.getElementById('read_more_btn');
+  const contentBox = document.getElementById('content_box_carr');
+  let isExpanded = false;
+
+  readMoreBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    if (isExpanded) {
+      contentBox.style.height = '70px';
+      readMoreBtn.textContent = 'Read More';
+    } else {
+      contentBox.style.height = contentBox.scrollHeight + 'px';
+      readMoreBtn.textContent = 'Read Less';
+    }
+
+    isExpanded = !isExpanded;
+  });
+</script>

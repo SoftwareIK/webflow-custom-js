@@ -1,0 +1,15 @@
+<!-- Webinar From open close -->
+<script>
+  const getWebNearShowBtn = document.querySelectorAll('[href="#web_near_form"]');
+  const getWebNearForm = document.querySelector('.web_near_form');
+  const getWebNearFormClose = document.querySelector('.web_near_close');
+  for (let eachWebNearBtn of getWebNearShowBtn) {
+    eachWebNearBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      getWebNearForm.setAttribute('show_status', true);
+    })
+  }
+  getWebNearFormClose.addEventListener('click', function () {
+    getWebNearForm.setAttribute('show_status', false);
+  })
+</script>
