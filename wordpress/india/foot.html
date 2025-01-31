@@ -11,7 +11,7 @@
       slotLoaded(staticSlots, false)
     }
   } catch (error) {
-    console.error("Error: ", error)
+    console.error("Error while loading static slots", error);
   }
 
   function populateWebinarSlots(resobj) {
@@ -304,7 +304,6 @@
       return sendData;
     } catch (err) {
       console.error("P0: The Zapier Webhook Failed.");
-      alert("Something is wrong");
     }
   }
 
@@ -374,7 +373,18 @@
         console.error(err);
       }
 
-      webNearInfo.fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
+      webNearInfo.fPhoneNumber = "";
+      if (typeof intlTelInputUtils == "undefined") {
+        try {
+          webNearInfo.fPhoneNumber = `+${webNearPhoneNumberWri.getSelectedCountryData().dialCode}${document.querySelector("#webinar_pnumber")?.value}`;
+        } catch (error) {
+          console.error("Error while getting phone number", error);
+          webNearInfo.fPhoneNumber = document.querySelector("#webinar_pnumber")?.value;
+        }
+      } else {
+        webNearInfo.fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
+      }
+      // webNearInfo.fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
 
       pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34xpbjl/")
         .then(() => {

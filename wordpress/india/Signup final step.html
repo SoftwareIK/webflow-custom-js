@@ -1,5 +1,4 @@
 <!-- Signup final step -->
-<!-- signup-final-step -->
 <script>
   const getFinalForm = document.querySelector('.final_step_fr');
   let utmparams = read_cookie("v_latest") || {};
@@ -126,8 +125,7 @@
               expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
             })
           } catch (err) {
-            console.log("Data Layer add faild");
-            console.log(err);
+            console.error("Error in dataLayer push", err);
           }
           sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/34xp8vf/", GQLformData);
         });
@@ -198,8 +196,7 @@
           expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
         })
       } catch (err) {
-        console.log("Data Layer add faild");
-        console.log(err);
+        console.error("Error in dataLayer push", err);
       }
       sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/34xpf0o/", GQLformData);
     }
@@ -247,8 +244,7 @@
         expected_revenue: expectedRev,
       })
     } catch (err) {
-      console.log("Data Layer add faild");
-      console.log(err);
+      console.error("Error in dataLayer push", err);
     }
     sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3rrmpsx/", GQLformData);
   }
@@ -299,10 +295,8 @@
     try {
       let response = await fetch(url, options);
       moveNextStep();
-      console.log('Form submitted successfully!');
-    } catch {
-      console.log('Form Summit faild');
-      alert("Something is wrong");
+    } catch (error) {
+      console.error("Error in sendRequestZapiar", error);
     }
   }
 

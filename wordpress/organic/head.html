@@ -165,6 +165,17 @@
     visitor_id = create_UUID();
     setCookie("unique_visitor_id6", visitor_id);
   }
+  function setClarityContext(uuid) {
+    try {
+      if (window.clarity) {
+        window.clarity("identify", uuid);
+        window.clarity("set", "uuid", uuid)
+      }
+    } catch (error) {
+      console.error("Clarity not found", error);
+    }
+  }
+  setClarityContext(visitor_id);
   // set the visitor id end-------------------------------
 
   // set the visitor Country start-------------------------------

@@ -187,7 +187,7 @@
         target = target.closest("a");
       }
 
-      if (target.tagName === "A" || (target.tagName === "INPUT" && target.type === "submit")) {
+      if (target && target.tagName === "A" || (target.tagName === "INPUT" && target.type === "submit")) {
         clickID = fallbackClickID(target);
       }
       if (!clickID) {
@@ -244,7 +244,7 @@
           break
         }
         case "domain": {
-          clickid = "Gql-form_button_gql-domain-switch-stepr";
+          clickid = "Gql-form_button_gql-domain-switch-step";
           break
         }
         case "source": {
