@@ -343,6 +343,7 @@
       pushToEndPoint2(pushUrl)
         .then(() => {
           getThePopupFrom2.setAttribute("active_step", 3);
+          secondStepSecondRequest2();
         });
     }
 
@@ -490,7 +491,6 @@
 
       try {
         let response = await fetch(url, options);
-        secondStepSecondRequest2();
         document.querySelector(".complete_message").setAttribute('show_status', true);
         // For A/B testing
         VWO.event("gqlFormCompleted", {

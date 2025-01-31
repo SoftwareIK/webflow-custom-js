@@ -422,6 +422,7 @@
       pushToEndPoint2(pushUrl)
         .then(() => {
           getThePopupFrom2.setAttribute("active_step", 3);
+          secondStepSecondRequest2();
         });
     }
 
@@ -575,7 +576,6 @@
 
       try {
         let response = await fetch(url, options);
-        secondStepSecondRequest2();
         getThePopupFrom2.setAttribute('show_status', false);
         document.querySelectorAll('.af_content').forEach((item) => {
           item.setAttribute('show_status', true);
