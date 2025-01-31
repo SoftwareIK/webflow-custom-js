@@ -187,7 +187,7 @@
         target = target.closest("a");
       }
 
-      if (target && target.tagName === "A" || (target.tagName === "INPUT" && target.type === "submit")) {
+      if (target && (target.tagName === "A" || (target.tagName === "INPUT" && target.type === "submit"))) {
         clickID = fallbackClickID(target);
       }
       if (!clickID) {
