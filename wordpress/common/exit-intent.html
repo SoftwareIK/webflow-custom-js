@@ -422,17 +422,18 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
 }
 
 function ignorePath() {
-  const finalStepPages = [
+  const excludeList = [
     "signup-final-step",
     "signup-final-step-v6",
     "signup-final-step-switchup",
     "signup-final-step-switchup-v6",
     "ikiq-webinar-registration",
-    "/webinar-registration"
+    "/webinar-registration",
+    "/event/"
   ];
 
   // Check if current URL matches any of the predefined final step pages
-  const isFinalStepPage = finalStepPages.some((step) =>
+  const isFinalStepPage = excludeList.some((step) =>
     window.location.pathname.includes(step)
   );
 
