@@ -791,7 +791,7 @@
               ) {
                 const target = mutation.target;
 
-                if (formClassList.some(className => target.classList.contains(className))) {
+                if (formClassList.some(className => target.classList.contains(className.replace(".", "")))) {
                   const showStatus = target.getAttribute("show_status");
 
                   if (showStatus == "true") {
