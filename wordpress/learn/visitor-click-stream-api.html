@@ -1,18 +1,20 @@
 <!-- nlhtyrnugl execute api -->
 <script>
-  const timestampofUserVisit = new Date();
+  const timestampOfUserVisit = new Date();
   setTimeout(() => {
     let AB_test_bucket = "control"
 
+    let fingerprint_id = "";
     try {
       if (typeof (AB_BUCKET) !== "undefined") {
         AB_test_bucket = AB_BUCKET
       }
+      fingerprint_id = FINGERPRINT_ID;
     } catch (error) { }
 
     let data1 = [
       {
-        Lead_Created_Time: timestampofUserVisit,
+        Lead_Created_Time: timestampOfUserVisit,
         Lead_Time_Zone: v_timezone,
         Event_Type_Name: eventName,
         Cancellation_reason: "",
@@ -34,7 +36,8 @@
         User_Agent: encodeURIComponent(navigator?.userAgent || ""),
         Refferer: webNearInfo.wr__referrer,
         Region: webNearInfo.wr__region,
-        AB_test_bucket: AB_test_bucket
+        AB_test_bucket: AB_test_bucket,
+        fingerprint_id: fingerprint_id,
       },
     ];
 
