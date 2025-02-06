@@ -771,6 +771,10 @@
     console.error("render1o1Slots", err);
   }
 
+  const formClassList = [
+    ".web_near_form",
+    ".data_en_wb"
+  ]
   function initObservers() {
     let scrollPosition = 0;
 
@@ -787,7 +791,7 @@
               ) {
                 const target = mutation.target;
 
-                if (target.classList.contains("web_near_form")) {
+                if (formClassList.some(className => target.classList.contains(className))) {
                   const showStatus = target.getAttribute("show_status");
 
                   if (showStatus == "true") {
@@ -819,10 +823,6 @@
           // Configuration of the observer
           const config = { attributes: true, attributeFilter: ["show_status"] };
 
-          const formClassList = [
-            ".web_near_form",
-            ".data_en_wb"
-          ]
           document.querySelectorAll(formClassList.join(",")).forEach(function (form) {
             observer.observe(form, config);
           });
