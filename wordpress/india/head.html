@@ -58,9 +58,6 @@
 
 
 <script defer type="text/javascript">
-  let webinarSlots = [];
-  const webNearLoadedEv = new CustomEvent("webNearLoaded");
-  
   let isSwitchUp = "No";
   let webinarType = currentURlPrms.webinartype || "REGULAR";
   let eventName = currentURlPrms.event || "How to Nail your next Technical Interview";
@@ -72,6 +69,9 @@
 <!------------------ Webnear Form Send ---------------------->
 <script>
 
+  let webinarSlots = [];
+  const webNearLoadedEv = new CustomEvent("webNearLoaded");
+  
   let referrer = document.referrer; // get refere page
 
   let expdate = new Date();

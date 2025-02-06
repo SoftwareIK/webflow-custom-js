@@ -137,7 +137,16 @@
     })();
 
     function setHiddenFields2() {
-      let params = read_cookie("v_latest");
+      //  let params = read_cookie("v_latest");
+      function getParams(t) { var t = t ? t.split("?")[1] : window.location.search.slice(1), r = {}; if (t) for (var s = (t = t.split("#")[0]).split("&"), e = 0; e < s.length; e++) { var a, n = s[e].split("="), i = n[0], o = void 0 === n[1] || n[1]; (i = i.toLowerCase()).match(/\[(\d+)?\]$/) ? (r[a = i.replace(/\[(\d+)?\]/, "")] || (r[a] = []), i.match(/\[\d+\]$/) ? (n = /\[(\d+)\]/.exec(i)[1], r[a][n] = o) : r[a].push(o)) : r[i] ? (r[i] && "string" == typeof r[i] && (r[i] = [r[i]]), r[i].push(o)) : r[i] = o } return r }
+      let params = [];
+      try {
+        params = read_cookie("v_latest") || getParams()
+        bake_cookie("v_latest", params);
+      } catch (error) {
+        console.error("Error while reading cookie", error);
+      }
+
       webNearInfo2.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
       webNearInfo2.utm_medium = decodeURIComponent(params['utm_medium'] || "");
       webNearInfo2.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -300,7 +309,18 @@
           console.log(err);
         }
 
-        webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
+        // webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
+        webNearInfo.fPhoneNumber = "";
+        if (typeof intlTelInputUtils == "undefined") {
+          try {
+            webNearInfo.fPhoneNumber = `+${webNearPhoneNumberWri2.getSelectedCountryData().dialCode || ""}${document.querySelector(".fr_phone_fl")?.value}`;
+          } catch (error) {
+            console.error("Error while getting phone number", error);
+            webNearInfo.fPhoneNumber = document.querySelector(".fr_phone_fl")?.value;
+          }
+        } else {
+          webNearInfo.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
+        }
         let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/21gkn2x/" : "https://hooks.zapier.com/hooks/catch/11068981/340hd4j/";
 
         typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("info") : console.error("saveFormEventsActivity is not a function");

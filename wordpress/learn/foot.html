@@ -86,7 +86,7 @@
   }
 
   async function loadSlot(c_timezoon = "America/New_York") {
-    let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${(webinarType === "SWITCH_UP") || (webinarType === "CAREER_SESSION") ? webinarType : "REGULAR"}`;
+    let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${(webinarType === "SWITCH_UP") || (webinarType === "CAREER_SESSION") || (webinarType === "MASTERCLASS_EVENT") ? webinarType : "REGULAR"}`;
 
     const option = {
       method: "GET",
@@ -210,10 +210,9 @@
     webNearInfo.wr__city = data.city;
   })();
 
-  function getParams(t) { var t = t ? t.split("?")[1] : window.location.search.slice(1), r = {}; if (t) for (var s = (t = t.split("#")[0]).split("&"), e = 0; e < s.length; e++) { var a, n = s[e].split("="), i = n[0], o = void 0 === n[1] || n[1]; (i = i.toLowerCase()).match(/\[(\d+)?\]$/) ? (r[a = i.replace(/\[(\d+)?\]/, "")] || (r[a] = []), i.match(/\[\d+\]$/) ? (n = /\[(\d+)\]/.exec(i)[1], r[a][n] = o) : r[a].push(o)) : r[i] ? (r[i] && "string" == typeof r[i] && (r[i] = [r[i]]), r[i].push(o)) : r[i] = o } return r }
-
   function setHiddenFields() {
     //  let params = read_cookie("v_latest");
+    function getParams(t) { var t = t ? t.split("?")[1] : window.location.search.slice(1), r = {}; if (t) for (var s = (t = t.split("#")[0]).split("&"), e = 0; e < s.length; e++) { var a, n = s[e].split("="), i = n[0], o = void 0 === n[1] || n[1]; (i = i.toLowerCase()).match(/\[(\d+)?\]$/) ? (r[a = i.replace(/\[(\d+)?\]/, "")] || (r[a] = []), i.match(/\[\d+\]$/) ? (n = /\[(\d+)\]/.exec(i)[1], r[a][n] = o) : r[a].push(o)) : r[i] ? (r[i] && "string" == typeof r[i] && (r[i] = [r[i]]), r[i].push(o)) : r[i] = o } return r }
     let params = [];
     try {
       params = read_cookie("v_latest") || getParams()
@@ -820,7 +819,11 @@
           // Configuration of the observer
           const config = { attributes: true, attributeFilter: ["show_status"] };
 
-          document.querySelectorAll(".web_near_form").forEach(function (form) {
+          const formClassList = [
+            ".web_near_form",
+            ".data_en_wb"
+          ]
+          document.querySelectorAll(formClassList.join(",")).forEach(function (form) {
             observer.observe(form, config);
           });
         }
@@ -830,12 +833,12 @@
     }
   }
 
-  function getDeviceType() {
-    var e = navigator.userAgent;
-    return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
-  }
-
   document?.addEventListener("webNearLoaded", function () {
+    function getDeviceType() {
+      var e = navigator.userAgent;
+      return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
+    }
+
     if (getDeviceType() == "Mobile") {
       initObservers();
     }

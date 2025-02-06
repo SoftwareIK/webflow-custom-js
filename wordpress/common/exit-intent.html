@@ -429,11 +429,13 @@ function ignorePath() {
     "signup-final-step-switchup-v6",
     "ikiq-webinar-registration",
     "/webinar-registration",
-    "/event/"
+    "/event/",
+    "/home-ab1",
+    "/course/data-engineering-interview-masterclass-v2",
   ];
 
   // Check if current URL matches any of the predefined final step pages
-  const isFinalStepPage = excludeList.some((step) =>
+  const isExcludeStepPage = excludeList.some((step) =>
     window.location.pathname.includes(step)
   );
 
@@ -442,7 +444,7 @@ function ignorePath() {
     window.location.pathname.startsWith("/su/") &&
     window.location.hostname === "interviewkickstart.com";
 
-  return isFinalStepPage || isSuPage;
+  return isExcludeStepPage || isSuPage;
 }
 
 if (!ignorePath()) {

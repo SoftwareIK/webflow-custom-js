@@ -96,9 +96,10 @@
   }
 
   async function slotLoaded(slots, resetTimer = true) {
-    webinarSlots = slots
+    webinarSlots = slots;
     populateWebinarSlots(slots);
     resetTimer && TimerHandler(slots, v_timezone);
+    document.dispatchEvent(webNearLoadedEv);
   }
 
   async function loadSlot(c_timezoon = "Asia/Kolkata") {
@@ -523,6 +524,79 @@
   get1stepBtn.addEventListener('click', fromSend1stStep);
   get2stepfinishBtn.addEventListener('click', fromSend2ndStep);
 
+
+  function initObservers() {
+    let scrollPosition = 0;
+
+    // Store the observer instance as a singleton
+    if (!window.__observerSingleton) {
+      try {
+        if (window.MutationObserver) {
+          // Function to handle mutation
+          function handleMutation(mutations) {
+            mutations.forEach(function (mutation) {
+              if (
+                mutation.type === "attributes" &&
+                mutation.attributeName === "show_status"
+              ) {
+                const target = mutation.target;
+
+                if (target.classList.contains("web_near_form")) {
+                  const showStatus = target.getAttribute("show_status");
+
+                  if (showStatus == "true") {
+                    scrollPosition = window.scrollY;
+                    document.body.style.overflow = "hidden";
+                    document.body.style.position = "fixed";
+                    document.body.style.top = `-${scrollPosition}px`;
+                    document.body.style.width = "100%";
+                  } else {
+                    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+                    document.documentElement.style.scrollBehavior = "auto";
+                    document.body.style.overflow = "";
+                    document.body.style.position = "";
+                    document.body.style.top = "";
+                    window.scrollTo(0, scrollPosition);
+                    document.documentElement.style.scrollBehavior = originalScrollBehavior;
+                  }
+                }
+              }
+            });
+          }
+
+          // Create an observer instance
+          const observer = new MutationObserver(handleMutation);
+
+          // Store the observer instance in a global variable
+          window.__observerSingleton = observer;
+
+          // Configuration of the observer
+          const config = { attributes: true, attributeFilter: ["show_status"] };
+
+          const formClassList = [
+            ".web_near_form",
+            ".data_en_wb"
+          ]
+          document.querySelectorAll(formClassList.join(",")).forEach(function (form) {
+            observer.observe(form, config);
+          });
+        }
+      } catch (error) {
+        console.error("initObservers", error);
+      }
+    }
+  }
+
+  document?.addEventListener("webNearLoaded", function () {
+    function getDeviceType() {
+      var e = navigator.userAgent;
+      return /mobile/i.test(e) ? "Mobile" : /iPad|Android|Touch/i.test(e) ? "Tablet" : "Desktop"
+    }
+
+    if (getDeviceType() == "Mobile") {
+      initObservers();
+    }
+  });
 </script>
 
 
