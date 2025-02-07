@@ -311,16 +311,16 @@
 
         typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("info") : console.error("saveFormEventsActivity is not a function");
         // webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
-        webNearInfo.fPhoneNumber = "";
+        webNearInfo2.fPhoneNumber = "";
         if (typeof intlTelInputUtils == "undefined") {
           try {
-            webNearInfo.fPhoneNumber = `+${webNearPhoneNumberWri2.getSelectedCountryData().dialCode || ""}${document.querySelector(".fr_phone_fl")?.value}`;
+            webNearInfo2.fPhoneNumber = `+${webNearPhoneNumberWri2.getSelectedCountryData().dialCode || ""}${document.querySelector(".fr_phone_fl")?.value}`;
           } catch (error) {
             console.error("Error while getting phone number", error);
-            webNearInfo.fPhoneNumber = document.querySelector(".fr_phone_fl")?.value;
+            webNearInfo2.fPhoneNumber = document.querySelector(".fr_phone_fl")?.value;
           }
         } else {
-          webNearInfo.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
+          webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
         }
         let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/21gkn2x/" : "https://hooks.zapier.com/hooks/catch/11068981/340hd4j/";
 
