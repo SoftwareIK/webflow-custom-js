@@ -1,0 +1,34 @@
+
+<script nitro-exclude>
+  const splitThreshold = 95;
+
+  function getOrSetCookie(name, defaultValue) {
+    const cookie = document.cookie.match(`(?:^|; )${name}=([^;]*)`);
+    if (cookie) return cookie[1];
+    const value = defaultValue || Date.now().toString();
+    document.cookie = `${name}=${value}; expires=${new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString()}; path=/`;
+    return value;
+  }
+
+  function isVariant() {
+    try {
+      const uuid = getOrSetCookie("split_id");
+      return parseInt(uuid.slice(-2)) >= splitThreshold;
+    } catch {
+      console.error("Error determining variant.");
+      return false;
+    }
+  }
+
+  function appendUrlParams(url) {
+    const currentParams = window.location.search;
+    return currentParams ? `${url}${currentParams}` : url;
+  }
+
+  if (isVariant()) {
+    if(window.location.pathname == "/") {
+      const redirectUrl = "/home-ab1";
+      window.location.href = appendUrlParams(redirectUrl);
+    }
+  }
+</script>
