@@ -208,6 +208,7 @@
     webNearInfo.v_country = data.country;
     webNearInfo.wr__region = data.region;
     webNearInfo.wr__city = data.city;
+    document.dispatchEvent(geoLoaded);
   })();
 
   function setHiddenFields() {
