@@ -28,6 +28,7 @@
         "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
         "Content-Type": "application/json"
       },
+      keepalive: true,
       body: JSON.stringify({
         dataset_id: "Marketing_data_new_logic",
         table_id: "all_clickstream_data",
@@ -222,10 +223,10 @@
     return;
   }
 
-  function saveFormEventsActivity(step, ctaid = "", callback = null) {
+  function saveFormEventsActivity(step, ctaid = "", callback = null, errorMessage) {
     try {
       let clickid = ""
-      if (!step) {
+      if (!step && !ctaid) {
         console.warn("Step is required to track form events");
         return;
       }
@@ -235,20 +236,40 @@
           clickid = "webinar-modal_button_show-webinar-slots";
           break
         }
+        case "info-e": {
+          clickid = `error-info-${errorMessage}`;
+          break
+        }
         case "slot": {
           clickid = "Webinar-modal_button_open-gql";
+          break
+        }
+        case "slot-e": {
+          clickid = `error-slot-${errorMessage}`;
           break
         }
         case "gql": {
           clickid = "Gql-form_button_gpl-registration-step";
           break
         }
+        case "gql-e": {
+          clickid = `error-gql-${errorMessage}`;
+          break
+        }
         case "domain": {
           clickid = "Gql-form_button_gql-domain-switch-step";
           break
         }
+        case "domain-e": {
+          clickid = `error-domain-${errorMessage}`;
+          break
+        }
         case "source": {
           clickid = "Gql-form_button_gql-final-step";
+          break
+        }
+        case "source-e": {
+          clickid = `error-source-${errorMessage}`;
           break
         }
         default: {

@@ -256,6 +256,9 @@
 
     // First Form Submittion
     function fromSend1stStep2() {
+      function track(step, message) {
+        typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
+      }
       setHiddenFields2();
 
       let fullname = webNearFullName2.value.trim();
@@ -276,15 +279,19 @@
         getFnErrMsg2.setAttribute('err_status', true);
         getEmErrMsg2.setAttribute('err_status', true);
         getPhErrMsg2.setAttribute('err_status', true);
+        track("info-e", "validation-general");
         return;
       } else if (!name_regex2.test(fullname) || fullname.length == 0) {
         getFnErrMsg2.setAttribute('err_status', true);
+        track("info-e", "validation-name");
         return;
       } else if (!email_regex2.test(wEmail) || wEmail.length == 0) {
         getEmErrMsg2.setAttribute('err_status', true);
+        track("info-e", "validation-email");
         return;
       } else if (!phone_regex2.test(fullPhoneNumber) || fullPhoneNumber.length == 0) {
         getPhErrMsg2.setAttribute('err_status', true);
+        track("info-e", "validation-phone");
         return;
       } else {
 
@@ -305,8 +312,7 @@
             'webinar_name': webNearInfo.eventname
           });
         } catch (err) {
-          console.log("Data Layer add faild");
-          console.log(err);
+          console.log("Error in dataLayer push", err);
         }
 
         // webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
@@ -323,11 +329,17 @@
         }
         let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/21gkn2x/" : "https://hooks.zapier.com/hooks/catch/11068981/340hd4j/";
 
-        typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("info") : console.error("saveFormEventsActivity is not a function");
         pushToEndPoint2(zapUrl)
           .then(() => {
-            fromSend2ndStep2();
+            track("info");
+            try {
+              fromSend2ndStep2();
+            } catch (error) {
+              track("slot-e", "flow-zapier");
+            }
             getThePopupFrom2.setAttribute("active_step", 3);
+          }).catch(() => {
+            track("info-e", "flow-zapier");
           });
       }
     }
@@ -335,6 +347,9 @@
 
     // Second Form Submition
     function fromSend2ndStep2() {
+      function track(step, message) {
+        typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
+      }
       const getCheckWebnear = document.querySelector(".register_time");
 
       let utmm = visitor_id + ":" + webNearInfo2.v_country;
@@ -355,14 +370,15 @@
 
       bake_cookie("from_cookie", utmstring);
 
-      typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("slot") : console.error("saveFormEventsActivity is not a function");
-
       let pushUrl = is_webinar_1o1_eligible ? "https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/" : "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/";
       pushUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/" : pushUrl;
       pushToEndPoint2(pushUrl)
         .then(() => {
           getThePopupFrom2.setAttribute("active_step", 3);
           secondStepSecondRequest2();
+          track("slot");
+        }).catch(err => {
+          track("slot-e", "flow-zapier");
         });
     }
 
@@ -414,6 +430,9 @@
       }
 
       if (!gqlErrStatus) {
+        function track(step, message) {
+          typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
+        }
         let GQLformData = {
           'First Name': webNearInfo2.firstName,
           'Last Name': webNearInfo2.lastName,
@@ -441,7 +460,6 @@
           salesforce_uuid: webNearInfo2.salesforce_uuid,
         };
 
-        typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity("gql") : console.error("saveFormEventsActivity is not a function");
         leadScoreService()
           .then(function (data) {
             leadScoreData = data;
@@ -459,8 +477,10 @@
             }
             let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/" : "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/";
 
-            sendRequestZapiar(zapUrl, GQLformData);
+            sendRequestZapiar(zapUrl, GQLformData, track);
           });
+      } else {
+        track("gql-e", "flow-general");
       }
     }
 
@@ -498,7 +518,7 @@
       }
     }
 
-    async function sendRequestZapiar(url, data) {
+    async function sendRequestZapiar(url, data, callback) {
       let options = {
         method: 'POST',
         mode: "no-cors",
@@ -511,12 +531,18 @@
       try {
         let response = await fetch(url, options);
         document.querySelector(".complete_message").setAttribute('show_status', true);
-        // For A/B testing
-        VWO.event("gqlFormCompleted", {
-          "gqlFormCompleted": true
-        });
-      } catch (err) { 
-        console.error("P1: The Zapier Webhook Failed.");
+        if(typeof callback === 'function') {
+          if(response.ok) {
+            callback("gql");
+          } else {
+            callback("gql-e", "Zapier Webhook Failed");
+          }
+        }
+      } catch (error) {
+        if(typeof callback === 'function') {
+          callback("gql-e", "Zapier Webhook Failed");
+        }
+        console.error("error in zapier webhook", error);
       }
     }
 
@@ -574,11 +600,13 @@
         "Device": webNearInfo.wr__device,
         "User_Agent": encodeURIComponent(navigator?.userAgent || ""),
         "Refferer": encodeURIComponent(webNearInfo2.wr__referrer),
-        "Region": webNearInfo2.wr__region
+        "Region": webNearInfo2.wr__region,
+        "step": "s4"
       }];
 
       let options = {
         method: 'POST',
+        keepalive: true,
         headers: {
           'x-api-key': 'fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN',
           'Content-Type': 'application/json',
@@ -607,8 +635,20 @@
     const getV2Back2 = getThePopupFrom2.querySelector('.step_back_2');
     const getV2Back3 = getThePopupFrom2.querySelector('.step_back_3');
 
-    getV2Btn1.addEventListener("click", fromSend1stStep2);
-    getV2Btn3.addEventListener("click", fromSend3rdStep2);
+    getV2Btn1.addEventListener("click", () => {
+      try {
+        fromSend1stStep2();
+      } catch (error) {
+        saveFormEventsActivity("info-e", null, null, "Error in 1st step");
+      }
+    });
+    getV2Btn3.addEventListener("click", () => {
+      try {
+        fromSend3rdStep2();
+      } catch (error) {
+        saveFormEventsActivity("gql-e", null, null, "Error in 3rd step");
+      }
+    });
 
     getV2Back2.addEventListener("click", function () {
       getThePopupFrom2.setAttribute("active_step", 1);
