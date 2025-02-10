@@ -288,7 +288,17 @@
 </script>
 
 
+<script>
+  let gqlPopUpValue = getCookie("gql_popup_value");
 
+  if(!gqlPopUpValue){
+    gqlPopUpValue = Math.floor(Math.random * 100);
+    setCookie("gql_popup_value", gqlPopUpValue);
+  }
+
+  gqlPopUpValue = gqlPopUpValue >= 30;
+
+</script>
 
 <script>
   // Ip address
