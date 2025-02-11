@@ -161,7 +161,10 @@ function webnear_from() {
             </script>';
     }
 	
-	   if(is_page( 11813 )){
+		$string = $_SERVER['REQUEST_URI'];
+		$startsWithEvent = strpos($string, "/event/") === 0;
+	
+	   if($startsWithEvent){
         echo do_shortcode('[elementor-template id="13885"]');
         echo '<script>
                 {
@@ -187,14 +190,16 @@ add_action( 'wp_footer', 'webnear_from' );
 
 
 
-
 // Add Global Variable
 function add_global_variable(){
     $webinar_type = get_post_meta(get_the_ID(), 'webinar_type', true);
+    $event_name = get_post_meta(get_the_ID(), 'event_name', true);
+
     if(!$webinar_type) $webinar_type = "REGULAR";
     echo "
         <script>
             let webinarType = '{$webinar_type}';
+            let pageEnventName = '{$event_name}'.trim();
         </script>
     ";
 }
