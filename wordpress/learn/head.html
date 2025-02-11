@@ -57,9 +57,8 @@
     if (event) {
       return decodeURIComponent(event);
     }
-
-    
-    if(pageEnventName) return pageEnventName;
+		
+		if(pageEnventName) return pageEnventName;
 
     // Use the appropriate default title based on webinarType
     switch (webinarType) {
@@ -293,14 +292,14 @@
 
 
 <script>
-  let gqlPopUpValue = getCookie("gql_popup_value");
+  let gqlPopUpValue = parseInt(getCookie("gql_popup_value"));
 
   if(!gqlPopUpValue){
-    gqlPopUpValue = Math.floor(Math.random * 100);
+    gqlPopUpValue = Math.floor(Math.random() * 100);
     setCookie("gql_popup_value", gqlPopUpValue);
   }
 
-  gqlPopUpValue = gqlPopUpValue >= 30;
+  gqlPopUpValue = gqlPopUpValue <= 30;
 
 </script>
 
