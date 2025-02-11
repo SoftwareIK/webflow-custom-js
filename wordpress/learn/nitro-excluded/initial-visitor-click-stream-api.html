@@ -149,10 +149,10 @@
         }
 
         if (brokenCSS.length > 0) {
-          fireAPI({
+          fireAPI([{
             ...data[0],
             step: "e0_css",
-          });
+          }]);
         }
       }
       checkCSSFilesStatus();
