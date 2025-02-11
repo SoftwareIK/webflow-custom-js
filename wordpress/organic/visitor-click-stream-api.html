@@ -7,6 +7,9 @@
       if (typeof (AB_BUCKET) !== "undefined") {
         AB_test_bucket = AB_BUCKET
       }
+      if (window.location.pathname == "/machine-learning" &&  typeof (isVariant) == "function" && isVariant()) {
+        AB_test_bucket = "variant"
+      }
     } catch (error) { }
 
     let data1 = [
