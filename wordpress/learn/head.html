@@ -58,6 +58,9 @@
       return decodeURIComponent(event);
     }
 
+    
+    if(pageEnventName) return pageEnventName;
+
     // Use the appropriate default title based on webinarType
     switch (webinarType) {
       case "CAREER_SESSION":
