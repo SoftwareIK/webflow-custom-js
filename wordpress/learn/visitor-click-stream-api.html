@@ -1,7 +1,7 @@
 <!-- nlhtyrnugl execute api -->
 <script>
   function toggleDisabledState(disable) {
-    const modalElements = document.querySelectorAll('[data-click-id$="_open-modal"]');
+    const modalElements =  document.querySelectorAll('[id$="_open-modal"], [data-cta-id$="_open-modal"], [data-click-id$="_open-modal"]');
 
     modalElements.forEach(element => {
       if (disable) {
