@@ -1,39 +1,60 @@
 <!-- Chat Bot Only For Landing Page -->
 <!-- Start of ChatBot (www.chatbot.com) code -->
 <script type="text/javascript">
-  window.__be = window.__be || {};
-  window.__be.id = "645dfac9805dcc0006b0b15b";
-  (function () {
-    var be = document.createElement('script'); be.type = 'text/javascript'; be.async = true;
-    be.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.chatbot.com/widget/plugin.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(be, s);
-  })();
+    window.__be = window.__be || {};
+    window.__be.id = "645dfac9805dcc0006b0b15b";
+    (function () {
+        var be = document.createElement('script'); be.type = 'text/javascript'; be.async = true;
+        be.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.chatbot.com/widget/plugin.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(be, s);
+    })();
 </script>
 <!-- End of ChatBot code -->
 
 <script>
-  $(document).ready(function () {
-    let iplutms = getUTMParams();
-    window.BE_API = window.BE_API || {};
-    window.BE_API.onLoad = () => {
-      window.BE_API.setSessionAttributes({
-        utm_source: decodeURIComponent((iplutms['utm_source'] != undefined) ? iplutms['utm_source'] : " "),
-        utm_medium: decodeURIComponent((iplutms['utm_medium'] != undefined) ? iplutms['utm_medium'] : " "),
-        utm_campaign: decodeURIComponent((iplutms['utm_campaign'] != undefined) ? iplutms['utm_campaign'] : " "),
-        utm_adset: decodeURIComponent((iplutms['utm_adset'] != undefined) ? iplutms['utm_adset'] : " "),
-        utm_content: decodeURIComponent((iplutms['utm_content'] != undefined) ? iplutms['utm_content'] : " "),
-        utm_term: decodeURIComponent((iplutms['utm_term'] != undefined) ? iplutms['utm_term'] : " "),
-        page_url: window.location.pathname,
-        gclid: decodeURIComponent((iplutms['gclid'] != undefined) ? iplutms['gclid'] : " "),
-        msclkid: decodeURIComponent((iplutms['msclkid'] != undefined) ? iplutms['msclkid'] : " "),
-        fbclid: decodeURIComponent((iplutms['fbclid'] != undefined) ? iplutms['fbclid'] : " "),
-        user_timezone: v_timezone,
-        lp_page_url: "in.ik.com" + getCookie("ik-landingpage"),
-        cta_page_url: "in.ik.com" + cta_lp,
-        webinar_type: webinarType,
-        event_name: eventName,
-        timestamp: new Date($.now())
-      })
-    }
-  });
+    $(document).ready(function () {
+        let iplutms = getUTMParams();
+        window.BE_API = window.BE_API || {};
+        window.BE_API.onLoad = () => {
+            function getCookieValue(cookieName) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${cookieName}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+            const fbcFromCookies = getCookieValue('_fbc');
+            const fbp = getCookieValue('_fbp');
+            const userAgent = navigator?.userAgent;
+            const fbclid = decodeURIComponent(params['fbclid'] || "");
+            let fbc = fbcFromCookies;
+            if (!fbcFromCookies && fbclid) {
+                // Generate fbc from fbclid
+                const domainParts = window.location.hostname.split('.');
+                const subdomainIndex = domainParts.length - 1;
+                const creationTime = Date.now();
+                fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
+            }
+
+            window.BE_API.setSessionAttributes({
+                utm_source: decodeURIComponent((iplutms['utm_source'] != undefined) ? iplutms['utm_source'] : " "),
+                utm_medium: decodeURIComponent((iplutms['utm_medium'] != undefined) ? iplutms['utm_medium'] : " "),
+                utm_campaign: decodeURIComponent((iplutms['utm_campaign'] != undefined) ? iplutms['utm_campaign'] : " "),
+                utm_adset: decodeURIComponent((iplutms['utm_adset'] != undefined) ? iplutms['utm_adset'] : " "),
+                utm_content: decodeURIComponent((iplutms['utm_content'] != undefined) ? iplutms['utm_content'] : " "),
+                utm_term: decodeURIComponent((iplutms['utm_term'] != undefined) ? iplutms['utm_term'] : " "),
+                page_url: window.location.pathname,
+                gclid: decodeURIComponent((iplutms['gclid'] != undefined) ? iplutms['gclid'] : " "),
+                msclkid: decodeURIComponent((iplutms['msclkid'] != undefined) ? iplutms['msclkid'] : " "),
+                fbclid: fbclid,
+                fbpId: fbp || null,
+                fbcId: fbc || null,
+                user_agent: userAgent || '',
+                user_timezone: v_timezone,
+                lp_page_url: "in.ik.com" + getCookie("ik-landingpage"),
+                cta_page_url: "in.ik.com" + cta_lp,
+                webinar_type: webinarType,
+                event_name: eventName,
+                timestamp: new Date($.now())
+            })
+        }
+    });
 </script>
