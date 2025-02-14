@@ -1,14 +1,27 @@
+<!-- nlhtyrnugl execute api -->
 <script>
   const timestampOfUserVisit = new Date();
+  // Here need to add all running AB test buckets
+  let ab_bucket_json = {
+    exit_intent: "control",
+    organic_home_page: "control"
+  }
+
   setTimeout(() => {
     let AB_test_bucket = "control"
-
     try {
       if (typeof (AB_BUCKET) !== "undefined") {
         AB_test_bucket = AB_BUCKET
+        ab_bucket_json = {
+          ...ab_bucket_json,
+          exit_intent: AB_BUCKET
+        }
       }
       if (window.location.pathname == "/machine-learning" &&  typeof (isVariant) == "function" && isVariant()) {
-        AB_test_bucket = "variant"
+        ab_bucket_json = {
+          ...ab_bucket_json,
+          organic_home_page: AB_BUCKET
+        }
       }
     } catch (error) { }
 
@@ -37,7 +50,9 @@
         Refferer: webNearInfo.wr__referrer,
         Region: webNearInfo.wr__region,
         New_Lead_Created_Time: encodeURIComponent(newDateFun()),
-        AB_test_bucket: AB_test_bucket
+        step: "s1",
+        AB_test_bucket: AB_test_bucket,
+        ab_bucket_json: JSON.stringify(ab_bucket_json),
       },
     ];
 
