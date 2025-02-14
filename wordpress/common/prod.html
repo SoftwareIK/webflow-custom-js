@@ -1,14 +1,14 @@
 <!-- nlhtyrnugl execute api -->
 <script>
-  const timestampOfUserVisit = new Date();
+  const timestampofUserVisit = new Date();
   // Here need to add all running AB test buckets
   let ab_bucket_json = {
     exit_intent: "control",
-    organic_home_page: "control"
   }
-
+  
   setTimeout(() => {
     let AB_test_bucket = "control"
+
     try {
       if (typeof (AB_BUCKET) !== "undefined") {
         AB_test_bucket = AB_BUCKET
@@ -17,17 +17,11 @@
           exit_intent: AB_BUCKET
         }
       }
-      if (window.location.pathname == "/machine-learning" &&  typeof (isVariant) == "function" && isVariant()) {
-        ab_bucket_json = {
-          ...ab_bucket_json,
-          organic_home_page: "variant"
-        }
-      }
     } catch (error) { }
 
     let data1 = [
       {
-        Lead_Created_Time: timestampOfUserVisit,
+        Lead_Created_Time: timestampofUserVisit,
         Lead_Time_Zone: v_timezone,
         Event_Type_Name: eventName,
         Cancellation_reason: "",
@@ -49,8 +43,6 @@
         User_Agent: encodeURIComponent(navigator?.userAgent || ""),
         Refferer: webNearInfo.wr__referrer,
         Region: webNearInfo.wr__region,
-        New_Lead_Created_Time: encodeURIComponent(newDateFun()),
-        step: "s1",
         AB_test_bucket: AB_test_bucket,
         ab_bucket_json: JSON.stringify(ab_bucket_json),
       },
@@ -78,18 +70,4 @@
 
     })()
   }, "3000");
-
-  function newDateFun() {
-    const now = new Date();
-    const year = now.getUTCFullYear();
-    const month = (now.getUTCMonth() + 1).toString().padStart(2, "0");
-    const day = now.getUTCDate().toString().padStart(2, "0");
-    const hours = now.getUTCHours().toString().padStart(2, "0");
-    const minutes = now.getUTCMinutes().toString().padStart(2, "0");
-    const seconds = now.getUTCSeconds().toString().padStart(2, "0");
-    const milliseconds = now.getUTCMilliseconds();
-    let newDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds} UTC`;
-    return newDate;
-  }
-
 </script>
