@@ -14,7 +14,7 @@
   function isVariant() {
     try {
       const uuid = getOrSetCookie(COOKIE_NAME);
-      return parseInt(uuid) >= splitThreshold;
+      return parseInt(uuid) >= splitThreshold && (!document.referrer || !document.referrer.includes("interviewkickstart.com"));
     } catch {
       console.error("Error determining variant.");
       return false;
@@ -26,10 +26,8 @@
     return currentParams ? `${url}${currentParams}` : url;
   }
 
-  if (isVariant()) {
-    if(window.location.pathname == "/" && (!document.referrer || !document.referrer.includes(window.location.hostname))) {
-      const redirectUrl = "/machine-learning";
-      window.location.href = appendUrlParams(redirectUrl);
-    }
+  if (isVariant() && window.location.pathname == "/") {
+    const redirectUrl = "/machine-learning";
+    window.location.href = appendUrlParams(redirectUrl);
   }
 </script>

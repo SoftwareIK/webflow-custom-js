@@ -1,53 +1,12 @@
 <!-- nlhtyrnugl execute api -->
 <script>
-  function toggleDisabledState(disable) {
-    const modalElements =  document.querySelectorAll('[id$="_open-modal"], [data-cta-id$="_open-modal"], [data-click-id$="_open-modal"]');
-
-    modalElements.forEach(element => {
-      if (disable) {
-        if (element.getAttribute('class') === 'button-link-09') {
-          element.style.setProperty('color', 'gray', 'important');
-        } else {
-          element.style.setProperty('background-color', 'gray', 'important');
-        }
-        element.style.setProperty('cursor', 'not-allowed', 'important');
-        element.style.setProperty('pointer-events', 'none', 'important');
-
-        const handler = function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-          return false;
-        };
-
-        element._disableClickHandler = handler;
-        element.addEventListener('click', handler, true);
-      } else {
-        if (element.getAttribute('class') === 'button-link-09') {
-          element.style.removeProperty('color');
-        } else {
-          element.style.removeProperty('background-color');
-        }
-        element.style.removeProperty('cursor');
-        element.style.removeProperty('pointer-events');
-
-        if (element._disableClickHandler) {
-          element.removeEventListener('click', element._disableClickHandler, true);
-          delete element._disableClickHandler;
-        }
-      }
-    });
-  }
-</script>
-<script>
   const timestampOfUserVisit = new Date();
   // Here need to add all running AB test buckets
   let ab_bucket_json = {
     exit_intent: "control"
   }
-  // toggleDisabledState(true);
   // setTimeout(() => {
   document?.addEventListener("geoLoaded", function () {
-    // toggleDisabledState(false);
     let AB_test_bucket = "control"
 
     let fingerprint_id = "";
@@ -119,8 +78,4 @@
     })()
   });
   // }, "3000");
-
-  setTimeout(() => {
-    // toggleDisabledState(false);
-  }, "3000");
 </script>
