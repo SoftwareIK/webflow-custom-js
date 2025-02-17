@@ -27,7 +27,7 @@
   }
 
   if (isVariant()) {
-    if(window.location.pathname == "/" && (!document.referrer || !document.referrer.includes(window.location.hostname))) {
+    if(window.location.pathname == "/" && (!document.referrer || !document.referrer.includes("interviewkickstart.com"))) {
       const redirectUrl = "/machine-learning";
       window.location.href = appendUrlParams(redirectUrl);
     }

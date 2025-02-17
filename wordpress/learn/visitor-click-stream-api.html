@@ -1,55 +1,22 @@
 <!-- nlhtyrnugl execute api -->
 <script>
-  function toggleDisabledState(disable) {
-    const modalElements = document.querySelectorAll('[data-click-id$="_open-modal"]');
-
-    modalElements.forEach(element => {
-      if (disable) {
-        if (element.getAttribute('class') === 'button-link-09') {
-          element.style.setProperty('color', 'gray', 'important');
-        } else {
-          element.style.setProperty('background-color', 'gray', 'important');
-        }
-        element.style.setProperty('cursor', 'not-allowed', 'important');
-        element.style.setProperty('pointer-events', 'none', 'important');
-
-        const handler = function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-          return false;
-        };
-
-        element._disableClickHandler = handler;
-        element.addEventListener('click', handler, true);
-      } else {
-        if (element.getAttribute('class') === 'button-link-09') {
-          element.style.removeProperty('color');
-        } else {
-          element.style.removeProperty('background-color');
-        }
-        element.style.removeProperty('cursor');
-        element.style.removeProperty('pointer-events');
-
-        if (element._disableClickHandler) {
-          element.removeEventListener('click', element._disableClickHandler, true);
-          delete element._disableClickHandler;
-        }
-      }
-    });
-  }
-</script>
-<script>
   const timestampOfUserVisit = new Date();
-  toggleDisabledState(true);
+  // Here need to add all running AB test buckets
+  let ab_bucket_json = {
+    exit_intent: "control"
+  }
   // setTimeout(() => {
   document?.addEventListener("geoLoaded", function () {
-    toggleDisabledState(false);
     let AB_test_bucket = "control"
 
     let fingerprint_id = "";
     try {
       if (typeof (AB_BUCKET) !== "undefined") {
         AB_test_bucket = AB_BUCKET
+        ab_bucket_json = {
+          ...ab_bucket_json,
+          exit_intent: AB_BUCKET
+        }
       }
 
       if (typeof (FINGERPRINT_ID) !== "undefined") {
@@ -83,7 +50,8 @@
         Region: webNearInfo.wr__region,
         AB_test_bucket: AB_test_bucket,
         fingerprint_id: fingerprint_id,
-        step: "s1"
+        step: "s1",
+        ab_bucket_json: JSON.stringify(ab_bucket_json),
       },
     ];
 
@@ -110,8 +78,4 @@
     })()
   });
   // }, "3000");
-
-  setTimeout(() => {
-    toggleDisabledState(false);
-  }, "3000");
 </script>

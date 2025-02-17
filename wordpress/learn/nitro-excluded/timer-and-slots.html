@@ -420,6 +420,9 @@
 
   // set the next webnear value
   function updateTimerUI(day, hrs, min, sec) {
+    document.querySelectorAll('.ls_webinar_hours').forEach((timer) => {
+      timer.textContent = hrs + " hours";
+    });
     document.querySelectorAll('.webinar__timer--days h2').forEach((timer) => {
       timer.textContent = day;
     });
@@ -435,3 +438,5 @@
   };
   // Timer related code end ---------------------------------------------------------
 </script>
+
+

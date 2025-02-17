@@ -3,7 +3,7 @@
   const getWebNearShowBtn = document.querySelectorAll('[href="#webinar_form"]');
   
   const getWebNearForm = document.querySelector('.web_near_form');
-  const getWebNearFormClose = document.querySelector('.web_near_close');
+  const getWebNearFormClose = document.querySelectorAll('.web_near_close');
   for(let eachWebNearBtn of getWebNearShowBtn){
       eachWebNearBtn.addEventListener('click', function(e){
           e.preventDefault();
@@ -15,7 +15,9 @@
           document?.querySelector(".gql_registration_popup").setAttribute("ac_step", 1);
       })
   }
-  getWebNearFormClose.addEventListener('click', function(){
+  getWebNearFormClose.forEach((eachClose) => {
+    eachClose.addEventListener('click', function(){
       getWebNearForm.setAttribute('show_status', false);
+    });
   })
 </script>
