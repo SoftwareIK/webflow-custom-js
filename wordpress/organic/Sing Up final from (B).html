@@ -1,11 +1,11 @@
 <!-- Sing Up final from (B) -->
 <!-- Final page body start -->
- <!-- signup-final-step -->
- <script>
+<!-- signup-final-step -->
+<script>
     const getFinalForm = document.querySelector('.final_step_fr');
 
-    let utmparams =  {...read_cookie("v_latest"), ...read_cookie("from_cookie")};
-		if(!utmparams['utm_source']) utmparams['utm_source'] = "Organic";
+    let utmparams = { ...read_cookie("v_latest"), ...read_cookie("from_cookie") };
+    if (!utmparams['utm_source']) utmparams['utm_source'] = "Organic";
 
     // getFrom Filds 1st step
     const getWorkExperience = getFinalForm.querySelector("#experience");
@@ -17,15 +17,15 @@
     const getPhoneNumber = getFinalForm.querySelector('.phone_number_fild input#webinar_pnumber');
 
     const webNearPhoneNumberWri = window.intlTelInput(getPhoneNumber, {
-              initialCountry: "auto",
-              geoIpLookup: function(callback) {
-                  fetch('https://ipinfo.io', { headers: { 'Accept': 'application/json' } })
-                      .then((resp) => resp.json())
-                      .then((resp) => { callback(resp.country); })
-                      .catch(() => callback('in'));
-              },
-              utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
-          });
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            fetch('https://ipinfo.io', { headers: { 'Accept': 'application/json' } })
+                .then((resp) => resp.json())
+                .then((resp) => { callback(resp.country); })
+                .catch(() => callback('in'));
+        },
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+    });
     let phone_regexgql = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
 
@@ -36,194 +36,245 @@
 
     // getFrom filds 3rd step
     const multiSelect = new Choices('#Hear-About-IK', {
-                removeItemButton: true,
-                searchEnabled: true,
-                placeholderValue: 'Select all that apply',
-                noResultsText: 'No results found',
-                itemSelectText: '', // No text when selecting an option
-            });
-    
+        removeItemButton: true,
+        searchEnabled: true,
+        placeholderValue: 'Select all that apply',
+        noResultsText: 'No results found',
+        itemSelectText: '', // No text when selecting an option
+    });
+
     // Step Buttons
     const StepBtn1 = getFinalForm.querySelector("#step_1_btn");
     const StepBtn2 = getFinalForm.querySelector("#step_2_btn");
     const StepBtn3 = getFinalForm.querySelector("#step_3_btn");
 
     // Buttons click listener
-    StepBtn1.addEventListener("click", function(){
+    StepBtn1.addEventListener("click", function () {
         finalFrStep1(this);
     });
-    StepBtn2.addEventListener("click", function(){
+    StepBtn2.addEventListener("click", function () {
         finalFrStep2(this);
     });
-    StepBtn3.addEventListener("click", function(){
+    StepBtn3.addEventListener("click", function () {
         finalFrStep3(this);
     });
+
+    function getCookieValue(cookieName) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${cookieName}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
 
     const err_temp = {};
 
     function getPhoneNumberOrDefault() {
-      let fPhoneNumber = "";
-      if (typeof intlTelInputUtils == "undefined") {
-        try {
-          fPhoneNumber = `+${webNearPhoneNumberWri.getSelectedCountryData().dialCode}${document.querySelector("#webinar_pnumber")?.value}`;
-        } catch (error) {
-          console.error("Error while getting phone number", error);
-          fPhoneNumber = document.querySelector("#webinar_pnumber")?.value;
+        let fPhoneNumber = "";
+        if (typeof intlTelInputUtils == "undefined") {
+            try {
+                fPhoneNumber = `+${webNearPhoneNumberWri.getSelectedCountryData().dialCode}${document.querySelector("#webinar_pnumber")?.value}`;
+            } catch (error) {
+                console.error("Error while getting phone number", error);
+                fPhoneNumber = document.querySelector("#webinar_pnumber")?.value;
+            }
+        } else {
+            fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
         }
-      } else {
-        fPhoneNumber = webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164);
-      }
-      return fPhoneNumber
+        return fPhoneNumber
     }
 
     // First step
-    function finalFrStep1(btn){
+    function finalFrStep1(btn) {
         let errorStatus = false;
         btn.disabled = !errorStatus;
         // check conditions
-        if(!getWorkExperience.value){
+        if (!getWorkExperience.value) {
             errorStatus = true;
-            errorFun( ".exp_fild", errorStatus);
-            if(!err_temp.exp_fild){
+            errorFun(".exp_fild", errorStatus);
+            if (!err_temp.exp_fild) {
                 err_temp.exp_fild = errorStatus;
                 getWorkExperience.addEventListener("input", function () {
-                    errorFun( ".exp_fild", false);
+                    errorFun(".exp_fild", false);
                 })
             }
         }
 
-        if(!getDomainRole.value){
+        if (!getDomainRole.value) {
             errorStatus = true;
-            errorFun( ".domain_role_fild", errorStatus);
-            if(!err_temp.domain_role_fild){
+            errorFun(".domain_role_fild", errorStatus);
+            if (!err_temp.domain_role_fild) {
                 err_temp.domain_role_fild = errorStatus;
                 getDomainRole.addEventListener("input", function () {
-                    errorFun( ".domain_role_fild", false);
+                    errorFun(".domain_role_fild", false);
                 })
             }
         }
 
-        if(!getStartIn.value){
+        if (!getStartIn.value) {
             errorStatus = true;
-            errorFun( ".start_interviewing_fild", errorStatus);
-            if(!err_temp.start_interviewing_fild){
+            errorFun(".start_interviewing_fild", errorStatus);
+            if (!err_temp.start_interviewing_fild) {
                 err_temp.start_interviewing_fild = errorStatus;
                 getStartIn.addEventListener("input", function () {
-                    errorFun( ".start_interviewing_fild", false);
+                    errorFun(".start_interviewing_fild", false);
                 })
             }
         }
 
-        if(!phone_regexgql.test(getPhoneNumber.value) || getPhoneNumber.value.length == 0){
+        if (!phone_regexgql.test(getPhoneNumber.value) || getPhoneNumber.value.length == 0) {
             errorStatus = true;
-            errorFun( ".phone_number_fild", errorStatus);
-            if(!err_temp.phone_number_fild){
+            errorFun(".phone_number_fild", errorStatus);
+            if (!err_temp.phone_number_fild) {
                 err_temp.phone_number_fild = errorStatus;
                 getStartIn.addEventListener("input", function () {
-                    errorFun( ".phone_number_fild", false);
+                    errorFun(".phone_number_fild", false);
                 })
             }
         }
         btn.disabled = !errorStatus;
-        if(!errorStatus){
+        if (!errorStatus) {
+            let params = [];
+            try {
+                params = read_cookie?.("v_latest") || getParams?.()
+                bake_cookie("v_latest", params);
+            } catch (error) {
+                console.error("Error while reading cookie", error);
+            }
+            const fbcFromCookies = getCookieValue('_fbc');
+            const fbp = getCookieValue('_fbp');
+            const userAgent = navigator?.userAgent;
+            const fbclid = decodeURIComponent(params['fbclid'] || "");
+            let fbc = fbcFromCookies;
+            if (!fbcFromCookies && fbclid) {
+                // Generate fbc from fbclid
+                const domainParts = window.location.hostname.split('.');
+                const subdomainIndex = domainParts.length - 1;
+                const creationTime = Date.now();
+                fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
+            }
             let GQLformData = {
-            'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
-            'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
-            'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
-            utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
-            utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
-            utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
-            utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
-            gclid: decodeURIComponent(utmparams['gclid'] || ""),
-            msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
-            fbclid: decodeURIComponent(utmparams['fbclid'] || ""),
-            user_id: visitor_id,
-            user_timezone: v_timezone,
-            v_country: v_country,
-            // phone_number_full: webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164),
-            phone_number_full: getPhoneNumberOrDefault(),
-            'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
-            'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
-            'Work Experience': getWorkExperience.value,
-            'Role Domain': getDomainRole.value,
-            // 'PA Consult Time': "",
-            // 'PA Consult Time Other': "",
-            'Interview Start Time': getStartIn.value,
-            'Laid Off': getLaidOff.checked,
-            'Is Student': getIsStudent.checked,
-            'Domain Switch': '',
-            salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
+                'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
+                'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
+                'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
+                utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
+                utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
+                utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
+                utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
+                gclid: decodeURIComponent(utmparams['gclid'] || ""),
+                msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
+                fbclid: fbclid,
+                fbpId: fbp || null,
+                fbcId: fbc || null,
+                user_agent: userAgent || '',
+                user_id: visitor_id,
+                user_timezone: v_timezone,
+                v_country: v_country,
+                // phone_number_full: webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164),
+                phone_number_full: getPhoneNumberOrDefault(),
+                'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
+                'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
+                'Work Experience': getWorkExperience.value,
+                'Role Domain': getDomainRole.value,
+                // 'PA Consult Time': "",
+                // 'PA Consult Time Other': "",
+                'Interview Start Time': getStartIn.value,
+                'Laid Off': getLaidOff.checked,
+                'Is Student': getIsStudent.checked,
+                'Domain Switch': '',
+                salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
             };
 
-            try{
+            try {
                 dataLayer.push({
                     event: "wordpress_form_submitted",
                     formName: "Lead Qualifier Form",
                 });
-            }catch(err){
+            } catch (err) {
                 console.log("Data Layer add faild");
                 console.log(err);
             }
 
-            sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/34cx4dp/", GQLformData);         
+            sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/34cx4dp/", GQLformData);
         }
     }
-    
+
     // Second step
-    function finalFrStep2(btn){
+    function finalFrStep2(btn) {
         let errorStatus = false;
         btn.disabled = !errorStatus;
         // check conditions
-        if(!getSwDomainRole.value){
+        if (!getSwDomainRole.value) {
             errorStatus = true;
-            errorFun( ".sw_domain_role_fild", errorStatus);
-            if(!err_temp.sw_domain_role_fild){
+            errorFun(".sw_domain_role_fild", errorStatus);
+            if (!err_temp.sw_domain_role_fild) {
                 err_temp.sw_domain_role_fild = errorStatus;
                 getSwDomainRole.addEventListener("input", function () {
-                    errorFun( ".sw_domain_role_fild", false);
+                    errorFun(".sw_domain_role_fild", false);
                 })
             }
         }
 
         btn.disabled = !errorStatus;
-        if(!errorStatus){
+        if (!errorStatus) {
+            
+            let params = [];
+            try {
+                params = read_cookie?.("v_latest") || getParams?.()
+                bake_cookie("v_latest", params);
+            } catch (error) {
+                console.error("Error while reading cookie", error);
+            }
+            const fbcFromCookies = getCookieValue('_fbc');
+            const fbp = getCookieValue('_fbp');
+            const fbclid = decodeURIComponent(params['fbclid'] || "");
+            let fbc = fbcFromCookies;
+            if (!fbcFromCookies && fbclid) {
+                // Generate fbc from fbclid
+                const domainParts = window.location.hostname.split('.');
+                const subdomainIndex = domainParts.length - 1;
+                const creationTime = Date.now();
+                fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
+            }
+            
+            const userAgent = navigator?.userAgent;
             let GQLformData = {
-            'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
-            'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
-            'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
-            utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
-            utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
-            utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
-            utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
-            gclid: decodeURIComponent(utmparams['gclid'] || ""),
-            msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
-            fbclid: decodeURIComponent(utmparams['fbclid'] || ""),
-            user_id: visitor_id,
-            user_timezone: v_timezone,
-            v_country: v_country,
-            // phone_number_full: webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164),
-            phone_number_full: getPhoneNumberOrDefault(),
-            'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
-            'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
-            'Work Experience': getWorkExperience.value,
-            'Role Domain': getDomainRole.value,
-            'Interview Start Time': getStartIn.value,
-            'Laid Off': getLaidOff.checked,
-            'Is Student': getIsStudent.checked,
-            'Domain Switch': getSwDomainRole.value,
-            // 'Stage of Career Change': getStgCrCh.value,
-            salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
-            "Ryan Video": false
-            // 'Switch to Engineering Management': false ? 'Yes': 'No',
+                'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
+                'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
+                'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
+                utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
+                utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
+                utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
+                utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
+                gclid: decodeURIComponent(utmparams['gclid'] || ""),
+                msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
+                fbclid: fbc || null,
+                fbpId: fbp || null,
+                user_agent: userAgent || '',
+                user_id: visitor_id,
+                user_timezone: v_timezone,
+                v_country: v_country,
+                // phone_number_full: webNearPhoneNumberWri.getNumber(intlTelInputUtils.numberFormat.E164),
+                phone_number_full: getPhoneNumberOrDefault(),
+                'Event Start Time': decodeURIComponent(utmparams['event_start_time'] || ""),
+                'Event End Time': decodeURIComponent(utmparams['event_end_time'] || ""),
+                'Work Experience': getWorkExperience.value,
+                'Role Domain': getDomainRole.value,
+                'Interview Start Time': getStartIn.value,
+                'Laid Off': getLaidOff.checked,
+                'Is Student': getIsStudent.checked,
+                'Domain Switch': getSwDomainRole.value,
+                // 'Stage of Career Change': getStgCrCh.value,
+                salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
+                "Ryan Video": false
+                // 'Switch to Engineering Management': false ? 'Yes': 'No',
             };
 
 
-            try{
+            try {
                 dataLayer.push({
-                    event: "wordpress_form_submitted", 
+                    event: "wordpress_form_submitted",
                     formName: "Switch Domain Form",
                 })
-            }catch(err){
+            } catch (err) {
                 console.log("Data Layer add faild");
                 console.log(err);
             }
@@ -232,9 +283,28 @@
     }
 
     // Thard step
-    function finalFrStep3(btn){
+    function finalFrStep3(btn) {
         btn.disabled = true;
         btn.innerHTML = "Please wait...";
+        let params = [];
+        try {
+            params = read_cookie?.("v_latest") || getParams?.()
+            bake_cookie("v_latest", params);
+        } catch (error) {
+            console.error("Error while reading cookie", error);
+        }
+        const fbcFromCookies = getCookieValue('_fbc');
+        const fbp = getCookieValue('_fbp');
+        const userAgent = navigator?.userAgent;
+        const fbclid = decodeURIComponent(params['fbclid'] || "");
+        let fbc = fbcFromCookies;
+        if (!fbcFromCookies && fbclid) {
+            // Generate fbc from fbclid
+            const domainParts = window.location.hostname.split('.');
+            const subdomainIndex = domainParts.length - 1;
+            const creationTime = Date.now();
+            fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
+        }
         let GQLformData = {
             'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
             'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
@@ -245,7 +315,9 @@
             utm_term: decodeURIComponent(utmparams['utm_term'] || ""),
             gclid: decodeURIComponent(utmparams['gclid'] || ""),
             msclkid: decodeURIComponent(utmparams['msclkid'] || ""),
-            fbclid: decodeURIComponent(utmparams['fbclid'] || ""),
+            fbclid: fbc || null,
+            fbpId: fbp || null,
+            user_agent: userAgent || '',
             user_id: visitor_id,
             user_timezone: v_timezone,
             v_country: v_country,
@@ -267,18 +339,18 @@
             // 'Switch to Engineering Management': false ? 'Yes': 'No',
             "Ryan Video": false
         };
-        try{
+        try {
             dataLayer.push({
-                    event: "wordpress_form_submitted", 
-                    formName: "Source Form",
-                })	
-        }catch(err){
+                event: "wordpress_form_submitted",
+                formName: "Source Form",
+            })
+        } catch (err) {
             console.log("Data Layer add faild");
             console.log(err);
         }
         sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3ib11qu/", GQLformData);
     }
-    
+
     // send request fun
     async function sendRequestZapiar(url, data) {
         let options = {
@@ -289,25 +361,25 @@
             },
             body: JSON.stringify(data),
         };
-    
-        try{
+
+        try {
             let response = await fetch(url, options);
             moveNextStep();
             console.log('Form submitted successfully!');
-        }catch{
+        } catch {
             console.log('Form Summit faild');
             alert("Something is wrong");
         }
     }
 
 
-    function moveNextStep(){
+    function moveNextStep() {
         let getCurrentStep = parseInt(getFinalForm.getAttribute("active_step"));
         getCurrentStep++;
         getFinalForm.setAttribute("active_step", getCurrentStep);
     }
 
-    function errorFun(targetTedClass, status = false){
+    function errorFun(targetTedClass, status = false) {
         getFinalForm.querySelector(targetTedClass).setAttribute("err_status", status);
     }
 

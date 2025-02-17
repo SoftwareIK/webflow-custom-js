@@ -191,6 +191,9 @@
     salesforce_uuid: "",
     msclkid: "",
     fbclid: "",
+    fbcId: null,
+    fbpId: null,
+    userAgent: "",
     li_fat_id: "",
     user_timezone: "",
     l_page_url: "",
@@ -228,7 +231,11 @@
     webNearInfo.wr__region = data.region;
     webNearInfo.wr__city = data.city;
   })();
-
+  function getCookieValue(cookieName) {
+	  const value = `; ${document.cookie}`;
+	  const parts = value.split(`; ${cookieName}=`);
+	  if (parts.length === 2) return parts.pop().split(';').shift();
+  }
   function setHiddenFields() {
     //  let params = read_cookie("v_latest");
     let params = [];
@@ -238,7 +245,18 @@
     } catch (error) {
       console.error("Error while reading cookie", error);
     }
-
+    const fbcFromCookies = getCookieValue('_fbc');
+    const fbp = getCookieValue('_fbp');
+    const userAgent = navigator?.userAgent;
+    const fbclid = decodeURIComponent(params['fbclid'] || "");
+    let fbc = fbcFromCookies;
+    if (!fbcFromCookies && fbclid) {
+        // Generate fbc from fbclid
+        const domainParts = window.location.hostname.split('.');
+        const subdomainIndex = domainParts.length - 1;
+        const creationTime = Date.now();
+        fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
+    }
     webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
     webNearInfo.utm_medium = decodeURIComponent(params['utm_medium'] || `${visitor_id}${getCookie("_ga")}:${v_country}`);
     webNearInfo.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -248,7 +266,10 @@
     webNearInfo.gclid = decodeURIComponent(params['gclid'] || "");
     webNearInfo.salesforce_uuid = decodeURIComponent(params['salesforce_uuid'] || "");
     webNearInfo.msclkid = decodeURIComponent(params['msclkid'] || "");
-    webNearInfo.fbclid = decodeURIComponent(params['fbclid'] || "");
+    webNearInfo.fbclid = fbclid;
+    webNearInfo.fbcId = fbc || null;
+    webNearInfo.fbpId = fbp || null;
+    webNearInfo.userAgent = userAgent,
     webNearInfo.li_fat_id = decodeURIComponent(params['li_fat_id'] || "");
 
     webNearInfo.user_id = visitor_id;
@@ -306,6 +327,9 @@
       "gclid": webNearInfo.gclid,
       "msclkid": webNearInfo.msclkid,
       "fbclid": webNearInfo.fbclid,
+      "fbpId": webNearInfo.fbpId,
+      "fbcId": webNearInfo.fbcId,
+      "user_agent": webNearInfo.userAgent,
       "user_id": webNearInfo.user_id,
       "li_fat_id": webNearInfo.li_fat_id,
 

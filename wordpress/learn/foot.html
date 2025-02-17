@@ -170,8 +170,10 @@
     user_id: "",
     gclid: "",
     salesforce_uuid: "",
-    msclkid: "",
     fbclid: "",
+    fbcId: null,
+    fbpId: null,
+    userAgent: "",
     li_fat_id: "",
     user_timezone: "",
     l_page_url: "",
@@ -211,6 +213,12 @@
     document.dispatchEvent(geoLoaded);
   })();
 
+  function getCookieValue(cookieName) {
+	  const value = `; ${document.cookie}`;
+	  const parts = value.split(`; ${cookieName}=`);
+	  if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
   function setHiddenFields() {
     //  let params = read_cookie("v_latest");
     function getParams(t) { var t = t ? t.split("?")[1] : window.location.search.slice(1), r = {}; if (t) for (var s = (t = t.split("#")[0]).split("&"), e = 0; e < s.length; e++) { var a, n = s[e].split("="), i = n[0], o = void 0 === n[1] || n[1]; (i = i.toLowerCase()).match(/\[(\d+)?\]$/) ? (r[a = i.replace(/\[(\d+)?\]/, "")] || (r[a] = []), i.match(/\[\d+\]$/) ? (n = /\[(\d+)\]/.exec(i)[1], r[a][n] = o) : r[a].push(o)) : r[i] ? (r[i] && "string" == typeof r[i] && (r[i] = [r[i]]), r[i].push(o)) : r[i] = o } return r }
@@ -222,6 +230,18 @@
       console.error("Error while reading cookie", error);
     }
 
+    const fbcFromCookies = getCookieValue('_fbc');
+    const fbp = getCookieValue('_fbp');
+    const userAgent = navigator?.userAgent;
+    const fbclid = decodeURIComponent(params['fbclid'] || "");
+    let fbc = fbcFromCookies;
+    if (!fbcFromCookies && fbclid) {
+        // Generate fbc from fbclid
+        const domainParts = window.location.hostname.split('.');
+        const subdomainIndex = domainParts.length - 1;
+        const creationTime = Date.now();
+        fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
+    }
     webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
     webNearInfo.utm_medium = decodeURIComponent(params['utm_medium'] || "");
     webNearInfo.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -231,9 +251,11 @@
     webNearInfo.gclid = decodeURIComponent(params['gclid'] || "");
     webNearInfo.salesforce_uuid = decodeURIComponent(params['salesforce_uuid'] || "");
     webNearInfo.msclkid = decodeURIComponent(params['msclkid'] || "");
-    webNearInfo.fbclid = decodeURIComponent(params['fbclid'] || "");
+    webNearInfo.fbclid = fbclid;
+    webNearInfo.fbcId = fbc || null;
+    webNearInfo.fbpId = fbp || null;
+    webNearInfo.userAgent = userAgent,
     webNearInfo.li_fat_id = decodeURIComponent(params['li_fat_id'] || "");
-
     webNearInfo.user_id = visitor_id;
     webNearInfo.user_timezone = v_timezone;
     //   webNearInfo.l_page_url = "learn.ik" + getCookie("ik-landingpage");
@@ -293,6 +315,9 @@
       "gclid": webNearInfo.gclid,
       "msclkid": webNearInfo.msclkid,
       "fbclid": webNearInfo.fbclid,
+      "fbpId": webNearInfo.fbpId,
+      "fbcId": webNearInfo.fbcId,
+      "user_agent": webNearInfo.userAgent,
       "user_id": webNearInfo.user_id,
       "li_fat_id": webNearInfo.li_fat_id,
 
@@ -323,7 +348,6 @@
       formData["browserVersion"] = "";
       formData["ipAddress"] = "";
     }
-
 
 
     if (is_webinar_1o1_eligible) formData["Booking id"] = webNearInfo.booking_id;
