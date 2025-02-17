@@ -185,6 +185,7 @@
             if (parts.length === 2) return parts.pop().split(';').shift();
         }
         function setHiddenFields2() {
+            let params = read_cookie("v_latest");
             const fbcFromCookies = getCookieValue('_fbc');
             const fbp = getCookieValue('_fbp');
             const userAgent = navigator?.userAgent;
@@ -197,7 +198,6 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
-            let params = read_cookie("v_latest");
             webNearInfo2.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
             webNearInfo2.utm_medium = decodeURIComponent(params['utm_medium'] || `${visitor_id}${getCookie("_ga")}:${v_country}`);
             webNearInfo2.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
