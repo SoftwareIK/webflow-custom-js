@@ -215,8 +215,26 @@
 
         btn.disabled = !errorStatus;
         if (!errorStatus) {
-            const fbc = getCookieValue('_fbc');
+            
+            let params = [];
+            try {
+                params = read_cookie?.("v_latest") || getParams?.()
+                bake_cookie("v_latest", params);
+            } catch (error) {
+                console.error("Error while reading cookie", error);
+            }
+            const fbcFromCookies = getCookieValue('_fbc');
             const fbp = getCookieValue('_fbp');
+            const fbclid = decodeURIComponent(params['fbclid'] || "");
+            let fbc = fbcFromCookies;
+            if (!fbcFromCookies && fbclid) {
+                // Generate fbc from fbclid
+                const domainParts = window.location.hostname.split('.');
+                const subdomainIndex = domainParts.length - 1;
+                const creationTime = Date.now();
+                fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
+            }
+            
             const userAgent = navigator?.userAgent;
             let GQLformData = {
                 'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
@@ -268,6 +286,25 @@
     function finalFrStep3(btn) {
         btn.disabled = true;
         btn.innerHTML = "Please wait...";
+        let params = [];
+        try {
+            params = read_cookie?.("v_latest") || getParams?.()
+            bake_cookie("v_latest", params);
+        } catch (error) {
+            console.error("Error while reading cookie", error);
+        }
+        const fbcFromCookies = getCookieValue('_fbc');
+        const fbp = getCookieValue('_fbp');
+        const userAgent = navigator?.userAgent;
+        const fbclid = decodeURIComponent(params['fbclid'] || "");
+        let fbc = fbcFromCookies;
+        if (!fbcFromCookies && fbclid) {
+            // Generate fbc from fbclid
+            const domainParts = window.location.hostname.split('.');
+            const subdomainIndex = domainParts.length - 1;
+            const creationTime = Date.now();
+            fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
+        }
         let GQLformData = {
             'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
             'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
