@@ -206,6 +206,13 @@
 
         btn.disabled = !errorStatus;
         if (!errorStatus) {
+            let params = [];
+            try {
+                params = read_cookie?.("v_latest") || getParams?.()
+                bake_cookie("v_latest", params);
+            } catch (error) {
+                console.error("Error while reading cookie", error);
+            }
             const fbcFromCookies = getCookieValue('_fbc');
             const fbp = getCookieValue('_fbp');
             const userAgent = navigator?.userAgent;
