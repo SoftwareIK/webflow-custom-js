@@ -110,8 +110,7 @@
         if (!errorStatus) {
             let params = [];
             try {
-                params = read_cookie?.("v_latest") || getParams?.()
-                bake_cookie("v_latest", params);
+                params = read_cookie?.("v_latest") || getParams?.();
             } catch (error) {
                 console.error("Error while reading cookie", error);
             }
@@ -208,8 +207,7 @@
         if (!errorStatus) {
             let params = [];
             try {
-                params = read_cookie?.("v_latest") || getParams?.()
-                bake_cookie("v_latest", params);
+                params = read_cookie?.("v_latest") || getParams?.();
             } catch (error) {
                 console.error("Error while reading cookie", error);
             }
