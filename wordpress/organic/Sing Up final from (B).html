@@ -134,8 +134,7 @@
         if (!errorStatus) {
             let params = [];
             try {
-                params = read_cookie?.("v_latest") || getParams?.()
-                bake_cookie("v_latest", params);
+                params = read_cookie?.("v_latest") || getParams?.();
             } catch (error) {
                 console.error("Error while reading cookie", error);
             }
@@ -218,8 +217,7 @@
             
             let params = [];
             try {
-                params = read_cookie?.("v_latest") || getParams?.()
-                bake_cookie("v_latest", params);
+                params = read_cookie?.("v_latest") || getParams?.();
             } catch (error) {
                 console.error("Error while reading cookie", error);
             }
@@ -288,8 +286,7 @@
         btn.innerHTML = "Please wait...";
         let params = [];
         try {
-            params = read_cookie?.("v_latest") || getParams?.()
-            bake_cookie("v_latest", params);
+            params = read_cookie?.("v_latest") || getParams?.();
         } catch (error) {
             console.error("Error while reading cookie", error);
         }
