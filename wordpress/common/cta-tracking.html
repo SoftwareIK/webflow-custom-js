@@ -181,6 +181,10 @@
 
   function mlCtaCheck(target) {
 
+    if(target?.type === "submit") {
+      return;
+    }
+
     let clickID = target.getAttribute("data-click-id") || (/\d/.test(target.id) ? false : target.id);
 
     if (!clickID) {
