@@ -1,9 +1,19 @@
 <!-- nlhtyrnugl execute api -->
 <script>
   const timestampOfUserVisit = new Date();
+
+  function getExpertInsightAB(params) {
+    try {
+      return gqlPopUpValue ? "variant" : "control"
+    } catch (error) {
+      return "control"
+    }
+  }
+
   // Here need to add all running AB test buckets
   let ab_bucket_json = {
-    exit_intent: "control"
+    exit_intent: "control",
+    expert_insight_ab: "control",
   }
   // setTimeout(() => {
   document?.addEventListener("geoLoaded", function () {
@@ -15,7 +25,8 @@
         AB_test_bucket = AB_BUCKET
         ab_bucket_json = {
           ...ab_bucket_json,
-          exit_intent: AB_BUCKET
+          exit_intent: AB_BUCKET,
+          expert_insight_ab: getExpertInsightAB()
         }
       }
 
