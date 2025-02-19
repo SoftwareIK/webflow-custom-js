@@ -2,10 +2,15 @@
   const timestampOfUserVisit =  new Date();
   setTimeout(() => {
     let AB_test_bucket = "control"
+    let fingerprint_id = "";
 
     try {
       if (typeof (AB_BUCKET) !== "undefined") {
         AB_test_bucket = AB_BUCKET
+      }
+
+      if (typeof (FINGERPRINT_ID) !== "undefined") {
+        fingerprint_id = FINGERPRINT_ID;
       }
     } catch (error) { }
 
@@ -33,7 +38,9 @@
         User_Agent: encodeURIComponent(navigator?.userAgent || ""),
         Refferer: webNearInfo.wr__referrer,
         Region: webNearInfo.wr__region,
-        AB_test_bucket: AB_test_bucket
+        AB_test_bucket: AB_test_bucket,
+        fingerprint_id: fingerprint_id,
+        step: "s1",
       },
     ];
 

@@ -1,5 +1,14 @@
 <script>
   let isS1Captured = false;
+
+  function getFingerprintId() {
+    try {
+      if (typeof (FINGERPRINT_ID) !== "undefined") {
+        return FINGERPRINT_ID;
+      }
+    } catch (error) { }
+  }
+
   // Function to check if the user is a bot
   function isBot(userAgent) {
     try {
@@ -38,7 +47,8 @@
             page_value_url: window.location.href,
             student_uuid: visitor_id,
             timestamp: timestamp,
-            ClickID: clickID
+            ClickID: clickID,
+            fingerprint_id: getFingerprintId(),
           }
         ]
       })

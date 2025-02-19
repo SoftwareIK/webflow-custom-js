@@ -6,6 +6,7 @@
     exit_intent: "control",
     organic_home_page: "control"
   }
+  let fingerprint_id = "";
 
   setTimeout(() => {
     let AB_test_bucket = "control"
@@ -22,6 +23,9 @@
           ...ab_bucket_json,
           organic_home_page: "variant"
         }
+      }
+      if (typeof (FINGERPRINT_ID) !== "undefined") {
+        fingerprint_id = FINGERPRINT_ID;
       }
     } catch (error) { }
 
@@ -53,6 +57,7 @@
         step: "s1",
         AB_test_bucket: AB_test_bucket,
         ab_bucket_json: JSON.stringify(ab_bucket_json),
+        fingerprint_id: fingerprint_id,
       },
     ];
 
