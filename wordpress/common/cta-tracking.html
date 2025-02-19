@@ -1,4 +1,5 @@
 <script>
+  let isS1Captured = false;
   // Function to check if the user is a bot
   function isBot(userAgent) {
     try {
@@ -121,6 +122,23 @@
 
   });
 
+  document.querySelectorAll('[href*="webinar_form"]').forEach(element => {
+    isS1Captured = false
+    element.addEventListener('click', (event) => {
+      const timestamp = Date.now();
+      const target = event.target;
+      const clickID = mlCtaCheck(target, false) || "";
+      if(!clickID.includes("_open-modal")) {
+        captureS1Fallback(timestamp);
+      }
+    });
+  });
+
+  function captureS1Fallback(timestamp = Date.now()) {
+    isS1Captured = true;
+    saveClickActivity("open_modal_fallback", timestamp);
+  }
+
   function fallbackClickID(element) {
     try {
       let clickID = null;
@@ -179,9 +197,9 @@
     }
   }
 
-  function mlCtaCheck(target) {
+  function mlCtaCheck(target, callAPI = true) {
 
-    if(target?.type === "submit") {
+    if (target?.type === "submit") {
       return;
     }
 
@@ -201,11 +219,16 @@
     }
 
     const timestamp = Date.now();
-    saveClickActivity(clickID, timestamp);
+    if (callAPI) {
+      if(clickID.includes("_open-modal")) {
+        isS1Captured = true;
+      }
+      saveClickActivity(clickID, timestamp);
+    } else {
+      return clickID;
+    }
   }
-</script>
 
-<script>
   // Handle CTA Traking code for wordpress
   function addCtaId(element, value) {
     if (!element.getAttribute("data-click-id")) {
@@ -233,6 +256,10 @@
       if (!step && !ctaid) {
         console.warn("Step is required to track form events");
         return;
+      }
+
+      if (step.includes("info") && !isS1Captured) {
+        captureS1Fallback();
       }
 
       switch (step) {
