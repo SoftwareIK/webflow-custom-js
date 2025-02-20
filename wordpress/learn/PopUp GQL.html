@@ -229,7 +229,7 @@
             
             try {
                 let response = await fetch("https://hooks.zapier.com/hooks/catch/11068981/3409hxu/", options);
-                saveFormEventsActivity("gql")
+                saveFormEventsActivity("gql");
             } catch (err) {
                 console.error("gqlZapSend", err);
             }
