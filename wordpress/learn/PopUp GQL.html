@@ -138,7 +138,7 @@
             if (!err) {
                 gqlZapSend();
                 gqlRgPopup.setAttribute("ac_step", 2);
-            } 
+            }
         }
 
         gqlRgPopup?.querySelector(".gql_step_1_btn").addEventListener("click", gqlPopup1stStep);
@@ -183,8 +183,8 @@
         }
 
 
-        async function gqlZapSend(){
-            let fbc =  getCookieValue('_fbc');
+        async function gqlZapSend() {
+            let fbc = getCookieValue('_fbc');
             const fbp = getCookieValue('_fbp');
             const userAgent = navigator?.userAgent;
             let GQLformData = {
@@ -226,7 +226,7 @@
                 },
                 body: JSON.stringify(GQLformData),
             };
-            
+
             try {
                 let response = await fetch("https://hooks.zapier.com/hooks/catch/11068981/3409hxu/", options);
                 saveFormEventsActivity("gql");
