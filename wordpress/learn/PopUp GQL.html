@@ -218,16 +218,6 @@
                 salesforce_uuid: webNearInfo.salesforce_uuid,
             };
 
-            try {
-                dataLayer.push({
-                    event: "wordpress_form_submitted",
-                    formName: "Lead Qualifier Form",
-                    expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
-                })
-            } catch (err) {
-                console.error(err);
-            }
-
             let options = {
                 method: 'POST',
                 mode: "no-cors",
@@ -239,6 +229,7 @@
             
             try {
                 let response = await fetch("https://hooks.zapier.com/hooks/catch/11068981/3409hxu/", options);
+                saveFormEventsActivity("gql")
             } catch (err) {
                 console.error("gqlZapSend", err);
             }
