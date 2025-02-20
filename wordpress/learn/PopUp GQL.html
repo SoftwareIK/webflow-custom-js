@@ -1,5 +1,5 @@
 <script>
-    if(gqlPopUpValue){
+    if (gqlPopUpValue) {
         const gqlRgPopup = document?.querySelector(".gql_registration_popup");
 
         // 1st step
@@ -20,38 +20,55 @@
 
         let maxSize = 4 * 1024 * 1024;
         const urlRegex = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,6})(\/[\w.-]*)*\/?$/i;
-        
-        gqlResume.addEventListener('change', function(event) {
+
+        gqlResume.addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (file) {
-                gqlRgPopup.querySelector(".up_load_titile").innerHTML = `Selected: ${file.name}` ;
+                gqlRgPopup.querySelector(".up_load_titile").innerHTML = `Selected: ${file.name}`;
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = function() {
+                reader.onload = function () {
                     gqlResumeBase64String = reader.result.split(',')[1];
                 };
-                reader.onerror = function(error) {
+                reader.onerror = function (error) {
                     console.log("Error: ", error);
                 };
 
-                if(maxSize < file.size){
+                if (maxSize < file.size) {
                     gqlResumeErrDiv.setAttribute("err_status", true);
-                }else{
+                } else {
                     gqlResumeErrDiv.setAttribute("err_status", false);
                 }
             }
         });
 
-        gqlLinkdinUrl.addEventListener("input", function(){
-            if(gqlLinkdinUrl.value.trim() === "" || urlRegex.test(gqlLinkdinUrl.value)){
+        gqlLinkdinUrl.addEventListener("input", function () {
+            if (gqlLinkdinUrl.value.trim() === "" || urlRegex.test(gqlLinkdinUrl.value)) {
                 gqlLnErrDiv.setAttribute("err_status", false);
-            }else{
+            } else {
                 gqlLnErrDiv.setAttribute("err_status", true);
             }
         })
 
-        async function pushGqlPopupFromData(){
+        function getAPIDetails() {
+            //if url contains wpcomstaging than send staging api key & url
+            if (window.location.href.includes("wpcomstaging")) {
+                return {
+                    url: "https://jobxp11m92.execute-api.us-west-1.amazonaws.com/qa/expert-insights",
+                    api_key: "Dn6VOF9g4iGtLJLqMBrL2uNWwhfadgl2kXEIvzQ4"
+                }
+            } else {
+                return {
+                    url: "https://4nwgymw1h6.execute-api.us-west-1.amazonaws.com/api/expert-insights",
+                    api_key: "fBF1GVnYKb1hReCbCfrQu7zBt4RgLOvh6inYzYqB"
+                }
+            }
+        }
+
+        async function pushGqlPopupFromData() {
             let GqldataPayload = {
+                "Lead_Created_Time": webNearInfo.leadCreatedTime,
+                "Page_URL": encodeURIComponent(webNearInfo.page_url),
                 "First Name": webNearInfo.firstName,
                 "Last Name": webNearInfo.lastName,
                 "Email Address": webNearEmailAddress.value,
@@ -64,7 +81,7 @@
                 "fbclid": webNearInfo.fbclid,
                 "user_id": webNearInfo.user_id,
                 "user_timezone": webNearInfo.user_timezone,
-                "v_country":  webNearInfo.v_country,
+                "v_country": webNearInfo.v_country,
                 "phone_number_full": webNearInfo.fPhoneNumber,
                 "Event Start Time": webNearInfo.eventStartTime,
                 "Event End Time": webNearInfo.eventEndTime,
@@ -79,63 +96,63 @@
                 "salesforce_uuid": webNearInfo.salesforce_uuid,
                 "linkedin_url": gqlLinkdinUrl.value.trim() || null,
                 "resume": gqlResumeBase64String || null,
-                "slot": gqlRgPopup?.querySelector(".preferred_time_slot:checked").value
+                "slot": gqlRgPopup?.querySelector(".preferred_time_slot:checked").value,
+                "test_group": gqlPopUpValue ? "B" : "A",
             }
 
             let options = {
                 method: 'POST',
-                mode: "no-cors",
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'x-api-key': getAPIDetails().api_key },
                 body: JSON.stringify(GqldataPayload),
             };
 
             try {
-                const sendData = await fetch("https://91lfxkf9o8.execute-api.us-west-1.amazonaws.com/default/expert-insights-step-1", options);
-            return sendData;
+                const sendData = await fetch(getAPIDetails().url, options); // staging url
+                return sendData;
             } catch (err) {
                 throw new Error("GQL Faild");
             }
         }
 
-        gqlWorkExperience.addEventListener("change", function(){
+        gqlWorkExperience.addEventListener("change", function () {
             gqlWrErrDiv.setAttribute("err_status", false);
         })
 
-        gqlDomainRole.addEventListener("change", function(){
+        gqlDomainRole.addEventListener("change", function () {
             gqlDmErrDiv.setAttribute("err_status", false);
         })
 
-        function gqlPopup1stStep(){
+        function gqlPopup1stStep() {
             let err = false;
 
-            if(!gqlWorkExperience.value){
+            if (!gqlWorkExperience.value) {
                 err = true;
                 gqlWrErrDiv.setAttribute("err_status", err);
             }
 
-            if(!gqlDomainRole.value){
+            if (!gqlDomainRole.value) {
                 err = true;
                 gqlDmErrDiv.setAttribute("err_status", err);
                 return;
             }
-            if(!err) gqlRgPopup.setAttribute("ac_step", 2);
+            if (!err) gqlRgPopup.setAttribute("ac_step", 2);
         }
 
         gqlRgPopup?.querySelector(".gql_step_1_btn").addEventListener("click", gqlPopup1stStep);
-        gqlRgPopup?.querySelector(".gql_popup_stage_1 .gql_btn_back").addEventListener("click", function(){
+        gqlRgPopup?.querySelector(".gql_popup_stage_1 .gql_btn_back").addEventListener("click", function () {
             getWebNearForm.setAttribute("gql_status", false);
         });
 
 
-        gqlRgPopup?.querySelector(".gql_step_2_btn").addEventListener("click", function(){
-            if(gqlResumeErrDiv.getAttribute("err_status") === "true" || gqlLnErrDiv.getAttribute("err_status") === "true") return; // validation for resume
+        gqlRgPopup?.querySelector(".gql_step_2_btn").addEventListener("click", function () {
+            if (gqlResumeErrDiv.getAttribute("err_status") === "true" || gqlLnErrDiv.getAttribute("err_status") === "true") return; // validation for resume
 
             pushGqlPopupFromData();
             document.querySelector("#gql_rg_date").innerHTML = formatDate(new Date(webNearInfo.eventStartTime));
             document.querySelector("#gql_rg_time").innerHTML = gqlRgPopup?.querySelector(".preferred_time_slot:checked").value.replace(/\s*\(|\)\s*/g, ", ").replace(/,\s*$/, "");
             getWebNearForm.setAttribute("complete_stauts", true);
         });
-        gqlRgPopup?.querySelector(".gql_popup_stage_2 .gql_btn_back").addEventListener("click", function(){
+        gqlRgPopup?.querySelector(".gql_popup_stage_2 .gql_btn_back").addEventListener("click", function () {
             gqlRgPopup.setAttribute("ac_step", 1);
         });
 

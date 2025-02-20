@@ -538,6 +538,7 @@
     //lead LeadCreatedTime
     const currentDateTime = new Date();
     const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
+    webNearInfo.leadCreatedTime = LeadCreatedTime;
 
     function formatDateTime(dateTimeString) {
       const date = new Date(dateTimeString);
