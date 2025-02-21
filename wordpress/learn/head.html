@@ -305,9 +305,19 @@
 
 <script>
   // Ip address
-  const userIpAndBrowserInfo = {
-    ipAddress: "",
-    ...getBrowserDetails()
+  let userIpAndBrowserInfo = {}
+
+  try{
+    userIpAndBrowserInfo = {
+      ipAddress: "",
+      ...getBrowserDetails()
+    }
+  }catch{
+    userIpAndBrowserInfo = {
+      ipAddress: "",
+      browserName: "", 
+      browserVersion: "" 
+    }
   }
 
   function getBrowserDetails() {
