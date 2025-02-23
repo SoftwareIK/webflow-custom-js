@@ -1,7 +1,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function(){
         
-    // Get the elements
+    // Get the elementss
     const getCallMeNow = document.querySelector(".call_me_now");
     
     // Number Step
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     let numberSetInterVal = setInterval(function(){
         if(numberInput.value.includes("-") || numberInput.value.startsWith("0")){
-            numberInput.value = numberInput.value.replace(/^-+|^0+|-/g, "");
+            numberInput.value = numberInput.value.replace(/^-+|^0+|-|\s+/g, "");
             clearTimeout(numberSetInterVal);
         }
     }, 50);
