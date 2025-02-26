@@ -1,0 +1,136 @@
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+        
+    // Get the elementss
+    const getCallMeNow = document.querySelector(".call_me_now");
+    
+    // Number Step
+    const numberContainer = getCallMeNow?.querySelector(".number_fild_container");
+    const numberInput = numberContainer?.querySelector("#fr_phone_fl");
+    const editTrigar = numberContainer?.querySelector(".ed_trigar");
+    const numberError = getCallMeNow?.querySelector(".number_error");
+    const showSlot = getCallMeNow?.querySelector(".selected_wb_slot .elementor-heading-title");
+
+    showSlot.innerHTML = `🗓️ ${formatDate(new Date(frCokkie?.event_start_time || ""))}`;
+    const numberInputEdit = window.intlTelInput(numberInput, {
+        initialCountry: frCokkie?.phoneNumCountry,
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+    });
+    editTrigar.addEventListener("click", function(){
+        let editStatus = numberContainer.getAttribute("edit_status") === "true";
+        if(!phone_regex.test(numberInput.value) || numberInput.value.length == 0){
+            numberError.setAttribute("show_status", true);
+            numberError.querySelector(".elementor-heading-title").innerHTML = "*Invalid Phone Number";
+        }else{
+            numberContainer.setAttribute("edit_status", !editStatus);
+            if(editStatus){
+                frCokkie.answer_1 = numberInputEdit.getNumber(intlTelInputUtils.numberFormat.E164);
+                frCokkie.phonerNumber = numberInput.value;
+                frCokkie.phoneNumCountry = numberInputEdit.j;
+                numberError.setAttribute("show_status", true);
+                numberError.querySelector(".elementor-heading-title").innerHTML = `<span style="color:green">Phone number updated successfully<span>`;
+            }
+        }
+    })
+
+    numberInput.value = frCokkie?.phonerNumber;
+
+    let numberSetInterVal = setInterval(function(){
+        if(numberInput.value.includes("-") || numberInput.value.startsWith("0")){
+            numberInput.value = numberInput.value.replace(/^-+|^0+|-|\s+/g, "");
+            clearTimeout(numberSetInterVal);
+        }
+    }, 50);
+
+
+    function formatDate(date) {
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        const dayName = days[date.getDay()];
+        const day = date.getDate();
+        const monthName = months[date.getMonth()];
+        let hour = date.getHours();
+        let minutes = date.getMinutes();
+        const period = hour >= 12 ? "PM" : "AM";
+
+        hour = hour % 12 || 12;
+
+        minutes = minutes.toString().padStart(2, "0");
+
+        const suffix = (day % 10 === 1 && day !== 11) ? "st" :
+                    (day % 10 === 2 && day !== 12) ? "nd" :
+                    (day % 10 === 3 && day !== 13) ? "rd" : "th";
+
+        return `${dayName}, ${day}${suffix} ${monthName}, ${hour}:${minutes} ${period}`;
+    }
+
+    const callMeNowBtn = getCallMeNow?.querySelector(".call_me_now_button");
+    callMeNowBtn.addEventListener("click", function(){
+        let editStatus = numberContainer.getAttribute("edit_status") === "true";
+        if(!editStatus){
+            finalFrStep1(StepBtn1, "https://hooks.zapier.com/hooks/catch/10687188/3j31l0x/");
+            if(isWithinWorkingHours()){
+                startTimerFun();
+                getCallMeNow.setAttribute("call_status", "countdown_timer");
+            }else{
+                getCallMeNow.setAttribute("call_status", "out_of_working_hour");
+            }
+        }else{
+            numberError.setAttribute("show_status", true);
+            numberError.querySelector(".elementor-heading-title").innerHTML = "Please Save The Number";
+        }
+    })
+
+    function isWithinWorkingHours() {
+        let currentDate = new Date();
+
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istDate = new Date(currentDate.getTime() + istOffset);
+
+        const day = istDate.getUTCDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        let hours = istDate.getUTCHours();
+        let minutes = istDate.getUTCMinutes();
+
+        const timeInMinutes = hours * 60 + minutes;
+        
+        const startMinutes = 9 * 60 + 30; // 9:30 AM IST
+        const weekdayEndMinutes = 19 * 60; // 7:00 PM IST
+        const saturdayEndMinutes = 15 * 60; // 3:00 PM IST
+
+        getCallMeNow.setAttribute("is_sturday", false);
+
+        if (day >= 1 && day <= 5) {
+            return timeInMinutes >= startMinutes && timeInMinutes <= weekdayEndMinutes;
+        } else if (day === 6) {
+            getCallMeNow.setAttribute("is_sturday", true);
+            return timeInMinutes >= startMinutes && timeInMinutes <= saturdayEndMinutes;
+        }
+        return false;
+    }
+
+    const getTimerFild = getCallMeNow.querySelector("#countdown_clock .elementor-heading-title");
+    const getProgressCircle = getCallMeNow.querySelector("#timer_progress_circle");
+
+    function startTimerFun(){
+        let setedTime = 10 * 60;
+        let percentInVal = 100 / setedTime;
+        let countdownTimer = setInterval(function(){
+            getTimerFild.innerHTML = forMatedMinute(--setedTime);
+            getProgressCircle.style.strokeDashoffset = 100 - Math.floor(setedTime * percentInVal);
+            if(setedTime <= 0){
+                getProgressCircle.setAttribute("end_status", true);
+                clearInterval(countdownTimer);
+            }
+        }, 1000)
+    }
+
+    function forMatedMinute(sec){
+        let minute = Math.floor(sec/60);
+        let second = Math.floor(sec%60);
+        if(minute <= 9) minute = `0${minute}`;
+        if(second <= 9) second = `0${second}`;
+        return `${minute}:${second}`;
+    }
+})
+</script>

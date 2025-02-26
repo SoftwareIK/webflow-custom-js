@@ -299,15 +299,25 @@
     setCookie("gql_popup_value", gqlPopUpValue);
   }
 
-  gqlPopUpValue = gqlPopUpValue <= 30;
+  gqlPopUpValue = gqlPopUpValue <= 20;
 
 </script>
 
 <script>
   // Ip address
-  const userIpAndBrowserInfo = {
-    ipAddress: "",
-    ...getBrowserDetails()
+  let userIpAndBrowserInfo = {}
+
+  try{
+    userIpAndBrowserInfo = {
+      ipAddress: "",
+      ...getBrowserDetails()
+    }
+  }catch{
+    userIpAndBrowserInfo = {
+      ipAddress: "",
+      browserName: "", 
+      browserVersion: "" 
+    }
   }
 
   function getBrowserDetails() {

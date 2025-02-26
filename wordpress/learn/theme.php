@@ -194,12 +194,14 @@ add_action( 'wp_footer', 'webnear_from' );
 function add_global_variable(){
     $webinar_type = get_post_meta(get_the_ID(), 'webinar_type', true);
     $event_name = get_post_meta(get_the_ID(), 'event_name', true);
+	$slot_type = get_post_meta(get_the_ID(), 'slot_type', true);
 
     if(!$webinar_type) $webinar_type = "REGULAR";
     echo "
         <script>
             let webinarType = '{$webinar_type}';
             let pageEnventName = '{$event_name}'.trim();
+			let slotType = '{$slot_type}'
         </script>
     ";
 }
