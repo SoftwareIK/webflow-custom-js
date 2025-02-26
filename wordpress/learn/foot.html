@@ -812,7 +812,7 @@
           }
         }
 
-        const request = await fetch('https://uplevel.interviewkickstart.com/api/v1/webinar_connect/available-slots/', option);
+        const request = await fetch(`https://uplevel.interviewkickstart.com/api/v1/webinar_connect/available-slots/${slotType ? "?slot_type=" + slotType : ""}`, option);
         let resobj = await request.json();
         render1o1Slots(resobj);
       })();
