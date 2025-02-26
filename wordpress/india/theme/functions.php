@@ -86,7 +86,7 @@ function previous_month_year_shortcode() {
 }
 add_shortcode('previous_month_year', 'previous_month_year_shortcode');
 
-function add_geo_json_to_frontend() {
+function add_geo_json_to_head() {
   // Get client IP
   $ip = $_SERVER['REMOTE_ADDR'];
 
@@ -102,9 +102,9 @@ function add_geo_json_to_frontend() {
       $geo_json = json_encode(["error" => "Unable to retrieve geolocation data"]);
   }
 
-  // Add hidden input field with geolocation data
-  echo "<input type='hidden' id='geo-data' value='" . esc_attr($geo_json) . "'>";
+  // Echo the JavaScript variable inside the <head>
+  echo "<script>var geoData = $geo_json;</script>";
 }
 
-// Hook into WordPress footer
-add_action('wp_footer', 'add_geo_json_to_frontend');
+// Hook into WordPress head section
+add_action('wp_head', 'add_geo_json_to_head');

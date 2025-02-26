@@ -82,8 +82,20 @@
       // resuable functions end ----
 
       const timestampOfUserVisit = new Date();
-      let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (timezone === "Asia/Calcutta") timezone = "Asia/Kolkata";
+      const geo = {
+        City: null,
+        Region: null,
+        Country: null,
+        Client_Timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      };
+
+      try {
+        geo.City = geoData.city;
+        geo.Region = geoData.region;
+        geo.Country = geoData.country;
+        geo.Client_Timezone = geoData.timezone;
+      } catch (error) {  }
+      if (geo.Client_Timezone === "Asia/Calcutta") geo.Client_Timezone = "Asia/Kolkata";
 
       let page_url = window.location.href;
       page_url = ((location.pathname != "/") && page_url.endsWith("/")) ? page_url.slice(0, -1) : page_url;
@@ -111,7 +123,7 @@
 
       data = [{
         Lead_Created_Time: timestampOfUserVisit,
-        Lead_Time_Zone: timezone,
+        Lead_Time_Zone: geo.Client_Timezone,
         UTM_Campaign: params.utm_campaign,
         UTM_Source: params.utm_source,
         UTM_Medium: params.utm_medium,
@@ -121,7 +133,10 @@
         User_ID: visitor_id,
         Page_URL: page_url,
         Country: params.v_country,
-        Client_Timezone: timezone,
+        Client_Timezone: geo.Client_Timezone,
+        Country: geo.Country,
+        City: geo.City,
+        Region: geo.Region,
         CTA_Page: "learn.ik" + cta_lp,
         Landing_Page: l_page_url,
         Click_History: "",
