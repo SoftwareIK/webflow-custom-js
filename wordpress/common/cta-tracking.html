@@ -26,6 +26,34 @@
     }
   }
 
+  function isValidCTAId(clickID) {
+    let validCTAIds = [
+      "webinar_top_nav",
+      "webinar_hero",
+      "webinar_about-sec",
+      "webinar_curriculum",
+      "header_button_open-modal",
+      "webinar_course-details",
+      "webinar_how-to-enroll-sec",
+      "webinar_sticky-mobile",
+      "hero-section_button_open-modal",
+      "features_button_open-modal",
+      "bottom-webinar_button_open-modal",
+      "footer-bottom-cta_button_open-modal",
+      "webinar_bottom-fold",
+      "curriculum_button_open-modal",
+      "bottom_button_open-modal",
+      "free-guide-section_button_open-modal",
+      "class__direct-link",
+      "hero-section-cta",
+      "sidebar-section-cta",
+      "bottom-cta-mobile",
+      "middle-cta-mobile",
+    ];
+
+    return validCTAIds.includes(clickID) || clickID.includes("open-modal")
+  }
+
   // Function to save click activity
   function saveClickActivity(clickID, timestamp, callback = null) {
     if (isBot()) return;
@@ -138,7 +166,7 @@
       const timestamp = Date.now();
       const target = event.target;
       const clickID = mlCtaCheck(target, false) || "";
-      if(!clickID.includes("_open-modal")) {
+      if (!isValidCTAId(clickID)) {
         captureS1Fallback(timestamp);
       }
     });
@@ -230,7 +258,7 @@
 
     const timestamp = Date.now();
     if (callAPI) {
-      if(clickID.includes("_open-modal")) {
+      if (isValidCTAId(clickID)) {
         isS1Captured = true;
       }
       saveClickActivity(clickID, timestamp);
