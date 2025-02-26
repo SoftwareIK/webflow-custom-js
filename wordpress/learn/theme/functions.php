@@ -207,3 +207,26 @@ function add_global_variable(){
 }
 
 add_action( "wp_head", "add_global_variable" );
+
+function add_geo_json_to_frontend() {
+  // Get client IP
+  $ip = $_SERVER['REMOTE_ADDR'];
+
+  // Fetch geolocation data from GeoJS
+  $geo_url = "https://get.geojs.io/v1/ip/geo/{$ip}.json";
+  $geo_data = wp_remote_get($geo_url);
+
+  // Decode response
+  if (!is_wp_error($geo_data) && !empty($geo_data['body'])) {
+      $geo_info = json_decode($geo_data['body'], true);
+      $geo_json = json_encode($geo_info, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+  } else {
+      $geo_json = json_encode(["error" => "Unable to retrieve geolocation data"]);
+  }
+
+  // Add hidden input field with geolocation data
+  echo "<input type='hidden' id='geo-data' value='" . esc_attr($geo_json) . "'>";
+}
+
+// Hook into WordPress footer
+add_action('wp_footer', 'add_geo_json_to_frontend');
