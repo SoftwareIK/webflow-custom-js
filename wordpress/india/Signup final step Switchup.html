@@ -53,7 +53,7 @@
     let leadScoreData = {};
 
     // First step
-    function finalFrStep1(btn) {
+    function finalFrStep1(btn, sendUrl = false) {
         let errorStatus = false;
         btn.disabled = !errorStatus;
         // check conditions
@@ -155,7 +155,7 @@
                     } catch (err) {
                         console.error("Error in dataLayer push", err);
                     }
-                    sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/34xp8vf/", GQLformData);
+                    sendRequestZapiar(sendUrl ? sendUrl : "https://hooks.zapier.com/hooks/catch/11068981/34xp8vf/", GQLformData);
                 });
         }
     }
@@ -364,7 +364,11 @@
 
         try {
             let response = await fetch(url, options);
-            moveNextStep();
+            // moveNextStep();
+            const getCallMeSection = document.querySelector(".call_me_now");
+            if(getCallMeSection.getAttribute("call_status") === "none"){
+                getCallMeSection.setAttribute("call_status", "number_edit");
+            }
         } catch (error) {
             console.error("Error in sendRequestZapiar", error);
         }
