@@ -37,207 +37,53 @@ add_shortcode('previous_month_year', 'previous_month_year_shortcode');
 
 
 
-function post_video_fild(){
-    $custom_field_value = get_post_meta(get_the_ID(), 'video_embed_code', true);
-    if (!empty($custom_field_value)) {
-        return $custom_field_value;
-    }
-}
+function get_hide_ides(){
+    $args = array(
+        'post_type' => 'instructors',
+        'posts_per_page' => -1
+    );
+    $instructors_query = new WP_Query($args);
 
-add_shortcode( 'post_video_fild', 'post_video_fild' );
+    $post_ids = [];
 
-
-
-// Shortcode to display Author and updated date/time
-function display_article_meta_no_link() {
-    if (is_singular('articles')) { // Check if it's a single Article page
-        $author = get_field('author'); // Get the Author relationship field
-        $updated_date = get_the_modified_date('M j, Y \a\t h:i A'); // Get the last updated date/time
-        
-        // Start building the output
-        $output = '<div class="article-meta">';
-        $output .= 'Last updated by ';
-        
-        if ($author) {
-            foreach ($author as $single_author) {
-                $author_name = get_the_title($single_author);
-                $output .= esc_html($author_name); // Add plain text for Author
+    if ($instructors_query->have_posts()) {
+        while ($instructors_query->have_posts()) {
+            $instructors_query->the_post();
+            $post_id = get_the_ID();
+            if(get_post_meta($post_id, 'hide_this_profile', true)){
+                $post_ids[] =  $post_id;
             }
-        } else {
-            $output .= '';
         }
-        
-        $output .= ' on ' . esc_html($updated_date);
-        $output .= '</div>';
-        return $output;
+        wp_reset_postdata();
     }
-    return '';
-}
-add_shortcode('display_article_meta', 'display_article_meta_no_link');
-
-
-
-
-
-
-
-// Shortcode to display Author, updated date/time, and reading time for 'interview-questions' post type
-function display_interview_questions_meta() {
-    if (is_singular('interview-questions')) { // Check if it's a single Interview Questions page
-        $author = get_field('author'); // Get the Author relationship field
-        $updated_date = get_the_modified_date('M j, Y \a\t h:i A'); // Get the last updated date/time
-        
-        // Start building the output
-        $output = '<div class="interview-meta">';
-        $output .= 'Last updated by ';
-        
-        if ($author) {
-            foreach ($author as $single_author) {
-                $author_name = get_the_title($single_author);
-                $output .= esc_html($author_name); // Add plain text for Author
-            }
-        } else {
-            $output .= '';
-        }
-        
-        $output .= ' on ' . esc_html($updated_date);
-        $output .= '</div>';
-        return $output;
-    }
-    return '';
-}
-add_shortcode('display_interview_questions_meta', 'display_interview_questions_meta');
-
-
-
-// Shortcode to display Author, updated date/time, and reading time for 'career-advice' post type
-function display_career_advice_meta() {
-    if (is_singular('career-advice')) { // Check if it's a single Career Advice page
-        $author = get_field('author'); // Get the Author relationship field
-        $updated_date = get_the_modified_date('M j, Y \a\t h:i A'); // Get the last updated date/time
-        
-        // Start building the output
-        $output = '<div class="career-meta">';
-        $output .= 'Last updated by ';
-        
-        if ($author) {
-            foreach ($author as $single_author) {
-                $author_name = get_the_title($single_author);
-                $output .= esc_html($author_name); // Add plain text for Author
-            }
-        } else {
-            $output .= '';
-        }
-        
-        $output .= ' on ' . esc_html($updated_date);
-        $output .= '</div>';
-        return $output;
-    }
-    return '';
-}
-add_shortcode('display_career_advice_meta', 'display_career_advice_meta');
-
-
-
-// Shortcode to display Author, updated date/time, and reading time for 'companies' post type
-function display_companies_meta() {
-    if (is_singular('companies')) { // Check if it's a single Companies page
-        $author = get_field('author'); // Get the Author relationship field
-        $updated_date = get_the_modified_date('M j, Y \a\t h:i A'); // Get the last updated date/time
-        
-        // Start building the output
-        $output = '<div class="companies-meta">';
-        $output .= 'Last updated by ';
-        
-        if ($author) {
-            foreach ($author as $single_author) {
-                $author_name = get_the_title($single_author);
-                $output .= esc_html($author_name); // Add plain text for Author
-            }
-        } else {
-            $output .= '';
-        }
-        
-        $output .= ' on ' . esc_html($updated_date);
-        $output .= '</div>';
-        return $output;
-    }
-    return '';
-}
-add_shortcode('display_companies_meta', 'display_companies_meta');
-
-
-
-
-
-// Shortcode to display Author, updated date/time, and reading time for "Learn" post type
-function display_learn_meta_no_link() {
-    if (is_singular('learn')) { // Check if it's a single Learn page
-        $author = get_field('author'); // Get the Author relationship field
-        $updated_date = get_the_modified_date('M j, Y \a\t h:i A'); // Get the last updated date/time
-        
-        // Start building the output
-        $output = '<div class="learn-meta">';
-        $output .= 'Last updated by ';
-        
-        if ($author) {
-            foreach ($author as $single_author) {
-                $author_name = get_the_title($single_author);
-                $output .= esc_html($author_name); // Add plain text for Author
-            }
-        } else {
-            $output .= '';
-        }
-        
-        $output .= ' on ' . esc_html($updated_date);
-        $output .= '</div>';
-        return $output;
-    }
-    return '';
-}
-add_shortcode('display_learn_meta', 'display_learn_meta_no_link');
-
-
-
-// Shortcode to display the last updated date for "Learn" post type
-function display_learn_last_updated_date() {
-    if (is_singular('learn')) { // Check if it's a single Learn page
-        $updated_date = get_the_modified_date('F j, Y'); // Format: November 10, 2024
-        
-        // Build the output
-        $output = '<div class="learn-last-updated">';
-        $output .= 'Last updated on: ' . esc_html($updated_date);
-        $output .= '</div>';
-        
-        return $output;
-    }
-    return '';
-}
-add_shortcode('display_learn_last_updated', 'display_learn_last_updated_date');
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Add webnear from to the footer
-function webnear_from() {
-    if ( !is_page( "3999" ) && !is_page( "12916" ) ) {
-        echo do_shortcode('[elementor-template id="10247"]');
-    }
-	if ( strpos($_SERVER['REQUEST_URI'], '/blogs/') !== false ) {
-    	echo do_shortcode('[elementor-template id="20452"]');
-	}
+    return $post_ids;
 }
 
-add_action( 'wp_footer', 'webnear_from' );
+$hide_ides;
+
+add_action( "wp_head", function(){
+    global $hide_ides;
+    $hide_ides = get_hide_ides();
+});
+
+add_action('elementor/query/instructors_query_ip', function ($query) {
+    global $hide_ides;
+    $query->set('post__not_in', $hide_ides);
+});
+
+
+function order_number(){
+    $output;
+    $post_id = get_the_ID();
+    if(get_post_meta($post_id, 'display_order', true)){
+        $output = get_post_meta($post_id, 'display_order', true);
+    }else{
+        $output = "";
+    }
+    return "order_number|" . $output;
+}
+
+add_shortcode( "order_number", "order_number" );
 
 
 // Filter Review Serial
@@ -249,61 +95,115 @@ add_action('elementor/query/review_query', function ($query) {
     $query->set('order', 'ASC'); // Ascending order
 });
 
+// Filter Courses Serial
+
+
+function get_show_course_ids(){
+    $args = array(
+        'post_type' => 'courses',
+        'posts_per_page' => -1
+    );
+    $courses_query = new WP_Query($args);
+
+    $post_ids = [];
+
+    if ($courses_query->have_posts()) {
+        while ($courses_query->have_posts()) {
+            $courses_query->the_post();
+            $post_id = get_the_ID();
+            // Check if 'hide_on_courses_page' is set to false or "Off"
+            if (!get_post_meta($post_id, 'hide_on_courses_page', true)) {
+                $post_ids[] = $post_id;
+            }
+        }
+        wp_reset_postdata();
+    }
+    return $post_ids;
+}
+
+$show_course_ids;
+
+add_action("wp_head", function(){
+    global $show_course_ids;
+    $show_course_ids = get_show_course_ids();
+});
+
+add_action('elementor/query/show_courser_with_filter', function ($query) {
+    global $show_course_ids;
+    $query->set('post__in', $show_course_ids);
+});
+
+
+
+// Add webnear from to the footer
+function webnear_from() {
+    if ( !is_page( 5467 ) || !is_page( 9112 ) ) {
+        echo do_shortcode('[elementor-template id="1897"]');
+    }
+
+    if(is_page( 8039 ) || is_page( 14563 )){
+        echo do_shortcode('[elementor-template id="8766"]');
+        echo '<script>
+                {
+                    const getDataWebNearShowBtn = document.querySelectorAll(`[href="#data_webinar_form"]`);
+                    const getDataWebNearForm = document.querySelector(`.data_en_wb`);
+                    const getDataWebNearFormClose = document.querySelector(`.data_web_near_close`);
+                    for(let eachWebNearBtn of getDataWebNearShowBtn){
+                        eachWebNearBtn.addEventListener(`click`, function(e){
+                            e.preventDefault();
+                            getDataWebNearForm.setAttribute(`show_status`, true);
+                        })
+                    }
+                    getDataWebNearFormClose.addEventListener(`click`, function(){
+                        getDataWebNearForm.setAttribute(`show_status`, false);
+                    })
+                }
+            </script>';
+    }
+	
+		$string = $_SERVER['REQUEST_URI'];
+		$startsWithEvent = strpos($string, "/event/") === 0;
+	
+	   if($startsWithEvent){
+        echo do_shortcode('[elementor-template id="13885"]');
+        echo '<script>
+                {
+                    const getDataWebNearShowBtn = document.querySelectorAll(`[href="#data_webinar_form"]`);
+                    const getDataWebNearForm = document.querySelector(`.data_en_wb`);
+                    const getDataWebNearFormClose = document.querySelector(`.data_web_near_close`);
+                    for(let eachWebNearBtn of getDataWebNearShowBtn){
+                        eachWebNearBtn.addEventListener(`click`, function(e){
+                            e.preventDefault();
+                            getDataWebNearForm.setAttribute(`show_status`, true);
+                        })
+                    }
+                    getDataWebNearFormClose.addEventListener(`click`, function(){
+                        getDataWebNearForm.setAttribute(`show_status`, false);
+                    })
+                }
+            </script>';
+    }
+}
+
+add_action( 'wp_footer', 'webnear_from' );
+
+
+
+
 // Add Global Variable
 function add_global_variable(){
     $webinar_type = get_post_meta(get_the_ID(), 'webinar_type', true);
+    $event_name = get_post_meta(get_the_ID(), 'event_name', true);
+	$slot_type = get_post_meta(get_the_ID(), 'slot_type', true);
+
     if(!$webinar_type) $webinar_type = "REGULAR";
     echo "
         <script>
             let webinarType = '{$webinar_type}';
+            let pageEnventName = '{$event_name}'.trim();
+			let slotType = '{$slot_type}';
         </script>
     ";
 }
 
 add_action( "wp_head", "add_global_variable" );
-
-
-// slug 
-
-function update_blog_rewrite_rules($args, $post_type) {
-    $target_post_types = ['articles', 'interview-questions', 'problems', 'learn', 'companies', 'career-advice'];
-
-    if (in_array($post_type, $target_post_types)) {
-        $args['rewrite'] = [
-            'slug' => 'blogs/' . $post_type,
-            'with_front' => false
-        ];
-    }
-
-    return $args;
-}
-add_filter('register_post_type_args', 'update_blog_rewrite_rules', 10, 2);
-
-
-
-// Page title
-
-function post_title_shortcode( $atts ) {
-    $atts = shortcode_atts( array(
-        'id' => get_the_ID(),
-    ), $atts, 'post_title' );
-
-    $post_title = get_the_title( $atts['id'] );
-    return $post_title;
-}
-add_shortcode( 'post_title', 'post_title_shortcode' );
-
-
-
-// Page Slug
-
-function get_page_slug_shortcode() {
-    global $post;
-
-    if (is_object($post) && isset($post->post_name)) {
-        return $post->post_name;
-    }
-
-    return '';
-}
-add_shortcode('page_slug', 'get_page_slug_shortcode');
