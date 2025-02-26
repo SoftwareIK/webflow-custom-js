@@ -36,8 +36,11 @@ document.addEventListener("DOMContentLoaded", function(){
     numberInput.value = frCokkie?.phonerNumber;
 
     let numberSetInterVal = setInterval(function(){
-        if(numberInput.value.includes("-") || numberInput.value.startsWith("0")){
-            numberInput.value = numberInput.value.replace(/^-+|^0+|-|\s+/g, "");
+        if(numberInput.value.includes("-")){
+            numberInput.value = numberInput.value.replace(/[\s-]/g, "");
+            if(numberInput.value.startsWith("0") && numberInput.value.length > 10){
+                numberInput.value = numberInput.value.replace(/^-+|^0+|-|\s+/g, "");
+            }
             clearTimeout(numberSetInterVal);
         }
     }, 50);

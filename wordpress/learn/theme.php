@@ -201,7 +201,7 @@ function add_global_variable(){
         <script>
             let webinarType = '{$webinar_type}';
             let pageEnventName = '{$event_name}'.trim();
-			let slotType = '{$slot_type}'
+			let slotType = '{$slot_type}';
         </script>
     ";
 }
