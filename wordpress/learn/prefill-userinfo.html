@@ -102,7 +102,7 @@
 
     const getFnErrMsg2 = getThePopupFrom2.querySelector('.v2_full_name');
     const getPhErrMsg2 = getThePopupFrom2.querySelector('.v2_phone_number');
-
+    getFnErrMsg2.querySelector(".err_fild").innerHTML = getFnErrMsg2.querySelector(".err_fild").innerHTML.replace("first", "your");
     function prefillData() {
       if (prefill.firstname) {
         let fullname = prefill.firstname;
@@ -110,28 +110,20 @@
           fullname += ` ${prefill.lastname}`;
         }
         webinarFullName2.value = fullname;
-      } else {
-        getFnErrMsg2.setAttribute('err_status', true);
       }
 
       if (prefill.phone) {
         webinarPhoneNumber2.value = prefill.phone;
-      } else {
-        getPhErrMsg2.setAttribute('err_status', true);
       }
 
       if (prefill.role) {
         getDomainRole.value = prefill.role;
-      } else {
-        errDomain.setAttribute('err_status', true);
       }
       if (prefill.experience) {
         let experienceSelector = getExperience.querySelector(`input[value="${prefill.experience}"]`);
         if (experienceSelector) {
           experienceSelector.checked = true;
         }
-      } else {
-        errExperience.setAttribute('err_status', true);
       }
     }
     prefillData();
@@ -670,7 +662,7 @@
       const cancelBtn = document.querySelector(".step_back_2");
 
       if (isEditing) {
-        cancelBtn.innerHTML = "cancel";
+        cancelBtn.innerHTML = "Cancel";
         submitBtn.innerHTML = "Update Details";
         nameField.removeAttribute("disabled");
         phoneField.removeAttribute("readonly");
@@ -680,14 +672,7 @@
       } else {
         cancelBtn.innerHTML = "Edit Details";
         submitBtn.innerHTML = "Confirm";
-        nameField.value = prefill.fullname;
-        domainSelect.value = prefill.role;
-
-        expOptions.forEach(option => {
-          if (option.value === prefill.experience) {
-            option.checked = true;
-          }
-        });
+        prefillData()
 
         if (window.intlTelInputGlobals) {
           const itiInstance = intlTelInputGlobals.getInstance(phoneField);
