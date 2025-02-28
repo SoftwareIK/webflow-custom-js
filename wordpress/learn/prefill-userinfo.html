@@ -3,25 +3,31 @@
 <script>
   // Prefill user info
   var prefill = {
-    "fullname": null,
-    "email": null,
-    "phone": null,
-    "role": null,
-    "experience": null,
+    "firstname": "",
+    "lastname": "",
+    "email": "",
+    "phone": "",
+    "role": "",
+    "experience": "",
   };
 
   const params = getAllUrlParams();
-  prefill.fullname = decodeURIComponent(params['fullname']);
-  prefill.email = decodeURIComponent(params['email']);
-  prefill.phone = decodeURIComponent(params['phone']);
-  prefill.role = decodeURIComponent(params['role']);
-  prefill.experience = decodeURIComponent(params['experience']);
+  prefill.firstname = decodeURIComponent(params['firstname'] ?? "");
+  prefill.lastname = decodeURIComponent(params['lastname'] ?? "");
+  prefill.email = decodeURIComponent(params['email'] ?? "");
+  prefill.phone = decodeURIComponent(params['phone'] ?? "");
+  prefill.role = decodeURIComponent(params['role'] ?? "");
+  prefill.experience = decodeURIComponent(params['experience'] ?? "");
 
-  const isCoreDataMissing = prefill.email == null
-  const isGQLDataMissing = prefill.role == null || prefill.experience == null
+  webinarType = params.webinarType || webinarType;
+  eventName = params.event || eventName;
 
-  if(isCoreDataMissing) {
-    alert("TODO: email missing. fallback flow will be implemented");
+  const isCoreDataMissing = !prefill.email
+  const isSomeDataMissing = !prefill.firstname || !prefill.phone || !prefill.role || !prefill.experience;
+
+  if (isCoreDataMissing) {
+    console.log("email is missing. Redirecting to the main page");
+    window.location.href = "https://learn.interviewkickstart.com/software-engineer-v1";
   }
 
   const slotsFetched = (slots) => {
@@ -70,6 +76,7 @@
       slideFlid.appendChild(createWebniarSlot);
     })
   }
+
   document.addEventListener("webNearLoaded", function () {
     slotsFetched(webinarSlots);
   })
@@ -77,27 +84,57 @@
     slotsFetched(webinarSlots);
   });
 
-  window.addEventListener("DOMContentLoaded", function () {
-    function prefillData() {
-      document.querySelector(".fr_name_fl").value = prefill.fullname;
-      document.querySelector(".fr_email_fl").value = prefill.email;
-      document.querySelector(".fr_phone_fl").value = prefill.phone;
-      document.querySelector(".gql_domain_select").value = prefill.role;
-      document.querySelector(`input[value="${prefill.experience}"]`).checked = true;
 
-    }
+  window.addEventListener("DOMContentLoaded", function () {
     const getThePopupFrom2 = document.querySelector('.v2_from_wrapper');
+
     getThePopupFrom2.querySelector(".time_zone").innerHTML = `Time Zone: ${v_timezone}`;
 
     const webinarFullName2 = getThePopupFrom2.querySelector('input.fr_name_fl');
-    if (prefill.fullname) {
-      webinarFullName2.value = prefill.fullname;
-    }
-    // const webinarEmailAddress2 = getThePopupFrom2.querySelector('.fr_email_fl');
-    // if (prefill.email) {
-    //   webinarEmailAddress2.value = prefill.email;
-    // }
     const webinarPhoneNumber2 = getThePopupFrom2.querySelector('.fr_phone_fl');
+
+    const getDomainRole = getThePopupFrom2.querySelector('.gql_domain_select');
+    const getExperience = getThePopupFrom2.querySelector('.gql_exp_select');
+
+    const errDomain = getThePopupFrom2.querySelector('.v2_dom_fild');
+    const errExperience = getThePopupFrom2.querySelector('.v2_exp_fild');
+    const webinarSlots2 = getThePopupFrom2.querySelector('.slot_sl_con .slot_fild');
+
+    const getFnErrMsg2 = getThePopupFrom2.querySelector('.v2_full_name');
+    const getPhErrMsg2 = getThePopupFrom2.querySelector('.v2_phone_number');
+
+    function prefillData() {
+      if (prefill.firstname) {
+        let fullname = prefill.firstname;
+        if (prefill.lastname) {
+          fullname += ` ${prefill.lastname}`;
+        }
+        webinarFullName2.value = fullname;
+      } else {
+        getFnErrMsg2.setAttribute('err_status', true);
+      }
+
+      if (prefill.phone) {
+        webinarPhoneNumber2.value = prefill.phone;
+      } else {
+        getPhErrMsg2.setAttribute('err_status', true);
+      }
+
+      if (prefill.role) {
+        getDomainRole.value = prefill.role;
+      } else {
+        errDomain.setAttribute('err_status', true);
+      }
+      if (prefill.experience) {
+        let experienceSelector = getExperience.querySelector(`input[value="${prefill.experience}"]`);
+        if (experienceSelector) {
+          experienceSelector.checked = true;
+        }
+      } else {
+        errExperience.setAttribute('err_status', true);
+      }
+    }
+    prefillData();
 
     function initializeIntlTelInput(selector, phoneNumber, geoData) {
       const input = document.querySelector(selector);
@@ -125,26 +162,11 @@
     }
     const webinarPhoneNumberWri2 = initializeIntlTelInput(".fr_phone_fl", prefill.phone, { country_code: geoData.country_code });
 
-    const getDomainRole = getThePopupFrom2.querySelector('.gql_domain_select');
-    if (prefill.role) {
-      getDomainRole.value = prefill.role;
-    }
-    const getExperience = getThePopupFrom2.querySelector('.gql_exp_select');
-    if (prefill.experience) {
-      getExperience.querySelector(`input[value="${prefill.experience}"]`).checked = true;
-    }
-    const errDomEx = getThePopupFrom2.querySelector('.v2_dom_fild');
-    const webinarSlots2 = getThePopupFrom2.querySelector('.slot_sl_con .slot_fild');
-
-    const getFnErrMsg2 = getThePopupFrom2.querySelector('.v2_full_name');
-    // const getEmErrMsg2 = getThePopupFrom2.querySelector('.v2_email');
-    const getPhErrMsg2 = getThePopupFrom2.querySelector('.v2_phone_number');
-
     // name container
     const webinarInfo2 = {
-      firstName: "",
-      lastName: "",
-      fPhoneNumber: "",
+      firstName: prefill.firstname,
+      lastName: prefill.lastname,
+      fPhoneNumber: prefill.phone,
       utm_source: "",
       utm_medium: "",
       utm_campaign: "",
@@ -176,16 +198,13 @@
       wr__region: "",
       wr__city: "",
       irclickid: "",
-
       eventStartTime: "",
       eventEndTime: "",
       inviteStartTime: "",
       inviteEndTime: "",
     };
 
-    //check regex
     let name_regex2 = new RegExp("^[a-zA-Z ]+$");
-    // let email_regex2 = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     let phone_regex2 = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
     // getlocation json
@@ -351,31 +370,40 @@
 
     function hideError2() {
       getFnErrMsg2.setAttribute('err_status', false);
-      getEmErrMsg2.setAttribute('err_status', false);
       getPhErrMsg2.setAttribute('err_status', false);
     }
 
-    // First Form Submittion
-    function fromSend1stStep2() {
+    function slotFormSubmission() {
+      pushToEndPoint2("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/")
+        .then(() => {
+          getThePopupFrom2.setAttribute("active_step", 2);
+          loadPagefield();
+          track("slot");
+          visitorTrackingS4();
+        }).catch((e) => {
+          console.error(e)
+          track("slot-e", "flow-zapier");
+        });
+    }
+
+    function detailsFormSubmit(fireZaps = false) {
       setHiddenFields2();
 
       let fullname = webinarFullName2.value.trim();
-      // let wEmail = webinarEmailAddress2.value;
       let fullPhoneNumber = webinarPhoneNumber2.value;
 
-      //Hide errors
       webinarFullName2.addEventListener('input', hideError2);
-      // webinarEmailAddress2.addEventListener('input', hideError2);
       webinarPhoneNumber2.addEventListener('input', hideError2);
       webinarFullName2.addEventListener('focus', hideError2);
-      // webinarEmailAddress2.addEventListener('focus', hideError2);
       webinarPhoneNumber2.addEventListener('focus', hideError2);
 
+      let v2WorkExp = getExperience.querySelector('input[name="exp_options"]:checked').value;
+      let v2DomExp = getDomainRole.value;
 
-      //Error check
+      let gqlErrStatus = false;
+
       if ((fullname.length == 0) && (fullPhoneNumber.length == 0)) {
         getFnErrMsg2.setAttribute('err_status', true);
-        getEmErrMsg2.setAttribute('err_status', true);
         getPhErrMsg2.setAttribute('err_status', true);
         track("info-e", "validation-general");
         return;
@@ -383,16 +411,19 @@
         getFnErrMsg2.setAttribute('err_status', true);
         track("info-e", "validation-name");
         return;
-        // } else if (!email_regex2.test(wEmail) || wEmail.length == 0) {
-        //   getEmErrMsg2.setAttribute('err_status', true);
-        //   track("info-e", "validation-email");
-        //   return;
       } else if (!phone_regex2.test(fullPhoneNumber) || fullPhoneNumber.length == 0) {
         getPhErrMsg2.setAttribute('err_status', true);
         track("info-e", "validation-phone");
         return;
+      } else if (!v2DomExp) {
+        gqlErrStatus = true;
+        errDomain.setAttribute('err_status', gqlErrStatus);
+        track("gql-e", "validation-general");
+      } else if (!v2WorkExp) {
+        gqlErrStatus = true;
+        errExperience.setAttribute('err_status', gqlErrStatus);
+        track("gql-e", "validation-general");
       } else {
-
         if (fullname.substring(0, fullname.indexOf(' ')) == '') {
           webinarInfo2.firstName = fullname.substring(fullname.indexOf(' ') + 1);
           webinarInfo2.lastName = fullname.substring(fullname.indexOf(' ') + 1);
@@ -415,40 +446,23 @@
           track("info-e", "reporting-data-layer");
         }
 
-        webinarInfo2.fPhoneNumber = getPhoneNumber(webinarPhoneNumberWri2, ".fr_phone_fl");
-        let zapUrl = "https://hooks.zapier.com/hooks/catch/11068981/340hd4j/";
+        if (fireZaps) {
+          webinarInfo2.fPhoneNumber = getPhoneNumber(webinarPhoneNumberWri2, ".fr_phone_fl");
+          let zapUrl = "https://hooks.zapier.com/hooks/catch/11068981/340hd4j/";
 
-        pushToEndPoint2(zapUrl)
-          .then(() => {
-            getThePopupFrom2.setAttribute("active_step", 2);
-            document.querySelector("#webinar_progress_bar_container").setAttribute("ac_step", 2);
-            track("info");
-          }).catch((e) => {
-            console.log(e)
-            track("info-e", "flow-zapier");
-          });
+          pushToEndPoint2(zapUrl)
+            .then(() => {
+              getThePopupFrom2.setAttribute("active_step", 3);
+              fromSend3rdStep2()
+            }).catch((e) => {
+              console.log(e)
+              track("info-e", "flow-zapier");
+            });
+        } else {
+          getThePopupFrom2.setAttribute("active_step", 3);
+        }
       }
     }
-
-
-    // Second Form Submition
-    function fromSend2ndStep2() {
-      pushToEndPoint2("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/")
-        .then(() => {
-          getThePopupFrom2.setAttribute("active_step", 2);
-          loadPagefield();
-          track("slot");
-          secondStepSecondRequest2();
-        }).catch((e) => {
-          console.error(e)
-          track("slot-e", "flow-zapier");
-        });
-    }
-
-
-    getDomainRole.addEventListener('change', function () {
-      errDomEx.setAttribute('err_status', false);
-    })
 
     function fromSend3rdStep2() {
       let v2WorkExp = getExperience.querySelector('input[name="exp_options"]:checked').value;
@@ -458,7 +472,12 @@
 
       if (!v2DomExp) {
         gqlErrStatus = true;
-        errDomEx.setAttribute('err_status', gqlErrStatus);
+        errDomain.setAttribute('err_status', gqlErrStatus);
+      }
+
+      if (!v2WorkExp) {
+        gqlErrStatus = true;
+        errExperience.setAttribute('err_status', gqlErrStatus);
       }
 
       if (!gqlErrStatus) {
@@ -506,6 +525,13 @@
       }
     }
 
+    getDomainRole.addEventListener('change', function () {
+      errDomain.setAttribute('err_status', false);
+    })
+    errExperience.addEventListener('change', function () {
+      errExperience.setAttribute('err_status', false);
+    })
+
     async function sendRequestZapiar(url, data, callback = null) {
       let options = {
         method: 'POST',
@@ -531,7 +557,7 @@
       }
     }
 
-    async function secondStepSecondRequest2() {
+    async function visitorTrackingS4() {
       const getCheckwebinar = webinarSlots2.querySelector('input[name="v2_slot"]:checked');
 
       //lead LeadCreatedTime
@@ -682,7 +708,7 @@
       }
     }
 
-    if(isGQLDataMissing){
+    if (isSomeDataMissing) {
       toggleEdit();
       isEditing = true;
       document.querySelector('.step_btn_2').innerHTML = "Confirm";
@@ -690,9 +716,66 @@
       document.querySelector('.step_btn_2').style.width = "100%";
     }
 
+    function validateDetails() {
+      let fullname = webinarFullName2.value.trim();
+      let fullPhoneNumber = webinarPhoneNumber2.value;
+
+      webinarFullName2.addEventListener('input', hideError2);
+      webinarPhoneNumber2.addEventListener('input', hideError2);
+      webinarFullName2.addEventListener('focus', hideError2);
+      webinarPhoneNumber2.addEventListener('focus', hideError2);
+
+      let v2WorkExp = getExperience.querySelector('input[name="exp_options"]:checked').value;
+      let v2DomExp = getDomainRole.value;
+
+      let gqlErrStatus = false;
+
+      if ((fullname.length == 0) && (fullPhoneNumber.length == 0)) {
+        getFnErrMsg2.setAttribute('err_status', true);
+        getPhErrMsg2.setAttribute('err_status', true);
+        track("info-e", "validation-general");
+        return false;
+      } else if (!name_regex2.test(fullname) || fullname.length == 0) {
+        getFnErrMsg2.setAttribute('err_status', true);
+        track("info-e", "validation-name");
+        return false;
+      } else if (!phone_regex2.test(fullPhoneNumber) || fullPhoneNumber.length == 0) {
+        getPhErrMsg2.setAttribute('err_status', true);
+        track("info-e", "validation-phone");
+        return false;
+      } else if (!v2DomExp) {
+        gqlErrStatus = true;
+        errDomain.setAttribute('err_status', gqlErrStatus);
+        track("gql-e", "validation-general");
+        return false;
+      } else if (!v2WorkExp) {
+        gqlErrStatus = true;
+        errExperience.setAttribute('err_status', gqlErrStatus);
+        track("gql-e", "validation-general");
+        return false;
+      }
+      return true;
+
+    }
+
     async function updateDetails() {
+      if(!validateDetails()){
+        return;
+      }
+
+      var fullName = document.querySelector(".fr_name_fl").value;
+
+      var nameParts = fullName.split(/\s+/);
+      var firstName = nameParts[0];
+      var lastName = "";
+
+      if (nameParts.length > 1) {
+        lastName = nameParts.slice(1).join(" ");
+      }
+
       const newDetails = {
-        first_name: document.querySelector(".fr_name_fl").value,
+        first_name: firstName,
+        last_name: lastName,
         phone_number: getPhoneNumber(webinarPhoneNumberWri2, ".fr_phone_fl"),
         current_job_role: document.querySelector(".gql_domain_select").value,
         years_of_work_experience: document.querySelector(".gql_exp_select input:checked").value,
@@ -707,15 +790,18 @@
             "keepalive": true,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify(newDetails)
         });
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
+          saveClickActivity("error_in_zap_info_and_gql_combined");
+        } else {
+          saveClickActivity("info_and_gql_combined");
         }
-
         const responseData = await response.json();
       } catch (error) {
+        saveClickActivity("error_info_and_gql_combined");
         console.error('Error:', error);
       }
     }
@@ -724,13 +810,12 @@
     const getV2Btn2 = getThePopupFrom2.querySelector('.step_btn_2');
     // const getV2Btn3 = getThePopupFrom2.querySelector('.step_btn_3');
 
-
     const getV2Back2 = getThePopupFrom2.querySelector('.step_back_2');
     // const getV2Back3 = getThePopupFrom2.querySelector('.step_back_3');
 
     getV2Btn1.addEventListener("click", () => {
       try {
-        fromSend2ndStep2();
+        slotFormSubmission();
       } catch (error) {
         console.error(error)
         saveFormEventsActivity("slot-e", null, null, "Error in 2nd step");
@@ -757,9 +842,5 @@
     // });
 
     getV2Back2.addEventListener("click", toggleEdit)
-    // getV2Back3.addEventListener("click", function () {
-    //   getThePopupFrom2.setAttribute("active_step", 2);
-    //   document.querySelector("#webinar_progress_bar_container").setAttribute("ac_step", 2);
-    // })
   })
 </script>
