@@ -667,10 +667,10 @@
       const expOptions = document.querySelectorAll(".exp_options");
       const expSelect = document.querySelector(".gql_exp_select");
       const submitBtn = document.querySelector(".step_btn_2");
-      const cancleBtn = document.querySelector(".step_back_2");
+      const cancelBtn = document.querySelector(".step_back_2");
 
       if (isEditing) {
-        cancleBtn.innerHTML = "Cancle";
+        cancelBtn.innerHTML = "cancel";
         submitBtn.innerHTML = "Update Details";
         nameField.removeAttribute("disabled");
         phoneField.removeAttribute("readonly");
@@ -678,7 +678,7 @@
         expOptions.forEach(option => option.removeAttribute("disabled"));
         expSelect.removeAttribute("disabled");
       } else {
-        cancleBtn.innerHTML = "Edit Details";
+        cancelBtn.innerHTML = "Edit Details";
         submitBtn.innerHTML = "Confirm";
         nameField.value = prefill.fullname;
         domainSelect.value = prefill.role;
