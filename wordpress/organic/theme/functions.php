@@ -252,10 +252,12 @@ add_action('elementor/query/review_query', function ($query) {
 // Add Global Variable
 function add_global_variable(){
     $webinar_type = get_post_meta(get_the_ID(), 'webinar_type', true);
+    $slot_type = get_post_meta(get_the_ID(), 'slot_type', true);
     if(!$webinar_type) $webinar_type = "REGULAR";
     echo "
         <script>
             let webinarType = '{$webinar_type}';
+            let slotType = '{$slot_type}';
         </script>
     ";
 }
@@ -307,7 +309,7 @@ function get_page_slug_shortcode() {
 }
 add_shortcode('page_slug', 'get_page_slug_shortcode');
 
-function add_geo_json_to_head() {
+function add_geo_json_to_frontend() {
   // Get client IP
   $ip = $_SERVER['REMOTE_ADDR'];
 
@@ -323,9 +325,9 @@ function add_geo_json_to_head() {
       $geo_json = json_encode(["error" => "Unable to retrieve geolocation data"]);
   }
 
-  // Echo the JavaScript variable inside the <head>
-  echo "<script>var geoData = $geo_json;</script>";
+  // Add hidden input field with geolocation data
+  echo "<input type='hidden' id='geo-data' value='" . esc_attr($geo_json) . "'>";
 }
 
-// Hook into WordPress head section
-add_action('wp_head', 'add_geo_json_to_head');
+// Hook into WordPress footer
+add_action('wp_footer', 'add_geo_json_to_frontend');
