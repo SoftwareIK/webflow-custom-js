@@ -703,11 +703,7 @@
                     item.setAttribute('show_status', true);
                 });
                 loadPageFild();
-                if (response.ok) {
-                    if (typeof successTrackCallback === 'function') successTrackCallback();
-                } else {
-                    if (typeof failTrackCallback === 'function') failTrackCallback();
-                }
+                if (typeof successTrackCallback === 'function') successTrackCallback();
             } catch (err) {
                 console.error('Form Summit faild', err);
                 if (typeof failTrackCallback === 'function') failTrackCallback();

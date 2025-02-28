@@ -556,11 +556,7 @@
                 document.querySelector(".complete_message").setAttribute('show_status', true);
                 loadPageFild();
                 if (typeof callback === 'function') {
-                    if (response.ok) {
-                        callback("gql");
-                    } else {
-                        callback("gql-e", "Zapier Webhook Failed");
-                    }
+                  callback("gql");
                 }
             } catch (error) {
                 if (typeof callback === 'function') {
