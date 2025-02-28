@@ -811,8 +811,7 @@
             "Authorization": "1Cgx6oYXkOlWkNDn7_tXO",
           }
         }
-
-        const request = await fetch(`https://uplevel.interviewkickstart.com/api/v1/webinar_connect/available-slots/${slotType ? "?slot_type=" + slotType : ""}`, option);
+        const request = await fetch(`https://${window.location.host.includes("wpcomstaging") ? "uptest" : "uplevel"}.interviewkickstart.com/api/v1/webinar_connect/available-slots/${slotType ? "?slot_type=" + slotType : ""}`, option);
         let resobj = await request.json();
         render1o1Slots(resobj);
       })();
