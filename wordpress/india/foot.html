@@ -163,6 +163,7 @@
         firstName: "",
         lastName: "",
         fPhoneNumber: "",
+        whatsAppUserConsent: "yes",
         utm_source: "Organic",
         utm_medium: "",
         utm_campaign: "",
@@ -239,7 +240,7 @@
             const creationTime = Date.now();
             fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
         }
-
+        webNearInfo.whatsAppUserConsent = webNearAccepTance?.checked ? "Yes" : "No";
         webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
         webNearInfo.utm_medium = decodeURIComponent(params['utm_medium'] || "");
         webNearInfo.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -278,6 +279,7 @@
         let getCheckWebnear = webNearSlots.querySelector('input:checked');
         let formData = {
             "First Name": webNearInfo.firstName,
+            "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
             "Last Name": webNearInfo.lastName,
             "Email Address": webNearEmailAddress.value,
             "ByeCalendlyType": webNearInfo.bye_calendly_type,
@@ -289,7 +291,6 @@
             "utm_content": webNearInfo.utm_content,
             "utm_adset": webNearInfo.utm_adset,
             "utm_term": webNearInfo.utm_term,
-
             "City": webNearInfo.wr__city,
             "Device": webNearInfo.wr__device,
             "Referrer": webNearInfo.wr__referrer,
@@ -485,6 +486,7 @@
         let data = [{
             "Lead_Created_Time": LeadCreatedTime,
             "Lead_Name": webNearInfo.firstName + ' ' + webNearInfo.lastName,
+            "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
             "Lead_First_Name": webNearInfo.firstName,
             "Lead_Last__Name": webNearInfo.lastName,
             "Lead_Email": webNearEmailAddress.value,
