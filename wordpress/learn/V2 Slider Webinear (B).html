@@ -106,7 +106,7 @@
         const webNearFullName2 = getThePopupFrom2.querySelector('input.fr_name_fl');
         const webNearEmailAddress2 = getThePopupFrom2.querySelector('.fr_email_fl');
         const webNearPhoneNumber2 = getThePopupFrom2.querySelector('.fr_phone_fl');
-
+        const webNearAccepTance = getThePopupFrom2.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
         const webNearSlots2 = getThePopupFrom2.querySelector('.slot_sl_con .slot_fild');
         let webNearPhoneNumberWri2;
         intlTelInputCheckFun(function () {
@@ -130,6 +130,7 @@
         const webNearInfo2 = {
             firstName: "",
             lastName: "",
+            whatsAppUserConsent: "yes",
             fPhoneNumber: "",
             utm_source: "",
             utm_medium: "",
@@ -230,6 +231,7 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
+            webNearInfo2.whatsAppUserConsent = webNearAccepTance?.checked ? "Yes" : "No";
             webNearInfo2.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
             webNearInfo2.utm_medium = decodeURIComponent(params['utm_medium'] || "");
             webNearInfo2.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -276,6 +278,7 @@
             let formData = {
                 "First Name": webNearInfo2.firstName,
                 "Last Name": webNearInfo2.lastName,
+                "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
                 "Email Address": webNearEmailAddress2.value,
                 "ByeCalendlyType": webNearInfo2.bye_calendly_type,
                 "webinar-type": webNearInfo2.webinar_type,

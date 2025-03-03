@@ -13,6 +13,7 @@
     const getStartIn = getFinalForm.querySelector("#Start-Interviewing");
     const getIsStudent = getFinalForm.querySelector("#is_student");
     const getLaidOff = getFinalForm.querySelector("#laidoff-flag");
+    const webNearAccepTance = getFinalForm.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
 
     const getPhoneNumber = getFinalForm.querySelector('.phone_number_fild input#webinar_pnumber');
 
@@ -139,6 +140,7 @@
                 'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
                 'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
                 'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
+                whatsAppUserConsent: webNearAccepTance?.checked ? "Yes" : "No",
                 utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
                 utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
                 utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),

@@ -129,7 +129,7 @@
   const webNearFullName = getThePopupFrom?.querySelector('.web_full_name input#Full-Name');
   const webNearEmailAddress = getThePopupFrom?.querySelector('.web_em_address input#Email-Address-7');
   const webNearPhoneNumber = getThePopupFrom?.querySelector('.web_phone_number input#webinar_pnumber');
-  const webNearAccepTance = getThePopupFrom?.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
+  const webNearAccepTance = getThePopupFrom.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
   const webNearSlots = getThePopupFrom?.querySelector('.web_near_slot');
   let webNearPhoneNumberWri;
 
@@ -243,6 +243,7 @@
         const creationTime = Date.now();
         fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
     }
+    webNearInfo.whatsAppUserConsent = webNearAccepTance?.checked ? "Yes" : "No";
     webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
     webNearInfo.utm_medium = decodeURIComponent(params['utm_medium'] || "");
     webNearInfo.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -297,6 +298,7 @@
     let formData = {
       "First Name": webNearInfo.firstName,
       "Last Name": webNearInfo.lastName,
+      "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
       "Email Address": webNearEmailAddress.value,
       "ByeCalendlyType": webNearInfo.bye_calendly_type,
       "webinar-type": webNearInfo.webinar_type,
@@ -561,6 +563,7 @@
       "Lead_First_Name": webNearInfo.firstName,
       "Lead_Last__Name": webNearInfo.lastName,
       "Lead_Email": webNearEmailAddress.value,
+      "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
       "Lead_Time_Zone": webNearInfo.user_timezone,
       "Event_Type_Name": eventName,
       "Event_Start_Date_Time": formattedStartDateTime,
