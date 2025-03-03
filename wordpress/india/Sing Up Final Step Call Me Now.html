@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function(){
         initialCountry: frCokkie?.phoneNumCountry,
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
     });
+
     editTrigar.addEventListener("click", function(){
         let editStatus = numberContainer.getAttribute("edit_status") === "true";
         if(!phone_regex.test(numberInput.value) || numberInput.value.length == 0){
@@ -33,14 +34,18 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     })
 
-    numberInput.value = frCokkie?.phonerNumber;
+    
 
-    let numberSetInterVal = setInterval(function(){
-        if(numberInput.value.includes("-") || numberInput.value.includes(" ") || (numberInput.value.startsWith("0") && numberInput.value.length > 10)){
-            numberInput.value = frCokkie?.phonerNumber;
-            clearTimeout(numberSetInterVal);
-        }
-    }, 50);
+    numberInputEdit.promise.then(() => {
+        numberInput.value = frCokkie?.phonerNumber;
+    });
+
+    // let numberSetInterVal = setInterval(function(){
+    //     if(numberInput.value.includes("-") || numberInput.value.includes(" ") || (numberInput.value.startsWith("0") && numberInput.value.length > 10)){
+    //         numberInput.value = frCokkie?.phonerNumber;
+    //         clearTimeout(numberSetInterVal);
+    //     }
+    // }, 50);
 
 
     function formatDate(date) {
