@@ -150,6 +150,7 @@
       const instance = window.intlTelInput(input, {
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
         initialCountry: "auto",
+        formatOnDisplay: false,
         geoIpLookup: function (callback) {
           callback(geoData.country_code);
         },
@@ -693,7 +694,7 @@
         cancelBtn.innerHTML = "Edit Details";
         submitBtn.innerHTML = "Confirm";
         prefillData()
-
+        hideError2()
         if (window.intlTelInputGlobals) {
           const itiInstance = intlTelInputGlobals.getInstance(phoneField);
           if (itiInstance) {
@@ -787,12 +788,13 @@
         email: prefill.email,
       }
 
-      const url = 'https://uptest.interviewkickstart.com/api/interested-candidate/update-interested-candidate/';
+      const url = 'https://uplevel.interviewkickstart.com/api/interested-candidate/update-interested-candidate/';
       try {
         const response = fetch(url, {
           method: 'POST',
           headers: {
             "keepalive": true,
+            "Authorization": "Token 0b8bf4edc533bf581b7b368ae7bed73377fae3b1",
             "Content-Type": "application/json",
           },
           body: JSON.stringify(newDetails)
