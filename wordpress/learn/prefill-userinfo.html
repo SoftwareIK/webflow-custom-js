@@ -806,6 +806,7 @@
           saveClickActivity("error_in_uplevel_info_and_gql_combined");
         } else {
           saveClickActivity("info_and_gql_combined_updated");
+          getThePopupFrom2.setAttribute("active_step", 3);
         }
         const responseData = await response.json();
       } catch (error) {
