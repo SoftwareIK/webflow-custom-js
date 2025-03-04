@@ -690,6 +690,7 @@
         domainSelect.removeAttribute("disabled");
         expOptions.forEach(option => option.removeAttribute("disabled"));
         expSelect.removeAttribute("disabled");
+        saveClickActivity("info_and_gql_combined_cancel_edit");
       } else {
         cancelBtn.innerHTML = "Edit Details";
         submitBtn.innerHTML = "Confirm";
@@ -711,6 +712,7 @@
         domainSelect.setAttribute("disabled", "true");
         expOptions.forEach(option => option.setAttribute("disabled", "true"));
         expSelect.setAttribute("disabled", "true");
+        saveClickActivity("info_and_gql_combined_edit");
       }
     }
 
@@ -790,7 +792,7 @@
 
       const url = 'https://uplevel.interviewkickstart.com/api/interested-candidate/update-interested-candidate/';
       try {
-        const response = fetch(url, {
+        const response = await fetch(url, {
           method: 'POST',
           headers: {
             "keepalive": true,
@@ -802,9 +804,9 @@
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
-          saveClickActivity("error_in_zap_info_and_gql_combined");
+          saveClickActivity("error_in_uplevel_info_and_gql_combined");
         } else {
-          saveClickActivity("info_and_gql_combined");
+          saveClickActivity("info_and_gql_combined_updated");
         }
         const responseData = await response.json();
       } catch (error) {
@@ -833,6 +835,7 @@
         if (isEditing) {
           updateDetails();
         } else {
+          saveClickActivity("error_info_and_gql_confirmed")
           getThePopupFrom2.setAttribute("active_step", 3);
         }
       } catch (error) {
