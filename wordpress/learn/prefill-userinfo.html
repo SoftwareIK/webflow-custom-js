@@ -303,6 +303,9 @@
 
     async function pushToEndPoint2(endpoint) {
       let getCheckwebinar = webinarSlots2.querySelector('input[name="v2_slot"]:checked');
+      if(!getCheckwebinar) {
+        track("slot-e", "slot-not-selected");
+      }
       webinarInfo2.eventStartTime = getCheckwebinar.value;
       webinarInfo2.eventEndTime = getCheckwebinar.getAttribute('data-endtime');
       webinarInfo2.inviteStartTime = getCheckwebinar.getAttribute('data-invitee_starttime');
@@ -546,8 +549,9 @@
 
       try {
         let response = await fetch(url, options);
-        document.querySelector(".complete_message").setAttribute('show_status', true);
-        document.querySelector(".wb_fr_land").setAttribute('show_status', false);
+        getThePopupFrom2.setAttribute("active_step", 3);
+        // document.querySelector(".complete_message").setAttribute('show_status', true);
+        // document.querySelector(".wb_fr_land").setAttribute('show_status', false);
         if (typeof callback === 'function') {
           callback("gql");
         }
@@ -733,7 +737,7 @@
       webinarFullName2.addEventListener('focus', hideError2);
       webinarPhoneNumber2.addEventListener('focus', hideError2);
 
-      let v2WorkExp = getExperience.querySelector('input[name="exp_options"]:checked').value;
+      let v2WorkExp = getExperience.querySelector('input[name="exp_options"]:checked');
       let v2DomExp = getDomainRole.value;
 
       let gqlErrStatus = false;
@@ -771,48 +775,55 @@
         return;
       }
 
-      var fullName = getThePopupFrom2.querySelector(".fr_name_fl").value;
 
-      var nameParts = fullName.split(/\s+/);
-      var firstName = nameParts[0];
-      var lastName = "";
 
-      if (nameParts.length > 1) {
-        lastName = nameParts.slice(1).join(" ");
-      }
 
-      const newDetails = {
-        first_name: firstName,
-        last_name: lastName,
-        phone_number: getPhoneNumber(webinarPhoneNumberWri2, ".fr_phone_fl"),
-        current_job_role: getThePopupFrom2.querySelector(".gql_domain_select").value,
-        years_of_work_experience: getThePopupFrom2.querySelector(".gql_exp_select input:checked").value,
-        email: prefill.email,
-      }
+      fromSend3rdStep2();
 
-      const url = 'https://uplevel.interviewkickstart.com/api/interested-candidate/update-interested-candidate/';
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            "Authorization": "Token 0b8bf4edc533bf581b7b368ae7bed73377fae3b1",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newDetails)
-        });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-          saveClickActivity("error_in_uplevel_info_and_gql_combined");
-        } else {
-          saveClickActivity("info_and_gql_combined_updated");
-          getThePopupFrom2.setAttribute("active_step", 3);
-        }
-        const responseData = await response.json();
-      } catch (error) {
-        saveClickActivity("error_info_and_gql_combined");
-        console.error('Error:', error);
-      }
+      
+      // var fullName = getThePopupFrom2.querySelector(".fr_name_fl").value;
+
+      // var nameParts = fullName.split(/\s+/);
+      // var firstName = nameParts[0];
+      // var lastName = "";
+
+      // if (nameParts.length > 1) {
+      //   lastName = nameParts.slice(1).join(" ");
+      // }
+
+      // const newDetails = {
+      //   first_name: firstName,
+      //   last_name: lastName,
+      //   phone_number: getPhoneNumber(webinarPhoneNumberWri2, ".fr_phone_fl"),
+      //   current_job_role: getThePopupFrom2.querySelector(".gql_domain_select").value,
+      //   years_of_work_experience: getThePopupFrom2.querySelector(".gql_exp_select input:checked").value,
+      //   email: prefill.email,
+      // }
+
+      // const url = 'https://uplevel.interviewkickstart.com/api/interested-candidate/update-interested-candidate/';
+      // try {
+      //   const response = await fetch(url, {
+      //     method: 'POST',
+      //     headers: {
+      //       "Authorization": "Token 0b8bf4edc533bf581b7b368ae7bed73377fae3b1",
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(newDetails)
+      //   });
+
+      //   if (!response.ok) {
+      //     throw new Error(`HTTP error! Status: ${response.status}`);
+      //     saveClickActivity("error_in_uplevel_info_and_gql_combined");
+      //   } else {
+      //     saveClickActivity("info_and_gql_combined_updated");
+      //     getThePopupFrom2.setAttribute("active_step", 3);
+      //   }
+      //   const responseData = await response.json();
+      // } catch (error) {
+      //   saveClickActivity("error_info_and_gql_combined");
+      //   console.error('Error:', error);
+      // }
     }
 
     const getV2Btn1 = getThePopupFrom2.querySelector('.step_btn_1');
