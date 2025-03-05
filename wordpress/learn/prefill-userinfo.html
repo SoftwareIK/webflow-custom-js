@@ -543,9 +543,9 @@
         });
     }
 
-    function infoFormSubmitToZap() {
-      let v2WorkExp = getExperience.querySelector('input[name="exp_options"]:checked').value;
-      let v2DomExp = getDomainRole.value;
+    function infoFormSubmitToZap(newDetails = null) {
+      let v2WorkExp = newDetails ? newDetails.years_of_work_experience : getExperience.querySelector('input[name="exp_options"]:checked').value;
+      let v2DomExp = newDetails ? newDetails.current_job_role : getDomainRole.value;
 
       let gqlErrStatus = false;
 
@@ -561,8 +561,8 @@
 
       if (!gqlErrStatus) {
         let GQLformData = {
-          "First Name": webinarInfo2.firstName,
-          "Last Name": webinarInfo2.lastName,
+          "First Name": newDetails ? newDetails.first_name : webinarInfo2.firstName,
+          "Last Name": newDetails ? newDetails.last_name : webinarInfo2.lastName,
           "Email Address": prefill.email,
           "utm_source": webinarInfo2.utm_source,
           "utm_medium": webinarInfo2.utm_medium,
@@ -577,7 +577,7 @@
           "user_id": visitor_id,
           "user_timezone": v_timezone,
           "v_country": v_country,
-          "phone_number_full": webinarInfo2.fPhoneNumber,
+          "phone_number_full": newDetails ? newDetails.phone_number : webinarInfo2.fPhoneNumber,
           "Event Start Time": webinarInfo2.eventStartTime,
           "Event End Time": webinarInfo2.eventEndTime,
           "Work Experience": v2WorkExp,
@@ -653,26 +653,26 @@
         return;
       }
 
-      infoFormSubmitToZap();
+      var fullName = getThePopupFrom2.querySelector(".fr_name_fl").value;
 
-      // var fullName = getThePopupFrom2.querySelector(".fr_name_fl").value;
+      var nameParts = fullName.split(/\s+/);
+      var firstName = nameParts[0];
+      var lastName = "";
 
-      // var nameParts = fullName.split(/\s+/);
-      // var firstName = nameParts[0];
-      // var lastName = "";
+      if (nameParts.length > 1) {
+        lastName = nameParts.slice(1).join(" ");
+      }
 
-      // if (nameParts.length > 1) {
-      //   lastName = nameParts.slice(1).join(" ");
-      // }
+      const newDetails = {
+        first_name: firstName,
+        last_name: lastName,
+        phone_number: getPhoneNumber(webinarPhoneNumberWri2, ".fr_phone_fl"),
+        current_job_role: getThePopupFrom2.querySelector(".gql_domain_select").value,
+        years_of_work_experience: getThePopupFrom2.querySelector(".gql_exp_select input:checked").value,
+        email: prefill.email,
+      }
 
-      // const newDetails = {
-      //   first_name: firstName,
-      //   last_name: lastName,
-      //   phone_number: getPhoneNumber(webinarPhoneNumberWri2, ".fr_phone_fl"),
-      //   current_job_role: getThePopupFrom2.querySelector(".gql_domain_select").value,
-      //   years_of_work_experience: getThePopupFrom2.querySelector(".gql_exp_select input:checked").value,
-      //   email: prefill.email,
-      // }
+      infoFormSubmitToZap(newDetails);
 
       // const url = 'https://uplevel.interviewkickstart.com/api/interested-candidate/update-interested-candidate/';
       // try {
