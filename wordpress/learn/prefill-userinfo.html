@@ -316,10 +316,10 @@
       if (!getCheckwebinar) {
         track("slot-e", "slot-not-selected");
         getThePopupFrom2.querySelector(".from_step_1").setAttribute("err_status", true);
-        return;
+        throw new Error("Slot not selected");
       }
       getThePopupFrom2.querySelector(".from_step_1").setAttribute("err_status", false);
-      
+
       webinarInfo2.eventStartTime = getCheckwebinar.value;
       webinarInfo2.eventEndTime = getCheckwebinar.getAttribute('data-endtime');
       webinarInfo2.inviteStartTime = getCheckwebinar.getAttribute('data-invitee_starttime');
