@@ -349,11 +349,17 @@
 
         try {
             let response = await fetch(url, options);
-            // moveNextStep();
-            const getCallMeSection = document.querySelector(".call_me_now");
-            if(getCallMeSection.getAttribute("call_status") === "none"){
-                getCallMeSection.setAttribute("call_status", "number_edit");
+            let wrValues = ["0-2", "3-4"];
+            let rdValues = [ 'No / Little Coding Experience', 'No Coding Experience', 'None of the above'];
+            if( !wrValues.includes(getWorkExperience.value) && !rdValues.includes(getDomainRole.value)){
+                const getCallMeSection = document.querySelector(".call_me_now");
+                if(getCallMeSection.getAttribute("call_status") === "none"){
+                    getCallMeSection.setAttribute("call_status", "number_edit");
+                }
+            }else{
+                moveNextStep();
             }
+
         } catch (error) {
             console.error("Error in sendRequestZapiar", error);
         }
