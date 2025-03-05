@@ -86,7 +86,7 @@
   }
 
   async function loadSlot(c_timezoon = "America/New_York") {
-    let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${(webinarType === "SWITCH_UP") || (webinarType === "CAREER_SESSION") || (webinarType === "MASTERCLASS_EVENT_AI") || (webinarType === "MASTERCLASS_EVENT") ? webinarType : "REGULAR"}`;
+    let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${(webinarType === "SWITCH_UP") || (webinarType === "CAREER_SESSION") || (webinarType === "MASTERCLASS_EVENT_AI") || (webinarType === "MASTERCLASS_EVENT") || (webinarType === "Agentic_AI") ? webinarType : "REGULAR"}`;
 
     const option = {
       method: "GET",
