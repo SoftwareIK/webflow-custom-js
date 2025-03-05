@@ -694,7 +694,7 @@
         domainSelect.removeAttribute("disabled");
         expOptions.forEach(option => option.removeAttribute("disabled"));
         expSelect.removeAttribute("disabled");
-        saveClickActivity("info_and_gql_combined_cancel_edit");
+        saveClickActivity("info_and_gql_combined_edit");
       } else {
         cancelBtn.innerHTML = "Edit Details";
         submitBtn.innerHTML = "Confirm";
@@ -716,7 +716,7 @@
         domainSelect.setAttribute("disabled", "true");
         expOptions.forEach(option => option.setAttribute("disabled", "true"));
         expSelect.setAttribute("disabled", "true");
-        saveClickActivity("info_and_gql_combined_edit");
+        saveClickActivity("info_and_gql_combined_cancel_edit");
       }
     }
 
@@ -781,7 +781,7 @@
       fromSend3rdStep2();
 
 
-      
+
       // var fullName = getThePopupFrom2.querySelector(".fr_name_fl").value;
 
       // var nameParts = fullName.split(/\s+/);
