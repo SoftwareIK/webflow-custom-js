@@ -384,11 +384,7 @@
         try {
             let response = await fetch(url, options);
             moveNextStep();
-            if (response.ok) {
-                if (typeof successTrackCallback === 'function') successTrackCallback();
-            } else {
-                if (typeof failTrackCallback === 'function') failTrackCallback();
-            }
+            if (typeof successTrackCallback === 'function') successTrackCallback();
         } catch (err) {
             console.error("sendRequestZapiar", err);
             if (failTrackCallback) failTrackCallback();

@@ -1,5 +1,6 @@
 <script nitro-exclude>
   // Slot related code start  ---------------------------------------------------------
+  const staticSlotsLoaded = new CustomEvent("staticSlotsLoaded");
   let api_status = "pending"; // "pending" | "on-going" | "completed" | "failed"
   let staticSlots = [];
 
@@ -254,6 +255,7 @@
             staticSlots = generateWebinarSlots({ count: 13, country: "USA", targetTimezone: timezone, webinarType: webinar_type });
             if (["pending", "failed"].includes(api_status)) {
               TimerHandler(staticSlots, timezone);
+              document.dispatchEvent(staticSlotsLoaded);
             }
           } catch (error) {
             console.error("P1: Error while generating static slots", error);

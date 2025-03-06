@@ -360,7 +360,7 @@
   })();
 
   async function bookSlot(email, slotId) {
-    const url = "https://uplevel.interviewkickstart.com/api/v1/webinar_connect/book-slot/";
+    const url = `https://${window.location.host.includes("wpcomstaging") ? "uptest" : "uplevel"}.interviewkickstart.com/api/v1/webinar_connect/book-slot/`;
     const payload = {
       slot_id: parseInt(slotId),
       email: email,
