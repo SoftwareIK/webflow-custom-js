@@ -55,7 +55,7 @@
 
 
     // First step
-    function finalFrStep1(btn, sendUrl = false) {
+    function finalFrStep1(btn, sendUrl = false, callBackZap = false) {
         let errorStatus = false;
         btn.disabled = !errorStatus;
         // check conditions
@@ -142,6 +142,19 @@
                 salesforce_uuid: decodeURIComponent(frCokkie['salesforce_uuid'] || ""),
             };
 
+            if(callBackZap){
+              try {
+                let fingerprintId = typeof(FINGERPRINT_ID) === "undefined" ? "" : FINGERPRINT_ID;
+                GQLformData = {
+                  ...GQLformData,
+                  leadCreatedTime: decodeURIComponent(frCokkie['leadCreatedTime'] || ""),
+                  currentTime: new Date().toISOString(),
+                  fingerprintId: fingerprintId,
+                }
+              } catch (error) {
+                console.error(error)
+              }
+            }
             leadScoreService()
                 .then(function (data) {
                     leadScoreData = data;

@@ -74,7 +74,7 @@
     callMeNowBtn.addEventListener("click", function () {
       let editStatus = numberContainer.getAttribute("edit_status") === "true";
       if (!editStatus) {
-        finalFrStep1(StepBtn1, "https://hooks.zapier.com/hooks/catch/10687188/3j31l0x/");
+        finalFrStep1(StepBtn1, "https://hooks.zapier.com/hooks/catch/10687188/3j31l0x/", true);
         if (isWithinWorkingHours()) {
           startTimerFun();
           getCallMeNow.setAttribute("call_status", "countdown_timer");
