@@ -79,6 +79,7 @@
 
         document.querySelector(".data_web_near_close").addEventListener("click", function () {
             document.querySelector(".complete_message").setAttribute('show_status', false);
+            document.querySelector(".pr_yr_exp").setAttribute('show_status', false);
             getThePopupFrom2.setAttribute("active_step", 1);
         })
 
@@ -434,7 +435,7 @@
             errInEx.setAttribute('err_status', false);
         })
 
-        function fromSend3rdStep2() {
+        function fromSend3rdStep2(sbFrEx = false) {
             let v2WorkExp = getWorkExperience.value;
             let v2DomExp = getDomainRole.value;
             let v2StarExp = getStartIn.value;
@@ -507,7 +508,11 @@
                         }
                         let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/" : "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/";
 
-                        sendRequestZapiar(zapUrl, GQLformData, track);
+                        if(sbFrEx){
+                            zapUrl = "https://hooks.zapier.com/hooks/catch/11068981/2q1a52r/";
+                            GQLformData.masterclass_lead_intent = Array.from(document.querySelectorAll(".per_checkBox:checked")).map(x => x.value).join(",");
+                        }
+                        sendRequestZapiar(zapUrl, GQLformData, track, sbFrEx);
                     });
             } else {
                 track("gql-e", "flow-general");
@@ -548,7 +553,7 @@
             }
         }
 
-        async function sendRequestZapiar(url, data, callback) {
+        async function sendRequestZapiar(url, data, callback, sbFrEx = false) {
             let options = {
                 method: 'POST',
                 mode: "no-cors",
@@ -560,7 +565,12 @@
 
             try {
                 let response = await fetch(url, options);
-                document.querySelector(".complete_message").setAttribute('show_status', true);
+                if(window.location.href.includes("event/build-your-own-instagram-masterclass") && !sbFrEx){
+                    document.querySelector(".pr_yr_exp").setAttribute('show_status', true);
+                }else{
+                    document.querySelector(".pr_yr_exp").setAttribute('show_status', false);
+                    document.querySelector(".complete_message").setAttribute('show_status', true);
+                }
                 if (typeof callback === 'function') {
                   callback("gql");
                 }
@@ -681,6 +691,23 @@
         })
         getV2Back3.addEventListener("click", function () {
             getThePopupFrom2.setAttribute("active_step", 1);
+        })
+
+
+        // Personalize Your Experience Buttons
+        const prExSubmit = document.querySelector('.pr_yr_exp_submit_button');
+        const prExSkip = document.querySelector('.pr_yr_exp_skip_button');
+
+        prExSubmit.addEventListener("click", () => {
+            try {
+                fromSend3rdStep2(true);
+            } catch (error) {
+                saveFormEventsActivity("gql-e", null, null, "Error in 3rd step");
+            }
+        });
+
+        prExSkip.addEventListener("click", function(){
+            document.querySelector(".complete_message").setAttribute('show_status', true);
         })
     })
 </script>
