@@ -26,6 +26,90 @@
     }
   }
 
+  function mapExperience(oldCategory) {
+    const categoryMapping = {
+      "0-2": "0-2",
+      "0-3": "0-2",
+      "0-5": "3-4",
+      "10+": "9-15",
+      "10-15": "9-15",
+      "11-15": "9-15",
+      "15-20": "15+",
+      "16-20": "15+",
+      "20+": "15+",
+      "3-4": "3-4",
+      "3-8": "5-8",
+      "4-6": "5-8",
+      "5-10": "5-8",
+      "5-8": "5-8",
+      "6-10": "5-8",
+      "7-10": "5-8",
+      "9-15": "9-15",
+      "15+": "15+"
+    };
+    return categoryMapping[oldCategory] || null;
+  }
+  function mapRole(oldRole) {
+    const roleMapping = {
+      "Software Engineer": "Software Engineer",
+      "Engineering Manager / Director of Engineering": "Engineering Manager - any domain",
+      "Data Engineer / Data Scientist": "Data Engineer",
+      "iOS / Android Developer": "Front-end",
+      "ML / AI": "Machine Learning / AI",
+      "Project Manager / Product Manager": "Tech Product Manager",
+      "QA / Testing": "Test Engineer / SDET / QE",
+      "No / Little coding experience": "None of the above",
+      "Back-end": "Back-end",
+      "Front-end": "Front-end",
+      "Full Stack": "Full Stack",
+      "Data Engineer": "Data Engineer",
+      "Data Science": "Data Science",
+      "Machine Learning / AI": "Machine Learning / AI",
+      "Product Manager (Tech)": "Tech Product Manager",
+      "Technical Program Manager": "Technical Program Manager",
+      "Test Engineer / SDET / QE": "Test Engineer / SDET / QE",
+      "Android Developer": "Android Developer",
+      "iOS Developer": "iOS Developer",
+      "Cyber Security": "Cyber Security",
+      "SRE / DevOps": "Site Reliability Engineer",
+      "Embedded Software Engineer": "Embedded Software Engineer",
+      "Cloud Engineer": "Cloud Engineer",
+      "Application Packaging Engineer": "Other Software Engineers",
+      "Other Software Engineers": "Other Software Engineers",
+      "No Coding Experience": "None of the above",
+      "Engineering Manager": "Engineering Manager - any domain",
+      "Business Intelligence Analyst": "Data Analyst / Business Analyst",
+      "Data Analyst/Business Analyst": "Data Analyst / Business Analyst",
+      "Data Analyst / Business Analyst": "Data Analyst / Business Analyst",
+      "None of the above": "None of the above",
+      "Core Engineering/STEM degree": "Core Engineering",
+      "Salesforce developer": "Salesforce developer",
+      "DevOps Engineer": "DevOps Engineer",
+      "Site Reliability Engineer": "Site Reliability Engineer",
+      "Tech Product Manager": "Tech Product Manager",
+      "Growth Product Manager": "Tech Product Manager",
+      "Product Marketing Manager": "Product Manager (Non Tech)",
+      "AWS Cloud Solutions Architect": "Cloud Engineer",
+      "CRM/ERP Developer": "Other Software Engineers",
+      "Cyber Security/Security Engineering": "Cyber Security",
+      "Data Engineering": "Data Engineer",
+      "Functional Consultants": "Other Software Engineers",
+      "Embedded Systems": "Embedded Software Engineer",
+      "Engineering Manager": "Engineering Manager - any domain",
+      "Machine Learning/Deep Learning": "Machine Learning / AI",
+      "Mobile Engineering (iOS/Android)": "Android Developer",
+      "Site Reliability Engineering": "Site Reliability Engineer",
+      "Software Engineering (Frontend, Fullstack, Backend, Test)": "Full Stack",
+      "STEM Background": "Core Engineering",
+      "Tech Consultants/IT Consultants": "Other Software Engineers",
+      "Product Manager (Non Tech)": "Product Manager (Non Tech)"
+    };
+    return roleMapping[oldRole] || null;
+  }
+
+  prefill.experience = mapExperience(prefill.experience);
+  prefill.role = mapRole(prefill.role);
+
   webinarType = params.webinarType || webinarType;
   eventName = decodeURIComponent(params.event) || eventName;
 
