@@ -11,13 +11,6 @@
     "experience": "",
   };
 
-  //from hubspot the link will contain "fb" if value is not present on their side. so "fb" == null
-  for (var key in prefill) {
-    if (prefill[key].includes("fb")) {
-      prefill[key] = "";
-    }
-  }
-
   const params = getAllUrlParams();
   prefill.firstname = decodeURIComponent(params['firstname'] ?? "");
   prefill.lastname = decodeURIComponent(params['lastname'] ?? "");
@@ -25,6 +18,13 @@
   prefill.phone = decodeURIComponent(params['phone'] ?? "");
   prefill.role = decodeURIComponent(params['role'] ?? "");
   prefill.experience = decodeURIComponent(params['experience'] ?? "");
+
+  //from hubspot the link will contain "fb" if value is not present on their side. so "fb" == null
+  for (var key in prefill) {
+    if (prefill[key].includes("fb")) {
+      prefill[key] = "";
+    }
+  }
 
   webinarType = params.webinarType || webinarType;
   eventName = decodeURIComponent(params.event) || eventName;
