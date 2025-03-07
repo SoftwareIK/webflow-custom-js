@@ -288,6 +288,18 @@
     return;
   }
 
+  function isPopUpForm() {
+    try {
+      const fragments = ['#webinar_form', '#data_webinar_form'];
+      const selector = fragments.map(fragment => `[href*="${fragment}"]`).join(',');
+      const elements = document.querySelectorAll(selector);
+      return elements.length > 1;
+    } catch (error) {
+      console.error("Error in isPopUpForm:", error);
+      return false;
+    }
+  }
+
   function saveFormEventsActivity(step, ctaid = "", callback = null, errorMessage) {
     try {
       let clickid = ""
@@ -296,7 +308,7 @@
         return;
       }
 
-      if (step.includes("info") && !isS1Captured) {
+      if (step.includes("info") && !isS1Captured && isPopUpForm()) {
         captureS1Fallback();
       }
 
