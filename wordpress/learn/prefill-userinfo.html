@@ -111,7 +111,7 @@
   prefill.role = mapRole(prefill.role);
 
   webinarType = params.webinarType || webinarType;
-  eventName = decodeURIComponent(params.event) || eventName;
+  eventName = decodeURIComponent(params.event ?? "") || "How to nail your next Technical Interview";
 
   const isCoreDataMissing = !prefill.email
   const isSomeDataMissing = !prefill.firstname || !prefill.phone || !prefill.role || !prefill.experience;
@@ -210,7 +210,11 @@
     const getFnErrMsg2 = getThePopupFrom2.querySelector('.v2_full_name');
     const getPhErrMsg2 = getThePopupFrom2.querySelector('.v2_phone_number');
     getFnErrMsg2.querySelector(".err_fild").innerHTML = getFnErrMsg2.querySelector(".err_fild").innerHTML.replace("first", "your");
-    
+
+    document.addEventListener("webNearLoaded", function () {
+      !isCoreDataMissing && visitorTrackingS4(true);
+    })
+
     function prefillData() {
       if (prefill.firstname) {
         let fullname = prefill.firstname;
@@ -483,9 +487,7 @@
       getPhErrMsg2.setAttribute('err_status', false);
     }
 
-    async function visitorTrackingS4() {
-      const getCheckwebinar = webinarSlots2.querySelector('input[name="v2_slot"]:checked');
-
+    async function visitorTrackingS4(forSlotAPI = false ) {
       //lead LeadCreatedTime
       const currentDateTime = new Date();
       const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
@@ -501,11 +503,16 @@
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} UTC`;
       }
 
-      const formattedStartDateTime = formatDateTime(getCheckwebinar.value);
-      const formattedEndDateTime = formatDateTime(getCheckwebinar.getAttribute('data-endtime'));
+      let formattedStartDateTime = null;
+      let formattedEndDateTime = null;
+      if(!forSlotAPI){
+        const getCheckwebinar = webinarSlots2.querySelector('input[name="v2_slot"]:checked');
+        formattedStartDateTime = formatDateTime(getCheckwebinar.value);
+        formattedEndDateTime = formatDateTime(getCheckwebinar.getAttribute('data-endtime'));
+      }
 
       let data = [{
-        "Lead_Created_Time": LeadCreatedTime,
+        "Lead_Created_Time": forSlotAPI ? currentDateTime : LeadCreatedTime,
         "Lead_Name": webinarInfo2.firstName + ' ' + webinarInfo2.lastName,
         "Lead_First_Name": webinarInfo2.firstName,
         "Lead_Last__Name": webinarInfo2.lastName,
@@ -540,6 +547,13 @@
         "Region": webinarInfo2.wr__region,
         "step": "s4"
       }];
+
+      if(forSlotAPI) {
+        data = [{
+          ...data[0],
+          "step": "s1_slotsAPI"
+        }];
+      }
 
       let options = {
         method: 'POST',
@@ -879,7 +893,7 @@
 <script>
   (function () {
     window.addEventListener("DOMContentLoaded", function () {
-
+      
       const getThePopupFrom2 = document.querySelector('.v2_from_wrapper_2');
       getThePopupFrom2.querySelector(".time_zone").innerHTML = `Time Zone: ${v_timezone}`;
 
@@ -1023,6 +1037,10 @@
         webNearInfo2.irclickid = decodeURIComponent(params['irclickid'] || "");
       }
       setHiddenFields2();
+
+      document.addEventListener("webNearLoaded", function () {
+        isCoreDataMissing && secondStepSecondRequest2(true);
+      })
 
       async function pushToEndPoint2(endpoint) {
         let getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
@@ -1353,8 +1371,7 @@
         }
       }
 
-      async function secondStepSecondRequest2() {
-        const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      async function secondStepSecondRequest2(forSlotAPI = false ) {
 
         //lead LeadCreatedTime
         const currentDateTime = new Date();
@@ -1371,11 +1388,15 @@
           return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} UTC`;
         }
 
-        const formattedStartDateTime = formatDateTime(getCheckWebnear.value);
-        const formattedEndDateTime = formatDateTime(getCheckWebnear.getAttribute('data-endtime'));
-
+        let formattedStartDateTime = null;
+        let formattedEndDateTime = null;
+        if(forSlotAPI){
+          const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+          formattedStartDateTime = formatDateTime(getCheckWebnear.value);
+          formattedEndDateTime = formatDateTime(getCheckWebnear.getAttribute('data-endtime'));
+        }
         let data = [{
-          "Lead_Created_Time": LeadCreatedTime,
+          "Lead_Created_Time": forSlotAPI ? currentDateTime : LeadCreatedTime,
           "Lead_Name": webNearInfo2.firstName + ' ' + webNearInfo2.lastName,
           "Lead_First_Name": webNearInfo2.firstName,
           "Lead_Last__Name": webNearInfo2.lastName,
@@ -1410,6 +1431,13 @@
           "Region": webNearInfo2.wr__region,
           "step": "s4"
         }];
+
+        if (forSlotAPI) {
+          data = [{
+            ...data[0],
+            "step": "s1_slotsAPI"
+          }];
+        }
 
         let options = {
           method: 'POST',
