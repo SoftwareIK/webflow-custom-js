@@ -133,10 +133,24 @@
         }
 
         function setHiddenFields() {
-            const fbc = getCookieValue('_fbc');
+            let params = [];
+            try {
+                params = read_cookie?.("v_latest") || getParams?.()
+            } catch (error) {
+                console.error("Error while reading cookie", error);
+            }
+            const fbcFromCookies = getCookieValue('_fbc');
             const fbp = getCookieValue('_fbp');
             const userAgent = navigator?.userAgent;
-            let params = read_cookie("v_latest");
+            const fbclid = decodeURIComponent(params['fbclid'] || "");
+            let fbc = fbcFromCookies;
+            if (!fbcFromCookies && fbclid) {
+                // Generate fbc from fbclid
+                const domainParts = window.location.hostname.split('.');
+                const subdomainIndex = domainParts.length - 1;
+                const creationTime = Date.now();
+                fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
+            }
             webNearInfoSi2.utm_source = decodeURIComponent(params['utm_source'] || "");
             webNearInfoSi2.utm_medium = decodeURIComponent(params['utm_medium'] || "");
             webNearInfoSi2.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");

@@ -336,7 +336,7 @@
             let formData = {
                 "First Name": webNearInfo2.firstName,
                 "Last Name": webNearInfo2.lastName,
-                "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
+                "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
                 "Email Address": webNearEmailAddress2.value,
                 "ByeCalendlyType": webNearInfo2.bye_calendly_type,
                 "webinar-type": webNearInfo2.webinar_type,
@@ -708,11 +708,7 @@
                     item.setAttribute('show_status', true);
                 });
                 loadPageFild();
-                if (response.ok) {
-                    if (typeof successTrackCallback === 'function') successTrackCallback();
-                } else {
-                    if (typeof failTrackCallback === 'function') failTrackCallback();
-                }
+                if (typeof successTrackCallback === 'function') successTrackCallback();
             } catch (err) {
                 console.error('Form Summit faild', err);
                 if (typeof failTrackCallback === 'function') failTrackCallback();

@@ -217,7 +217,7 @@
             let formData = {
                 "First Name": webNearInfo2.firstName,
                 "Last Name": webNearInfo2.lastName,
-                "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
+                "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
                 "Email Address": webNearEmailAddress2.value,
                 "ByeCalendlyType": webNearInfo2.bye_calendly_type,
                 "webinar-type": webNearInfo2.webinar_type,
@@ -560,11 +560,7 @@
                 document.querySelector(".complete_message").setAttribute('show_status', true);
                 loadPageFild();
                 if (typeof callback === 'function') {
-                    if (response.ok) {
-                        callback("gql");
-                    } else {
-                        callback("gql-e", "Zapier Webhook Failed");
-                    }
+                    callback("gql");
                 }
             } catch (error) {
                 if (typeof callback === 'function') {

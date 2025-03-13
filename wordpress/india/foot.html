@@ -443,10 +443,10 @@
             event_end_time: getCheckWebnear.getAttribute('data-endtime'),
             utm_medium: utmm,
             salesforce_uuid: sf_uuid,
-            whatsapp_consent: true
+            whatsapp_consent: true,
+            phoneNumCountry: webNearPhoneNumberWri?.j || "",
+            phonerNumber: webNearPhoneNumber.value
         };
-
-        bake_cookie("from_cookie", utmstring);
 
         let finalurl = "/signup-final-step";
         if (location.pathname.startsWith("/applied-generative-ai-for-software-engineers-course") || location.pathname.startsWith("/applied-generative-ai-for-tech-leaders-engineering-managers-course") || location.pathname.startsWith("/applied-generative-ai-for-technical-program-managers-course")) {
@@ -457,17 +457,23 @@
             .then(() => {
                 secondStepSecondRequest(getCheckWebnear)
                     .then(function () {
+                        utmstring = {
+                            ...utmstring,
+                            leadCreatedTime: LeadCreatedTime,
+                        }
+                        bake_cookie("from_cookie", utmstring);
                         location.href = finalurl;
                     });
             });
     }
 
 
+    let LeadCreatedTime = null;
     // second step second request fun
     async function secondStepSecondRequest(getCheckWebnear) {
         //lead LeadCreatedTime
         const currentDateTime = new Date();
-        const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
+        LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
 
         function formatDateTime(dateTimeString) {
             const date = new Date(dateTimeString);

@@ -135,8 +135,7 @@
         if (!errorStatus) {
             let params = [];
             try {
-                params = read_cookie?.("v_latest") || getParams?.()
-                bake_cookie("v_latest", params);
+                params = read_cookie?.("v_latest") || getParams?.();
             } catch (error) {
                 console.error("Error while reading cookie", error);
             }
@@ -217,11 +216,10 @@
 
         btn.disabled = !errorStatus;
         if (!errorStatus) {
-            
+
             let params = [];
             try {
-                params = read_cookie?.("v_latest") || getParams?.()
-                bake_cookie("v_latest", params);
+                params = read_cookie?.("v_latest") || getParams?.();
             } catch (error) {
                 console.error("Error while reading cookie", error);
             }
@@ -236,7 +234,7 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
-            
+
             const userAgent = navigator?.userAgent;
             let GQLformData = {
                 'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
@@ -291,8 +289,7 @@
         btn.innerHTML = "Please wait...";
         let params = [];
         try {
-            params = read_cookie?.("v_latest") || getParams?.()
-            bake_cookie("v_latest", params);
+            params = read_cookie?.("v_latest") || getParams?.();
         } catch (error) {
             console.error("Error while reading cookie", error);
         }
