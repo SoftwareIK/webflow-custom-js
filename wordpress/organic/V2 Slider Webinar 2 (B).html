@@ -180,7 +180,7 @@
         const webNearFullName2 = getThePopupFrom2.querySelector('input.fr_name_fl');
         const webNearEmailAddress2 = getThePopupFrom2.querySelector('.fr_email_fl');
         const webNearPhoneNumber2 = getThePopupFrom2.querySelector('.fr_phone_fl');
-
+        const webNearAccepTance = getThePopupFrom2.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
         const webNearSlots2 = getThePopupFrom2.querySelector('.webiner_101_slots .time_list');
 
         const webNearPhoneNumberWri2 = window.intlTelInput(webNearPhoneNumber2, {
@@ -201,6 +201,7 @@
         const webNearInfo2 = {
             firstName: "",
             lastName: "",
+            whatsAppUserConsent: "yes",
             fPhoneNumber: "",
             utm_source: "",
             utm_medium: "",
@@ -273,6 +274,7 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
+            webNearInfo2.whatsAppUserConsent = webNearAccepTance?.checked ? "Yes" : "No";
             webNearInfo2.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
             webNearInfo2.utm_medium = decodeURIComponent(params['utm_medium'] || `${visitor_id}${getCookie("_ga")}:${v_country}`);
             webNearInfo2.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -316,6 +318,7 @@
             let formData = {
                 "First Name": webNearInfo2.firstName,
                 "Last Name": webNearInfo2.lastName,
+                "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
                 "Email Address": webNearEmailAddress2.value,
                 "ByeCalendlyType": webNearInfo2.bye_calendly_type,
                 "webinar-type": webNearInfo2.webinar_type,
@@ -568,6 +571,7 @@
                     'First Name': webNearInfo2.firstName,
                     'Last Name': webNearInfo2.lastName,
                     'Email Address': webNearEmailAddress2.value,
+                    "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
                     utm_source: webNearInfo2.utm_source,
                     utm_medium: webNearInfo2.utm_medium,
                     utm_campaign: webNearInfo2.utm_campaign,
@@ -698,6 +702,7 @@
                 "Lead_Created_Time": LeadCreatedTime,
                 "Lead_Name": webNearInfo2.firstName + ' ' + webNearInfo2.lastName,
                 "Lead_First_Name": webNearInfo2.firstName,
+                "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
                 "Lead_Last__Name": webNearInfo2.lastName,
                 "Lead_Email": webNearEmailAddress2.value,
                 "Lead_Time_Zone": webNearInfo2.user_timezone,
