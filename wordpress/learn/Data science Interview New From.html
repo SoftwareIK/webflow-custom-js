@@ -59,7 +59,7 @@
         const webNearFullName2 = getThePopupFrom2.querySelector('input.fr_name_fl');
         const webNearEmailAddress2 = getThePopupFrom2.querySelector('.fr_email_fl');
         const webNearPhoneNumber2 = getThePopupFrom2.querySelector('.fr_phone_fl');
-
+        const webNearAccepTance = getThePopupFrom2.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
         const webNearSlots2 = getThePopupFrom2.querySelector('.slot_sl_con .slot_fild');
 
         const webNearPhoneNumberWri2 = window.intlTelInput(webNearPhoneNumber2, {
@@ -79,6 +79,7 @@
 
         document.querySelector(".data_web_near_close").addEventListener("click", function () {
             document.querySelector(".complete_message").setAttribute('show_status', false);
+            document.querySelector(".pr_yr_exp").setAttribute('show_status', false);
             getThePopupFrom2.setAttribute("active_step", 1);
         })
 
@@ -86,6 +87,7 @@
         const webNearInfo2 = {
             firstName: "",
             lastName: "",
+            whatsAppUserConsent: "yes",
             fPhoneNumber: "",
             utm_source: "",
             utm_medium: "",
@@ -168,6 +170,7 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
+            webNearInfo2.whatsAppUserConsent = webNearAccepTance?.checked ? "Yes" : "No";
             webNearInfo2.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
             webNearInfo2.utm_medium = decodeURIComponent(params['utm_medium'] || "");
             webNearInfo2.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -181,7 +184,7 @@
             webNearInfo2.fbcId = fbc || null;
             webNearInfo2.fbpId = fbp || null;
             webNearInfo2.userAgent = userAgent,
-            webNearInfo2.li_fat_id = decodeURIComponent(params['li_fat_id'] || "");
+                webNearInfo2.li_fat_id = decodeURIComponent(params['li_fat_id'] || "");
 
             webNearInfo2.user_id = visitor_id;
             webNearInfo2.user_timezone = v_timezone;
@@ -214,6 +217,7 @@
             let formData = {
                 "First Name": webNearInfo2.firstName,
                 "Last Name": webNearInfo2.lastName,
+                "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
                 "Email Address": webNearEmailAddress2.value,
                 "ByeCalendlyType": webNearInfo2.bye_calendly_type,
                 "webinar-type": webNearInfo2.webinar_type,
@@ -434,7 +438,7 @@
             errInEx.setAttribute('err_status', false);
         })
 
-        function fromSend3rdStep2() {
+        function fromSend3rdStep2(sbFrEx = false) {
             let v2WorkExp = getWorkExperience.value;
             let v2DomExp = getDomainRole.value;
             let v2StarExp = getStartIn.value;
@@ -463,6 +467,7 @@
                 let GQLformData = {
                     'First Name': webNearInfo2.firstName,
                     'Last Name': webNearInfo2.lastName,
+                    "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
                     'Email Address': webNearEmailAddress2.value,
                     utm_source: webNearInfo2.utm_source,
                     utm_medium: webNearInfo2.utm_medium,
@@ -507,7 +512,11 @@
                         }
                         let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/" : "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/";
 
-                        sendRequestZapiar(zapUrl, GQLformData, track);
+                        if (sbFrEx) {
+                            zapUrl = "https://hooks.zapier.com/hooks/catch/11068981/2q1a52r/";
+                            GQLformData.masterclass_lead_intent = Array.from(document.querySelectorAll(".per_checkBox:checked")).map(x => x.value).join(",");
+                        }
+                        sendRequestZapiar(zapUrl, GQLformData, track, sbFrEx);
                     });
             } else {
                 track("gql-e", "flow-general");
@@ -548,7 +557,7 @@
             }
         }
 
-        async function sendRequestZapiar(url, data, callback) {
+        async function sendRequestZapiar(url, data, callback, sbFrEx = false) {
             let options = {
                 method: 'POST',
                 mode: "no-cors",
@@ -560,13 +569,14 @@
 
             try {
                 let response = await fetch(url, options);
-                document.querySelector(".complete_message").setAttribute('show_status', true);
+                if (window.location.href.includes("event/build-your-own-instagram-masterclass") && !sbFrEx) {
+                    document.querySelector(".pr_yr_exp").setAttribute('show_status', true);
+                } else {
+                    document.querySelector(".pr_yr_exp").setAttribute('show_status', false);
+                    document.querySelector(".complete_message").setAttribute('show_status', true);
+                }
                 if (typeof callback === 'function') {
-                    if (response.ok) {
-                        callback("gql");
-                    } else {
-                        callback("gql-e", "Zapier Webhook Failed");
-                    }
+                    callback("gql");
                 }
             } catch (error) {
                 if (typeof callback === 'function') {
@@ -685,6 +695,23 @@
         })
         getV2Back3.addEventListener("click", function () {
             getThePopupFrom2.setAttribute("active_step", 1);
+        })
+
+
+        // Personalize Your Experience Buttons
+        const prExSubmit = document.querySelector('.pr_yr_exp_submit_button');
+        const prExSkip = document.querySelector('.pr_yr_exp_skip_button');
+
+        prExSubmit.addEventListener("click", () => {
+            try {
+                fromSend3rdStep2(true);
+            } catch (error) {
+                saveFormEventsActivity("gql-e", null, null, "Error in 3rd step");
+            }
+        });
+
+        prExSkip.addEventListener("click", function () {
+            document.querySelector(".complete_message").setAttribute('show_status', true);
         })
     })
 </script>
