@@ -154,7 +154,10 @@
           if (entry.initiatorType !== 'link') {
             return false;
           }
-          return entry.name.includes('elementor/css/post-') && entry.responseStatus !== 200;
+          if(entry?.responseStatus) {
+            return entry.name.includes('elementor/css/post-') && entry.responseStatus !== 200
+          }
+          return entry.name.includes('elementor/css/post-') && entry?.transferSize === 0;
         });
 
         let visitor_id = getCookie("unique_visitor_id6");
