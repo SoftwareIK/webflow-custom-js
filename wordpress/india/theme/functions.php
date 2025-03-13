@@ -85,26 +85,3 @@ function previous_month_year_shortcode() {
     return $month_name . ' ' . $current_year . ' COHORTS'; // Return month, year, and "COHORTS"
 }
 add_shortcode('previous_month_year', 'previous_month_year_shortcode');
-
-function add_geo_json_to_head() {
-  // Get client IP
-  $ip = $_SERVER['REMOTE_ADDR'];
-
-  // Fetch geolocation data from GeoJS
-  $geo_url = "https://get.geojs.io/v1/ip/geo/{$ip}.json";
-  $geo_data = wp_remote_get($geo_url);
-
-  // Decode response
-  if (!is_wp_error($geo_data) && !empty($geo_data['body'])) {
-      $geo_info = json_decode($geo_data['body'], true);
-      $geo_json = json_encode($geo_info, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-  } else {
-      $geo_json = json_encode(["error" => "Unable to retrieve geolocation data"]);
-  }
-
-  // Echo the JavaScript variable inside the <head>
-  echo "<script>var geoData = $geo_json;</script>";
-}
-
-// Hook into WordPress head section
-add_action('wp_head', 'add_geo_json_to_head');

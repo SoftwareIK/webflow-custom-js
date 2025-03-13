@@ -240,7 +240,7 @@
     }
     prefillData();
 
-    function initializeIntlTelInput(selector, phoneNumber, geoData) {
+    function initializeIntlTelInput(selector, phoneNumber, geoData = {}) {
       const input = getThePopupFrom2.querySelector(selector);
       if (!input) return null;
       const instance = window.intlTelInput(input, {
@@ -257,13 +257,14 @@
         instance.setNumber(phoneNumber);
       } else {
         // If no country code is present, set the country flag based on geoData
-        instance.setNumber(phoneNumber);
-        instance.setCountry(geoData.country_code);
+        document?.addEventListener("geoLoaded", function () {
+          instance.setCountry(geoInfo?.country_code);
+        })
       }
 
       return instance;
     }
-    const webinarPhoneNumberWri2 = initializeIntlTelInput(".fr_phone_fl", prefill.phone, { country_code: geoData.country_code });
+    const webinarPhoneNumberWri2 = initializeIntlTelInput(".fr_phone_fl", prefill.phone);
 
     // name container
     const webinarInfo2 = {
