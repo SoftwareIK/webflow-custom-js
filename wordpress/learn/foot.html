@@ -202,11 +202,12 @@
     let email_regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
-
+    let geoInfo = {};
     // getlocation json
     (async function () {
         let response = await fetch("https://get.geojs.io/v1/ip/geo.json");
         let data = await response.json();
+        geoInfo = data;
         webNearInfo.v_country = data.country;
         webNearInfo.wr__region = data.region;
         webNearInfo.wr__city = data.city;
@@ -562,7 +563,7 @@
             "Lead_First_Name": webNearInfo.firstName,
             "Lead_Last__Name": webNearInfo.lastName,
             "Lead_Email": webNearEmailAddress.value,
-            "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
+            // "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
             "Lead_Time_Zone": webNearInfo.user_timezone,
             "Event_Type_Name": eventName,
             "Event_Start_Date_Time": formattedStartDateTime,
