@@ -259,7 +259,8 @@
             const creationTime = Date.now();
             fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
         }
-        webNearInfo.whatsAppUserConsent = webNearAccepTance?.checked ? "Yes" : "No";
+        const whatsAppUserConsentValue = webNearAccepTance ? webNearAccepTance.checked : '';
+        webNearInfo.whatsAppUserConsent = whatsAppUserConsentValue;
         webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
         webNearInfo.utm_medium = decodeURIComponent(params['utm_medium'] || `${visitor_id}${getCookie("_ga")}:${v_country}`);
         webNearInfo.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");

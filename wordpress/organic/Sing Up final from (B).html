@@ -152,10 +152,11 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
+            const whatsAppUserConsentValue = webNearAccepTanceForGql ? webNearAccepTanceForGql.checked : '';
             let GQLformData = {
                 'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
                 'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
-                "whatsAppUserConsent": webNearAccepTanceForGql?.checked ? "Yes" : "No",
+                "whatsAppUserConsent": whatsAppUserConsentValue,
                 'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
                 utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
                 utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
@@ -237,10 +238,11 @@
             }
 
             const userAgent = navigator?.userAgent;
+            const whatsAppUserConsentValue = webNearAccepTanceForGql ? webNearAccepTanceForGql.checked : '';
             let GQLformData = {
                 'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
                 'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
-                whatsAppUserConsent: webNearAccepTanceForGql?.checked ? "Yes" : "No",
+                whatsAppUserConsent: whatsAppUserConsentValue,
                 'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
                 utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
                 utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
@@ -306,11 +308,12 @@
             const creationTime = Date.now();
             fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
         }
+        const whatsAppUserConsentValue = webNearAccepTanceForGql ? webNearAccepTanceForGql.checked : '';
         let GQLformData = {
             'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
             'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
             'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
-            whatsAppUserConsent: webNearAccepTanceForGql?.checked ? "Yes" : "No",
+            whatsAppUserConsent: whatsAppUserConsentValue,
             utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
             utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
             utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
