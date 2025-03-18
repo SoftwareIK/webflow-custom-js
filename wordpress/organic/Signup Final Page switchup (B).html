@@ -136,11 +136,12 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
+            const whatsAppUserConsentValue = webNearAccepTance ? webNearAccepTance.checked : '';
             let GQLformData = {
                 'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
                 'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
                 'Email Address': decodeURIComponent(utmparams['invitee_email'] || ""),
-                whatsAppUserConsent: webNearAccepTance?.checked ? "Yes" : "No",
+                whatsAppUserConsent: whatsAppUserConsentValue,
                 utm_source: decodeURIComponent(utmparams['utm_source'] || ""),
                 utm_medium: decodeURIComponent(utmparams['utm_medium'] || ""),
                 utm_campaign: decodeURIComponent(utmparams['utm_campaign'] || ""),
