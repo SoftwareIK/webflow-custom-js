@@ -170,7 +170,13 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
-            const whatsAppUserConsentValue = webNearAccepTance ? webNearAccepTance.checked : '';
+            let whatsAppUserConsentValue = "";
+            const fr_acceptance = document.querySelector(".fr_acceptance");
+            if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
+                whatsAppUserConsentValue = "";
+            } else if (webNearAccepTance) {
+                whatsAppUserConsentValue = webNearAccepTance.checked ? "Yes" : "No";
+            }
             webNearInfo2.whatsAppUserConsent = whatsAppUserConsentValue;
             webNearInfo2.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
             webNearInfo2.utm_medium = decodeURIComponent(params['utm_medium'] || "");
