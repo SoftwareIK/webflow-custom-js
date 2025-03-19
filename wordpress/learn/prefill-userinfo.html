@@ -15,9 +15,14 @@
   prefill.firstname = decodeURIComponent(params['firstname'] ?? "");
   prefill.lastname = decodeURIComponent(params['lastname'] ?? "");
   prefill.email = decodeURIComponent(params['email'] ?? "");
-  prefill.phone = decodeURIComponent(params['phone'] ?? "");
+  prefill.phone = decodeURIComponent(params['phone'] ?? "")?.trim();
   prefill.role = decodeURIComponent(params['role'] ?? "");
   prefill.experience = decodeURIComponent(params['experience'] ?? "");
+
+  // Ensure phone starts with '+'
+  if (prefill.phone && !prefill.phone.startsWith('+')) {
+    prefill.phone = '+' + prefill.phone;
+  }
 
   //from hubspot the link will contain "fb" if value is not present on their side. so "fb" == null
   for (var key in prefill) {
