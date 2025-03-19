@@ -136,7 +136,13 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
-            const whatsAppUserConsentValue = webNearAccepTance ? webNearAccepTance.checked : '';
+            let whatsAppUserConsentValue = "";
+            const fr_acceptance = document.querySelector(".fr_acceptance");
+            if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
+                whatsAppUserConsentValue = "";
+            } else if (webNearAccepTance) {
+                whatsAppUserConsentValue = webNearAccepTance.checked ? "Yes" : "No";
+            }
             let GQLformData = {
                 'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),
                 'Last Name': decodeURIComponent(utmparams['invitee_last_name'] || ""),
