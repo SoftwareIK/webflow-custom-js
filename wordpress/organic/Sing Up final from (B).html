@@ -224,7 +224,7 @@
 
         btn.disabled = !errorStatus;
         if (!errorStatus) {
-            
+
             let params = [];
             try {
                 params = read_cookie?.("v_latest") || getParams?.();
@@ -242,7 +242,7 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
-            
+
             const userAgent = navigator?.userAgent;
             const whatsAppUserConsentValue = webNearAccepTanceForGql ? webNearAccepTanceForGql.checked : '';
             let GQLformData = {

@@ -191,7 +191,7 @@
             webNearInfo2.fbcId = fbc || null;
             webNearInfo2.fbpId = fbp || null;
             webNearInfo2.userAgent = userAgent,
-            webNearInfo2.li_fat_id = decodeURIComponent(params['li_fat_id'] || "");
+                webNearInfo2.li_fat_id = decodeURIComponent(params['li_fat_id'] || "");
 
             webNearInfo2.user_id = visitor_id;
             webNearInfo2.user_timezone = v_timezone;
@@ -519,7 +519,7 @@
                         }
                         let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/" : "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/";
 
-                        if(sbFrEx){
+                        if (sbFrEx) {
                             zapUrl = "https://hooks.zapier.com/hooks/catch/11068981/2q1a52r/";
                             GQLformData.masterclass_lead_intent = Array.from(document.querySelectorAll(".per_checkBox:checked")).map(x => x.value).join(",");
                         }
@@ -576,14 +576,14 @@
 
             try {
                 let response = await fetch(url, options);
-                if(window.location.href.includes("event/build-your-own-instagram-masterclass") && !sbFrEx){
+                if (window.location.href.includes("event/build-your-own-instagram-masterclass") && !sbFrEx) {
                     document.querySelector(".pr_yr_exp").setAttribute('show_status', true);
-                }else{
+                } else {
                     document.querySelector(".pr_yr_exp").setAttribute('show_status', false);
                     document.querySelector(".complete_message").setAttribute('show_status', true);
                 }
                 if (typeof callback === 'function') {
-                  callback("gql");
+                    callback("gql");
                 }
             } catch (error) {
                 if (typeof callback === 'function') {
@@ -717,7 +717,7 @@
             }
         });
 
-        prExSkip.addEventListener("click", function(){
+        prExSkip.addEventListener("click", function () {
             document.querySelector(".complete_message").setAttribute('show_status', true);
         })
     })
