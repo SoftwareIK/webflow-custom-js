@@ -4,7 +4,8 @@
   // Here need to add all running AB test buckets
   let ab_bucket_json = {
     exit_intent: "control",
-    organic_home_page: "control"
+    organic_home_page: "control",
+    whatsapp_consent: "",
   }
   let fingerprint_id = "";
 
@@ -26,6 +27,13 @@
       }
       if (typeof (FINGERPRINT_ID) !== "undefined") {
         fingerprint_id = FINGERPRINT_ID;
+      }
+
+      if(typeof(whatsappConsentABTestFlag) !== "undefined"){
+        ab_bucket_json = {
+          ...ab_bucket_json,
+          whatsapp_consent: whatsappConsentABTestFlag ? "variant" : "control"
+        }
       }
     } catch (error) { }
 

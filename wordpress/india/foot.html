@@ -499,7 +499,6 @@
         let data = [{
             "Lead_Created_Time": LeadCreatedTime,
             "Lead_Name": webNearInfo.firstName + ' ' + webNearInfo.lastName,
-            // "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
             "Lead_First_Name": webNearInfo.firstName,
             "Lead_Last__Name": webNearInfo.lastName,
             "Lead_Email": webNearEmailAddress.value,
@@ -530,7 +529,8 @@
             "Device": webNearInfo.wr__device,
             "User_Agent": encodeURIComponent(navigator?.userAgent || ""),
             "Refferer": encodeURIComponent(webNearInfo.wr__referrer),
-            "Region": webNearInfo.wr__region
+            "Region": webNearInfo.wr__region,
+            "whatsapp_user_consent": webNearInfo.whatsAppUserConsent,
         }];
 
         let options = {

@@ -398,7 +398,6 @@
                 "Lead_Created_Time": LeadCreatedTime,
                 "Lead_Name": webNearInfoSi2.firstName + ' ' + webNearInfoSi2.lastName,
                 "Lead_First_Name": webNearInfoSi2.firstName,
-                // "whatsAppUserConsent": webNearInfoSi2.whatsAppUserConsent,
                 "Lead_Last__Name": webNearInfoSi2.lastName,
                 "Lead_Email": webNearEmailAddressSi2.value,
                 "Lead_Time_Zone": webNearInfoSi2.user_timezone,
@@ -428,7 +427,8 @@
                 "Device": webNearInfoSi2.wr__device,
                 "User_Agent": encodeURIComponent(navigator?.userAgent || ""),
                 "Refferer": encodeURIComponent(webNearInfoSi2.wr__referrer),
-                "Region": webNearInfoSi2.wr__region
+                "Region": webNearInfoSi2.wr__region,
+                "whatsapp_user_consent": webNearInfoSi2.whatsAppUserConsent,
             }];
 
             let options = {

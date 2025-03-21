@@ -570,7 +570,6 @@
       "Lead_First_Name": webNearInfo.firstName,
       "Lead_Last__Name": webNearInfo.lastName,
       "Lead_Email": webNearEmailAddress.value,
-      // "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
       "Lead_Time_Zone": webNearInfo.user_timezone,
       "Event_Type_Name": eventName,
       "Event_Start_Date_Time": formattedStartDateTime,
@@ -599,6 +598,7 @@
       "User_Agent": encodeURIComponent(navigator?.userAgent || ""),
       "Refferer": encodeURIComponent(webNearInfo.wr__referrer),
       "Region": webNearInfo.wr__region,
+      "whatsapp_user_consent": webNearInfo.whatsAppUserConsent,
       "step": "s4"
     }];
 
