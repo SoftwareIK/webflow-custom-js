@@ -248,7 +248,14 @@
     if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
       whatsAppUserConsentValue = "";
     } else if (webNearAccepTance) {
-      whatsAppUserConsentValue = webNearAccepTance.checked ? "Yes" : "No";
+      whatsAppUserConsentValue = webNearAccepTance.checked ? "yes" : "no";
+      webNearAccepTance.addEventListener('change', function() {
+        if (this.checked) {
+          webNearInfo.whatsAppUserConsent = 'yes';
+        } else {
+          webNearInfo.whatsAppUserConsent = 'no';
+        }
+      });
     }
     webNearInfo.whatsAppUserConsent = whatsAppUserConsentValue;
     webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
@@ -517,7 +524,7 @@
           track("slot");
           secondStepSecondRequest(getCheckWebnear)
             .then(function () {
-              if (gqlPopUpValue && webinarType === 'REGULAR') {
+              if (gqlPopUpValue && webinarType === 'REGULAR' && !window.location.pathname.startsWith("/webinar-registration")  && !window.location.pathname.startsWith("/career-session-webinar-registration")) {
                 getWebNearForm.setAttribute('gql_status', true);
               } else {
                 location.href = finalurl;

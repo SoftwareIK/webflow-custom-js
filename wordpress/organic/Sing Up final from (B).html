@@ -230,7 +230,7 @@
             if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
                 whatsAppUserConsentValue = "";
             } else if (webNearAccepTanceForGql) {
-                whatsAppUserConsentValue = webNearAccepTanceForGql.checked ? "Yes" : "No";
+                whatsAppUserConsentValue = webNearAccepTanceForGql.checked ? "yes" : "no";
             }
             let GQLformData = {
                 'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),

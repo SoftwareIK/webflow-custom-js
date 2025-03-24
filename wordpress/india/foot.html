@@ -245,7 +245,14 @@
         if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
             whatsAppUserConsentValue = "";
         } else if (webNearAccepTance) {
-            whatsAppUserConsentValue = webNearAccepTance.checked ? "Yes" : "No";
+          whatsAppUserConsentValue = webNearAccepTance.checked ? "yes" : "no";
+          webNearAccepTance.addEventListener('change', function() {
+            if (this.checked) {
+              webNearInfo.whatsAppUserConsent = 'yes';
+            } else {
+              webNearInfo.whatsAppUserConsent = 'no';
+            }
+          });
         }
         webNearInfo.whatsAppUserConsent = whatsAppUserConsentValue;
         webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
