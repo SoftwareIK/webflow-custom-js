@@ -163,7 +163,7 @@
         firstName: "",
         lastName: "",
         fPhoneNumber: "",
-        whatsAppUserConsent: "yes",
+        whatsAppUserConsent: "Yes",
         utm_source: "Organic",
         utm_medium: "",
         utm_campaign: "",
@@ -245,12 +245,12 @@
         if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
             whatsAppUserConsentValue = "";
         } else if (webNearAccepTance) {
-          whatsAppUserConsentValue = webNearAccepTance.checked ? "yes" : "no";
+          whatsAppUserConsentValue = webNearAccepTance.checked ? "Yes" : "No";
           webNearAccepTance.addEventListener('change', function() {
             if (this.checked) {
-              webNearInfo.whatsAppUserConsent = 'yes';
+              webNearInfo.whatsAppUserConsent = 'Yes';
             } else {
-              webNearInfo.whatsAppUserConsent = 'no';
+              webNearInfo.whatsAppUserConsent = 'No';
             }
           });
         }
