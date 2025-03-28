@@ -218,6 +218,20 @@
         if (parts.length === 2) return parts.pop().split(';').shift();
     }
 
+    try {
+      if(webNearAccepTance) {
+        webNearAccepTance?.addEventListener('change', function() {
+          if (this.checked) {
+            this.setAttribute("data-click-id", "whatsapp-user-consent-checked")
+          } else {
+            this.setAttribute("data-click-id", "whatsapp-user-consent-unchecked")
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error while adding event listener to webNearAccepTance", error); 
+    }
+
 
     function setHiddenFields() {
         // let params = read_cookie("v_latest");

@@ -67,6 +67,20 @@
         if (parts.length === 2) return parts.pop().split(';').shift();
     }
 
+    try {
+      if(webNearAccepTanceForGql) {
+        webNearAccepTanceForGql?.addEventListener('change', function() {
+          if (this.checked) {
+            this.setAttribute("data-click-id", "whatsapp-user-consent-checked")
+          } else {
+            this.setAttribute("data-click-id", "whatsapp-user-consent-unchecked")
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error while adding event listener to webNearAccepTanceForGql", error); 
+    }
+
     const err_temp = {};
 
     function getPhoneNumberOrDefault() {
