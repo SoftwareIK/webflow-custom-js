@@ -117,7 +117,7 @@
 
       data = [{
         Lead_Created_Time: timestampOfUserVisit,
-        Lead_Time_Zone: geo.Client_Timezone,
+        // Lead_Time_Zone: geo.Client_Timezone,
         UTM_Campaign: params.utm_campaign,
         UTM_Source: params.utm_source,
         UTM_Medium: params.utm_medium,
@@ -126,18 +126,18 @@
         Tracking_ID: "",
         User_ID: visitor_id,
         Page_URL: page_url,
-        Country: params.v_country,
-        Client_Timezone: geo.Client_Timezone,
-        Country: geo.Country,
-        City: geo.City,
-        Region: geo.Region,
+        // Country: params.v_country,
+        // Client_Timezone: geo.Client_Timezone,
+        // Country: geo.Country,
+        // City: geo.City,
+        // Region: geo.Region,
         CTA_Page: "learn.ik" + cta_lp,
         Landing_Page: l_page_url,
         Click_History: "",
         Device: getDeviceType(),
         User_Agent: encodeURIComponent(navigator?.userAgent || ""),
         Refferer: params.wr__referrer,
-        Region: params.wr__region,
+        // Region: params.wr__region,
         step: "s0"
       }];
 
