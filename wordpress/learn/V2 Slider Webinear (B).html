@@ -106,7 +106,7 @@
         const webNearFullName2 = getThePopupFrom2.querySelector('input.fr_name_fl');
         const webNearEmailAddress2 = getThePopupFrom2.querySelector('.fr_email_fl');
         const webNearPhoneNumber2 = getThePopupFrom2.querySelector('.fr_phone_fl');
-
+        const webNearAccepTance = getThePopupFrom2.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
         const webNearSlots2 = getThePopupFrom2.querySelector('.slot_sl_con .slot_fild');
         let webNearPhoneNumberWri2;
         intlTelInputCheckFun(function () {
@@ -130,6 +130,7 @@
         const webNearInfo2 = {
             firstName: "",
             lastName: "",
+            whatsAppUserConsent: "Yes",
             fPhoneNumber: "",
             utm_source: "",
             utm_medium: "",
@@ -203,6 +204,7 @@
                 setPartnerCookies(partnerInfo["Partner Name"], partnerInfo["is Partnership Lead"], partnerInfo["isUserEligibleForPartnershipDiscount"])
             }
         }
+
         function getParams(t){var t=t?t.split("?")[1]:window.location.search.slice(1),r={};if(t)for(var s=(t=t.split("#")[0]).split("&"),e=0;e<s.length;e++){var a,n=s[e].split("="),i=n[0],o=void 0===n[1]?void 0:n[1];(i=i.toLowerCase()).match(/\[(\d+)?\]$/)?(r[a=i.replace(/\[(\d+)?\]/,"")]||(r[a]=[]),i.match(/\[\d+\]$/)?(n=/\[(\d+)\]/.exec(i)[1],r[a][n]=o):r[a].push(o)):r[i]?("string"==typeof r[i]&&(r[i]=[r[i]]),r[i].push(o)):r[i]=o}return r}
         function getCookieValue(cookieName) {
             const value = `; ${document.cookie}`;
@@ -230,6 +232,21 @@
                 const creationTime = Date.now();
                 fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
             }
+            let whatsAppUserConsentValue = "";
+            const fr_acceptance = document.querySelector(".fr_acceptance");
+            if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
+                whatsAppUserConsentValue = "";
+            } else if (webNearAccepTance) {
+                whatsAppUserConsentValue = webNearAccepTance.checked ? "Yes" : "No";
+                webNearAccepTance.addEventListener('change', function() {
+                  if (this.checked) {
+                    webNearInfo2.whatsAppUserConsent = 'Yes';
+                  } else {
+                    webNearInfo2.whatsAppUserConsent = 'No';
+                  }
+                });
+            }
+            webNearInfo2.whatsAppUserConsent = whatsAppUserConsentValue;
             webNearInfo2.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
             webNearInfo2.utm_medium = decodeURIComponent(params['utm_medium'] || "");
             webNearInfo2.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -276,6 +293,7 @@
             let formData = {
                 "First Name": webNearInfo2.firstName,
                 "Last Name": webNearInfo2.lastName,
+                "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
                 "Email Address": webNearEmailAddress2.value,
                 "ByeCalendlyType": webNearInfo2.bye_calendly_type,
                 "webinar-type": webNearInfo2.webinar_type,
@@ -529,6 +547,7 @@
                     'First Name': webNearInfo2.firstName,
                     'Last Name': webNearInfo2.lastName,
                     'Email Address': webNearEmailAddress2.value,
+                    "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
                     utm_source: webNearInfo2.utm_source,
                     utm_medium: webNearInfo2.utm_medium,
                     utm_campaign: webNearInfo2.utm_campaign,
@@ -706,6 +725,7 @@
                 "User_Agent": encodeURIComponent(navigator?.userAgent || ""),
                 "Refferer": encodeURIComponent(webNearInfo2.wr__referrer),
                 "Region": webNearInfo2.wr__region,
+                "whatsapp_user_consent": webNearInfo2.whatsAppUserConsent,
                 "step": "s4"
             }];
 
