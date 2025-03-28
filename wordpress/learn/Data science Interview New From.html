@@ -68,6 +68,7 @@
     const webNearFullName2 = getThePopupFrom2.querySelector("input.fr_name_fl");
     const webNearEmailAddress2 = getThePopupFrom2.querySelector(".fr_email_fl");
     const webNearPhoneNumber2 = getThePopupFrom2.querySelector(".fr_phone_fl");
+    const webNearAccepTance = getThePopupFrom2.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
 
     const webNearSlots2 = getThePopupFrom2.querySelector(
       ".slot_sl_con .slot_fild"
@@ -105,6 +106,7 @@
     const webNearInfo2 = {
       firstName: "",
       lastName: "",
+      whatsAppUserConsent: "Yes",
       fPhoneNumber: "",
       utm_source: "",
       utm_medium: "",
@@ -212,6 +214,21 @@
         const creationTime = Date.now();
         fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
       }
+      let whatsAppUserConsentValue = "";
+      const fr_acceptance = document.querySelector(".fr_acceptance");
+      if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
+          whatsAppUserConsentValue = "";
+      } else if (webNearAccepTance) {
+          whatsAppUserConsentValue = webNearAccepTance.checked ? "Yes" : "No";
+          webNearAccepTance.addEventListener('change', function() {
+            if (this.checked) {
+              webNearInfo2.whatsAppUserConsent = 'Yes';
+            } else {
+              webNearInfo2.whatsAppUserConsent = 'No';
+            }
+          });
+      }
+      webNearInfo2.whatsAppUserConsent = whatsAppUserConsentValue;
       webNearInfo2.utm_source = decodeURIComponent(
         params["utm_source"] || "Organic"
       );
@@ -274,6 +291,7 @@
       let formData = {
         "First Name": webNearInfo2.firstName,
         "Last Name": webNearInfo2.lastName,
+        "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
         "Email Address": webNearEmailAddress2.value,
         ByeCalendlyType: webNearInfo2.bye_calendly_type,
         "webinar-type": webNearInfo2.webinar_type,
@@ -555,6 +573,7 @@
         let GQLformData = {
           "First Name": webNearInfo2.firstName,
           "Last Name": webNearInfo2.lastName,
+          "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
           "Email Address": webNearEmailAddress2.value,
           utm_source: webNearInfo2.utm_source,
           utm_medium: webNearInfo2.utm_medium,
@@ -762,6 +781,7 @@
           User_Agent: encodeURIComponent(navigator?.userAgent || ""),
           Refferer: encodeURIComponent(webNearInfo2.wr__referrer),
           Region: webNearInfo2.wr__region,
+          "whatsapp_user_consent": webNearInfo2.whatsAppUserConsent,
           step: "s4",
         },
       ];
