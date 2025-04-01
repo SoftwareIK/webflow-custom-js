@@ -154,6 +154,7 @@
             document.querySelector("#gql_rg_date").innerHTML = formatDate(new Date(webNearInfo.eventStartTime));
             document.querySelector("#gql_rg_time").innerHTML = gqlRgPopup?.querySelector(".preferred_time_slot:checked").value.replace(/\s*\(|\)\s*/g, ", ").replace(/,\s*$/, "");
             getWebNearForm.setAttribute("complete_stauts", true);
+            saveClickActivity("Gql-form-button_finish");
         });
         gqlRgPopup?.querySelector(".gql_popup_stage_2 .gql_btn_back").addEventListener("click", function () {
             gqlRgPopup.setAttribute("ac_step", 1);

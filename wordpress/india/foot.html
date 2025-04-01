@@ -163,6 +163,7 @@
         firstName: "",
         lastName: "",
         fPhoneNumber: "",
+        whatsAppUserConsent: "Yes",
         utm_source: "Organic",
         utm_medium: "",
         utm_campaign: "",
@@ -210,11 +211,25 @@
         webNearInfo.wr__city = data.city;
     })();
 
-    function getParams(t) { var t = t ? t.split("?")[1] : window.location.search.slice(1), r = {}; if (t) for (var s = (t = t.split("#")[0]).split("&"), e = 0; e < s.length; e++) { var a, n = s[e].split("="), i = n[0], o = void 0 === n[1] || n[1]; (i = i.toLowerCase()).match(/\[(\d+)?\]$/) ? (r[a = i.replace(/\[(\d+)?\]/, "")] || (r[a] = []), i.match(/\[\d+\]$/) ? (n = /\[(\d+)\]/.exec(i)[1], r[a][n] = o) : r[a].push(o)) : r[i] ? (r[i] && "string" == typeof r[i] && (r[i] = [r[i]]), r[i].push(o)) : r[i] = o } return r }
+    function getParams(t) { var t = t ? t.split("?")[1] : window.location.search.slice(1), r = {}; if (t) for (var s = (t = t.split("#")[0]).split("&"), e = 0; e < s.length; e++) { var a, n = s[e].split("="), i = n[0], o = void 0 === n[1] ? void 0 : n[1]; (i = i.toLowerCase()).match(/\[(\d+)?\]$/) ? (r[a = i.replace(/\[(\d+)?\]/, "")] || (r[a] = []), i.match(/\[\d+\]$/) ? (n = /\[(\d+)\]/.exec(i)[1], r[a][n] = o) : r[a].push(o)) : r[i] ? ("string" == typeof r[i] && (r[i] = [r[i]]), r[i].push(o)) : r[i] = o } return r }
     function getCookieValue(cookieName) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${cookieName}=`);
         if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    try {
+      document.querySelectorAll('#Whatsapp-User-Consent').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          if (this.checked) {
+            this.setAttribute("data-click-id", "whatsapp-user-consent-checked");
+          } else {
+            this.setAttribute("data-click-id", "whatsapp-user-consent-unchecked");
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Error while adding event listener to webNearAccepTance", error); 
     }
 
 
@@ -239,7 +254,21 @@
             const creationTime = Date.now();
             fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
         }
-
+        let whatsAppUserConsentValue = "";
+        const fr_acceptance = document.querySelector(".fr_acceptance");
+        if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
+            whatsAppUserConsentValue = "";
+        } else if (webNearAccepTance) {
+          whatsAppUserConsentValue = webNearAccepTance.checked ? "Yes" : "No";
+          webNearAccepTance.addEventListener('change', function() {
+            if (this.checked) {
+              webNearInfo.whatsAppUserConsent = 'Yes';
+            } else {
+              webNearInfo.whatsAppUserConsent = 'No';
+            }
+          });
+        }
+        webNearInfo.whatsAppUserConsent = whatsAppUserConsentValue;
         webNearInfo.utm_source = decodeURIComponent(params['utm_source'] || "Organic");
         webNearInfo.utm_medium = decodeURIComponent(params['utm_medium'] || "");
         webNearInfo.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -278,6 +307,7 @@
         let getCheckWebnear = webNearSlots.querySelector('input:checked');
         let formData = {
             "First Name": webNearInfo.firstName,
+            "whatsAppUserConsent": webNearInfo.whatsAppUserConsent,
             "Last Name": webNearInfo.lastName,
             "Email Address": webNearEmailAddress.value,
             "ByeCalendlyType": webNearInfo.bye_calendly_type,
@@ -289,7 +319,6 @@
             "utm_content": webNearInfo.utm_content,
             "utm_adset": webNearInfo.utm_adset,
             "utm_term": webNearInfo.utm_term,
-
             "City": webNearInfo.wr__city,
             "Device": webNearInfo.wr__device,
             "Referrer": webNearInfo.wr__referrer,
@@ -447,8 +476,6 @@
             phonerNumber: webNearPhoneNumber.value
         };
 
-        bake_cookie("from_cookie", utmstring);
-
         let finalurl = "/signup-final-step";
         if (location.pathname.startsWith("/applied-generative-ai-for-software-engineers-course") || location.pathname.startsWith("/applied-generative-ai-for-tech-leaders-engineering-managers-course") || location.pathname.startsWith("/applied-generative-ai-for-technical-program-managers-course")) {
             finalurl += "-switchup";
@@ -458,17 +485,23 @@
             .then(() => {
                 secondStepSecondRequest(getCheckWebnear)
                     .then(function () {
+                        utmstring = {
+                            ...utmstring,
+                            leadCreatedTime: LeadCreatedTime,
+                        }
+                        bake_cookie("from_cookie", utmstring);
                         location.href = finalurl;
                     });
             });
     }
 
 
+    let LeadCreatedTime = null;
     // second step second request fun
     async function secondStepSecondRequest(getCheckWebnear) {
         //lead LeadCreatedTime
         const currentDateTime = new Date();
-        const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
+        LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
 
         function formatDateTime(dateTimeString) {
             const date = new Date(dateTimeString);
@@ -517,7 +550,8 @@
             "Device": webNearInfo.wr__device,
             "User_Agent": encodeURIComponent(navigator?.userAgent || ""),
             "Refferer": encodeURIComponent(webNearInfo.wr__referrer),
-            "Region": webNearInfo.wr__region
+            "Region": webNearInfo.wr__region,
+            "whatsapp_user_consent": webNearInfo.whatsAppUserConsent,
         }];
 
         let options = {

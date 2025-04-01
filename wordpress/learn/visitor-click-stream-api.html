@@ -14,6 +14,7 @@
   let ab_bucket_json = {
     exit_intent: "control",
     expert_insight_ab: "control",
+    whatsapp_consent: "",
   }
   // setTimeout(() => {
   document?.addEventListener("geoLoaded", function () {
@@ -32,6 +33,13 @@
 
       if (typeof (FINGERPRINT_ID) !== "undefined") {
         fingerprint_id = FINGERPRINT_ID;
+      }
+
+      if(typeof(whatsappConsentABTestFlag) !== "undefined"){
+        ab_bucket_json = {
+          ...ab_bucket_json,
+          whatsapp_consent: whatsappConsentABTestFlag ? "variant" : "control"
+        }
       }
     } catch (error) { }
 

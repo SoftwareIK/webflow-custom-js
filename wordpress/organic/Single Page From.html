@@ -60,6 +60,7 @@
         const webNearFirstNameSi2 = getThePopupFromSi2.querySelector('.web_first_name input#first-name');
         const webNearLastNameSi2 = getThePopupFromSi2.querySelector('.web_first_last_name input#last-name');
         const webNearEmailAddressSi2 = getThePopupFromSi2.querySelector('.web_em_address input#Email-Address-7');
+        const webNearAccepTance = getThePopupFromSi2.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
         const webNearSlotsSi2 = getThePopupFromSi2.querySelector('.web_near_slot');
 
         const getFiErrMsgSi2 = getThePopupFromSi2.querySelector('.web_first_name');
@@ -71,6 +72,7 @@
         const webNearInfoSi2 = {
             firstName: "",
             lastName: "",
+            whatsAppUserConsent: "",
             fPhoneNumber: "",
             utm_source: "",
             utm_medium: "",
@@ -131,10 +133,24 @@
         }
 
         function setHiddenFields() {
-            const fbc = getCookieValue('_fbc');
+            let params = [];
+            try {
+                params = read_cookie?.("v_latest") || getParams?.()
+            } catch (error) {
+                console.error("Error while reading cookie", error);
+            }
+            const fbcFromCookies = getCookieValue('_fbc');
             const fbp = getCookieValue('_fbp');
             const userAgent = navigator?.userAgent;
-            let params = read_cookie("v_latest");
+            const fbclid = decodeURIComponent(params['fbclid'] || "");
+            let fbc = fbcFromCookies;
+            if (!fbcFromCookies && fbclid) {
+                // Generate fbc from fbclid
+                const domainParts = window.location.hostname.split('.');
+                const subdomainIndex = domainParts.length - 1;
+                const creationTime = Date.now();
+                fbc = `fb.${subdomainIndex}.${creationTime}.${fbclid}`;
+            }
             webNearInfoSi2.utm_source = decodeURIComponent(params['utm_source'] || "");
             webNearInfoSi2.utm_medium = decodeURIComponent(params['utm_medium'] || "");
             webNearInfoSi2.utm_campaign = decodeURIComponent(params['utm_campaign'] || "");
@@ -180,6 +196,7 @@
             let formData = {
                 "First Name": webNearInfoSi2.firstName,
                 "Last Name": webNearInfoSi2.lastName,
+                "whatsAppUserConsent": webNearInfoSi2.whatsAppUserConsent,
                 "Email Address": webNearEmailAddressSi2.value,
                 "ByeCalendlyType": webNearInfoSi2.bye_calendly_type,
                 "webinar-type": webNearInfoSi2.webinar_type,
@@ -410,7 +427,8 @@
                 "Device": webNearInfoSi2.wr__device,
                 "User_Agent": encodeURIComponent(navigator?.userAgent || ""),
                 "Refferer": encodeURIComponent(webNearInfoSi2.wr__referrer),
-                "Region": webNearInfoSi2.wr__region
+                "Region": webNearInfoSi2.wr__region,
+                "whatsapp_user_consent": webNearInfoSi2.whatsAppUserConsent,
             }];
 
             let options = {

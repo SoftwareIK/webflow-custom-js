@@ -1,7 +1,7 @@
 <script>
 	
 let AB_BUCKET = "control";
-let weightageOfVariant = 50;
+let weightageOfVariant = 0;
 let popupShown = false;
 let highIntentClickCount = 0; // Counter for high intent clicks
 const highIntentThreshold = 1; // Number of clicks to mark a user as high intent
@@ -432,6 +432,9 @@ function ignorePath() {
     "/event/",
     "/home-ab1",
     "/course/data-engineering-interview-masterclass-v2",
+    "/ip-email-registration",
+    "/ace-your-mock-interview",
+    "/complete-your-payment"
   ];
 
   // Check if current URL matches any of the predefined final step pages
