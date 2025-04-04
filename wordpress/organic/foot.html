@@ -160,6 +160,9 @@
 </script>
 <!------------------ Webnear Form Send ---------------------->
 <script>
+  function track(step, message) {
+    typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
+  }
   // get all from fild
   const getThePopupFrom = document.querySelector('.webnear_regitration_fr');
 
@@ -444,18 +447,22 @@
       getFiErrMsg.setAttribute('err_status', true);
       getLaErrMsg.setAttribute('err_status', true);
       getThePopupFrom.setAttribute("loader_status", false);
+      track("info-e", "validation-general");
       return;
     } else if (!name_regex.test(f_name) || f_name.length == 0) {
       getFiErrMsg.setAttribute('err_status', true);
       getThePopupFrom.setAttribute("loader_status", false);
+      track("info-e", "validation-fname");
       return;
     } else if (!name_regex.test(l_name) || l_name.length == 0) {
       getLaErrMsg.setAttribute('err_status', true);
       getThePopupFrom.setAttribute("loader_status", false);
+      track("info-e", "validation-lname");
       return;
     } else if (!email_regex.test(wEmail) || wEmail.length == 0) {
       getEmErrMsg.setAttribute('err_status', true);
       getThePopupFrom.setAttribute("loader_status", false);
+      track("info-e", "validation-email");
       return;
     } else {
 
@@ -468,6 +475,7 @@
           'webinar_name': webNearInfo.eventname
         });
       } catch (err) {
+        track("info-e", "reporting-data-layer");
         console.error(err);
       }
 
@@ -475,6 +483,9 @@
         .then(() => {
           getThePopupFrom.setAttribute("ac_step", 2);
           getThePopupFrom.setAttribute("loader_status", false);
+          track("info");
+        }).catch(() => {
+          track("info-e", "flow-general");
         });
     }
   }
@@ -510,6 +521,7 @@
         'webinar_name': webNearInfo.eventname
       });
     } catch (err) {
+      track("slot-e", "reporting-data-layer");
       console.error(err);
     }
 
@@ -520,10 +532,15 @@
     function secondZapPushFun() {
       pushToEndPoint(pushUrl)
         .then(() => {
+          track("slot");
           secondStepSecondRequest(getCheckWebnear)
             .then(function () {
               location.href = finalurl;
+            }).catch(function () {
+              track("slot-e", "flow-bq");
             });
+        }).catch(() => {
+          track("slot-e", "flow-general");
         });
     }
 
@@ -531,6 +548,9 @@
       bookSlot(webNearEmailAddress.value, getCheckWebnear.getAttribute('slot_id')).then(function (data) {
         if (data.booking_id) webNearInfo.booking_id = data.booking_id;
         secondZapPushFun();
+      }).catch((e) => {
+        console.error("Error in booking slot", e);
+        track("slot-e", "flow-one-on-one");
       });
     } else {
       secondZapPushFun();
@@ -593,6 +613,7 @@
       "Refferer": encodeURIComponent(webNearInfo.wr__referrer),
       "Region": webNearInfo.wr__region,
       "whatsapp_user_consent": webNearInfo.whatsAppUserConsent,
+      "step": "s4"
     }];
 
     let options = {
@@ -626,8 +647,24 @@
     getThePopupFrom.setAttribute("ac_step", 1);
   });
 
-  get1stepBtn.addEventListener('click', fromSend1stStep);
-  get2stepfinishBtn.addEventListener('click', fromSend2ndStep);
+  // get1stepBtn.addEventListener('click', fromSend1stStep);
+  get1stepBtn.addEventListener('click', () => {
+    try {
+      fromSend1stStep();
+    } catch (error) {
+      saveFormEventsActivity("info-e", null, null, "Error in 1st step");
+    }
+  });
+  
+  // get2stepfinishBtn.addEventListener('click', fromSend2ndStep);
+  get2stepfinishBtn.addEventListener('click', () => {
+    try {
+      fromSend2ndStep();
+    } catch (error) {
+      saveFormEventsActivity("slot-e", null, null, "Error in 2nd step");
+    }
+  });
+
 
 
 

@@ -255,17 +255,24 @@
                     formName: "Lead Qualifier Form"
                 })
             } catch (err) {
-                console.log("Data Layer add faild");
-                console.log(err);
+              track("gql-e", "reporting-data-layer");
+              console.error(err);
             }
 
-            sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/34cx4dp/", GQLformData);
+            sendRequestZapiar(
+              "https://hooks.zapier.com/hooks/catch/11068981/34cx4dp/",
+              GQLformData,
+              function () { track("gql", "Success in gql step"); },
+              function () { track("gql-e", "flow-general"); }
+            );
             sendDataToVisitorTracking(GQLformData)
+        } else {
+          track("gql-e", "validation-general");
         }
     }
 
     // send request fun
-    async function sendRequestZapiar(url, data) {
+    async function sendRequestZapiar(url, data, successTrackCallback = null, failTrackCallback = null) {
         let options = {
             method: 'POST',
             mode: "no-cors",
@@ -278,10 +285,10 @@
         try {
             let response = await fetch(url, options);
             getFinalForm.setAttribute("active_step", 4);
-            console.log('Form submitted successfully!');
+            if (typeof successTrackCallback === 'function') successTrackCallback();
         } catch {
-            console.log('Form Summit faild');
-            alert("Something is wrong");
+            console.error("sendRequestZapiar", err);
+            if (failTrackCallback) failTrackCallback();
         }
     }
 

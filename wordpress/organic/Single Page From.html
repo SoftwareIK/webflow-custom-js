@@ -287,18 +287,22 @@
                 getFiErrMsgSi2.setAttribute('err_status', true);
                 getLaErrMsgSi2.setAttribute('err_status', true);
                 getThePopupFromSi2.setAttribute("loader_status", false);
+                track("info-e", "validation-general");
                 return;
             } else if (!name_regexSi2.test(f_name) || f_name.length == 0) {
                 getFiErrMsgSi2.setAttribute('err_status', true);
                 getThePopupFromSi2.setAttribute("loader_status", false);
+                track("info-e", "validation-fname");
                 return;
             } else if (!name_regexSi2.test(l_name) || l_name.length == 0) {
                 getLaErrMsgSi2.setAttribute('err_status', true);
                 getThePopupFromSi2.setAttribute("loader_status", false);
+                track("info-e", "validation-lname");
                 return;
             } else if (!email_regexSi2.test(wEmail) || wEmail.length == 0) {
                 getEmErrMsgSi2.setAttribute('err_status', true);
                 getThePopupFromSi2.setAttribute("loader_status", false);
+                track("info-e", "validation-email");
                 return;
             } else {
 
@@ -311,14 +315,17 @@
                         'webinar_name': webNearInfoSi2.eventname
                     });
                 } catch (err) {
-                    console.log("Data Layer add faild");
-                    console.log(err);
+                    track("info-e", "reporting-data-layer");
+                    console.error(err);
                 }
 
                 pushToEndPointSi2("https://hooks.zapier.com/hooks/catch/11068981/34c9jjz/")
                     .then(() => {
                         getThePopupFromSi2.setAttribute("ac_step", 2);
                         getThePopupFromSi2.setAttribute("loader_status", false);
+                        track("info");
+                    }).catch(() => {
+                        track("info-e", "flow-general");
                     });
             }
         }
@@ -354,8 +361,8 @@
                     'webinar_name': webNearInfoSi2.eventname
                 });
             } catch (err) {
-                console.log("Data Layer add faild");
-                console.log(err);
+              track("slot-e", "reporting-data-layer");
+              console.error(err);
             }
 
             let finalurl = webinarType === "SWITCH_UP" ? "/signup-final-step-switchup-v6" : "/signup-final-step-v6";
@@ -364,12 +371,14 @@
                 .then(() => {
                     secondStepSecondRequest(getCheckWebnearSi2)
                         .then(function () {
-                            console.log("redirection is called");
-                            console.log(finalurl);
                             getThePopupFromSi2.setAttribute("ac_step", 1);
                             getThePopupFromSi2.setAttribute("loader_status", false);
                             location.href = finalurl;
+                        }).catch(() => {
+                          track("slot-e", "flow-bq");
                         });
+                }).catch(() => {
+                  track("slot-e", "flow-general");
                 });
         }
 
@@ -429,6 +438,7 @@
                 "Refferer": encodeURIComponent(webNearInfoSi2.wr__referrer),
                 "Region": webNearInfoSi2.wr__region,
                 "whatsapp_user_consent": webNearInfoSi2.whatsAppUserConsent,
+                "step": "s4"
             }];
 
             let options = {
@@ -463,7 +473,22 @@
             getThePopupFromSi2.setAttribute("ac_step", 1);
         });
 
-        get1stepBtnSi2.addEventListener('click', fromSend1stStepSi2);
-        get2stepfinishBtnSi2.addEventListener('click', fromSend2ndStepSi2);
+        // get1stepBtnSi2.addEventListener('click', fromSend1stStepSi2);
+        get1stepBtnSi2.addEventListener('click', () => {
+          try {
+            fromSend1stStepSi2();
+          } catch (error) {
+            saveFormEventsActivity("info-e", null, null, "Error in 1st step");
+          }
+        });
+        
+        // get2stepfinishBtnSi2.addEventListener('click', fromSend2ndStepSi2);
+        get2stepfinishBtnSi2.addEventListener('click', () => {
+          try {
+            fromSend2ndStepSi2();
+          } catch (error) {
+            saveFormEventsActivity("slot-e", null, null, "Error in 2nd step");
+          }
+        });
     })
 </script>
