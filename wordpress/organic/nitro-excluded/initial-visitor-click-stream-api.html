@@ -82,23 +82,15 @@
       // resuable functions end ----
 
       const timestampOfUserVisit = new Date();
-      const geo = {
-        City: null,
-        Region: null,
-        Country: null,
-        Client_Timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      };
-
-      if (geo.Client_Timezone === "Asia/Calcutta") geo.Client_Timezone = "Asia/Kolkata";
 
       let page_url = window.location.href;
       page_url = ((location.pathname != "/") && page_url.endsWith("/")) ? page_url.slice(0, -1) : page_url;
       let cta_lp = window.location.pathname;
       cta_lp = (cta_lp.endsWith("/") && (cta_lp != "/")) ? cta_lp.slice(0, -1) : cta_lp;
       let referrer = document.referrer;
-      let l_page_url = "learn.ik/" + page_url.split("/").pop();
+      let l_page_url = "ik.com/" + page_url.split("/").pop();
       if ((referrer || '') != "") {
-        l_page_url = "learn.ik/" + (referrer || '').split("/").pop();
+        l_page_url = "ik.com/" + (referrer || '').split("/").pop();
       }
 
       function getParams(t){var t=t?t.split("?")[1]:window.location.search.slice(1),r={};if(t)for(var s=(t=t.split("#")[0]).split("&"),e=0;e<s.length;e++){var a,n=s[e].split("="),i=n[0],o=void 0===n[1]?void 0:n[1];(i=i.toLowerCase()).match(/\[(\d+)?\]$/)?(r[a=i.replace(/\[(\d+)?\]/,"")]||(r[a]=[]),i.match(/\[\d+\]$/)?(n=/\[(\d+)\]/.exec(i)[1],r[a][n]=o):r[a].push(o)):r[i]?("string"==typeof r[i]&&(r[i]=[r[i]]),r[i].push(o)):r[i]=o}return r}
@@ -117,7 +109,6 @@
 
       data = [{
         Lead_Created_Time: timestampOfUserVisit,
-        // Lead_Time_Zone: geo.Client_Timezone,
         UTM_Campaign: params.utm_campaign,
         UTM_Source: params.utm_source,
         UTM_Medium: params.utm_medium,
@@ -126,18 +117,12 @@
         Tracking_ID: "",
         User_ID: visitor_id,
         Page_URL: page_url,
-        // Country: params.v_country,
-        // Client_Timezone: geo.Client_Timezone,
-        // Country: geo.Country,
-        // City: geo.City,
-        // Region: geo.Region,
-        CTA_Page: "learn.ik" + cta_lp,
+        CTA_Page: "ik.com" + cta_lp,
         Landing_Page: l_page_url,
         Click_History: "",
         Device: getDeviceType(),
         User_Agent: encodeURIComponent(navigator?.userAgent || ""),
         Refferer: params.wr__referrer,
-        // Region: params.wr__region,
         step: "s0"
       }];
 
@@ -148,10 +133,7 @@
           if (entry.initiatorType !== 'link') {
             return false;
           }
-          if(entry?.responseStatus) {
-            return entry.responseStatus !== 200
-          }
-          return entry?.transferSize === 0;
+          return entry?.responseStatus ? entry.responseStatus !== 200 : entry?.transferSize === 0;
         });
 
         let visitor_id = getCookie("unique_visitor_id6");
