@@ -429,12 +429,15 @@
             if ((fullname.length == 0) && (wEmail.length == 0)) {
                 getFnErrMsg2.setAttribute('err_status', true);
                 getEmErrMsg2.setAttribute('err_status', true);
+                track("info-e", "validation-general");
                 return;
             } else if (!name_regex2.test(fullname) || fullname.length == 0) {
                 getFnErrMsg2.setAttribute('err_status', true);
+                track("info-e", "validation-name");
                 return;
             } else if (!email_regex2.test(wEmail) || wEmail.length == 0) {
                 getEmErrMsg2.setAttribute('err_status', true);
+                track("info-e", "validation-email");
                 return;
             } else {
 
@@ -455,13 +458,16 @@
                         'webinar_name': webNearInfo.eventname
                     });
                 } catch (err) {
-                    console.log("Data Layer add faild");
-                    console.log(err);
+                    console.error(err);
+                    track("info-e", "reporting-data-layer");
                 }
 
                 pushToEndPoint2("https://hooks.zapier.com/hooks/catch/11068981/34c9jjz/")
                     .then(() => {
                         getThePopupFrom2.setAttribute("active_step", 2);
+                        track("info");
+                    }).catch((e) => {
+                      track("info-e", "flow-general");
                     });
             }
         }
@@ -496,8 +502,8 @@
                     'webinar_name': webNearInfo.eventname
                 });
             } catch (err) {
-                console.log("Data Layer add faild");
-                console.log(err);
+              console.error(err);
+              track("slot-e", "reporting-data-layer");
             }
 
             let pushUrl = is_webinar_1o1_eligible ? "https://hooks.zapier.com/hooks/catch/11068981/2dvppke/" : "https://hooks.zapier.com/hooks/catch/11068981/34cq9f8/";
@@ -506,13 +512,19 @@
             function secondZapPushFun() {
                 pushToEndPoint2(pushUrl)
                     .then(() => {
+                        track("slot");
+                        trackEventOnBQ("s4");
                         getThePopupFrom2.setAttribute("active_step", 3);
+                    }).catch(() => {
+                        track("slot-e", "flow-general");
                     });
             }
             if (is_webinar_1o1_eligible) {
                 bookSlot(webNearEmailAddress2.value, getCheckWebnear.getAttribute('slot_id')).then(function (data) {
                     if (data.booking_id) webNearInfo2.booking_id = data.booking_id;
                     secondZapPushFun();
+                }).catch(function (err) {
+                    track("slot-e", "flow-one-on-one");
                 });
             } else {
                 secondZapPushFun();
@@ -625,86 +637,19 @@
                                 expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
                             })
                         } catch (err) {
-                            console.log("Data Layer add faild");
-                            console.log(err);
+                          track("gql-e", "reporting-data-layer");
+                          console.error(err);
                         }
-                        sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/34cx4dp/", GQLformData);
-                        sendDataToVisitorTracking(GQLformData);
+                        sendRequestZapiar(
+                          "https://hooks.zapier.com/hooks/catch/11068981/34cx4dp/",
+                          GQLformData,
+                          function () { track("gql", "Success in source step"); },
+                          function () { track("gql-e", "flow-zapier"); }
+                        );
                     });
+            } else {
+              track("gql-e", "validation-general");
             }
-        }
-
-        async function sendDataToVisitorTracking(zapData) {
-          //lead LeadCreatedTime
-          const currentDateTime = new Date();
-          const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
-
-          function formatDateTime(dateTimeString) {
-            const date = new Date(dateTimeString);
-            const year = date.getUTCFullYear();
-            const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-            const day = date.getUTCDate().toString().padStart(2, '0');
-            const hours = date.getUTCHours().toString().padStart(2, '0');
-            const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-            const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} UTC`;
-          }
-
-          const formattedStartDateTime = formatDateTime(webNearInfo2.eventStartTime);
-          const formattedEndDateTime = formatDateTime(webNearInfo2.eventEndTime);
-
-          let data = [{
-            "Lead_Created_Time": LeadCreatedTime,
-            "Lead_Name": webNearInfo2.firstName + ' ' + webNearInfo2.lastName,
-            "Lead_First_Name": webNearInfo2.firstName,
-            "Lead_Last__Name": webNearInfo2.lastName,
-            "Lead_Email": webNearEmailAddress2.value,
-            "Lead_Time_Zone": webNearInfo2.user_timezone,
-            "Event_Start_Date_Time": formattedStartDateTime,
-            "Event_End_Date_Time": formattedEndDateTime,
-            "Mobile": zapData.phone_number_full,
-            "UTM_Campaign": webNearInfo2.utm_campaign,
-            "UTM_Source": webNearInfo2.utm_source,
-            "UTM_Medium": webNearInfo2.utm_medium,
-            "UTM_Term": webNearInfo2.utm_term,
-            "UTM_Content": webNearInfo2.utm_content,
-            "User_ID": visitor_id,
-            "Page_URL": encodeURIComponent(webNearInfo2.page_url),
-            "Country": webNearInfo2.v_country,
-            "Client_Timezone": webNearInfo2.user_timezone,
-            "CTA_Page": encodeURIComponent(webNearInfo2.cta_page_url),
-            "Landing_Page": encodeURIComponent(webNearInfo2.l_page_url),
-            "Webinar_reg_type": "",
-            "UUID": webNearInfo2.salesforce_uuid,
-            "Click_History": "",
-            "City": webNearInfo2.wr__city,
-            "Device": webNearInfo2.wr__device,
-            "User_Agent": encodeURIComponent(navigator?.userAgent || ""),
-            "Refferer": encodeURIComponent(webNearInfo2.wr__referrer),
-            "Region": webNearInfo2.wr__region,
-            "whatsapp_user_consent": zapData.whatsAppUserConsent,
-            "step": "gql_1"
-          }];
-
-          let options = {
-            method: 'POST',
-            headers: {
-              'x-api-key': 'fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              dataset_id: "Marketing_data_new_logic",
-              table_id: "Leads_Click_history",
-              data: data,
-            }),
-          };
-
-          try {
-            const response = await fetch('https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod', options);
-            return response;
-          } catch (err) {
-            console.error(err);
-          };
         }
 
         async function leadScoreService() {
@@ -741,8 +686,8 @@
             }
         }
 
-        async function sendRequestZapiar(url, data) {
-            let options = {
+        async function sendRequestZapiar(url, data, successTrackCallback = null, failTrackCallback = null) {
+          let options = {
                 method: 'POST',
                 mode: "no-cors",
                 headers: {
@@ -753,20 +698,20 @@
 
             try {
                 let response = await fetch(url, options);
-                secondStepSecondRequest2();
+                trackEventOnBQ("gql_1");
                 getThePopupFrom2.setAttribute('show_status', false);
                 document.querySelectorAll('.af_content').forEach((item) => {
                     item.setAttribute('show_status', true);
                 });
                 loadPageFild();
-                console.log('Form submitted successfully!');
+                if (typeof successTrackCallback === 'function') successTrackCallback();
             } catch {
-                console.log('Form Summit faild');
-                alert("Something is wrong");
+              console.error('Form Submit Failed', err);
+              if (typeof failTrackCallback === 'function') failTrackCallback();
             }
         }
 
-        async function secondStepSecondRequest2() {
+        async function trackEventOnBQ(step = "s4") {
             const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
 
             //lead LeadCreatedTime
@@ -822,6 +767,7 @@
                 "Refferer": encodeURIComponent(webNearInfo2.wr__referrer),
                 "Region": webNearInfo2.wr__region,
                 "whatsapp_user_consent": webNearInfo2.whatsAppUserConsent,
+                "step": step
             }];
 
             let options = {

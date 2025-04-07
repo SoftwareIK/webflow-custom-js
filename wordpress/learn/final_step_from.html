@@ -274,7 +274,7 @@
         }
     }
 
-    // Thard step
+    // Third step
     function finalFrStep3(btn) {
         function track(step, message) {
             typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
@@ -324,7 +324,7 @@
                 expected_revenue: expectedRev,
             })
         } catch (err) {
-            track("gql-e", "reporting-data-layer");
+            track("source-e", "reporting-data-layer");
             console.error(err);
         }
         sendRequestZapiar(

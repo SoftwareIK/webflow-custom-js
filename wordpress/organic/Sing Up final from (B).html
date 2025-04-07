@@ -153,6 +153,7 @@
         const response = await fetch('https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod', options);
         return response;
       } catch (err) {
+        track("gql-e", "bq-call");
         console.error(err);
       };
     }
@@ -271,12 +272,19 @@
                     formName: "Lead Qualifier Form",
                 });
             } catch (err) {
-                console.log("Data Layer add faild");
+                track("gql-e", "reporting-data-layer");
                 console.log(err);
             }
 
-            sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/34cx4dp/", GQLformData);
+            sendRequestZapiar(
+              "https://hooks.zapier.com/hooks/catch/11068981/34cx4dp/", 
+              GQLformData,
+              function () { track("gql", "Success in gql step"); },
+              function () { track("gql-e", "flow-general"); }
+            );
             sendDataToVisitorTracking(GQLformData)
+        } else {
+          track("gql-e", "validation-general");
         }
     }
 
@@ -359,14 +367,21 @@
                     formName: "Switch Domain Form",
                 })
             } catch (err) {
-                console.log("Data Layer add faild");
-                console.log(err);
+                track("domain-e", "reporting-data-layer");
+                console.error(err);
             }
-            sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/340arrq/", GQLformData);
+            sendRequestZapiar(
+              "https://hooks.zapier.com/hooks/catch/11068981/340arrq/", 
+              GQLformData,
+              function () { track("domain", "Success in domain step"); },
+              function () { track("domain-e", "flow-zapier"); }
+            );
+        } else {
+            track("domain-e", "validation-general");
         }
     }
 
-    // Thard step
+    // Third step
     function finalFrStep3(btn) {
         btn.disabled = true;
         btn.innerHTML = "Please wait...";
@@ -430,14 +445,19 @@
                 formName: "Source Form",
             })
         } catch (err) {
-            console.log("Data Layer add faild");
+            track("source-e", "reporting-data-layer");
             console.log(err);
         }
-        sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3ib11qu/", GQLformData);
+        sendRequestZapiar(
+          "https://hooks.zapier.com/hooks/catch/11068981/3ib11qu/", 
+          GQLformData,
+            function () { track("source", "Success in source step"); },
+            function () { track("source-e", "flow-zapier"); }
+        );
     }
 
     // send request fun
-    async function sendRequestZapiar(url, data) {
+    async function sendRequestZapiar(url, data, successTrackCallback = null, failTrackCallback = null) {
         let options = {
             method: 'POST',
             mode: "no-cors",
@@ -450,10 +470,10 @@
         try {
             let response = await fetch(url, options);
             moveNextStep();
-            console.log('Form submitted successfully!');
+            if (typeof successTrackCallback === 'function') successTrackCallback();
         } catch {
-            console.log('Form Summit faild');
-            alert("Something is wrong");
+            console.error("sendRequestZapiar", err);
+            if (failTrackCallback) failTrackCallback();
         }
     }
 
