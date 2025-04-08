@@ -398,6 +398,7 @@
         let getCurrentStep = parseInt(getFinalForm.getAttribute("active_step"));
         getCurrentStep++;
         if (getCurrentStep == 2) getCurrentStep++;
+				if (getCurrentStep == 3) getCurrentStep++;
         getFinalForm.setAttribute("active_step", getCurrentStep);
     }
 
