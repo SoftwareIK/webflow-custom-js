@@ -1,0 +1,158 @@
+<!-- initial-visitor-click-stream-api -->
+<script nitro-exclude>
+  try {
+    (function () {
+      let data = []
+      function fireAPI(data) {
+        let url = "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod";
+        let option = {
+          method: "POST",
+          headers: {
+            "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            dataset_id: "Marketing_data_new_logic",
+            table_id: "Leads_Click_history",
+            data,
+          }),
+        };
+        try {
+          fetch(url, option).catch(error => console.error("error while calling initial visitor api", error));
+        } catch (err) {
+          console.error("error while calling fetch", err);
+        }
+      }
+
+      // resuable functions start ----
+      function read_cookie(name) {
+        var result = document.cookie.match(new RegExp(name + '=([^;]+)'));
+        result && (result = JSON.parse(result[1]));
+        return result;
+      }
+
+      function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+
+      function setCookie(cname, cvalue) {
+        var d = new Date();
+        d.setTime(d.getTime() + (400 * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+
+        var domainParts = document.location.hostname.split('.');
+        var baseDomain = domainParts.slice(-2).join('.')
+        var domain = "domain=." + baseDomain;
+        var sameSite = "SameSite=None; Secure";
+
+        document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";" + domain + ";path=/;" + sameSite;
+        // document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+      }
+
+      function create_UUID() {
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+          var r = Math.random() * 16 | 0;
+          var v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+        var timestamp = new Date().getTime();
+        return uuid + '-' + timestamp;
+      }
+
+      function getDeviceType() {
+        var userAgent = navigator.userAgent;
+        if (/mobile/i.test(userAgent)) {
+          return 'Mobile';
+        } else if (/iPad|Android|Touch/i.test(userAgent)) {
+          return 'Tablet';
+        } else {
+          return 'Desktop';
+        }
+      }
+      // resuable functions end ----
+
+      const timestampOfUserVisit = new Date();
+
+      let page_url = window.location.href;
+      page_url = ((location.pathname != "/") && page_url.endsWith("/")) ? page_url.slice(0, -1) : page_url;
+      let cta_lp = window.location.pathname;
+      cta_lp = (cta_lp.endsWith("/") && (cta_lp != "/")) ? cta_lp.slice(0, -1) : cta_lp;
+      let referrer = document.referrer;
+      let l_page_url = "ik.com/" + page_url.split("/").pop();
+      if ((referrer || '') != "") {
+        l_page_url = "ik.com/" + (referrer || '').split("/").pop();
+      }
+
+      function getParams(t) { var t = t ? t.split("?")[1] : window.location.search.slice(1), r = {}; if (t) for (var s = (t = t.split("#")[0]).split("&"), e = 0; e < s.length; e++) { var a, n = s[e].split("="), i = n[0], o = void 0 === n[1] ? void 0 : n[1]; (i = i.toLowerCase()).match(/\[(\d+)?\]$/) ? (r[a = i.replace(/\[(\d+)?\]/, "")] || (r[a] = []), i.match(/\[\d+\]$/) ? (n = /\[(\d+)\]/.exec(i)[1], r[a][n] = o) : r[a].push(o)) : r[i] ? ("string" == typeof r[i] && (r[i] = [r[i]]), r[i].push(o)) : r[i] = o } return r }
+      let params = [];
+      try {
+        params = read_cookie("v_latest") || getParams()
+      } catch (error) {
+        console.error("Error while reading cookie", error);
+      }
+
+      let visitor_id = getCookie("unique_visitor_id") ||  getCookie("unique_visitor_id6");
+      if (!visitor_id) {
+        visitor_id = create_UUID();
+        setCookie("unique_visitor_id6", visitor_id);
+      }
+
+      data = [{
+        Lead_Created_Time: timestampOfUserVisit,
+        UTM_Campaign: params.utm_campaign,
+        UTM_Source: params.utm_source,
+        UTM_Medium: params.utm_medium,
+        UTM_Term: params.utm_term,
+        UTM_Content: params.utm_content,
+        Tracking_ID: "",
+        User_ID: visitor_id,
+        Page_URL: page_url,
+        CTA_Page: "ik.com" + cta_lp,
+        Landing_Page: l_page_url,
+        Click_History: "",
+        Device: getDeviceType(),
+        User_Agent: encodeURIComponent(navigator?.userAgent || ""),
+        Refferer: params.wr__referrer,
+        step: "s0"
+      }];
+
+      fireAPI(data);
+
+      function checkCSSFilesStatus() {
+        const brokenCSS = performance.getEntriesByType('resource').filter(entry => {
+          if (entry.initiatorType !== 'link') {
+            return false;
+          }
+          return entry?.responseStatus ? entry.responseStatus !== 200 : entry?.transferSize === 0;
+        });
+
+        let visitor_id = getCookie("unique_visitor_id") ||  getCookie("unique_visitor_id6");
+        if (!visitor_id) {
+          visitor_id = create_UUID();
+          setCookie("unique_visitor_id6", visitor_id);
+        }
+
+        if (brokenCSS.length > 0) {
+          fireAPI([{
+            ...data[0],
+            step: "e0_css",
+          }]);
+        }
+      }
+      checkCSSFilesStatus();
+    })();
+  } catch (error) {
+    console.error("Error while calling initial visitor api", error);
+  }
+</script>
