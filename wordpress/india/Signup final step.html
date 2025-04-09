@@ -384,8 +384,8 @@
     }
 
     // send request fun
-    async function sendRequestZapiar(url, data) {
-        let options = {
+    async function sendRequestZapiar(url, data, successTrackCallback = null, failTrackCallback = null) {
+      let options = {
             method: 'POST',
             mode: "no-cors",
             headers: {
@@ -396,6 +396,7 @@
 
         try {
             let response = await fetch(url, options);
+            if (typeof successTrackCallback === 'function') successTrackCallback();
             let wrValues = ["0-2", "3-4"];
             let rdValues = [ 'No / Little Coding Experience', 'No Coding Experience', 'None of the above'];
             if( !wrValues.includes(getWorkExperience.value) && !rdValues.includes(getDomainRole.value)){
@@ -409,7 +410,8 @@
             }
 
         } catch (error) {
-            console.error("Error in sendRequestZapiar", error);
+          if (failTrackCallback) failTrackCallback();
+          console.error("Error in sendRequestZapiar", error);
         }
     }
 
