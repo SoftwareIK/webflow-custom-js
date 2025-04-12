@@ -82,9 +82,9 @@
 
     // TODO: this should net be here.
     if (!mobileDevice()) {
-      document.querySelectorAll('.only-mobile').forEach(element => element.remove());
+      document.querySelectorAll('.only-mobile')?.forEach(element => element?.remove());
     } else {
-      document.getElementById("mobilehide").remove();
+      document.getElementById("mobilehide")?.remove();
     }
 
     const getThePopupFrom2 = document.getElementById("form-multistep");
@@ -244,7 +244,7 @@
     setHiddenFields2();
 
     async function pushToEndPoint2(endpoint) {
-      let getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      let getCheckWebnear = getSelectedSlot
       webNearInfo2.eventStartTime = getCheckWebnear.value;
       webNearInfo2.eventEndTime = getCheckWebnear.getAttribute('data-endtime');
       webNearInfo2.inviteStartTime = getCheckWebnear.getAttribute('data-invitee_starttime');
@@ -358,6 +358,14 @@
       }
     }
 
+    function getSelectedSlot() {
+      const selectedSlot = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      if(selectedSlot == null){
+        return webNearSlots2.querySelector('input[name="v2_slot"]');
+      }
+      return webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+    }
+
     function changeFormStep(fromStep, toStep) {
       if (mobileDevice()) {
         return mobileFormSteps(fromStep, toStep);
@@ -389,7 +397,7 @@
       const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 
-      const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      const getCheckWebnear = getSelectedSlot
       const getFullData = webinarSlots[parseInt(getCheckWebnear.getAttribute("slot-index"))];
 
       const dateString = `${getFullData.weekday}, ${day} ${months[parseInt(getFullData.month) - 1]}, ${getFullData.hour}:${getFullData.minute} ${getFullData.am_or_pm}`
@@ -527,7 +535,7 @@
       function track(step, message) {
         typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
       }
-      const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      const getCheckWebnear = getSelectedSlot
 
       let utmm = visitor_id + ":" + webNearInfo2.v_country;
       let sf_uuid = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage");
@@ -663,7 +671,7 @@
 
     async function leadScoreService() {
       const API_KEY = "cT8YFc92uylyqfQXWMMrFdLTiMA";
-      const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      const getCheckWebnear = getSelectedSlot
 
       let data = {
         formatted_date: getCheckWebnear.value,
@@ -720,7 +728,7 @@
     }
 
     async function secondStepSecondRequest2() {
-      const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      const getCheckWebnear = getSelectedSlot
 
       //lead LeadCreatedTime
       const currentDateTime = new Date();
