@@ -11,7 +11,7 @@
 <script>
   window.addEventListener("DOMContentLoaded", function () {
     document.addEventListener(formPopupOpenedEvent, function () {
-      const mainContainer = document.querySelector(".v2_from_wrapper");
+      const mainContainer = document.getElementById("form-multistep");
       // Select *all* elements with class "slot_fild"
       const slotFields = mainContainer.querySelectorAll(".slot_fild");
       const limitedSlots = webinarSlots.slice(0, 6);
@@ -81,13 +81,13 @@
   document.addEventListener(formPopupOpenedEvent, function () {
 
     // TODO: this should net be here.
-    if(!mobileDevice()) {
+    if (!mobileDevice()) {
       document.querySelectorAll('.only-mobile').forEach(element => element.remove());
     } else {
       document.getElementById("mobilehide").remove();
     }
 
-    const getThePopupFrom2 = document.querySelector('.v2_from_wrapper');
+    const getThePopupFrom2 = document.getElementById("form-multistep");
     getThePopupFrom2.querySelector(".time_zone").innerHTML = `Time Zone: ${v_timezone}`;
 
     const webNearFullName2 = getThePopupFrom2.querySelector('input.fr_name_fl');
@@ -320,13 +320,115 @@
       getPhErrMsg2.classList.remove('visible');
     }
 
+    function mobileFormSteps(fromStep, toStep) {
+      const mobileFormContainer = document.getElementById("form-multistep");
+      const firstStepAccordian = mobileFormContainer.querySelector('.accordion-tab:first-child');
+      const secondStepAccordian = mobileFormContainer.querySelector('.accordion-tab:nth-child(2)');
+      const formSubmitButton = mobileFormContainer.querySelector('.pag-item-next');
+      const formBackButton = mobileFormContainer.querySelector('.pag-item-prev');
+
+      if (fromStep == 1 && toStep == 2) {
+        firstStepAccordian.classList.add('active-tab-two');
+        formSubmitButton.classList.remove('step_btn_1');
+        formSubmitButton.classList.add('step_btn_2');
+      } else if (fromStep == 2 && toStep == 1) { //back
+        firstStepAccordian.classList.remove('active-tab-two');
+        formSubmitButton.classList.remove('step_btn_2');
+        formSubmitButton.classList.add('step_btn_1');
+      } else if (fromStep == 2 && toStep == 3) {
+        firstStepAccordian.classList.add('finished');
+        firstStepAccordian.querySelector(".accordion-header").classList.remove("active")
+        firstStepAccordian.classList.remove('active-tab-two');
+
+        secondStepAccordian.classList.add('active');
+        secondStepAccordian.querySelector(".accordion-header").classList.add("active")
+
+        formSubmitButton.classList.remove('step_btn_2');
+        formSubmitButton.classList.add('step_btn_3');
+      } else if (fromStep == 3 && toStep == 2) { //back
+        firstStepAccordian.classList.remove('finished');
+        firstStepAccordian.querySelector(".accordion-header").classList.add("active")
+        firstStepAccordian.classList.add('active-tab-two');
+
+        secondStepAccordian.classList.remove('active');
+        secondStepAccordian.querySelector(".accordion-header").classList.remove("active")
+
+        formSubmitButton.classList.remove('step_btn_3');
+        formSubmitButton.classList.add('step_btn_2');
+      }
+    }
+
+    function changeFormStep(fromStep, toStep) {
+      if (mobileDevice()) {
+        return mobileFormSteps(fromStep, toStep);
+      }
+
+      // Step button class name correction (only one button, so update the class for that button)
+      const stepButton = getThePopupFrom2.querySelector('.step_btn');
+      stepButton.classList.remove(`step_btn_${fromStep}`);
+      stepButton.classList.add(`step_btn_${toStep}`);
+
+      // Back button visibility handling (hide on Step 1, show on Step 2 and Step 3)
+      const backButtonAllSteps = getThePopupFrom2.querySelectorAll('.step_back_2, .step_back_3');
+
+      // Hide back button on Step 1
+      if (toStep === 1) {
+        backButtonAllSteps.forEach(button => button.classList.add('hidden'));
+      } else {
+        backButtonAllSteps.forEach(button => button.classList.remove('hidden'));
+      }
+
+      // Display change for steps
+      const fromStepDiv = getThePopupFrom2.querySelector(`div[data-name="Step ${fromStep}"]`);
+      const toStepDiv = getThePopupFrom2.querySelector(`div[data-name="Step ${toStep}"]`);
+      fromStepDiv.classList.remove('selected');
+      toStepDiv.classList.add('selected');
+    }
+
+    function updateWebinarTimeOnSuccess() {
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+
+      const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      const getFullData = webinarSlots[parseInt(getCheckWebnear.getAttribute("slot-index"))];
+
+      const dateString = `${getFullData.weekday}, ${day} ${months[parseInt(getFullData.month) - 1]}, ${getFullData.hour}:${getFullData.minute} ${getFullData.am_or_pm}`
+
+      var tyCards = document.querySelectorAll('.ty-card');
+      tyCards.forEach(function (card) {
+        var dateElement = card.querySelector('h3');
+        if (dateElement) {
+          dateElement.textContent = dateString;
+        }
+      });
+    }
+
+    function step4ToSuccessSection() {
+      document.getElementById('form-multistep').style.display = 'none';
+      updateWebinarTimeOnSuccess();
+
+      let element = document.querySelector('.ty-main');
+      element.style.display = 'block';
+      element.style.opacity = 0;
+
+      let fadeIn = function () {
+        let opacity = parseFloat(element.style.opacity);
+        if (opacity < 1) {
+          element.style.opacity = opacity + 0.05; // Adjust the step size to control the speed
+          requestAnimationFrame(fadeIn); // Keep calling the function until opacity reaches 1
+        }
+      };
+
+      fadeIn();
+    }
+
     // First Form Submittion
     function fromSend1stStep2() {
       function track(step, message) {
         typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
       }
       const step1container = document.querySelector('div[data-name="Step 1"]')
-      if (step1container.querySelector('.error-message.visible')) { 
+      if (step1container.querySelector('.error-message.visible')) {
         return;
       }
 
@@ -393,7 +495,7 @@
         try {
           webNearPhoneNumberWri2 = window.intlTelInputGlobals.getInstance(document.querySelector(".fr_phone_fl"))
         } catch (error) {
-          
+
         }
         webNearInfo2.fPhoneNumber = "";
         if (typeof intlTelInputUtils == "undefined") {
@@ -410,15 +512,7 @@
 
         pushToEndPoint2(zapUrl)
           .then(() => {
-            const stepButton = getThePopupFrom2.querySelector('.step_btn_1');
-            stepButton.classList.remove('step_btn_1');
-            stepButton.classList.add('step_btn_2');
-
-            getThePopupFrom2.querySelector('.step_back_2').classList.remove(".hidden")
-            
-            getThePopupFrom2.querySelector('div[data-name="Step 1"]').classList.remove('selected');
-            getThePopupFrom2.querySelector('div[data-name="Step 2"]').classList.add('selected');
-
+            changeFormStep(1, 2);
             // getThePopupFrom2.setAttribute("active_step", 2);
             track("info");
           }).catch(() => {
@@ -456,16 +550,7 @@
       pushUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/" : pushUrl;
       pushToEndPoint2(pushUrl)
         .then(() => {
-          const stepButton = getThePopupFrom2.querySelector('.step_btn_2');
-          stepButton.classList.remove('step_btn_2');
-          stepButton.classList.add('step_btn_3');
-
-          getThePopupFrom2.querySelector('.step_back_2').classList.add(".step_back_3");
-          getThePopupFrom2.querySelector('.step_back_3').classList.remove(".step_back_2");
-
-          getThePopupFrom2.querySelector('div[data-name="Step 2"]').classList.remove('selected');
-          getThePopupFrom2.querySelector('div[data-name="Step 3"]').classList.add('selected');
-          // getThePopupFrom2.setAttribute("active_step", 3);
+          changeFormStep(2, 3);
           track("slot");
           secondStepSecondRequest2();
         }).catch(() => {
@@ -622,8 +707,7 @@
 
       try {
         let response = await fetch(url, options);
-        document.querySelector(".complete_message").setAttribute('show_status', true);
-        loadPageFild();
+        step4ToSuccessSection();
         if (typeof callback === 'function') {
           callback("gql");
         }
@@ -717,25 +801,6 @@
     }
 
 
-    function loadPageFild() {
-      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-
-      const getCheckWebnear = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
-      const getFullData = webinarSlots[parseInt(getCheckWebnear.getAttribute("slot-index"))];
-
-      const getDayFild = document.querySelector('#v2-success-day');
-      const getDateFild = document.querySelector('#v2-success-date');
-      const getMonthFild = document.querySelector('#v2-success-month');
-      const getTimeFild = document.querySelector('#v2-success-time');
-
-      getDayFild.innerHTML = getFullData.weekday;
-      getDateFild.innerHTML = getFullData.day;
-      getMonthFild.innerHTML = months[parseInt(getFullData.month) - 1];
-      getTimeFild.innerHTML = `${getFullData.hour}:${getFullData.minute} ${getFullData.am_or_pm}`;
-
-    }
-
     document.addEventListener("click", function (event) {
       const btn = event.target.closest(".step_btn");
       if (!btn) return;
@@ -759,9 +824,9 @@
           saveFormEventsActivity("gql-e", null, null, "Error in 3rd step");
         }
       } else if (btn.classList.contains("step_back_2")) {
-        getThePopupFrom2.setAttribute("active_step", 1);
+        changeFormStep(2, 1)
       } else if (btn.classList.contains("step_back_3")) {
-        getThePopupFrom2.setAttribute("active_step", 2);
+        changeFormStep(3, 2)
       }
     });
     // const getV2Btn1 = getThePopupFrom2.querySelector('.step_btn_1');
