@@ -244,7 +244,7 @@
     setHiddenFields2();
 
     async function pushToEndPoint2(endpoint) {
-      let getCheckWebnear = getSelectedSlot
+      let getCheckWebnear = getSelectedSlot();
       webNearInfo2.eventStartTime = getCheckWebnear.value;
       webNearInfo2.eventEndTime = getCheckWebnear.getAttribute('data-endtime');
       webNearInfo2.inviteStartTime = getCheckWebnear.getAttribute('data-invitee_starttime');
@@ -331,10 +331,18 @@
         firstStepAccordian.classList.add('active-tab-two');
         formSubmitButton.classList.remove('step_btn_1');
         formSubmitButton.classList.add('step_btn_2');
+
+        formBackButton.classList.remove('hidden');
+        formBackButton.classList.remove("step_back_1");
+        formBackButton.classList.add("step_back_2");
       } else if (fromStep == 2 && toStep == 1) { //back
         firstStepAccordian.classList.remove('active-tab-two');
         formSubmitButton.classList.remove('step_btn_2');
         formSubmitButton.classList.add('step_btn_1');
+
+        formBackButton.classList.add('hidden');
+        formBackButton.classList.add("step_back_1")
+        formBackButton.classList.remove("step_back_2");
       } else if (fromStep == 2 && toStep == 3) {
         firstStepAccordian.classList.add('finished');
         firstStepAccordian.querySelector(".accordion-header").classList.remove("active")
@@ -360,7 +368,7 @@
 
     function getSelectedSlot() {
       const selectedSlot = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
-      if(selectedSlot == null){
+      if (selectedSlot == null) {
         return webNearSlots2.querySelector('input[name="v2_slot"]');
       }
       return webNearSlots2.querySelector('input[name="v2_slot"]:checked');
@@ -397,10 +405,10 @@
       const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 
-      const getCheckWebnear = getSelectedSlot
+      const getCheckWebnear = getSelectedSlot();
       const getFullData = webinarSlots[parseInt(getCheckWebnear.getAttribute("slot-index"))];
 
-      const dateString = `${getFullData.weekday}, ${day} ${months[parseInt(getFullData.month) - 1]}, ${getFullData.hour}:${getFullData.minute} ${getFullData.am_or_pm}`
+      const dateString = `${getFullData.weekday}, ${getFullData.day} ${months[parseInt(getFullData.month) - 1]}, ${getFullData.hour}:${getFullData.minute} ${getFullData.am_or_pm}`
 
       var tyCards = document.querySelectorAll('.ty-card');
       tyCards.forEach(function (card) {
@@ -501,7 +509,7 @@
         // webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
         let webNearPhoneNumberWri2;
         try {
-          webNearPhoneNumberWri2 = window.intlTelInputGlobals.getInstance(document.querySelector(".fr_phone_fl"))
+          webNearPhoneNumberWri2 = window.intlTelInputGlobals.getInstance(webNearPhoneNumber2)
         } catch (error) {
 
         }
@@ -535,7 +543,7 @@
       function track(step, message) {
         typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
       }
-      const getCheckWebnear = getSelectedSlot
+      const getCheckWebnear = getSelectedSlot();
 
       let utmm = visitor_id + ":" + webNearInfo2.v_country;
       let sf_uuid = v_timezone + ":learn.ik" + cta_lp + ":learn.ik" + getCookie("ik-landingpage");
@@ -567,11 +575,12 @@
     }
 
 
-    const getWorkExperience = getThePopupFrom2.querySelector('.gql_exp_select');
+    const getWorkExperience = getThePopupFrom2.querySelector('input[name="m-experience"]:checked').value;
+    const paTimeSlot = getThePopupFrom2.querySelector('input[name="m-time-slot"]:checked').value
     const getDomainRole = getThePopupFrom2.querySelector('.gql_domain_select');
-    const getStartIn = getThePopupFrom2.querySelector('.gql_int_select');
-    const getIsStudent = getThePopupFrom2.querySelector('.v2-checkbox-is-student');
-    const getIsLaidOff = getThePopupFrom2.querySelector('.v2-checkbox-is-laidoff');
+    // const getStartIn = getThePopupFrom2.querySelector('.gql_int_select');
+    // const getIsStudent = getThePopupFrom2.querySelector('.v2-checkbox-is-student');
+    // const getIsLaidOff = getThePopupFrom2.querySelector('.v2-checkbox-is-laidoff');
 
     // const errWorkEx = getThePopupFrom2.querySelector('.v2_exp_fild');
     const errDomEx = getDomainRole.closest('.form-group').querySelector('.error-message');
@@ -595,11 +604,13 @@
       function track(step, message) {
         typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
       }
-      let v2WorkExp = getWorkExperience.value;
+
+      let paSlot = paTimeSlot;
+      let v2WorkExp = getWorkExperience;
       let v2DomExp = getDomainRole.value;
-      let v2StarExp = getStartIn.value;
-      let v2IsStudent = getIsStudent.checked;
-      let v2IsLaidOff = getIsLaidOff.checked;
+      // let v2StarExp = getStartIn.value;
+      // let v2IsStudent = getIsStudent.checked;
+      // let v2IsLaidOff = getIsLaidOff.checked;
 
       let gqlErrStatus = false;
 
@@ -638,68 +649,27 @@
           'Event End Time': webNearInfo2.eventEndTime,
           'Work Experience': v2WorkExp,
           'Role Domain': v2DomExp,
-          // 'PA Consult Time': "",
+          'PA Consult Time': paSlot,
           // 'PA Consult Time Other': "",
-          'Interview Start Time': v2StarExp,
-          'Laid Off': v2IsLaidOff,
-          'Is Student': v2IsStudent,
+          // 'Interview Start Time': v2StarExp,
+          // 'Laid Off': v2IsLaidOff,
+          // 'Is Student': v2IsStudent,
           salesforce_uuid: webNearInfo2.salesforce_uuid,
         };
 
-        leadScoreService()
-          .then(function (data) {
-            leadScoreData = data;
-          }).then(function () {
-            GQLformData = { ...GQLformData, ...leadScoreData };
-            try {
-              dataLayer.push({
-                event: "wordpress_form_submitted",
-                formName: "Lead Qualifier Form",
-                expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
-              })
-            } catch (err) {
-              console.log("error in data layer push");
-            }
-            let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/" : "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/";
+        try {
+          dataLayer.push({
+            event: "wordpress_form_submitted",
+            formName: "Lead Qualifier Form",
+          })
+        } catch (err) {
+          console.log("error in data layer push");
+        }
+        let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/" : "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/";
 
-            sendRequestZapiar(zapUrl, GQLformData, track);
-          });
+        sendRequestZapiar(zapUrl, GQLformData, track);
       } else {
         track("gql-e", "validation-gql");
-      }
-    }
-
-    async function leadScoreService() {
-      const API_KEY = "cT8YFc92uylyqfQXWMMrFdLTiMA";
-      const getCheckWebnear = getSelectedSlot
-
-      let data = {
-        formatted_date: getCheckWebnear.value,
-        lead_email: webNearEmailAddress2.value,
-        channel: webNearInfo2.utm_medium,
-        role_domain: getDomainRole.value,
-        interview_start_time: getCheckWebnear.value,
-        sale_date: null,
-        alumni_stats: 'New_Lead',
-      }
-      const payload = JSON.stringify({
-        leads_stats: isSwitchUp !== "No" ? "SU" : "Others",
-        ...data
-      });
-
-      let options = {
-        method: "POST",
-        body: payload,
-        headers: { 'x-api-key': API_KEY, 'Content-Type': 'application/json' },
-      }
-
-      try {
-        const response = await fetch('https://j466lvsvmbogck6ejb7vwogo6m0kuwjy.lambda-url.us-west-1.on.aws/', options);
-        const result = await response.json();
-        if (!result.email) result.email = webNearEmailAddress2.value;
-        return result;
-      } catch (e) {
-        console.error(e)
       }
     }
 
@@ -728,7 +698,7 @@
     }
 
     async function secondStepSecondRequest2() {
-      const getCheckWebnear = getSelectedSlot
+      const getCheckWebnear = getSelectedSlot();
 
       //lead LeadCreatedTime
       const currentDateTime = new Date();
