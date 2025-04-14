@@ -353,6 +353,9 @@
 
         formSubmitButton.classList.remove('step_btn_2');
         formSubmitButton.classList.add('step_btn_3');
+
+        formBackButton.classList.remove("step_back_2");
+        formBackButton.classList.add("step_back_3");
       } else if (fromStep == 3 && toStep == 2) { //back
         firstStepAccordian.classList.remove('finished');
         firstStepAccordian.querySelector(".accordion-header").classList.add("active")
@@ -363,6 +366,9 @@
 
         formSubmitButton.classList.remove('step_btn_3');
         formSubmitButton.classList.add('step_btn_2');
+
+        formBackButton.classList.remove("step_back_3");
+        formBackButton.classList.add("step_back_2");
       }
     }
 
@@ -733,6 +739,7 @@
     }
 
 
+    // const getWorkExperience = document.getElementById("form-multistep").querySelector('.gql_exp_select');
     // const getDomainRole = document.getElementById("form-multistep").querySelector('.gql_domain_select');
     // const getStartIn = document.getElementById("form-multistep").querySelector('.gql_int_select');
     // const getIsStudent = document.getElementById("form-multistep").querySelector('.v2-checkbox-is-student');
@@ -742,9 +749,11 @@
     // const errDomEx = document.getElementById("form-multistep").querySelector('.gql_domain_select').closest('.form-group').querySelector('.error-message');
     // const errInEx = document.getElementById("form-multistep").querySelector('.v2_int_fild');
 
-    // getWorkExperience.addEventListener('change', function () {
-    //   errWorkEx.classList.remove('visible');
-    // })
+    document.getElementById("form-multistep").querySelectorAll('input[name="experience"]').forEach((input) => {
+        input.addEventListener('change', () => {
+          document.getElementById("form-multistep").querySelector('.gql_exp_select').closest('.form-group').querySelector('.error-message').classList.remove('visible');
+        });
+    });
 
     document.getElementById("form-multistep").querySelector('.gql_domain_select').addEventListener('change', function () {
       document.getElementById("form-multistep").querySelector('.gql_domain_select').closest('.form-group').querySelector('.error-message').classList.remove('visible');
@@ -768,10 +777,10 @@
 
       let gqlErrStatus = false;
 
-      // if (!v2WorkExp) {
-      //   gqlErrStatus = true;
-      //   errWorkEx.setAttribute('err_status', gqlErrStatus);
-      // }
+      if (!v2WorkExp) {
+        gqlErrStatus = true;
+        document.getElementById("form-multistep").querySelector('.gql_exp_select').closest('.form-group').querySelector('.error-message').classList.add('visible');;
+      }
       if (!v2DomExp) {
         gqlErrStatus = true;
         document.getElementById("form-multistep").querySelector('.gql_domain_select').closest('.form-group').querySelector('.error-message').classList.add('visible');;
