@@ -11,13 +11,12 @@
 <script>
   window.addEventListener("DOMContentLoaded", function () {
     document.addEventListener(formPopupOpenedEvent, function () {
-      const mainContainer = document.getElementById("form-multistep");
       // Select *all* elements with class "slot_fild"
-      const slotFields = mainContainer.querySelectorAll(".slot_fild");
-      const limitedSlots = webinarSlots.slice(0, 6);
+      // const slotFields = document.getElementById("form-multistep")?.querySelectorAll(".slot_fild");
+      const limitedSlots = webinarSlots?.slice(0, 6);
 
       // For each .slot_fild container
-      slotFields.forEach(function (slotField) {
+      document.getElementById("form-multistep")?.querySelectorAll(".slot_fild")?.forEach(function (slotField) {
         slotField.innerHTML = "";
 
         limitedSlots.forEach(function (slot, index) {
@@ -87,25 +86,24 @@
       document.getElementById("mobilehide")?.remove();
     }
 
-    const getThePopupFrom2 = document.getElementById("form-multistep");
-    getThePopupFrom2.querySelector(".time_zone").innerHTML = `Time Zone: ${v_timezone}`;
+    document.getElementById("form-multistep").querySelector(".time_zone").innerHTML = `Time Zone: ${v_timezone}`;
 
-    const webNearFullName2 = getThePopupFrom2.querySelector('input.fr_name_fl');
-    const webNearEmailAddress2 = getThePopupFrom2.querySelector('.fr_email_fl');
-    const webNearPhoneNumber2 = getThePopupFrom2.querySelector('.fr_phone_fl');
-    const webNearAccepTance = getThePopupFrom2.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
+    // const webNearFullName2 = document.getElementById("form-multistep").querySelector('input.fr_name_fl');
+    // const webNearEmailAddress2 = document.getElementById("form-multistep").querySelector('.fr_email_fl');
+    // const webNearPhoneNumber2= document.getElementById("form-multistep").querySelector('.fr_phone_fl');
+    // const dwebNearAccepTance = document.getElementById("form-multistep").querySelector('.fr_acceptance input#Whatsapp-User-Consent');
 
-    const webNearSlots2 = getThePopupFrom2.querySelector('.slot_fild');
+    // const webNearSlots2 = document.getElementById("form-multistep").querySelector('.slot_fild');
 
-    const getFnErrMsg2 = webNearFullName2.closest('.form-group').querySelector('.error-message');
-    const getEmErrMsg2 = webNearEmailAddress2.closest('.form-group').querySelector('.error-message');
-    const getPhErrMsg2 = webNearPhoneNumber2.closest('.form-group').querySelector('.error-message');
+    // const getFnErrMsg2 = document.getElementById("form-multistep").querySelector('input.fr_name_fl').closest('.form-group').querySelector('.error-message');
+    // const getEmErrMsg2 = document.getElementById("form-multistep").querySelector('.fr_email_fl').closest('.form-group').querySelector('.error-message');
+    // const getPhErrMsg2 = document.getElementById("form-multistep").querySelector('.fr_phone_fl').closest('.form-group').querySelector('.error-message');
 
     let LeadCreatedTime = null;
 
     // document.querySelector(".data_web_near_close").addEventListener("click", function () {
     //   document.querySelector(".complete_message").setAttribute('show_status', false);
-    //   getThePopupFrom2.setAttribute("active_step", 1);
+    //   document.getElementById("form-multistep").setAttribute("active_step", 1);
     // })
 
     // name container
@@ -198,9 +196,9 @@
       const fr_acceptance = document.querySelector(".fr_acceptance");
       if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
         whatsAppUserConsentValue = "";
-      } else if (webNearAccepTance) {
-        whatsAppUserConsentValue = webNearAccepTance.checked ? "Yes" : "No";
-        webNearAccepTance.addEventListener('change', function () {
+      } else if (document.getElementById("form-multistep").querySelector('.fr_acceptance input#Whatsapp-User-Consent')) {
+        whatsAppUserConsentValue = document.getElementById("form-multistep").querySelector('.fr_acceptance input#Whatsapp-User-Consent').checked ? "Yes" : "No";
+        document.getElementById("form-multistep").querySelector('.fr_acceptance input#Whatsapp-User-Consent').addEventListener('change', function () {
           if (this.checked) {
             webNearInfo2.whatsAppUserConsent = 'Yes';
           } else {
@@ -256,7 +254,7 @@
         "First Name": webNearInfo2.firstName,
         "Last Name": webNearInfo2.lastName,
         "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
-        "Email Address": webNearEmailAddress2.value,
+        "Email Address": document.getElementById("form-multistep").querySelector('.fr_email_fl').value,
         "ByeCalendlyType": webNearInfo2.bye_calendly_type,
         "webinar-type": webNearInfo2.webinar_type,
         "Webinar Lead Type": webNearInfo2.webinar_lead_type,
@@ -317,9 +315,9 @@
 
 
     function hideError2() {
-      getFnErrMsg2.classList.remove('visible');
-      getEmErrMsg2.classList.remove('visible');
-      getPhErrMsg2.classList.remove('visible');
+      document.getElementById("form-multistep").querySelector('input.fr_name_fl').closest('.form-group').querySelector('.error-message').classList.remove('visible');
+      document.getElementById("form-multistep").querySelector('.fr_email_fl').closest('.form-group').querySelector('.error-message').classList.remove('visible');
+      document.getElementById("form-multistep").querySelector('.fr_phone_fl').closest('.form-group').querySelector('.error-message').classList.remove('visible');
     }
 
     function mobileFormSteps(fromStep, toStep) {
@@ -369,11 +367,11 @@
     }
 
     function getSelectedSlot() {
-      const selectedSlot = webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      const selectedSlot = document.getElementById("form-multistep").querySelector('.slot_fild').querySelector('input[name="v2_slot"]:checked');
       if (selectedSlot == null) {
-        return webNearSlots2.querySelector('input[name="v2_slot"]');
+        return document.getElementById("form-multistep").querySelector('.slot_fild').querySelector('input[name="v2_slot"]');
       }
-      return webNearSlots2.querySelector('input[name="v2_slot"]:checked');
+      return document.getElementById("form-multistep").querySelector('.slot_fild').querySelector('input[name="v2_slot"]:checked');
     }
 
     function leftStepSlider(from, to) {
@@ -526,14 +524,14 @@
       updateCarosual(toStep);
       leftStepSlider(fromStep - 1, toStep - 1);
       // Step button class name correction (only one button, so update the class for that button)
-      const stepButton = getThePopupFrom2.querySelector('.pag-item-next');
-      const backButton = getThePopupFrom2.querySelector('.pag-item-prev');
+      const stepButton = document.getElementById("form-multistep").querySelector('.pag-item-next');
+      const backButton = document.getElementById("form-multistep").querySelector('.pag-item-prev');
 
       stepButton.classList.remove(`step_btn_${fromStep}`);
       stepButton.classList.add(`step_btn_${toStep}`);
 
       // Back button visibility handling (hide on Step 1, show on Step 2 and Step 3)
-      const backButtonAllSteps = getThePopupFrom2.querySelectorAll('.step_back');
+      const backButtonAllSteps = document.getElementById("form-multistep").querySelectorAll('.step_back');
 
       // Hide back button on Step 1
       if (toStep === 1) {
@@ -546,8 +544,8 @@
       backButton.classList.add(`step_back_${toStep}`);
 
       // Display change for steps
-      const fromStepDiv = getThePopupFrom2.querySelector(`div[data-name="Step ${fromStep}"]`);
-      const toStepDiv = getThePopupFrom2.querySelector(`div[data-name="Step ${toStep}"]`);
+      const fromStepDiv = document.getElementById("form-multistep").querySelector(`div[data-name="Step ${fromStep}"]`);
+      const toStepDiv = document.getElementById("form-multistep").querySelector(`div[data-name="Step ${toStep}"]`);
       fromStepDiv.classList.remove('selected');
       toStepDiv.classList.add('selected');
     }
@@ -610,36 +608,36 @@
 
       setHiddenFields2();
 
-      let fullname = webNearFullName2.value.trim();
-      let wEmail = webNearEmailAddress2.value;
-      let fullPhoneNumber = webNearPhoneNumber2.value;
+      let fullname = document.getElementById("form-multistep").querySelector('input.fr_name_fl').value.trim();
+      let wEmail = document.getElementById("form-multistep").querySelector('.fr_email_fl').value;
+      let fullPhoneNumber = document.getElementById("form-multistep").querySelector('.fr_phone_fl').value;
 
       //Hide errors
-      webNearFullName2.addEventListener('input', hideError2);
-      webNearEmailAddress2.addEventListener('input', hideError2);
-      webNearPhoneNumber2.addEventListener('input', hideError2);
-      webNearFullName2.addEventListener('focus', hideError2);
-      webNearEmailAddress2.addEventListener('focus', hideError2);
-      webNearPhoneNumber2.addEventListener('focus', hideError2);
+      document.getElementById("form-multistep").querySelector('input.fr_name_fl').addEventListener('input', hideError2);
+      document.getElementById("form-multistep").querySelector('.fr_email_fl').addEventListener('input', hideError2);
+      document.getElementById("form-multistep").querySelector('.fr_phone_fl').addEventListener('input', hideError2);
+      document.getElementById("form-multistep").querySelector('input.fr_name_fl').addEventListener('focus', hideError2);
+      document.getElementById("form-multistep").querySelector('.fr_email_fl').addEventListener('focus', hideError2);
+      document.getElementById("form-multistep").querySelector('.fr_phone_fl').addEventListener('focus', hideError2);
 
 
       //Error check
       if ((fullname.length == 0) && (wEmail.length == 0) && (fullPhoneNumber.length == 0)) {
-        getFnErrMsg2.classList.add('visible');
-        getEmErrMsg2.classList.add('visible');
-        getPhErrMsg2.classList.add('visible');
+        document.getElementById("form-multistep").querySelector('input.fr_name_fl').closest('.form-group').querySelector('.error-message').classList.add('visible');
+        document.getElementById("form-multistep").querySelector('.fr_email_fl').closest('.form-group').querySelector('.error-message').classList.add('visible');
+        document.getElementById("form-multistep").querySelector('.fr_phone_fl').closest('.form-group').querySelector('.error-message').classList.add('visible');
         track("info-e", "validation-general");
         return;
       } else if (!name_regex2.test(fullname) || fullname.length == 0) {
-        getFnErrMsg2.classList.add('visible');
+        document.getElementById("form-multistep").querySelector('input.fr_name_fl').closest('.form-group').querySelector('.error-message').classList.add('visible');
         track("info-e", "validation-name");
         return;
       } else if (!email_regex2.test(wEmail) || wEmail.length == 0) {
-        getEmErrMsg2.classList.add('visible');
+        document.getElementById("form-multistep").querySelector('.fr_email_fl').closest('.form-group').querySelector('.error-message').classList.add('visible');
         track("info-e", "validation-email");
         return;
       } else if (!phone_regex2.test(fullPhoneNumber) || fullPhoneNumber.length == 0) {
-        getPhErrMsg2.classList.add('visible');
+        document.getElementById("form-multistep").querySelector('.fr_phone_fl').closest('.form-group').querySelector('.error-message').classList.add('visible');
         track("info-e", "validation-phone");
         return;
       } else {
@@ -669,7 +667,7 @@
         // webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
         let webNearPhoneNumberWri2;
         try {
-          webNearPhoneNumberWri2 = window.intlTelInputGlobals.getInstance(webNearPhoneNumber2)
+          webNearPhoneNumberWri2 = window.intlTelInputGlobals.getInstance(document.getElementById("form-multistep").querySelector('.fr_phone_fl'))
         } catch (error) {
 
         }
@@ -689,7 +687,7 @@
         pushToEndPoint2(zapUrl)
           .then(() => {
             changeFormStep(1, 2);
-            // getThePopupFrom2.setAttribute("active_step", 2);
+            // document.getElementById("form-multistep").setAttribute("active_step", 2);
             track("info");
           }).catch(() => {
             track("info-e", "flow-zapier");
@@ -712,7 +710,7 @@
         assigned_to: "Interview Kickstart",
         invitee_first_name: webNearInfo2.firstName,
         invitee_last_name: webNearInfo2.lastName,
-        invitee_email: webNearEmailAddress2.value,
+        invitee_email: document.getElementById("form-multistep").querySelector('.fr_email_fl').value,
         answer_1: webNearInfo2.fPhoneNumber,
         event_start_time: getCheckWebnear.value,
         event_end_time: getCheckWebnear.getAttribute('data-endtime'),
@@ -735,21 +733,21 @@
     }
 
 
-    const getDomainRole = getThePopupFrom2.querySelector('.gql_domain_select');
-    // const getStartIn = getThePopupFrom2.querySelector('.gql_int_select');
-    // const getIsStudent = getThePopupFrom2.querySelector('.v2-checkbox-is-student');
-    // const getIsLaidOff = getThePopupFrom2.querySelector('.v2-checkbox-is-laidoff');
+    // const getDomainRole = document.getElementById("form-multistep").querySelector('.gql_domain_select');
+    // const getStartIn = document.getElementById("form-multistep").querySelector('.gql_int_select');
+    // const getIsStudent = document.getElementById("form-multistep").querySelector('.v2-checkbox-is-student');
+    // const getIsLaidOff = document.getElementById("form-multistep").querySelector('.v2-checkbox-is-laidoff');
 
-    // const errWorkEx = getThePopupFrom2.querySelector('.v2_exp_fild');
-    const errDomEx = getDomainRole.closest('.form-group').querySelector('.error-message');
-    // const errInEx = getThePopupFrom2.querySelector('.v2_int_fild');
+    // const errWorkEx = document.getElementById("form-multistep").querySelector('.v2_exp_fild');
+    // const errDomEx = document.getElementById("form-multistep").querySelector('.gql_domain_select').closest('.form-group').querySelector('.error-message');
+    // const errInEx = document.getElementById("form-multistep").querySelector('.v2_int_fild');
 
     // getWorkExperience.addEventListener('change', function () {
     //   errWorkEx.classList.remove('visible');
     // })
 
-    getDomainRole.addEventListener('change', function () {
-      errDomEx.classList.remove('visible');
+    document.getElementById("form-multistep").querySelector('.gql_domain_select').addEventListener('change', function () {
+      document.getElementById("form-multistep").querySelector('.gql_domain_select').closest('.form-group').querySelector('.error-message').classList.remove('visible');
     })
 
     // getStartIn.addEventListener('change', function () {
@@ -761,9 +759,9 @@
         typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
       }
 
-      let paSlot = getThePopupFrom2.querySelector('input[name="time-slot"]:checked').value;
-      let v2WorkExp = getThePopupFrom2.querySelector('input[name="experience"]:checked').value;
-      let v2DomExp = getDomainRole.value;
+      let paSlot = document.getElementById("form-multistep").querySelector('input[name="time-slot"]:checked').value;
+      let v2WorkExp = document.getElementById("form-multistep").querySelector('input[name="experience"]:checked').value;
+      let v2DomExp = document.getElementById("form-multistep").querySelector('.gql_domain_select').value;
       // let v2StarExp = getStartIn.value;
       // let v2IsStudent = getIsStudent.checked;
       // let v2IsLaidOff = getIsLaidOff.checked;
@@ -776,7 +774,7 @@
       // }
       if (!v2DomExp) {
         gqlErrStatus = true;
-        errDomEx.classList.add('visible');;
+        document.getElementById("form-multistep").querySelector('.gql_domain_select').closest('.form-group').querySelector('.error-message').classList.add('visible');;
       }
       // if (!v2StarExp) {
       //   gqlErrStatus = true;
@@ -787,7 +785,7 @@
         let GQLformData = {
           'First Name': webNearInfo2.firstName,
           'Last Name': webNearInfo2.lastName,
-          'Email Address': webNearEmailAddress2.value,
+          'Email Address': document.getElementById("form-multistep").querySelector('.fr_email_fl').value,
           utm_source: webNearInfo2.utm_source,
           utm_medium: webNearInfo2.utm_medium,
           utm_campaign: webNearInfo2.utm_campaign,
@@ -883,7 +881,7 @@
         "Page_URL": encodeURIComponent(webNearInfo2.page_url),
         "First Name": webNearInfo2.firstName,
         "Last Name": webNearInfo2.lastName,
-        "Email Address": webNearEmailAddress2.value,
+        "Email Address": document.getElementById("form-multistep").querySelector('.fr_email_fl').value,
         "utm_source": webNearInfo2.utm_source,
         "utm_medium": webNearInfo2.utm_medium,
         "utm_campaign": webNearInfo2.utm_campaign,
@@ -948,7 +946,7 @@
         "Lead_Name": webNearInfo2.firstName + ' ' + webNearInfo2.lastName,
         "Lead_First_Name": webNearInfo2.firstName,
         "Lead_Last__Name": webNearInfo2.lastName,
-        "Lead_Email": webNearEmailAddress2.value,
+        "Lead_Email": document.getElementById("form-multistep").querySelector('.fr_email_fl').value,
         "Lead_Time_Zone": webNearInfo2.user_timezone,
         "Event_Type_Name": eventName,
         "Event_Start_Date_Time": formattedStartDateTime,
@@ -1034,40 +1032,5 @@
         changeFormStep(3, 2)
       }
     });
-    // const getV2Btn1 = getThePopupFrom2.querySelector('.step_btn_1');
-    // const getV2Btn2 = getThePopupFrom2.querySelector('.step_btn_2');
-    // const getV2Btn3 = getThePopupFrom2.querySelector('.step_btn_3');
-
-    // const getV2Back2 = getThePopupFrom2.querySelector('.step_back_2');
-    // const getV2Back3 = getThePopupFrom2.querySelector('.step_back_3');
-
-    // getV2Btn1.addEventListener("click", () => {
-    //   try {
-    //     fromSend1stStep2();
-    //   } catch (error) {
-    //     saveFormEventsActivity("info-e", null, null, "Error in 1st step");
-    //   }
-    // });
-    // getV2Btn2.addEventListener("click", () => {
-    //   try {
-    //     fromSend2ndStep2();
-    //   } catch (error) {
-    //     saveFormEventsActivity("slot-e", null, null, "Error in 2nd step");
-    //   }
-    // });
-    // getV2Btn3.addEventListener("click", () => {
-    //   try {
-    //     fromSend3rdStep2();
-    //   } catch (error) {
-    //     saveFormEventsActivity("gql-e", null, null, "Error in 3rd step");
-    //   }
-    // });
-
-    // getV2Back2.addEventListener("click", function () {
-    //   getThePopupFrom2.setAttribute("active_step", 1);
-    // })
-    // getV2Back3.addEventListener("click", function () {
-    //   getThePopupFrom2.setAttribute("active_step", 2);
-    // })
   })
 </script>
