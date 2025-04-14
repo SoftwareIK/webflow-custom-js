@@ -101,6 +101,8 @@
     const getEmErrMsg2 = webNearEmailAddress2.closest('.form-group').querySelector('.error-message');
     const getPhErrMsg2 = webNearPhoneNumber2.closest('.form-group').querySelector('.error-message');
 
+    let LeadCreatedTime = null;
+
     // document.querySelector(".data_web_near_close").addEventListener("click", function () {
     //   document.querySelector(".complete_message").setAttribute('show_status', false);
     //   getThePopupFrom2.setAttribute("active_step", 1);
@@ -374,18 +376,164 @@
       return webNearSlots2.querySelector('input[name="v2_slot"]:checked');
     }
 
+    function leftStepSlider(from, to) {
+      const get_left_steps = document.querySelectorAll('.left-steps-main .left-steps');
+      const wrapper = document.querySelector(".left-content-wrapper.only-desktop");
+      if (!wrapper) return;
+
+      function updateLeftContentText(i) {
+        const stepParagraphs = [
+          "<strong>Share your details</strong> to get started ✨",
+          "<strong>Choose your preferred time</strong> for the FAANG Insights Session ✨",
+          "<strong>Share a few details</strong> to tailor your 1:1 consultation ✨"
+        ];
+
+        const pElement = wrapper.querySelector("p");
+        if (pElement && stepParagraphs[i]) {
+          pElement.innerHTML = stepParagraphs[i];
+        }
+      }
+      if (from < to) {
+
+        let index = from;
+        if (index === 0) {
+          get_left_steps.forEach((element, i) => {
+            if (i === 0) {
+              element.classList.add('active-75');
+            }
+          });
+        } else if (index === 1) {
+          get_left_steps.forEach((element, i) => {
+            if (i === 0) {
+              element.classList.add('finished');
+              element.classList.remove('active', 'active-75', 'active-50');
+            } else if (i === 1) {
+              element.classList.add('active');
+            }
+          });
+        }
+        updateLeftContentText(index + 1);
+
+      } else {
+
+        const get_left_steps = document.querySelectorAll('.left-steps-main .left-steps');
+        let index = from;
+
+        if (index === 1) {
+          get_left_steps.forEach((element, i) => {
+            if (i === 0) {
+              element.classList.remove('active-75');
+            }
+          });
+        } else if (index === 2) {
+          get_left_steps.forEach((element, i) => {
+            if (i === 0) {
+              element.classList.add('active', 'active-50', 'active-75');
+              element.classList.remove('finished');
+            }
+            if (i === 1) {
+              element.classList.remove('active');
+            }
+          });
+        }
+
+        updateLeftContentText(index - 1);
+      }
+    }
+
+    function topStepSlider(toStep) {
+      const get_top_steps = document.querySelectorAll('.tab-nav .nav-item');
+      get_top_steps.forEach((element, i) => {
+        if (i < toStep) {
+          element.classList.add('selected');
+        } else {
+          element.classList.remove('selected');
+        }
+      });
+    }
+
+    function updateCarosual(toStep) {
+      const carouselSteps = [
+        [
+          "<strong>25,000+ engineers</strong> have fast-tracked their FAANG+ journey with Interview Kickstart",
+          "<strong> Backed by 650+ </strong> instructors from Google, Meta, Apple, Netflix, and other top tech companies",
+          "<strong> Proven outcomes </strong> with offers from Google, Amazon, LinkedIn, and more"
+        ],
+        [
+          "<strong>97% of attendees </strong> say this webinar changed how they approach FAANG interviews",
+          "<strong> 25,000+ engineers </strong> have fast-tracked their FAANG+ journey with Interview Kickstart",
+          "<strong> Backed by 650+ </strong> instructors from Google, Meta, Apple, Netflix, and other top tech companies",
+          "<strong> Proven outcomes </strong> with offers from Google, Amazon, LinkedIn, and more"
+        ],
+        [
+          "<strong>85% of users </strong> say this 1:1 call clarified their next best step toward a FAANG+ role",
+          "<strong> 25,000+ engineers </strong> have fast-tracked their FAANG+ journey with Interview Kickstart",
+          "<strong> Backed by 650+ </strong> instructors from Google, Meta, Apple, Netflix, and other top tech companies",
+          "<strong> Proven outcomes </strong> with offers from Google, Amazon, LinkedIn, and more",
+          "<strong> 97% of attendees </strong> say this webinar changed how they approach FAANG interviews"
+        ]
+      ];
+
+
+      /*
+      <div class="fast-tracked-main only-desktop">
+      <div class="carousel-text-wrapper">
+        <p class="fast-tracked-inner carousel-text active"><strong>25,000+ engineers</strong> have fast-tracked their FAANG+
+          journey with Interview Kickstart</p>
+        <p class="fast-tracked-inner carousel-text"><strong> Backed by 650+ </strong> instructors from Google, Meta, Apple,
+          Netflix, and other top tech companies</p>
+        <p class="fast-tracked-inner carousel-text"><strong> Proven outcomes </strong> with offers from Google, Amazon,
+          LinkedIn, and more</p>
+      </div>
+      <div class="carousel-dots"><span class="dot active" data-index="0"></span><span class="dot"
+          data-index="1"></span><span class="dot" data-index="2"></span></div>
+    </div>
+      */
+      //  This is component example. based on the toStep we need to pick data from carouselSteps and update on the component. carousel-text-wrapper and also update the carousel-dots
+      const carouselTextWrapper = document.querySelector('.carousel-text-wrapper');
+      const carouselDots = document.querySelector('.carousel-dots');
+
+      // Clear existing content
+      carouselTextWrapper.innerHTML = '';
+      carouselDots.innerHTML = '';
+
+      // Add new content based on the selected step
+      carouselSteps[toStep - 1].forEach((text, index) => {
+        const pElement = document.createElement('p');
+        pElement.classList.add('fast-tracked-inner', 'carousel-text');
+        if (index === 0) {
+          pElement.classList.add('active');
+        }
+        pElement.innerHTML = text;
+        carouselTextWrapper.appendChild(pElement);
+
+        const dotElement = document.createElement('span');
+        dotElement.classList.add('dot');
+        if (index === 0) {
+          dotElement.classList.add('active');
+        }
+        dotElement.setAttribute('data-index', index);
+        carouselDots.appendChild(dotElement);
+      });
+
+    }
+
     function changeFormStep(fromStep, toStep) {
       if (mobileDevice()) {
         return mobileFormSteps(fromStep, toStep);
       }
-
+      topStepSlider(toStep);
+      updateCarosual(toStep);
+      leftStepSlider(fromStep - 1, toStep - 1);
       // Step button class name correction (only one button, so update the class for that button)
-      const stepButton = getThePopupFrom2.querySelector('.step_btn');
+      const stepButton = getThePopupFrom2.querySelector('.pag-item-next');
+      const backButton = getThePopupFrom2.querySelector('.pag-item-prev');
+
       stepButton.classList.remove(`step_btn_${fromStep}`);
       stepButton.classList.add(`step_btn_${toStep}`);
 
       // Back button visibility handling (hide on Step 1, show on Step 2 and Step 3)
-      const backButtonAllSteps = getThePopupFrom2.querySelectorAll('.step_back_2, .step_back_3');
+      const backButtonAllSteps = getThePopupFrom2.querySelectorAll('.step_back');
 
       // Hide back button on Step 1
       if (toStep === 1) {
@@ -394,6 +542,9 @@
         backButtonAllSteps.forEach(button => button.classList.remove('hidden'));
       }
 
+      backButton.classList.remove(`step_back_${fromStep}`);
+      backButton.classList.add(`step_back_${toStep}`);
+
       // Display change for steps
       const fromStepDiv = getThePopupFrom2.querySelector(`div[data-name="Step ${fromStep}"]`);
       const toStepDiv = getThePopupFrom2.querySelector(`div[data-name="Step ${toStep}"]`);
@@ -401,7 +552,7 @@
       toStepDiv.classList.add('selected');
     }
 
-    function updateWebinarTimeOnSuccess() {
+    function updateWebinarTimeOnSuccess(data) {
       const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 
@@ -410,18 +561,27 @@
 
       const dateString = `${getFullData.weekday}, ${getFullData.day} ${months[parseInt(getFullData.month) - 1]}, ${getFullData.hour}:${getFullData.minute} ${getFullData.am_or_pm}`
 
-      var tyCards = document.querySelectorAll('.ty-card');
-      tyCards.forEach(function (card) {
-        var dateElement = card.querySelector('h3');
-        if (dateElement) {
-          dateElement.textContent = dateString;
+      var tyCard = document.querySelector('.ty-card');
+      var dateElement = tyCard.querySelector('h3');
+      if (dateElement) {
+        dateElement.textContent = dateString;
+      }
+
+      const PASlot = data['PA Consult Time'];
+      const PASlotBar = document.querySelector('.ty-main')?.querySelector(".pa-slots");
+      if (PASlot) {
+        if (PASlotBar.querySelector("h3")) {
+          PASlotBar.querySelector("h3").textContent = PASlot;
         }
-      });
+      } else {
+        // remvove paslotbar
+        PASlotBar.remove();
+      }
     }
 
-    function step4ToSuccessSection() {
+    function step4ToSuccessSection(data) {
       document.getElementById('form-multistep').style.display = 'none';
-      updateWebinarTimeOnSuccess();
+      updateWebinarTimeOnSuccess(data);
 
       let element = document.querySelector('.ty-main');
       element.style.display = 'block';
@@ -575,8 +735,6 @@
     }
 
 
-    const getWorkExperience = getThePopupFrom2.querySelector('input[name="m-experience"]:checked').value;
-    const paTimeSlot = getThePopupFrom2.querySelector('input[name="m-time-slot"]:checked').value
     const getDomainRole = getThePopupFrom2.querySelector('.gql_domain_select');
     // const getStartIn = getThePopupFrom2.querySelector('.gql_int_select');
     // const getIsStudent = getThePopupFrom2.querySelector('.v2-checkbox-is-student');
@@ -585,8 +743,6 @@
     // const errWorkEx = getThePopupFrom2.querySelector('.v2_exp_fild');
     const errDomEx = getDomainRole.closest('.form-group').querySelector('.error-message');
     // const errInEx = getThePopupFrom2.querySelector('.v2_int_fild');
-
-    let leadScoreData = {};
 
     // getWorkExperience.addEventListener('change', function () {
     //   errWorkEx.classList.remove('visible');
@@ -605,8 +761,8 @@
         typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
       }
 
-      let paSlot = paTimeSlot;
-      let v2WorkExp = getWorkExperience;
+      let paSlot = getThePopupFrom2.querySelector('input[name="time-slot"]:checked').value;
+      let v2WorkExp = getThePopupFrom2.querySelector('input[name="experience"]:checked').value;
       let v2DomExp = getDomainRole.value;
       // let v2StarExp = getStartIn.value;
       // let v2IsStudent = getIsStudent.checked;
@@ -685,7 +841,12 @@
 
       try {
         let response = await fetch(url, options);
-        step4ToSuccessSection();
+        pushDataToExpertInsightApp(
+          data['Work Experience'],
+          data['Role Domain'],
+          data['PA Consult Time']
+        );
+        step4ToSuccessSection(data);
         if (typeof callback === 'function') {
           callback("gql");
         }
@@ -697,12 +858,76 @@
       }
     }
 
+    function getAPIDetails() {
+      //if url contains wpcomstaging than send staging api key & url
+      if (window.location.href.includes("wpcomstaging")) {
+        return {
+          url: "https://jobxp11m92.execute-api.us-west-1.amazonaws.com/qa/expert-insights",
+          api_key: "Dn6VOF9g4iGtLJLqMBrL2uNWwhfadgl2kXEIvzQ4"
+        }
+      } else {
+        return {
+          url: "https://4nwgymw1h6.execute-api.us-west-1.amazonaws.com/api/expert-insights",
+          api_key: "fBF1GVnYKb1hReCbCfrQu7zBt4RgLOvh6inYzYqB"
+        }
+      }
+    }
+
+    async function pushDataToExpertInsightApp(workExperience, domainRole, PASlot) {
+      let GqldataPayload = {
+        "Work Experience": workExperience,
+        "Role Domain": domainRole,
+        "slot": PASlot,
+
+        "Lead_Created_Time": LeadCreatedTime,
+        "Page_URL": encodeURIComponent(webNearInfo2.page_url),
+        "First Name": webNearInfo2.firstName,
+        "Last Name": webNearInfo2.lastName,
+        "Email Address": webNearEmailAddress2.value,
+        "utm_source": webNearInfo2.utm_source,
+        "utm_medium": webNearInfo2.utm_medium,
+        "utm_campaign": webNearInfo2.utm_campaign,
+        "utm_term": webNearInfo2.utm_term,
+        "gclid": webNearInfo2.gclid,
+        "msclkid": webNearInfo2.msclkid,
+        "fbclid": webNearInfo2.fbclid,
+        "user_id": webNearInfo2.user_id,
+        "user_timezone": webNearInfo2.user_timezone,
+        "v_country": webNearInfo2.v_country,
+        "phone_number_full": webNearInfo2.fPhoneNumber,
+        "Event Start Time": webNearInfo2.eventStartTime,
+        "Event End Time": webNearInfo2.eventEndTime,
+        "PA Consult Time": "",
+        "PA Consult Time Other": "",
+        "Interview Start Time": "",
+        "Laid Off": "",
+        "Is Student": "",
+        "Domain Switch": "",
+        "salesforce_uuid": webNearInfo2.salesforce_uuid,
+        "linkedin_url": null,
+        "resume": null,
+        "test_group": "N/A",
+      }
+
+      let options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': getAPIDetails().api_key },
+        body: JSON.stringify(GqldataPayload),
+      };
+
+      try {
+        const sendData = await fetch(getAPIDetails().url, options); // staging url
+        return sendData;
+      } catch (err) {
+        throw new Error("GQL Faild");
+      }
+    }
+
     async function secondStepSecondRequest2() {
       const getCheckWebnear = getSelectedSlot();
 
-      //lead LeadCreatedTime
       const currentDateTime = new Date();
-      const LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
+      LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
 
       function formatDateTime(dateTimeString) {
         const date = new Date(dateTimeString);
@@ -782,7 +1007,9 @@
     document.addEventListener("click", function (event) {
       const btn = event.target.closest(".step_btn");
       if (!btn) return;
-
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      event.stopPropagation();
       if (btn.classList.contains("step_btn_1")) {
         try {
           fromSend1stStep2();
