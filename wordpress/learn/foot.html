@@ -859,131 +859,128 @@
   ]
 
   function initObservers() {
-  let scrollPosition = 0;
+    let scrollPosition = 0;
 
-  // Helper functions to disable and re-enable scrolling.
-  function disableScrolling() {
-    scrollPosition = window.scrollY;
-    document.body.style.overflow = "hidden";
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollPosition}px`;
-    document.body.style.width = "100%";
-  }
-
-  function enableScrolling() {
-    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
-    document.documentElement.style.scrollBehavior = "auto";
-    document.body.style.overflow = "";
-    document.body.style.position = "";
-    document.body.style.top = "";
-    window.scrollTo(0, scrollPosition);
-    document.documentElement.style.scrollBehavior = originalScrollBehavior;
-  }
-
-  // Immediate check for newly added elements.
-  function handleInitialCheck(element) {
-    // Process only nodes that match selectors in formClassList.
-    if (!formClassList.some(className => element.classList.contains(className.replace(".", "")))) {
-      return;
+    // Helper functions to disable and re-enable scrolling.
+    function disableScrolling() {
+      scrollPosition = window.scrollY;
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollPosition}px`;
+      document.body.style.width = "100%";
     }
-    // For modal elements, do the computed style check with a delay.
-    if (element.classList.contains("elementor-popup-modal")) {
-      setTimeout(() => {
-        const computedStyle = window.getComputedStyle(element);
-        if (computedStyle.display !== "none") {
-          disableScrolling();
-        } else {
-          enableScrolling();
-        }
-      }, 0);
-    } else {
-      // For non-modal elements, check the show_status attribute.
-      const showStatus = element.getAttribute("show_status");
-      if (showStatus === "true") {
-        disableScrolling();
-      } else {
-        enableScrolling();
-      }
-    }
-  }
 
-  // The mutation observer callback for handling attribute changes.
-  function handleMutation(mutations) {
-    mutations.forEach(function (mutation) {
-      const target = mutation.target;
-      // Only process target elements present in formClassList.
-      if (!formClassList.some(className => target.classList.contains(className.replace(".", "")))) {
+    function enableScrolling() {
+      const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = "auto";
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      window.scrollTo(0, scrollPosition);
+      document.documentElement.style.scrollBehavior = originalScrollBehavior;
+    }
+
+    // Immediate check for newly added elements.
+    function handleInitialCheck(element) {
+      // Process only nodes that match selectors in formClassList.
+      if (!formClassList.some(className => element.classList.contains(className.replace(".", "")))) {
         return;
       }
-      // If the target is a modal element, use a delay to ensure the computed style is current.
-      if (target.classList.contains("elementor-popup-modal")) {
+      // For modal elements, do the computed style check with a delay.
+      if (element.classList.contains("elementor-popup-modal")) {
         setTimeout(() => {
-          const computedStyle = window.getComputedStyle(target);
+          const computedStyle = window.getComputedStyle(element);
           if (computedStyle.display !== "none") {
             disableScrolling();
           } else {
             enableScrolling();
           }
         }, 0);
-      }
-      // Otherwise, check if the "show_status" attribute has been updated.
-      else if (mutation.type === "attributes" && mutation.attributeName === "show_status") {
-        const showStatus = target.getAttribute("show_status");
+      } else {
+        // For non-modal elements, check the show_status attribute.
+        const showStatus = element.getAttribute("show_status");
         if (showStatus === "true") {
           disableScrolling();
         } else {
           enableScrolling();
         }
       }
-    });
-  }
+    }
 
-  // Create and store the attribute observer as a singleton.
-  if (!window.__observerSingleton) {
-    try {
-      if (window.MutationObserver) {
-        const attributeObserver = new MutationObserver(handleMutation);
-        window.__observerSingleton = attributeObserver;
+    // The mutation observer callback for handling attribute changes.
+    function handleMutation(mutations) {
+      mutations.forEach(function (mutation) {
+        const target = mutation.target;
+        // Only process target elements present in formClassList.
+        if (!formClassList.some(className => target.classList.contains(className.replace(".", "")))) {
+          return;
+        }
+        // If the target is a modal element, use a delay to ensure the computed style is current.
+        if (target.classList.contains("elementor-popup-modal")) {
+          setTimeout(() => {
+            const computedStyle = window.getComputedStyle(target);
+            if (computedStyle.display !== "none") {
+              disableScrolling();
+            } else {
+              enableScrolling();
+            }
+          }, 0);
+        }
+        // Otherwise, check if the "show_status" attribute has been updated.
+        else if (mutation.type === "attributes" && mutation.attributeName === "show_status") {
+          const showStatus = target.getAttribute("show_status");
+          if (showStatus === "true") {
+            disableScrolling();
+          } else {
+            enableScrolling();
+          }
+        }
+      });
+    }
 
-        // Include "show_status", "style", and "class" so that we catch when the modal class is added.
-        const config = { attributes: true, attributeFilter: ["show_status", "style", "class"] };
+    // Create and store the attribute observer as a singleton.
+    if (!window.__observerSingleton) {
+      try {
+        if (window.MutationObserver) {
+          const attributeObserver = new MutationObserver(handleMutation);
+          window.__observerSingleton = attributeObserver;
 
-        // Observe all existing elements in formClassList.
-        document.querySelectorAll(formClassList.join(",")).forEach(function (element) {
-          attributeObserver.observe(element, config);
-        });
+          // Include "show_status", "style", and "class" so that we catch when the modal class is added.
+          const config = { attributes: true, attributeFilter: ["show_status", "style", "class"] };
 
-        // Create an observer to catch new nodes added to the DOM.
-        const newNodesObserver = new MutationObserver(function (mutations) {
-          mutations.forEach(function (mutation) {
-            mutation.addedNodes.forEach(function (node) {
-              if (node.nodeType === 1) {
-                // If the new node itself matches one of our selectors, observe it and perform an immediate check.
-                if (formClassList.some(cls => node.matches(cls))) {
-                  attributeObserver.observe(node, config);
-                  handleInitialCheck(node);
+          // Observe all existing elements in formClassList.
+          document.querySelectorAll(formClassList.join(",")).forEach(function (element) {
+            attributeObserver.observe(element, config);
+          });
+
+          // Create an observer to catch new nodes added to the DOM.
+          const newNodesObserver = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+              mutation.addedNodes.forEach(function (node) {
+                if (node.nodeType === 1) {
+                  // If the new node itself matches one of our selectors, observe it and perform an immediate check.
+                  if (formClassList.some(cls => node.matches(cls))) {
+                    attributeObserver.observe(node, config);
+                    handleInitialCheck(node);
+                  }
+                  // Also, check any matching descendants.
+                  if (node.querySelectorAll) {
+                    node.querySelectorAll(formClassList.join(",")).forEach(function (child) {
+                      attributeObserver.observe(child, config);
+                      handleInitialCheck(child);
+                    });
+                  }
                 }
-                // Also, check any matching descendants.
-                if (node.querySelectorAll) {
-                  node.querySelectorAll(formClassList.join(",")).forEach(function (child) {
-                    attributeObserver.observe(child, config);
-                    handleInitialCheck(child);
-                  });
-                }
-              }
+              });
             });
           });
-        });
-        newNodesObserver.observe(document.body, { childList: true, subtree: true });
+          newNodesObserver.observe(document.body, { childList: true, subtree: true });
+        }
+      } catch (error) {
+        console.error("initObservers", error);
       }
-    } catch (error) {
-      console.error("initObservers", error);
     }
   }
-}
-
-
-
 
   document?.addEventListener("webNearLoaded", function () {
     function getDeviceType() {
