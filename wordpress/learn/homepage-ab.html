@@ -1,18 +1,21 @@
+<!-- home-page-ab -->
 <script nitro-exclude>
-  const splitThreshold = 90;
+  const homepageCROControlThreshold = 90;
+  const COOKIE_NAME = "homepage_cro_split_id";
 
   function getOrSetCookie(name, defaultValue) {
     const cookie = document.cookie.match(`(?:^|; )${name}=([^;]*)`);
     if (cookie) return cookie[1];
-    const value = defaultValue || Date.now().toString();
+    const randomNum = Math.floor(Math.random() * 100);
+    const value = defaultValue || randomNum.toString().padStart(2, "0");
     document.cookie = `${name}=${value}; expires=${new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString()}; path=/`;
     return value;
   }
 
   function isVariant() {
     try {
-      const uuid = getOrSetCookie("split_id");
-      return parseInt(uuid.slice(-2)) >= splitThreshold;
+      const uuid = getOrSetCookie(COOKIE_NAME);
+      return parseInt(uuid) >= homepageCROControlThreshold;
     } catch {
       console.error("Error determining variant.");
       return false;
@@ -25,9 +28,7 @@
   }
 
   if (isVariant()) {
-    if(window.location.pathname == "/") {
-      const redirectUrl = "/home-ab1";
-      window.location.href = appendUrlParams(redirectUrl);
-    }
+    const redirectUrl = "/faang-career-kickstarter-pack";
+    window.location.href = appendUrlParams(redirectUrl);
   }
 </script>
