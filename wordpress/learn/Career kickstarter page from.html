@@ -9,27 +9,29 @@
   });
 </script>
 <script>
-  window.addEventListener("DOMContentLoaded", function () {
-    document.addEventListener(formPopupOpenedEvent, function () {
-      // Select *all* elements with class "slot_fild"
-      // const slotFields = document.getElementById("form-multistep")?.querySelectorAll(".slot_fild");
-      const limitedSlots = webinarSlots?.slice(0, 6);
+  function renderSlotsOnForm() {
+    // Select *all* elements with class "slot_fild"
+    // const slotFields = document.getElementById("form-multistep")?.querySelectorAll(".slot_fild");
+    let limitedSlots = webinarSlots?.slice(0, 6);
+    // if limited slots is empty or null
+    if (!limitedSlots || limitedSlots?.length === 0) {
+      limitedSlots = staticSlots?.slice(0, 6);
+    }
+    // For each .slot_fild container
+    document.getElementById("form-multistep")?.querySelectorAll(".slot_fild")?.forEach(function (slotField) {
+      slotField.innerHTML = "";
 
-      // For each .slot_fild container
-      document.getElementById("form-multistep")?.querySelectorAll(".slot_fild")?.forEach(function (slotField) {
-        slotField.innerHTML = "";
+      limitedSlots.forEach(function (slot, index) {
+        // Create the outer label (slot-inner)
+        let createWebniarSlotDiv = document.createElement("label");
+        createWebniarSlotDiv.classList.add("slot-inner");
 
-        limitedSlots.forEach(function (slot, index) {
-          // Create the outer label (slot-inner)
-          let createWebniarSlotDiv = document.createElement("label");
-          createWebniarSlotDiv.classList.add("slot-inner");
+        // Create the label that wraps our input + content
+        let createWebniarSlot = document.createElement("label");
+        createWebniarSlot.classList.add("slot", "custom-radio");
 
-          // Create the label that wraps our input + content
-          let createWebniarSlot = document.createElement("label");
-          createWebniarSlot.classList.add("slot", "custom-radio");
-
-          // Build the inner HTML for our slot
-          let slotInner = `
+        // Build the inner HTML for our slot
+        let slotInner = `
           <input 
             type="radio" 
             name="v2_slot" 
@@ -50,25 +52,29 @@
           </div>
         `;
 
-          // Conditionally add a tag if index=0 or if day is Saturday
-          if (index === 0 || slot.weekday === "Saturday") {
-            slotInner += `
+        // Conditionally add a tag if index=0 or if day is Saturday
+        if (index === 0 || slot.weekday === "Saturday") {
+          slotInner += `
             <div class="filling-tag alert-tag-warning" alart_type="warning">
               Filling fast
             </div>
           `;
-          }
+        }
 
-          // Inject the slotInner HTML
-          createWebniarSlot.innerHTML = slotInner;
+        // Inject the slotInner HTML
+        createWebniarSlot.innerHTML = slotInner;
 
-          // Append the label-within-a-label
-          createWebniarSlotDiv.appendChild(createWebniarSlot);
+        // Append the label-within-a-label
+        createWebniarSlotDiv.appendChild(createWebniarSlot);
 
-          // Finally, append to the current .slot_fild container
-          slotField.appendChild(createWebniarSlotDiv);
-        });
+        // Finally, append to the current .slot_fild container
+        slotField.appendChild(createWebniarSlotDiv);
       });
+    });
+  }
+  window.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener(formPopupOpenedEvent, function () {
+      renderSlotsOnForm();
     });
   });
 </script>
@@ -373,7 +379,11 @@
     }
 
     function getSelectedSlot() {
-      const selectedSlot = document.getElementById("form-multistep").querySelector('.slot_fild').querySelector('input[name="v2_slot"]:checked');
+      let selectedSlot = document.getElementById("form-multistep").querySelector('.slot_fild').querySelector('input[name="v2_slot"]:checked');
+      if (selectedSlot == null) {
+        renderSlotsOnForm();
+        selectedSlot = document.getElementById("form-multistep").querySelector('.slot_fild').querySelector('input[name="v2_slot"]:checked');
+      }
       if (selectedSlot == null) {
         return document.getElementById("form-multistep").querySelector('.slot_fild').querySelector('input[name="v2_slot"]');
       }
@@ -750,9 +760,9 @@
     // const errInEx = document.getElementById("form-multistep").querySelector('.v2_int_fild');
 
     document.getElementById("form-multistep").querySelectorAll('input[name="experience"]').forEach((input) => {
-        input.addEventListener('change', () => {
-          document.getElementById("form-multistep").querySelector('.gql_exp_select').closest('.form-group').querySelector('.error-message').classList.remove('visible');
-        });
+      input.addEventListener('change', () => {
+        document.getElementById("form-multistep").querySelector('.gql_exp_select').closest('.form-group').querySelector('.error-message').classList.remove('visible');
+      });
     });
 
     document.getElementById("form-multistep").querySelector('.gql_domain_select').addEventListener('change', function () {
@@ -768,9 +778,9 @@
         typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
       }
 
-      let paSlot = document.getElementById("form-multistep").querySelector('input[name="time-slot"]:checked').value;
-      let v2WorkExp = document.getElementById("form-multistep").querySelector('input[name="experience"]:checked').value;
-      let v2DomExp = document.getElementById("form-multistep").querySelector('.gql_domain_select').value;
+      let paSlot = document.getElementById("form-multistep").querySelector('input[name="time-slot"]:checked')?.value;
+      let v2WorkExp = document.getElementById("form-multistep").querySelector('input[name="experience"]:checked')?.value;
+      let v2DomExp = document.getElementById("form-multistep").querySelector('.gql_domain_select')?.value;
       // let v2StarExp = getStartIn.value;
       // let v2IsStudent = getIsStudent.checked;
       // let v2IsLaidOff = getIsLaidOff.checked;
