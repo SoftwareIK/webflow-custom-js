@@ -71,9 +71,17 @@
         slotField.appendChild(createWebniarSlotDiv);
       });
     });
-    document.getElementById("form-multistep")?.querySelectorAll(".slot_fild")?.forEach(function (slotField) {
-      slotField.querySelector("input").click();
-    });
+    try {
+      if (!mobileDevice()) {
+        document.querySelectorAll(".only-mobile .slot_fild")?.forEach(function (slotField) {
+          slotField?.querySelector(".slot-inner")?.click();
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+
   }
   window.addEventListener("DOMContentLoaded", function () {
     renderSlotsOnForm();
