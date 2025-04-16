@@ -1,34 +1,36 @@
 <!-- home-page-ab -->
 <script nitro-exclude>
-  const homepageCROControlThreshold = 90;
-  const COOKIE_NAME = "homepage_cro_split_id";
+  // const homepageCROControlThreshold = 90;
+  // const COOKIE_NAME = "homepage_cro_split_id";
 
-  function getOrSetCookie(name, defaultValue) {
-    const cookie = document.cookie.match(`(?:^|; )${name}=([^;]*)`);
-    if (cookie) return cookie[1];
-    const randomNum = Math.floor(Math.random() * 100);
-    const value = defaultValue || randomNum.toString().padStart(2, "0");
-    document.cookie = `${name}=${value}; expires=${new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString()}; path=/`;
-    return value;
-  }
+  // function getOrSetCookie(name, defaultValue) {
+  //   const cookie = document.cookie.match(`(?:^|; )${name}=([^;]*)`);
+  //   if (cookie) return cookie[1];
+  //   const randomNum = Math.floor(Math.random() * 100);
+  //   const value = defaultValue || randomNum.toString().padStart(2, "0");
+  //   document.cookie = `${name}=${value}; expires=${new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString()}; path=/`;
+  //   return value;
+  // }
 
-  function isVariant() {
-    try {
-      const uuid = getOrSetCookie(COOKIE_NAME);
-      return parseInt(uuid) >= homepageCROControlThreshold;
-    } catch {
-      console.error("Error determining variant.");
-      return false;
-    }
-  }
+  // function isVariant() {
+  //   try {
+  //     const uuid = getOrSetCookie(COOKIE_NAME);
+  //     return parseInt(uuid) >= homepageCROControlThreshold;
+  //   } catch {
+  //     console.error("Error determining variant.");
+  //     return false;
+  //   }
+  // }
 
-  function appendUrlParams(url) {
-    const currentParams = window.location.search;
-    return currentParams ? `${url}${currentParams}` : url;
-  }
+  // function appendUrlParams(url) {
+  //   const currentParams = window.location.search;
+  //   return currentParams ? `${url}${currentParams}` : url;
+  // }
 
-  if (isVariant()) {
-    const redirectUrl = "/faang-career-kickstarter-pack";
-    window.location.href = appendUrlParams(redirectUrl);
-  }
+  // if (isVariant()) {
+  //   if(!document.referrer || !document.referrer.includes("interviewkickstart.com")) {
+  //     const redirectUrl = "/faang-career-kickstarter-pack";
+  //     window.location.href = appendUrlParams(redirectUrl);
+  //   }
+  // }
 </script>

@@ -1,5 +1,5 @@
 <!-- Career kickstarter page form -->
-<script>
+<!-- <script>
   const formPopupOpenedEvent = "formPopupOpened"
   document.addEventListener("click", function (event) {
     if (event.target.closest("#unlock-my-prep-kit")) {
@@ -7,7 +7,7 @@
       document.dispatchEvent(formPopupOpened);
     }
   });
-</script>
+</script> -->
 <script>
   function renderSlotsOnForm() {
     // Select *all* elements with class "slot_fild"
@@ -71,11 +71,12 @@
         slotField.appendChild(createWebniarSlotDiv);
       });
     });
+    document.getElementById("form-multistep")?.querySelectorAll(".slot_fild")?.forEach(function (slotField) {
+      slotField.querySelector("input").click();
+    });
   }
   window.addEventListener("DOMContentLoaded", function () {
-    document.addEventListener(formPopupOpenedEvent, function () {
-      renderSlotsOnForm();
-    });
+    renderSlotsOnForm();
   });
 </script>
 
@@ -83,7 +84,7 @@
 <!-- From send -->
 <script>
   let isPartner = location.pathname.startsWith("/partner/");
-  document.addEventListener(formPopupOpenedEvent, function () {
+  window.addEventListener("DOMContentLoaded", function () {
 
     // TODO: this should net be here.
     if (!mobileDevice()) {
