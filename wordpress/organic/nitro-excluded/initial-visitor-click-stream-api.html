@@ -144,7 +144,7 @@
         Click_History: "",
         Device: getDeviceType(),
         User_Agent: encodeURIComponent(navigator?.userAgent || ""),
-        Refferer: params.wr__referrer,
+        Refferer: document.referrer,
         step: "s0"
       }];
 
@@ -168,6 +168,7 @@
           fireAPI([{
             ...data[0],
             step: "e0_css",
+            Location: brokenCSS.map(entry => entry.name.split("/").pop()).join(","),
           }]);
         }
       }

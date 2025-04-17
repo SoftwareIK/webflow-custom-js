@@ -28,7 +28,7 @@
   }
 
   if (isVariant()) {
-    if(document.referrer && !document.referrer.includes("interviewkickstart.com")) {
+    if (!document.referrer  || !document.referrer.includes("interviewkickstart.com") && !document.referrer.includes("staging-e036-learninterviewkickstartcom.wpcomstaging.com")) {
       const redirectUrl = "/faang-career-kickstarter-pack";
       window.location.href = appendUrlParams(redirectUrl);
     }
