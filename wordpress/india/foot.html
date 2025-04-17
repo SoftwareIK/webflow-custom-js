@@ -134,6 +134,9 @@
 
 <!------------------ Webnear Form Send ---------------------->
 <script>
+    function track(step, message) {
+      typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
+    }
     // get all from fild
     const getThePopupFrom = document.querySelector('.webnear_regitration_fr');
 
@@ -361,7 +364,7 @@
             const sendData = await fetch(endpoint, options);
             return sendData;
         } catch (err) {
-            console.error("P0: The Zapier Webhook Failed.");
+            console.error("P0: The Zapier Webhook Failed.", err);
         }
     }
 
@@ -396,18 +399,22 @@
             getEmErrMsg.setAttribute('err_status', true);
             getPhErrMsg.setAttribute('err_status', true);
             getThePopupFrom.setAttribute("loader_status", false);
+            track("info-e", "validation-general");
             return;
         } else if (!name_regex.test(fullname) || fullname.length == 0) {
             getFnErrMsg.setAttribute('err_status', true);
             getThePopupFrom.setAttribute("loader_status", false);
+            track("info-e", "validation-name");
             return;
         } else if (!email_regex.test(wEmail) || wEmail.length == 0) {
             getEmErrMsg.setAttribute('err_status', true);
             getThePopupFrom.setAttribute("loader_status", false);
+            track("info-e", "validation-email");
             return;
         } else if (!phone_regex.test(fullPhoneNumber) || fullPhoneNumber.length == 0) {
             getPhErrMsg.setAttribute('err_status', true);
             getThePopupFrom.setAttribute("loader_status", false);
+            track("info-e", "validation-phone");
             return;
         } else {
 
@@ -428,6 +435,7 @@
                     'webinar_name': webNearInfo.eventname
                 });
             } catch (err) {
+                track("info-e", "reporting-data-layer");
                 console.error(err);
             }
 
@@ -448,7 +456,10 @@
                 .then(() => {
                     getThePopupFrom.setAttribute("ac_step", 2);
                     getThePopupFrom.setAttribute("loader_status", false);
-                });
+                    track("info");
+                  }).catch(() => {
+                    track("info-e", "flow-general");
+                  });
         }
     }
 
@@ -483,6 +494,7 @@
 
         pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34xpujj/")
             .then(() => {
+                track("slot");
                 secondStepSecondRequest(getCheckWebnear)
                     .then(function () {
                         utmstring = {
@@ -491,7 +503,11 @@
                         }
                         bake_cookie("from_cookie", utmstring);
                         location.href = finalurl;
+                    }).catch(() => {
+                      track("slot-e", "flow-bq");
                     });
+            }).catch(() => {
+              track("slot-e", "flow-general");
             });
     }
 
@@ -551,6 +567,7 @@
             "User_Agent": encodeURIComponent(navigator?.userAgent || ""),
             "Refferer": encodeURIComponent(webNearInfo.wr__referrer),
             "Region": webNearInfo.wr__region,
+            "step": "s4",
             "whatsapp_user_consent": webNearInfo.whatsAppUserConsent,
         }];
 
@@ -585,8 +602,20 @@
         getThePopupFrom.setAttribute("ac_step", 1);
     });
 
-    get1stepBtn.addEventListener('click', fromSend1stStep);
-    get2stepfinishBtn.addEventListener('click', fromSend2ndStep);
+    get1stepBtn?.addEventListener('click', () => {
+      try {
+        fromSend1stStep();
+      } catch (error) {
+        saveFormEventsActivity("info-e", null, null, "Error in 1st step");
+      }
+    });
+    get2stepfinishBtn?.addEventListener('click', () => {
+      try {
+        fromSend2ndStep();
+      } catch (error) {
+        saveFormEventsActivity("slot-e", null, null, "Error in 2nd step");
+      }
+    });
 
 
     function initObservers() {

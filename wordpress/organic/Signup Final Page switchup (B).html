@@ -13,7 +13,7 @@
     const getStartIn = getFinalForm.querySelector("#Start-Interviewing");
     const getIsStudent = getFinalForm.querySelector("#is_student");
     const getLaidOff = getFinalForm.querySelector("#laidoff-flag");
-    const webNearAccepTance = getFinalForm.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
+    const webNearAccepTanceSwitchup = getFinalForm.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
 
     const getPhoneNumber = getFinalForm.querySelector('.phone_number_fild input#webinar_pnumber');
 
@@ -213,8 +213,8 @@
             const fr_acceptance = document.querySelector(".fr_acceptance");
             if (fr_acceptance && getComputedStyle(fr_acceptance).display === "none") {
                 whatsAppUserConsentValue = "";
-            } else if (webNearAccepTance) {
-                whatsAppUserConsentValue = webNearAccepTance.checked ? "Yes" : "No";
+            } else if (webNearAccepTanceSwitchup) {
+                whatsAppUserConsentValue = webNearAccepTanceSwitchup.checked ? "Yes" : "No";
             }
             let GQLformData = {
                 'First Name': decodeURIComponent(utmparams['invitee_first_name'] || ""),

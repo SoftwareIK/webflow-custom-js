@@ -24,12 +24,12 @@
           return {
             skipDay: 6, // Skip Saturday
             timeSlots: {
-              0: "20:30:00", // Sunday
-              1: "19:30:00", // Monday
-              2: "20:30:00", // Tuesday
-              3: "19:30:00", // Wednesday
-              4: "20:30:00", // Thursday
-              5: "19:30:00", // Friday
+              0: "19:30:00", // Sunday
+              1: "18:30:00", // Monday
+              2: "19:30:00", // Tuesday
+              3: "18:30:00", // Wednesday
+              4: "19:30:00", // Thursday
+              5: "18:30:00", // Friday
               6: null, // Skip Saturday
             },
             timeZone: "America/New_York",
@@ -135,8 +135,8 @@
             ?.value?.replace("GMT", "") || "+00:00";
 
         // Add padding to hours if needed
-        if (offset.match(/^[+-]\d:/)) {
-          offset = offset.replace(/^([+-])(\d):/, "$10$2:");
+        if (offset.match(/^[+-]d:/)) {
+          offset = offset.replace(/^([+-])(d):/, "$10$2:");
         }
 
         return `${dateString}${offset}`;
@@ -388,19 +388,19 @@
 
   // set the next webnear value
   function updateTimerUI(day, hrs, min, sec) {
-    if(document.querySelectorAll('.webinar__timer--days span').length === 0) {
+    if(document.querySelectorAll('.webinar__timer--days h2').length === 0) {
       return;
     }
-    document.querySelectorAll('.webinar__timer--days span').forEach((timer) => {
+    document.querySelectorAll('.webinar__timer--days h2').forEach((timer) => {
       timer.textContent = day;
     });
-    document.querySelectorAll('.webinar__timer--hours span').forEach((timer) => {
+    document.querySelectorAll('.webinar__timer--hours h2').forEach((timer) => {
       timer.textContent = hrs;
     });
-    document.querySelectorAll('.webinar__timer--mins span').forEach((timer) => {
+    document.querySelectorAll('.webinar__timer--mins h2').forEach((timer) => {
       timer.textContent = min;
     });
-    document.querySelectorAll('.webinar__timer--secs span').forEach((timer) => {
+    document.querySelectorAll('.webinar__timer--secs h2').forEach((timer) => {
       timer.textContent = sec;
     });
   };
