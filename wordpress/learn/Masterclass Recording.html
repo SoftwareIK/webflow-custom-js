@@ -85,9 +85,7 @@
       }
       getThePopupFrom2.querySelector('.step_btn_3').innerHTML = "Access Masterclass";
       const exploreBtn = document.querySelector('#explore-project .elementor-button-text');
-      if (exploreBtn) {
-        exploreBtn.textContent = "Talk to an Industry Expert";
-      }
+      exploreBtn?.closest(".elementor-element")?.remove();
       const recordingBtn = document.getElementById('watch_recording_btn');
       if (recordingBtn) {
         const recordingText = recordingBtn.querySelector('.elementor-button-text');
