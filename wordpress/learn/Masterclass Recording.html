@@ -539,7 +539,7 @@
           "event_name": webNearInfo2.eventname,
           "webinar_type": webNearInfo2.webinar_type,
           'event_start_time': webNearInfo2.eventStartTime,
-
+          "CTA_Page": encodeURIComponent(webNearInfo2?.cta_page_url || ""),
         };
 
         leadScoreService()
