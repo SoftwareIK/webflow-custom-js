@@ -137,11 +137,11 @@
       user_timezone: "",
       l_page_url: "",
       cta_page_url: "",
-      webinar_type: "",
+      webinar_type: "MASTERCLASS_EVENT",//TODO: get this from wp
       eventname: "",
       wr__referrer: "",
       wr__device: "",
-      webinar_lead_type: "",
+      webinar_lead_type: "MASTERCLASS_EVENT",//TODO: get this from wp
       bye_calendly_type: "",
       is_exit_intent_popup: "",
       v_country: "",
@@ -230,12 +230,12 @@
         webNearInfo2.l_page_url = "learn.ik/" + page_url.split("/").pop();
       }
       webNearInfo2.cta_page_url = "learn.ik" + cta_lp;
-      webNearInfo2.webinar_type = webinarType;
+      webNearInfo2.webinar_type = "MASTERCLASS_EVENT";//TODO: get this from wp
       webNearInfo2.eventname = eventName;
       webNearInfo2.wr__referrer = referrer;
       webNearInfo2.wr__device = getDeviceType();
 
-      webNearInfo2.webinar_lead_type = webinarType;
+      webNearInfo2.webinar_lead_type = "MASTERCLASS_EVENT";//TODO: get this from wp
       webNearInfo2.bye_calendly_type = "";
       webNearInfo2.is_exit_intent_popup = "No";
       webNearInfo2.irclickid = decodeURIComponent(params['irclickid'] || "");
@@ -256,8 +256,8 @@
         "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
         "Email Address": webNearEmailAddress2.value,
         "ByeCalendlyType": webNearInfo2.bye_calendly_type,
-        "webinar-type": webNearInfo2.webinar_type,
-        "Webinar Lead Type": webNearInfo2.webinar_lead_type,
+        "webinar-type": "MASTERCLASS_EVENT", //TODO: get this from wp
+        "Webinar Lead Type": "MASTERCLASS_EVENT", //TODO: get this from wp
         "utm_source": webNearInfo2.utm_source,
         "utm_medium": webNearInfo2.utm_medium,
         "utm_campaign": webNearInfo2.utm_campaign,
@@ -309,8 +309,7 @@
         const sendData = await fetch(endpoint, options);
         return sendData;
       } catch (err) {
-        console.error("P0: The Zapier Webhook Failed.");
-        alert("Something is wrong");
+        console.error("P0: The Zapier Webhook Failed.", err);
       }
     }
 
@@ -402,9 +401,8 @@
           console.log(err)
         }
 
-
-        new Promise((res) => res())
-          .then(() => {
+        if (window.location.href.includes("/event/build-ai-agents-from-scratch")) {
+          pushToEndPoint2(zapUrl).then(() => {
             track("info");
             try {
               fromSend2ndStep2();
@@ -415,6 +413,20 @@
           }).catch(() => {
             track("info-e", "flow-zapier");
           });
+        } else {
+          new Promise((res) => res())
+            .then(() => {
+              track("info");
+              try {
+                fromSend2ndStep2();
+              } catch (error) {
+                track("slot-e", "flow-zapier");
+              }
+              getThePopupFrom2.setAttribute("active_step", 3);
+            }).catch(() => {
+              track("info-e", "flow-zapier");
+            });
+        }
       }
     }
 
@@ -537,7 +549,7 @@
           'Is Student': v2IsStudent,
           salesforce_uuid: webNearInfo2.salesforce_uuid,
           "event_name": webNearInfo2.eventname,
-          "webinar_type": webNearInfo2.webinar_type,
+          "webinar_type": "MASTERCLASS_EVENT",//TODO: get this from wp
           'event_start_time': webNearInfo2.eventStartTime,
           "CTA_Page": encodeURIComponent(webNearInfo2?.cta_page_url || ""),
         };
@@ -616,7 +628,7 @@
 
       try {
         let response = await fetch(url, options);
-        if ((window.location.href.includes("event/build-your-own-instagram-masterclass") || window.location.href.includes("event/build-your-own-instagram-recording") || window.location.href.includes("/event/build-ai-agents-from-scratch-v1")) && !sbFrEx) {
+        if ((window.location.href.includes("event/build-your-own-instagram-masterclass") || window.location.href.includes("event/build-your-own-instagram-recording") || window.location.href.includes("/event/build-ai-agents-from-scratch")) && !sbFrEx) {
           document.querySelector(".pr_yr_exp").setAttribute('show_status', true);
         } else {
           document.querySelector(".pr_yr_exp").setAttribute('show_status', false);
@@ -679,8 +691,8 @@
         "CTA_Page": encodeURIComponent(webNearInfo2.cta_page_url),
         "Landing_Page": encodeURIComponent(webNearInfo2.l_page_url),
         "Webinar_reg_type": "",
-        "Webinar_Type": webNearInfo2.webinar_type,
-        "Switchup_Lead": webNearInfo2.webinar_lead_type,
+        "Webinar_Type": "MASTERCLASS_EVENT",//TODO: get this from wp
+        "Switchup_Lead": "MASTERCLASS_EVENT",//TODO: get this from wp
         "UUID": webNearInfo2.salesforce_uuid,
         "Click_History": "",
         "City": webNearInfo2.wr__city,
