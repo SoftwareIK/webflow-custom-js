@@ -394,7 +394,9 @@
         } else {
           webNearInfo2.fPhoneNumber = webNearPhoneNumberWri2.getNumber(intlTelInputUtils.numberFormat.E164);
         }
-        let zapUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/21gkn2x/" : "https://hooks.zapier.com/hooks/catch/11068981/340hd4j/";
+
+        // This is diff zap. please do not reuse for regular webinar. this is specifically for masterclass
+        let zapUrl = "https://hooks.zapier.com/hooks/catch/11068981/2x8y2sx/";
         try {
           document.querySelector(".first_name_loader span").innerHTML = webNearInfo2.firstName;
         } catch (err) {
