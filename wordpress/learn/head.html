@@ -26,7 +26,7 @@
       for (let i = 0; i < arr.length; i++) {
         let a = arr[i].split('=');
         let paramName = a[0];
-        let paramValue = typeof (a[1]) === 'undefined' ? '' : a[1];
+        let paramValue = typeof (a[1]) === 'undefined' ? "" : a[1];
         paramName = paramName.toLowerCase();
         if (paramName.match(/\[(\d+)?\]$/)) {
           let key = paramName.replace(/\[(\d+)?\]/, '');
@@ -412,9 +412,9 @@
       }
     })
   }
-
-
-  // WhatsApp button Cokkie
+	
+	
+	  // WhatsApp button Cokkie
   let whatsappConsentABTestFlag = parseInt(getCookie("whatsapp_consent_ab"));
   if(!whatsappConsentABTestFlag){
       whatsappConsentABTestFlag = Math.floor(Math.random() * 100);
