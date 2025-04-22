@@ -33,13 +33,25 @@
 
     // Buttons click listener
     StepBtn1.addEventListener("click", function () {
-        finalFrStep1(this);
+      try {
+          finalFrStep1(this);
+      } catch (error) {
+          saveFormEventsActivity("gql-e", null, null, "Error in gql step");
+      }
     });
     StepBtn2.addEventListener("click", function () {
-        finalFrStep2(this);
+        try {
+            finalFrStep2(this);
+        } catch (error) {
+            saveFormEventsActivity("domain-e", null, null, "Error in domain step");
+        }
     });
     StepBtn3.addEventListener("click", function () {
-        finalFrStep3(this);
+        try {
+            finalFrStep3(this);
+        } catch (error) {
+            saveFormEventsActivity("source-e", null, null, "Error in source step");
+        }
     });
 
     const err_temp = {};
@@ -167,10 +179,18 @@
                             expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
                         })
                     } catch (err) {
+                        track("gql-e", "reporting-data-layer");
                         console.error("Error in dataLayer push", err);
                     }
-                    sendRequestZapiar(sendUrl ? sendUrl : "https://hooks.zapier.com/hooks/catch/11068981/34xp8vf/", GQLformData);
+                    sendRequestZapiar(
+                      sendUrl ? sendUrl : "https://hooks.zapier.com/hooks/catch/11068981/34xp8vf/", 
+                      GQLformData,
+                      function () { track("gql", "Success in gql step"); },
+                      function () { track("gql-e", "flow-general"); }
+                    );
                 });
+        } else {
+            track("gql-e", "validation-general");
         }
     }
 
@@ -259,9 +279,17 @@
                     expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
                 })
             } catch (err) {
+                track("domain-e", "reporting-data-layer");
                 console.error("Error in dataLayer push", err);
             }
-            sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/34xpf0o/", GQLformData);
+            sendRequestZapiar(
+              "https://hooks.zapier.com/hooks/catch/11068981/34xpf0o/", 
+              GQLformData,
+              function () { track("domain", "Success in domain step"); },
+              function () { track("domain-e", "flow-zapier"); }
+            );
+        } else {
+          track("domain-e", "validation-general");
         }
     }
 
@@ -312,9 +340,15 @@
                 expected_revenue: expectedRev,
             })
         } catch (err) {
+            track("source-e", "reporting-data-layer");
             console.error("Error in dataLayer push", err);
         }
-        sendRequestZapiar("https://hooks.zapier.com/hooks/catch/11068981/3rrmpsx/", GQLformData);
+        sendRequestZapiar(
+          "https://hooks.zapier.com/hooks/catch/11068981/3rrmpsx/", 
+          GQLformData,
+          function () { track("source", "Success in source step"); },
+          function () { track("source-e", "flow-zapier"); }
+        );
     }
 
     async function leadScoreService() {
@@ -350,8 +384,8 @@
     }
 
     // send request fun
-    async function sendRequestZapiar(url, data) {
-        let options = {
+    async function sendRequestZapiar(url, data, successTrackCallback = null, failTrackCallback = null) {
+      let options = {
             method: 'POST',
             mode: "no-cors",
             headers: {
@@ -362,6 +396,7 @@
 
         try {
             let response = await fetch(url, options);
+            if (typeof successTrackCallback === 'function') successTrackCallback();
             let wrValues = ["0-2", "3-4"];
             let rdValues = [ 'No / Little Coding Experience', 'No Coding Experience', 'None of the above'];
             if( !wrValues.includes(getWorkExperience.value) && !rdValues.includes(getDomainRole.value)){
@@ -370,11 +405,13 @@
                     getCallMeSection.setAttribute("call_status", "number_edit");
                 }
             }else{
-                moveNextStep();
+                // moveNextStep();
+                getFinalForm.setAttribute("active_step", "4");
             }
 
         } catch (error) {
-            console.error("Error in sendRequestZapiar", error);
+          if (failTrackCallback) failTrackCallback();
+          console.error("Error in sendRequestZapiar", error);
         }
     }
 

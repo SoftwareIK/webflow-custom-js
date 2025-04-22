@@ -57,6 +57,7 @@
         var sameSite = "SameSite=None; Secure";
 
         document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";" + domain + ";path=/;" + sameSite;
+        // document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
       }
 
       function create_UUID() {
@@ -82,23 +83,15 @@
       // resuable functions end ----
 
       const timestampOfUserVisit = new Date();
-      const geo = {
-        City: null,
-        Region: null,
-        Country: null,
-        Client_Timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      };
-
-      if (geo.Client_Timezone === "Asia/Calcutta") geo.Client_Timezone = "Asia/Kolkata";
 
       let page_url = window.location.href;
       page_url = ((location.pathname != "/") && page_url.endsWith("/")) ? page_url.slice(0, -1) : page_url;
       let cta_lp = window.location.pathname;
       cta_lp = (cta_lp.endsWith("/") && (cta_lp != "/")) ? cta_lp.slice(0, -1) : cta_lp;
       let referrer = document.referrer;
-      let l_page_url = "learn.ik/" + page_url.split("/").pop();
+      let l_page_url = "ik.com/" + page_url.split("/").pop();
       if ((referrer || '') != "") {
-        l_page_url = "learn.ik/" + (referrer || '').split("/").pop();
+        l_page_url = "ik.com/" + (referrer || '').split("/").pop();
       }
 
       function getParams(url) {
@@ -124,7 +117,7 @@
 
         return params;
       }
-  
+
       let params = [];
       try {
         params = read_cookie("v_latest") || getParams()
@@ -132,7 +125,7 @@
         console.error("Error while reading cookie", error);
       }
 
-      let visitor_id = getCookie("unique_visitor_id6");
+      let visitor_id = getCookie("unique_visitor_id") ||  getCookie("unique_visitor_id6");
       if (!visitor_id) {
         visitor_id = create_UUID();
         setCookie("unique_visitor_id6", visitor_id);
@@ -140,7 +133,6 @@
 
       data = [{
         Lead_Created_Time: timestampOfUserVisit,
-        // Lead_Time_Zone: geo.Client_Timezone,
         UTM_Campaign: params.utm_campaign,
         UTM_Source: params.utm_source,
         UTM_Medium: params.utm_medium,
@@ -149,18 +141,12 @@
         Tracking_ID: "",
         User_ID: visitor_id,
         Page_URL: page_url,
-        // Country: params.v_country,
-        // Client_Timezone: geo.Client_Timezone,
-        // Country: geo.Country,
-        // City: geo.City,
-        // Region: geo.Region,
-        CTA_Page: "learn.ik" + cta_lp,
+        CTA_Page: "ik.com" + cta_lp,
         Landing_Page: l_page_url,
         Click_History: "",
         Device: getDeviceType(),
         User_Agent: encodeURIComponent(navigator?.userAgent || ""),
         Refferer: document.referrer,
-        // Region: params.wr__region,
         step: "s0"
       }];
 
@@ -171,13 +157,10 @@
           if (entry.initiatorType !== 'link') {
             return false;
           }
-          if(entry?.responseStatus) {
-            return entry.responseStatus !== 200
-          }
-          return entry?.transferSize === 0;
+          return entry?.responseStatus ? entry.responseStatus !== 200 : entry?.transferSize === 0;
         });
 
-        let visitor_id = getCookie("unique_visitor_id6");
+        let visitor_id = getCookie("unique_visitor_id") ||  getCookie("unique_visitor_id6");
         if (!visitor_id) {
           visitor_id = create_UUID();
           setCookie("unique_visitor_id6", visitor_id);
