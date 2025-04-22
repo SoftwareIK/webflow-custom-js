@@ -412,5 +412,14 @@
       }
     })
   }
+
+
+  // WhatsApp button Cokkie
+  let whatsappConsentABTestFlag = parseInt(getCookie("whatsapp_consent_ab"));
+  if(!whatsappConsentABTestFlag){
+      whatsappConsentABTestFlag = Math.floor(Math.random() * 100);
+      setCookie("whatsapp_consent_ab", whatsappConsentABTestFlag);
+  }
+  whatsappConsentABTestFlag = whatsappConsentABTestFlag >= 80; // change the threshold value
 </script>
 <!-- Learn head code end -->

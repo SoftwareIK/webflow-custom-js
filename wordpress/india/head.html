@@ -57,8 +57,8 @@
 
 <script defer type="text/javascript">
   let isSwitchUp = "No";
-  let webinarType = currentURlPrms.webinartype || "REGULAR";
-  let eventName = currentURlPrms.event || "How to Nail your next Technical Interview";
+  let webinarType = webinarTypeBack || currentURlPrms.webinartype || "REGULAR";
+  let eventName = currentURlPrms.event || pageEnventName || "How to Nail your next Technical Interview";
   eventName = decodeURIComponent(eventName);
   let v_timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 </script>
@@ -258,5 +258,8 @@
       return 'Desktop';
     }
   }
+	
+	let page_url = window.location.href;
+  page_url = ((location.pathname != "/") && page_url.endsWith("/")) ? page_url.slice(0, -1) : page_url;
 </script>
 <!-- India head code end -->
