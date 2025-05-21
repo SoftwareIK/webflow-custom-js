@@ -116,7 +116,7 @@
   prefill.role = mapRole(prefill.role);
 
   webinarType = params.webinarType || webinarType;
-  eventName = decodeURIComponent(params.event ?? "") || "How to nail your next Technical Interview";
+//   eventName = decodeURIComponent(params.event ?? "") || "How to nail your next Technical Interview";
 
   const isCoreDataMissing = !prefill.email
   const isSomeDataMissing = !prefill.firstname || !prefill.phone || !prefill.role || !prefill.experience;
@@ -697,12 +697,14 @@
           "Laid Off": "",
           "Is Student": "",
           "salesforce_uuid": webinarInfo2.salesforce_uuid,
+          "GA_event_id": Date.now(),
         };
 
         try {
           dataLayer.push({
             event: "wordpress_form_submitted",
             formName: "Lead Qualifier Form",
+            event_id: GQLformData.GA_event_id,
           })
         } catch (err) {
           saveClickActivity("info_and_gql_update-error-in-data-layer-push");
@@ -1293,6 +1295,7 @@
             'Laid Off': "",
             'Is Student': "",
             salesforce_uuid: webNearInfo2.salesforce_uuid,
+            GA_event_id: Date.now(),
           };
 
           leadScoreService()
@@ -1304,6 +1307,7 @@
                 dataLayer.push({
                   event: "wordpress_form_submitted",
                   formName: "Lead Qualifier Form",
+                  event_id: GQLformData.GA_event_id,
                   expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
                 })
               } catch (err) {

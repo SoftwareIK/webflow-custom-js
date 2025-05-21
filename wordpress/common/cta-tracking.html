@@ -160,7 +160,7 @@
 
   });
 
-  document.querySelectorAll('[href*="webinar_form"]').forEach(element => {
+  document.querySelectorAll('[href*="webinar_form"], [href*="web_near_form"]').forEach(element => {
     isS1Captured = false
     element.addEventListener('click', (event) => {
       const timestamp = Date.now();
@@ -290,7 +290,7 @@
 
   function isPopUpForm() {
     try {
-      const fragments = ['#webinar_form', '#data_webinar_form'];
+      const fragments = ['#webinar_form', '#data_webinar_form', '#web_near_form'];
       const selector = fragments.map(fragment => `[href*="${fragment}"]`).join(',');
       const elements = document.querySelectorAll(selector);
       return elements.length > 1;

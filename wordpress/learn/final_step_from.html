@@ -155,6 +155,7 @@
                 'Is Student': getIsStudent.checked,
                 // 'Domain Switch': '',
                 salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
+                GA_event_id: Date.now(),
             };
 
             leadScoreService()
@@ -166,6 +167,7 @@
                         dataLayer.push({
                             event: "wordpress_form_submitted",
                             formName: "Lead Qualifier Form",
+                            event_id: GQLformData.GA_event_id,
                             expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
                         })
                     } catch (err) {
@@ -321,7 +323,6 @@
             dataLayer.push({
                 event: "wordpress_form_submitted",
                 formName: "Source Form",
-                expected_revenue: expectedRev,
             })
         } catch (err) {
             track("source-e", "reporting-data-layer");

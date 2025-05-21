@@ -46,12 +46,10 @@
           }
         } else {
           if (!utmobj[paramName]) {
-            utmobj[paramName] = paramValue;
-          } else if (utmobj[paramName] && typeof utmobj[paramName] === 'string') {
-            utmobj[paramName] = [utmobj[paramName]];
-            utmobj[paramName].push(paramValue);
+            utmobj[paramName] = paramValue; // Set the value for the first occurrence
           } else {
-            utmobj[paramName].push(paramValue);
+            // Just overwrite with the latest value for duplicate parameters (don't create an array)
+            utmobj[paramName] = paramValue; // Override with the last occurrence
           }
         }
       }
@@ -404,5 +402,14 @@
       return new Promise((res, rej) => res());
     }
   }
+	
+	
+	// WhatsApp button Cokkie
+  let whatsappConsentABTestFlag = parseInt(getCookie("whatsapp_consent_ab"));
+  if(!whatsappConsentABTestFlag){
+      whatsappConsentABTestFlag = Math.floor(Math.random() * 100);
+      setCookie("whatsapp_consent_ab", whatsappConsentABTestFlag);
+  }
+  whatsappConsentABTestFlag = whatsappConsentABTestFlag >= 80; // change the threshold value
 </script>
 <!-- Organic head code end -->

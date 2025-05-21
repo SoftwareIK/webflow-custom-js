@@ -26,25 +26,23 @@
       for (var i = 0; i < arr.length; i++) {
         var a = arr[i].split('=');
         var paramName = a[0];
-        var paramValue = typeof (a[1]) === 'undefined' ? '' : a[1];
+        var paramValue = typeof (a[1]) === 'undefined' ? "" : a[1];
         paramName = paramName.toLowerCase();
-        if (paramName.match(/\[(\d+)?\]$/)) {
-          var key = paramName.replace(/\[(\d+)?\]/, '');
+        if (paramName.match(/[(d+)?]$/)) {
+          var key = paramName.replace(/[(d+)?]/, '');
           if (!utmobj[key]) utmobj[key] = [];
-          if (paramName.match(/\[\d+\]$/)) {
-            var index = /\[(\d+)\]/.exec(paramName)[1];
+          if (paramName.match(/[d+]$/)) {
+            var index = /[(d+)]/.exec(paramName)[1];
             utmobj[key][index] = paramValue;
           } else {
             utmobj[key].push(paramValue);
           }
         } else {
           if (!utmobj[paramName]) {
-            utmobj[paramName] = paramValue;
-          } else if (utmobj[paramName] && typeof utmobj[paramName] === 'string') {
-            utmobj[paramName] = [utmobj[paramName]];
-            utmobj[paramName].push(paramValue);
+            utmobj[paramName] = paramValue; // Set the value for the first occurrence
           } else {
-            utmobj[paramName].push(paramValue);
+            // Just overwrite with the latest value for duplicate parameters (don't create an array)
+            utmobj[paramName] = paramValue; // Override with the last occurrence
           }
         }
       }
@@ -58,9 +56,12 @@
 
 
 <script defer type="text/javascript">
+  let webinarSlots = [];
+  const webNearLoadedEv = new CustomEvent("webNearLoaded");
+  
   let isSwitchUp = "No";
-  let webinarType = currentURlPrms.webinartype || "REGULAR";
-  let eventName = currentURlPrms.event || "How to Nail your next Technical Interview";
+  let webinarType = webinarTypeBack || currentURlPrms.webinartype || "REGULAR";
+  let eventName = currentURlPrms.event || pageEnventName || "How to Nail your next Technical Interview";
   eventName = decodeURIComponent(eventName);
   let v_timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 </script>
@@ -69,9 +70,6 @@
 <!------------------ Webnear Form Send ---------------------->
 <script>
 
-  let webinarSlots = [];
-  const webNearLoadedEv = new CustomEvent("webNearLoaded");
-  
   let referrer = document.referrer; // get refere page
 
   let expdate = new Date();
@@ -166,6 +164,17 @@
 
   // set the visitor id end-------------------------------
 
+  function setClarityContext(uuid) {
+    try {
+      if (window.clarity) {
+        window.clarity("identify", uuid);
+        window.clarity("set", "uuid", uuid)
+      }
+    } catch (error) {
+      console.error("Clarity not found", error);
+    }
+  }
+  setClarityContext(visitor_id);
 
   // set the visitor Country start-------------------------------
   async function getCountry() {
@@ -181,7 +190,6 @@
     getCountry();
   }
   // set the visitor Country End-------------------------------
-
 
   // organic cookie start ------------------------------------------------------------
 
@@ -260,5 +268,9 @@
       return 'Desktop';
     }
   }
+	
+		
+	let page_url = window.location.href;
+  page_url = ((location.pathname != "/") && page_url.endsWith("/")) ? page_url.slice(0, -1) : page_url;
 </script>
 <!-- India head code end -->
