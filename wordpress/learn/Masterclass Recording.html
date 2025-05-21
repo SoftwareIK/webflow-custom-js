@@ -1,6 +1,15 @@
 <!-- Masterclass Recording -->
 <script>
-  document.addEventListener("webNearLoaded", function () {
+  let procide5Step = [
+    "build-ai-agents-from-scratch-v2",
+    "build-ai-agents-from-scratch-v1"
+  ];
+  procide5Step = procide5Step.reduce((prev, curr) =>  prev || location.pathname.includes(curr), false);
+
+  document.addEventListener("webNearLoaded",()=>{
+	  selectedSlotSet()
+  });
+  function selectedSlotSet(slotIndex = 0) {
 
     const dateSuffix = (date) => {
       const suffixes = ["th", "st", "nd", "rd"];
@@ -14,7 +23,7 @@
     const getMonthFild = document.querySelector('#v2-success-month');
     const getTimeFild = document.querySelector('#v2-success-time');
 
-    let frisWbinar = webinarSlots[0];
+    let frisWbinar = webinarSlots[slotIndex];
 
     const startTime = new Date(frisWbinar.start_time);
     const endTime = new Date(frisWbinar.end_time);
@@ -46,11 +55,83 @@
       getDayFild.innerHTML = startTime.toLocaleDateString('en-US', { weekday: 'long' });
       getDateFild.innerHTML = dateSuffix(startTime.getDate());
       getMonthFild.innerHTML = startTime.toLocaleDateString('en-US', { month: 'long' });
-      getTimeFild.innerHTML = `${formattedStartTime} PST`;
+      getTimeFild.innerHTML = `${formattedStartTime}`;
     } catch (err) {
       console.log(err)
     }
-  })
+
+    if(procide5Step){
+      try{
+        document.querySelector(".sday").innerHTML = startTime.toLocaleDateString('en-US', { weekday: 'long' }).slice(0, 3);
+        document.querySelector(".sdate").innerHTML = dateSuffix(startTime.getDate());
+        document.querySelector(".smonth").innerHTML = startTime.toLocaleDateString('en-US', { month: 'long' });
+        document.querySelector(".stime").innerHTML = `${formattedStartTime}`;
+      }catch (err) {
+        console.log(err)
+      }
+
+    }
+    
+  }
+</script>
+
+<script>
+  if(procide5Step){
+    document.addEventListener("webNearLoaded", function () {
+      const mainConatiner = document.querySelector(".v2_from_wrapper2");
+      const slideFlid = mainConatiner.querySelector(".slot_fild");
+      slideFlid.innerHTML = "";
+      webinarSlots.forEach(function (slot, index) {
+          let createWebniarSlot = document.createElement("label");
+          createWebniarSlot.classList.add("slot");
+          const startTime = new Date(slot.start_time);
+          const formattedStartTime = startTime.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
+
+          let slotInner = `
+                  <input type="radio" 
+                  name="v2_slot" 
+                  class="v2_slot_radio"
+                  value="${slot.start_time}"
+                  data-endtime="${slot.end_time}" 
+                  data-invitee_starttime="${slot.invitee_start_time}" 
+                  data-invitee_endtime="${slot.invitee_end_time}" 
+                  data-name="${slot.start_time}" 
+                  data-webinar_lead_type="${slot.webinar_lead_type}" 
+                  ${index === 0 ? "checked" : ""}
+                  slot-index="${index}" >
+                  <div class="time_slot_wrapper">
+                      <div class="v2_day">${startTime.toLocaleDateString('en-US', { weekday: 'long' }).slice(0, 3).toUpperCase()}</div>
+                      <div class="v2_date">${startTime.getDate()}</div>
+                      <hr>
+                      <div class="v2_time">${formattedStartTime}</div>
+                  </div>
+
+          `;
+
+          if (index === 0) {
+              slotInner += `
+                  <div class="v2_timer_alart" alart_type="warning">
+                      Filling fast
+                  </div>
+              `;
+          } else if (slot.weekday === "Saturday") {
+              slotInner += `
+                  <div class="v2_timer_alart" alart_type="danger">
+                      Almost full
+                  </div>
+              `;
+          }
+
+          createWebniarSlot.innerHTML = slotInner;
+          slideFlid.appendChild(createWebniarSlot);
+      })
+    })
+  }
+
 </script>
 
 
@@ -76,6 +157,8 @@
       },
       utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
     });
+
+    document.querySelector(".v2_from_wrapper2 .time_zone").innerHTML= `Time Zone: ${v_timezone}`;
 
     // Check the Button text
     if (window.location.href.includes("/event/build-ai-agents-from-scratch")) {
@@ -137,11 +220,11 @@
       user_timezone: "",
       l_page_url: "",
       cta_page_url: "",
-      webinar_type: "MASTERCLASS_EVENT",//TODO: get this from wp
+      webinar_type: webinarType,//TODO: get this from wp
       eventname: "",
       wr__referrer: "",
       wr__device: "",
-      webinar_lead_type: "MASTERCLASS_EVENT",//TODO: get this from wp
+      webinar_lead_type: webinarType,//TODO: get this from wp
       bye_calendly_type: "",
       is_exit_intent_popup: "",
       v_country: "",
@@ -230,19 +313,36 @@
         webNearInfo2.l_page_url = "learn.ik/" + page_url.split("/").pop();
       }
       webNearInfo2.cta_page_url = "learn.ik" + cta_lp;
-      webNearInfo2.webinar_type = "MASTERCLASS_EVENT";//TODO: get this from wp
+      webNearInfo2.webinar_type = webinarType;//TODO: get this from wp
       webNearInfo2.eventname = eventName;
       webNearInfo2.wr__referrer = referrer;
       webNearInfo2.wr__device = getDeviceType();
 
-      webNearInfo2.webinar_lead_type = "MASTERCLASS_EVENT";//TODO: get this from wp
+      webNearInfo2.webinar_lead_type = webinarType;//TODO: get this from wp
       webNearInfo2.bye_calendly_type = "";
       webNearInfo2.is_exit_intent_popup = "No";
       webNearInfo2.irclickid = decodeURIComponent(params['irclickid'] || "");
     }
     setHiddenFields2();
 
-    async function pushToEndPoint2(endpoint) {
+    async function pushToEndPoint2(endpoint, step) {
+        let currentWebinarType = webinarType;
+				let curreventName = eventName;
+        const pathname = window.location.pathname;
+
+        if (step === 3) {
+        if (
+            pathname.includes("build-ai-agents-from-scratch-v1") ||
+            pathname.includes("build-ai-agents-from-scratch-v2")
+        ) {
+            currentWebinarType = v_country === "India" ? "REGULAR" : "SWITCH_UP";
+            if (currentWebinarType === "REGULAR") {
+            curreventName = "How to nail your next technical interview";
+            } else {
+            curreventName = "Uplevel your career With AI/ML/GenAI";
+            }
+        }
+        }
 
       let getCheckWebnear = document.querySelector(".register_time");
       webNearInfo2.eventStartTime = getCheckWebnear.getAttribute('data-start_time');
@@ -256,8 +356,8 @@
         "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
         "Email Address": webNearEmailAddress2.value,
         "ByeCalendlyType": webNearInfo2.bye_calendly_type,
-        "webinar-type": "MASTERCLASS_EVENT", //TODO: get this from wp
-        "Webinar Lead Type": "MASTERCLASS_EVENT", //TODO: get this from wp
+        "webinar-type": currentWebinarType, //TODO: get this from wp
+        "Webinar Lead Type": currentWebinarType, //TODO: get this from wp
         "utm_source": webNearInfo2.utm_source,
         "utm_medium": webNearInfo2.utm_medium,
         "utm_campaign": webNearInfo2.utm_campaign,
@@ -281,7 +381,7 @@
 
         "cta_page_url": webNearInfo2.cta_page_url,
         "landing_page_url": webNearInfo2.l_page_url,
-        "event_name": webNearInfo2.eventname,
+        "event_name": curreventName,
         "user_timezone": webNearInfo2.user_timezone,
         "page_url": webNearInfo2.page_url,
         "site_url": webNearInfo2.site_url,
@@ -396,7 +496,7 @@
         }
 
         // This is diff zap. please do not reuse for regular webinar. this is specifically for masterclass
-        let zapUrl = "https://hooks.zapier.com/hooks/catch/11068981/2x8y2sx/";
+        let zapUrl = v_country === "India" ? "https://hooks.zapier.com/hooks/catch/11068981/340hd4j/" : "https://hooks.zapier.com/hooks/catch/11068981/2x8y2sx/";
         try {
           document.querySelector(".first_name_loader span").innerHTML = webNearInfo2.firstName;
         } catch (err) {
@@ -458,8 +558,10 @@
 
       bake_cookie("from_cookie", utmstring);
 
-      let pushUrl = is_webinar_1o1_eligible ? "https://hooks.zapier.com/hooks/catch/11068981/2dvpcc1/" : "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/";
-      pushUrl = isPartner ? "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/" : pushUrl;
+      let pushUrl = v_country === "India" ? "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/" : "https://hooks.zapier.com/hooks/catch/11068981/340hl1a/";
+      if(v_country === "India"){
+        pushToEndPoint2(pushUrl);
+      }
       new Promise((res) => res())
         .then(() => {
           getThePopupFrom2.setAttribute("active_step", 3);
@@ -521,6 +623,7 @@
         function track(step, message) {
           typeof saveFormEventsActivity === 'function' ? saveFormEventsActivity(step, null, null, message) : console.error("saveFormEventsActivity is not a function");
         }
+
         let GQLformData = {
           'First Name': webNearInfo2.firstName,
           'Last Name': webNearInfo2.lastName,
@@ -550,10 +653,11 @@
           'Laid Off': v2IsLaidOff,
           'Is Student': v2IsStudent,
           salesforce_uuid: webNearInfo2.salesforce_uuid,
-          "event_name": webNearInfo2.eventname,
-          "webinar_type": "MASTERCLASS_EVENT",//TODO: get this from wp
+          "event_name": webNearInfo2.eventName,
+          "webinar_type": webinarType,//TODO: get this from wp
           'event_start_time': webNearInfo2.eventStartTime,
           "CTA_Page": encodeURIComponent(webNearInfo2?.cta_page_url || ""),
+          GA_event_id: Date.now(),
         };
 
         leadScoreService()
@@ -565,6 +669,7 @@
               dataLayer.push({
                 event: "wordpress_form_submitted",
                 formName: "Lead Qualifier Form",
+                event_id: GQLformData.GA_event_id,
                 expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
               })
             } catch (err) {
@@ -576,6 +681,10 @@
             if (sbFrEx) {
               zapUrl = "https://hooks.zapier.com/hooks/catch/11068981/2q1a52r/";
               GQLformData.masterclass_lead_intent = Array.from(document.querySelectorAll(".per_checkBox:checked")).map(x => x.value).join(",");
+            }
+
+            if(v_country === "India"){
+              zapUrl = "https://hooks.zapier.com/hooks/catch/11068981/3409hxu/";
             }
             sendRequestZapiar(zapUrl, GQLformData, track, sbFrEx);
           });
@@ -693,8 +802,8 @@
         "CTA_Page": encodeURIComponent(webNearInfo2.cta_page_url),
         "Landing_Page": encodeURIComponent(webNearInfo2.l_page_url),
         "Webinar_reg_type": "",
-        "Webinar_Type": "MASTERCLASS_EVENT",//TODO: get this from wp
-        "Switchup_Lead": "MASTERCLASS_EVENT",//TODO: get this from wp
+        "Webinar_Type": webinarType,//TODO: get this from wp
+        "Switchup_Lead": webinarType,//TODO: get this from wp
         "UUID": webNearInfo2.salesforce_uuid,
         "Click_History": "",
         "City": webNearInfo2.wr__city,
@@ -728,6 +837,8 @@
       };
     }
 
+
+    
 
 
     const getV2Btn1 = getThePopupFrom2.querySelector('.step_btn_1');
@@ -775,5 +886,28 @@
     // prExSkip.addEventListener("click", function () {
     //     document.querySelector(".complete_message").setAttribute('show_status', true);
     // })
+
+
+    if(procide5Step){
+      document.querySelector(".pr_yr_exp_submit_button").addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        document.querySelector(".video_container").setAttribute('show_status', true);
+      });
+
+      const form2Selet = document.querySelector(".v2_from_wrapper2");
+      form2Selet.querySelector(".step_submit_btn").addEventListener("click", function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        let selectedSlotNumber = parseInt(form2Selet.querySelector("input:checked").getAttribute("slot-index"));
+        if(v_country !== "India"){
+          pushToEndPoint2("https://hooks.zapier.com/hooks/catch/11068981/340hl1a/" ,3);
+        }
+        selectedSlotSet(selectedSlotNumber);
+        fromSend2ndStep2();
+        form2Selet.setAttribute("active_step", 3);
+      })
+    }
+
   })
 </script>

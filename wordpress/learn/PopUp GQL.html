@@ -217,7 +217,19 @@
                 'Is Student': gqlIsStudent.checked,
                 // 'Domain Switch': '',
                 salesforce_uuid: webNearInfo.salesforce_uuid,
+                "GA_event_id": Date.now(),
             };
+
+            try {
+              dataLayer.push({
+                event: "wordpress_form_submitted",
+                formName: "Lead Qualifier Form",
+                event_id: GQLformData.GA_event_id,
+              })
+            } catch (err) {
+              saveClickActivity("info_and_gql_update-error-in-data-layer-push");
+              console.log("error in data layer push", err);
+            }
 
             let options = {
                 method: 'POST',

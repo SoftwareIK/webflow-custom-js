@@ -500,6 +500,7 @@
                     'Laid Off': v2IsLaidOff,
                     'Is Student': v2IsStudent,
                     salesforce_uuid: webNearInfo2.salesforce_uuid,
+                    GA_event_id: Date.now(),
                 };
 
                 leadScoreService()
@@ -512,6 +513,7 @@
                                 event: "wordpress_form_submitted",
                                 formName: "Lead Qualifier Form",
                                 expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
+                                event_id: GQLformData.GA_event_id,
                             })
                         } catch (err) {
                             console.log("error in data layer push");

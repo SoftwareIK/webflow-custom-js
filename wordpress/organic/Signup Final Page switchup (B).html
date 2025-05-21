@@ -247,12 +247,14 @@
                 'Is Student': getIsStudent.checked,
                 // 'Domain Switch': '',
                 salesforce_uuid: decodeURIComponent(utmparams['salesforce_uuid'] || ""),
+                GA_event_id: Date.now(),
             };
 
             try {
                 dataLayer.push({
                     event: "wordpress_form_submitted",
-                    formName: "Lead Qualifier Form"
+                    formName: "Lead Qualifier Form",
+                    event_id: GQLformData.GA_event_id,
                 })
             } catch (err) {
               track("gql-e", "reporting-data-layer");

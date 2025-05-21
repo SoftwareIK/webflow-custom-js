@@ -1,5 +1,11 @@
 <script>
-  const timestampOfUserVisit =  new Date();
+  const timestampOfUserVisit = new Date();
+  
+  let ab_bucket_json = {
+    exit_intent: "control",
+    gql_yoe_dropdown_ab: "",
+  }
+
   setTimeout(() => {
     let AB_test_bucket = "control"
     let fingerprint_id = "";
@@ -7,6 +13,17 @@
     try {
       if (typeof (AB_BUCKET) !== "undefined") {
         AB_test_bucket = AB_BUCKET
+        ab_bucket_json = {
+          ...ab_bucket_json,
+          exit_intent: AB_BUCKET,
+        }
+      }
+
+      if (typeof (getGqlYoeDropdownAB) != "undefined" && getGqlYoeDropdownAB != null) {
+        ab_bucket_json = {
+          ...ab_bucket_json,
+          gql_yoe_dropdown_ab: getGqlYoeDropdownAB ? "variant" : "control"
+        }
       }
 
       if (typeof (FINGERPRINT_ID) !== "undefined") {
@@ -39,6 +56,7 @@
         Refferer: webNearInfo.wr__referrer,
         Region: webNearInfo.wr__region,
         AB_test_bucket: AB_test_bucket,
+        ab_bucket_json: JSON.stringify(ab_bucket_json),
         fingerprint_id: fingerprint_id,
         step: "s1",
       },

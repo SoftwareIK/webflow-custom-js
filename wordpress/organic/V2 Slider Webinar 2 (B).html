@@ -623,6 +623,7 @@
                     'Laid Off': getThePopupFrom2.querySelector(".v2-laidoff-flag").checked,
                     'Is Student': v2IsStudent,
                     salesforce_uuid: webNearInfo2.salesforce_uuid,
+                    GA_event_id: Date.now(),
                 };
 
                 leadScoreService()
@@ -634,6 +635,7 @@
                             dataLayer.push({
                                 event: "wordpress_form_submitted",
                                 formName: "Lead Qualifier Form",
+                                event_id: GQLformData.GA_event_id,
                                 expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
                             })
                         } catch (err) {
