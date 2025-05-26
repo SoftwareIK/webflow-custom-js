@@ -768,6 +768,14 @@
           changeFormStep(2, 3);
           track("slot");
           secondStepSecondRequest2();
+          try {
+            VWO.event('slotSelected', {
+              'slotSelected': true
+            })
+          } catch (error) {
+            console.error("VWO event slotSelected failed", error);
+            track("slot-e", `vwo-event-slotSelected ${error.message}`);
+          }
         }).catch(() => {
           track("slot-e", "flow-zapier");
         });

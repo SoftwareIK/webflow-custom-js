@@ -536,6 +536,14 @@
       pushToEndPoint(pushUrl)
         .then(() => {
           track("slot");
+          try {
+            VWO.event('slotSelected', {
+              'slotSelected': true
+            })
+          } catch (error) {
+            console.error("VWO event slotSelected failed", error);
+            track("slot-e", `vwo-event-slotSelected ${error.message}`);
+          }
           secondStepSecondRequest(getCheckWebnear)
             .then(function () {
               if (gqlPopUpValue && webinarType === 'REGULAR' && !window.location.pathname.startsWith("/webinar-registration")  && !window.location.pathname.startsWith("/career-session-webinar-registration")) {
