@@ -155,7 +155,7 @@
         // City: geo.City,
         // Region: geo.Region,
         CTA_Page: "learn.ik" + cta_lp,
-        Landing_Page: l_page_url,
+        Landing_Page: window?.LANDING_PAGE_URL ? LANDING_PAGE_URL : l_page_url,
         Click_History: "",
         Device: getDeviceType(),
         User_Agent: encodeURIComponent(navigator?.userAgent || ""),
