@@ -81,8 +81,10 @@
     }
   }
 
-  async function slotLoaded(slots, resetTimer = true, callBack) {
+  async function slotLoaded(slots, resetTimer = true, callBack, country, c_timezoon) {
     webinarSlots = slots;
+		v_country_code = country;
+		called_c_timezoon = c_timezoon;
     document.dispatchEvent(webNearLoadedEv);
     if (!is_webinar_1o1_eligible) {
       populateWebinarSlots(slots);
@@ -117,7 +119,7 @@
       if (resobj.length == 0) {
         throw new Error(`P0: The Uplevel Webinar Slots API Returned No Data. (webinarType: ${webinarType}, timezone: ${c_timezoon}, country: ${country})`);
       }
-      slotLoaded(resobj, true, callBack);
+      slotLoaded(resobj, true, callBack, country, c_timezoon);
       api_status = "completed";
     } catch (err) {
       api_status = "failed";
@@ -201,7 +203,7 @@
     userAgent: "",
     li_fat_id: "",
     user_timezone: "",
-    l_page_url: "",
+    l_page_url: window?.LANDING_PAGE_URL ? LANDING_PAGE_URL :  "",
     cta_page_url: "",
     webinar_type: "",
     eventname: "",
@@ -311,7 +313,7 @@
 
     webNearInfo.user_id = visitor_id;
     webNearInfo.user_timezone = v_timezone;
-    webNearInfo.l_page_url = "ik.com" + getCookie("ik-landingpage");
+    webNearInfo.l_page_url = window?.LANDING_PAGE_URL ? LANDING_PAGE_URL :  "";
     webNearInfo.cta_page_url = "ik.com" + cta_lp;
     webNearInfo.webinar_type = webinarType;
     webNearInfo.eventname = eventName;
