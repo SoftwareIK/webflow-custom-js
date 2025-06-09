@@ -264,13 +264,42 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     return overlay;
   };
 
+  // add this start -----//KEVAL
+  const formClassList = [
+    ".web_near_form",
+    ".data_en_wb",
+    ".elementor-popup-modal"
+  ];
+
+  // Check if any form element is visible on screen
+  function isAnyFormVisible() {
+    return formClassList.some(selector => {
+      const element = document.querySelector(selector);
+      if (!element) return false;
+
+      const rect = element.getBoundingClientRect();
+      return (
+        rect.width > 0 &&
+        rect.height > 0 &&
+        rect.bottom > 0 &&
+        rect.right > 0 &&
+        rect.top < window.innerHeight &&
+        rect.left < window.innerWidth &&
+        window.getComputedStyle(element).visibility !== "hidden" &&
+        window.getComputedStyle(element).display !== "none"
+      );
+    });
+  }
+  // add this end -----//KEVAL
+
   const shouldShowPopup = () => {
     let isFormOpened = false;
     let isVideoOpened = false;
     let isHighIntentUser = getCookie(highIntentCookieName) === "true";
 
     try {
-      isFormOpened = !!document.querySelector('.web_near_form') && document.querySelector('.web_near_form').getAttribute("show_status") != 'false';
+      // Replace this ---- //KEVAL
+      isFormOpened = isAnyFormVisible();
       isVideoOpened = !!document.querySelector('.video_popup') && document.querySelector('.video_popup').classList.contains("open");
     } catch (error) {
       console.error("Failed to check if form or video is opened:", error);

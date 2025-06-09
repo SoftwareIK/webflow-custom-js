@@ -1,0 +1,80 @@
+<!-- landingpage-cookie-logic -->
+<script nitro-exclude>
+  (function initLandingPageCookie() {
+    const COOKIE_NAME = "landing_page";
+    const EXPIRY_MINUTES = 120;
+    const ROOT_DOMAIN = getRootDomain();
+
+    // Global variable to hold the cookie value
+    window.LANDING_PAGE_URL = null;
+
+    function setCookie(name, value, minutes) {
+      if (!name || !value || typeof minutes !== "number") return;
+      const expires = new Date(Date.now() + minutes * 60000).toUTCString();
+      document.cookie =
+        `${encodeURIComponent(name)}=${encodeURIComponent(value)}; ` +
+        `path=/; expires=${expires}; domain=${ROOT_DOMAIN}; SameSite=Lax`;
+    }
+
+    function getCookie(name) {
+      if (!name) return null;
+      try {
+        const cookies = document.cookie.split("; ");
+        for (const cookie of cookies) {
+          const [key, val] = cookie.split("=");
+          if (decodeURIComponent(key) === name) {
+            return decodeURIComponent(val || "");
+          }
+        }
+      } catch (err) {
+        console.warn("Cookie parse error:", err);
+      }
+      return null;
+    }
+
+    function getRootDomain() {
+      const parts = location.hostname.split(".");
+      if (parts.length >= 2) {
+        return "." + parts.slice(-2).join(".");
+      }
+      return location.hostname;
+    }
+
+    function refreshLandingPageCookie() {
+      const currentPage = location.href;
+      const existing = getCookie(COOKIE_NAME);
+
+      if (!existing) {
+        setCookie(COOKIE_NAME, currentPage, EXPIRY_MINUTES);
+        window.LANDING_PAGE_URL = currentPage;
+      } else {
+        setCookie(COOKIE_NAME, existing, EXPIRY_MINUTES);
+        window.LANDING_PAGE_URL = existing;
+      }
+    }
+
+    function debounce(func, delay) {
+      let timeout;
+      return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+      };
+    }
+
+    const debouncedRefresh = debounce(refreshLandingPageCookie, 5000);
+
+    function setupActivityListeners() {
+      const events = ["click", "scroll", "keydown", "mousemove"];
+      events.forEach(event => {
+        window.addEventListener(event, debouncedRefresh, { passive: true });
+      });
+    }
+
+    try {
+      refreshLandingPageCookie(); // On load
+      setupActivityListeners();
+    } catch (e) {
+      console.error("Landing page cookie setup failed:", e);
+    }
+  })();
+</script>

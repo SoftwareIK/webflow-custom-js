@@ -93,8 +93,29 @@
         l_page_url = "ik.com/" + (referrer || '').split("/").pop();
       }
 
-      function getParams(i){var r=i?i.split("?")[1]:window.location.search.slice(1),t={};if(r)for(var a=(r=r.split("#")[0]).split("&"),e=0;e<a.length;e++){var l=a[e].split("="),o=l[0].toLowerCase(),s=void 0===l[1]?void 0:decodeURIComponent(l[1]);(o=o.replace(/\[(\d+)?\]$/,""))in t||(t[o]=s)}return t} 
-     
+      function getParams(url) {
+        var queryString = url ? url.split("?")[1] : window.location.search.slice(1);
+        var params = {};
+
+        if (queryString) {
+          queryString = queryString.split("#")[0];
+          var pairs = queryString.split("&");
+
+          for (var i = 0; i < pairs.length; i++) {
+            var parts = pairs[i].split("=");
+            var key = parts[0].toLowerCase();
+            var value = typeof parts[1] === "undefined" ? undefined : decodeURIComponent(parts[1]);
+
+            key = key.replace(/\[(\d+)?\]$/, "");
+
+            if (!(key in params)) {
+              params[key] = value;
+            }
+          }
+        }
+
+        return params;
+      }      
       let params = [];
       try {
         params = read_cookie("v_latest") || getParams()
@@ -119,7 +140,7 @@
         User_ID: visitor_id,
         Page_URL: page_url,
         CTA_Page: "ik.com" + cta_lp,
-        Landing_Page: l_page_url,
+        Landing_Page: window?.LANDING_PAGE_URL ? LANDING_PAGE_URL : l_page_url,
         Click_History: "",
         Device: getDeviceType(),
         User_Agent: encodeURIComponent(navigator?.userAgent || ""),

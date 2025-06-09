@@ -86,7 +86,8 @@
   }
 
   async function loadSlot(c_timezoon = "America/New_York") {
-    let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=USA&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${(webinarType === "SWITCH_UP") || (webinarType === "CAREER_SESSION") || (webinarType === "MASTERCLASS_EVENT_AI") || (webinarType === "MASTERCLASS_EVENT") || (webinarType === "Agentic_AI") ? webinarType : "REGULAR"}`;
+		let countryCode = window.location.pathname.includes("/event/build-ai-agents-from-scratch") && (v_country === "India");
+    let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=${ countryCode ? "IND" : "USA"  }&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${(webinarType === "SWITCH_UP") || (webinarType === "CAREER_SESSION") || (webinarType === "MASTERCLASS_EVENT_AI") || (webinarType === "MASTERCLASS_EVENT_AI_1") || (webinarType === "MASTERCLASS_EVENT") || (webinarType === "MASTERCLASS_EVENT_2") || (webinarType === "Agentic_AI") || (webinarType === "MASTERCLASS_EVENT_DATA") ? webinarType : "REGULAR"}`;
 
     const option = {
       method: "GET",
@@ -176,7 +177,7 @@
     userAgent: "",
     li_fat_id: "",
     user_timezone: "",
-    l_page_url: "",
+    l_page_url:  window?.LANDING_PAGE_URL ? LANDING_PAGE_URL :  "",
     cta_page_url: "",
     webinar_type: "",
     eventname: "",
@@ -288,8 +289,7 @@
       webNearInfo.li_fat_id = decodeURIComponent(params['li_fat_id'] || "");
     webNearInfo.user_id = visitor_id;
     webNearInfo.user_timezone = v_timezone;
-    //   webNearInfo.l_page_url = "learn.ik" + getCookie("ik-landingpage");
-    if ((referrer || '') != "") {
+    if ((referrer || '') != "" && webNearInfo.l_page_url == "") {
       webNearInfo.l_page_url = "learn.ik/" + (referrer || '').split("/").pop();
     } else {
       webNearInfo.l_page_url = "learn.ik/" + page_url.split("/").pop();
@@ -536,6 +536,14 @@
       pushToEndPoint(pushUrl)
         .then(() => {
           track("slot");
+          try {
+            VWO.event('slotSelected', {
+              'slotSelected': true
+            })
+          } catch (error) {
+            console.error("VWO event slotSelected failed", error);
+            track("slot-e", `vwo-event-slotSelected ${error.message}`);
+          }
           secondStepSecondRequest(getCheckWebnear)
             .then(function () {
               if (gqlPopUpValue && webinarType === 'REGULAR' && !window.location.pathname.startsWith("/webinar-registration")  && !window.location.pathname.startsWith("/career-session-webinar-registration")) {
