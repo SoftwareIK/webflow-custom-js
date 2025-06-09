@@ -142,7 +142,7 @@
         User_ID: visitor_id,
         Page_URL: page_url,
         CTA_Page: "ik.com" + cta_lp,
-        Landing_Page: l_page_url,
+        Landing_Page: window?.LANDING_PAGE_URL ? LANDING_PAGE_URL : l_page_url,
         Click_History: "",
         Device: getDeviceType(),
         User_Agent: encodeURIComponent(navigator?.userAgent || ""),

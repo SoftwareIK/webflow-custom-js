@@ -1,4 +1,4 @@
-<!-- Career kickstarter page form -->
+<!-- Faang Webinar Bonus Form -->
 <!-- <script>
   const formPopupOpenedEvent = "formPopupOpened"
   document.addEventListener("click", function (event) {
@@ -102,7 +102,11 @@
     }
 
     document.getElementById("form-multistep").querySelector(".time_zone").innerHTML = `Time Zone: ${v_timezone}`;
-
+ 		const faangBadgeCount = document.getElementById("faang-badge-count");
+		if (faangBadgeCount) {
+			const faangBadgeCountValue = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
+			faangBadgeCount.innerHTML = " " + faangBadgeCountValue + " ";
+		}
     // const webNearFullName2 = document.getElementById("form-multistep").querySelector('input.fr_name_fl');
     // const webNearEmailAddress2 = document.getElementById("form-multistep").querySelector('.fr_email_fl');
     // const webNearPhoneNumber2= document.getElementById("form-multistep").querySelector('.fr_phone_fl');
@@ -145,7 +149,7 @@
       userAgent: "",
       li_fat_id: "",
       user_timezone: "",
-      l_page_url: window?.LANDING_PAGE_URL ? LANDING_PAGE_URL : "",
+      l_page_url:  window?.LANDING_PAGE_URL ? LANDING_PAGE_URL :  "",
       cta_page_url: "",
       webinar_type: "",
       eventname: "",
@@ -345,7 +349,7 @@
         firstStepAccordian.classList.add('active-tab-two');
         formSubmitButton.classList.remove('step_btn_1');
         formSubmitButton.classList.add('step_btn_2');
-
+				formSubmitButton.innerText="Next";
         formBackButton.classList.remove('hidden');
         formBackButton.classList.remove("step_back_1");
         formBackButton.classList.add("step_back_2");
@@ -357,16 +361,19 @@
         formBackButton.classList.add('hidden');
         formBackButton.classList.add("step_back_1")
         formBackButton.classList.remove("step_back_2");
+				formSubmitButton.innerText="Next";
+
       } else if (fromStep == 2 && toStep == 3) {
         firstStepAccordian.classList.add('finished');
         firstStepAccordian.querySelector(".accordion-header").classList.remove("active")
         firstStepAccordian.classList.remove('active-tab-two');
 
-        secondStepAccordian.classList.add('active');
+        secondStepAccordian.classList.add('noactive');
         secondStepAccordian.querySelector(".accordion-header").classList.add("active")
 
         formSubmitButton.classList.remove('step_btn_2');
         formSubmitButton.classList.add('step_btn_3');
+				formSubmitButton.innerText="Finish";
 
         formBackButton.classList.remove("step_back_2");
         formBackButton.classList.add("step_back_3");
@@ -380,7 +387,7 @@
 
         formSubmitButton.classList.remove('step_btn_3');
         formSubmitButton.classList.add('step_btn_2');
-
+				formSubmitButton.innerText="Next";
         formBackButton.classList.remove("step_back_3");
         formBackButton.classList.add("step_back_2");
       }
@@ -402,12 +409,12 @@
       const get_left_steps = document.querySelectorAll('.left-steps-main .left-steps');
       const wrapper = document.querySelector(".left-content-wrapper.only-desktop");
       if (!wrapper) return;
-
+			
       function updateLeftContentText(i) {
         const stepParagraphs = [
-          "<strong>Share your details</strong> to get started ✨",
-          "<strong>Choose your preferred time</strong> for the FAANG Insights Session ✨",
-          "<strong>Share a few details</strong> to tailor your 1:1 consultation ✨"
+          "Share your details to get started ✨",
+          "Share your details to get started ✨",
+          "Share your details to get started ✨",
         ];
 
         const pElement = wrapper.querySelector("p");
@@ -428,12 +435,13 @@
           get_left_steps.forEach((element, i) => {
             if (i === 0) {
               element.classList.add('finished');
-              element.classList.remove('active', 'active-75', 'active-50');
+							element.classList.add('active-2');
+               element.classList.remove('active', 'active-75', 'active-50');
             } else if (i === 1) {
-              element.classList.add('active');
+//element.classList.add('active');
             }
           });
-        }
+			}
         updateLeftContentText(index + 1);
 
       } else {
@@ -450,7 +458,7 @@
         } else if (index === 2) {
           get_left_steps.forEach((element, i) => {
             if (i === 0) {
-              element.classList.add('active', 'active-50', 'active-75');
+             element.classList.add('active', 'active-50', 'active-75');
               element.classList.remove('finished');
             }
             if (i === 1) {
@@ -462,6 +470,8 @@
         updateLeftContentText(index - 1);
       }
     }
+
+
 
     function topStepSlider(toStep) {
       const get_top_steps = document.querySelectorAll('.tab-nav .nav-item');
@@ -488,7 +498,6 @@
           "<strong> Proven outcomes </strong> with offers from Google, Amazon, LinkedIn, and more"
         ],
         [
-          "<strong>85% of users </strong> say this 1:1 call clarified their next best step toward a FAANG+ role",
           "<strong> 25,000+ engineers </strong> have fast-tracked their FAANG+ journey with Interview Kickstart",
           "<strong> Backed by 650+ </strong> instructors from Google, Meta, Apple, Netflix, and other top tech companies",
           "<strong> Proven outcomes </strong> with offers from Google, Amazon, LinkedIn, and more",
@@ -550,7 +559,14 @@
       // Step button class name correction (only one button, so update the class for that button)
       const stepButton = document.getElementById("form-multistep").querySelector('.pag-item-next');
       const backButton = document.getElementById("form-multistep").querySelector('.pag-item-prev');
-
+			if (!mobileDevice()) {
+        if(toStep === 3){
+            stepButton.innerHTML = "Finish";
+        }else{
+            stepButton.innerHTML = "Proceed";
+        }
+        
+      }
       stepButton.classList.remove(`step_btn_${fromStep}`);
       stepButton.classList.add(`step_btn_${toStep}`);
 
@@ -751,6 +767,14 @@
           changeFormStep(2, 3);
           track("slot");
           secondStepSecondRequest2();
+          try {
+            VWO.event('slotSelected', {
+              'slotSelected': true
+            })
+          } catch (error) {
+            console.error("VWO event slotSelected failed", error);
+            track("slot-e", `vwo-event-slotSelected ${error.message}`);
+          }
         }).catch(() => {
           track("slot-e", "flow-zapier");
         });

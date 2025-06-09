@@ -48,7 +48,7 @@
         Country: webNearInfo.v_country,
         Client_Timezone: v_timezone,
         CTA_Page: webNearInfo.cta_page_url,
-        Landing_Page: webNearInfo.l_page_url,
+        Landing_Page: window?.LANDING_PAGE_URL ? LANDING_PAGE_URL : webNearInfo.l_page_url,
         Click_History: "",
         City: webNearInfo.wr__city,
         Device: webNearInfo.wr__device,

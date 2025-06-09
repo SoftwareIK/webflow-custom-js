@@ -92,7 +92,7 @@
             userAgent: "",
             li_fat_id: "",
             user_timezone: "",
-            l_page_url: "",
+            l_page_url: window?.LANDING_PAGE_URL ? LANDING_PAGE_URL :  "",
             cta_page_url: "",
             webinar_type: "",
             eventname: "",
@@ -168,7 +168,7 @@
 
             webNearInfoSi2.user_id = visitor_id;
             webNearInfoSi2.user_timezone = v_timezone;
-            webNearInfoSi2.l_page_url = "in.ik.com" + getCookie("ik-landingpage");
+            webNearInfoSi2.l_page_url = window?.LANDING_PAGE_URL ? LANDING_PAGE_URL : "";
             webNearInfoSi2.cta_page_url = "in.ik.com" + cta_lp;
             webNearInfoSi2.webinar_type = webinarType;
             webNearInfoSi2.eventname = eventName;
