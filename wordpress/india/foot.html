@@ -514,7 +514,7 @@
 
     let LeadCreatedTime = null;
     // second step second request fun
-     async function secondStepSecondRequest(getCheckWebnear) {
+    async function secondStepSecondRequest(getCheckWebnear) {
         //lead LeadCreatedTime
         const currentDateTime = new Date();
         LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
@@ -532,11 +532,6 @@
 
         const formattedStartDateTime = formatDateTime(getCheckWebnear.value);
         const formattedEndDateTime = formatDateTime(getCheckWebnear.getAttribute('data-endtime'));
-        
-        let getGqlYoeDropdownABValue = "";
-        if(typeof(getGqlYoeDropdownAB) != "undefined" && getGqlYoeDropdownAB != null){
-            getGqlYoeDropdownABValue = getGqlYoeDropdownAB ? "variant" : "control";
-        }
 
         let data = [{
             "Lead_Created_Time": LeadCreatedTime,
@@ -573,9 +568,6 @@
             "Refferer": encodeURIComponent(webNearInfo.wr__referrer),
             "Region": webNearInfo.wr__region,
             "step": "s4",
-            "ab_bucket_json": JSON.stringify({
-              gql_yoe_dropdown_ab: getGqlYoeDropdownABValue,
-            }),
             "whatsapp_user_consent": webNearInfo.whatsAppUserConsent,
         }];
 
@@ -599,7 +591,6 @@
             console.error(err);
         };
     }
-
 
 
     // get wn from btns

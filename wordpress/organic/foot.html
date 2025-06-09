@@ -81,10 +81,8 @@
     }
   }
 
-  async function slotLoaded(slots, resetTimer = true, callBack, country, c_timezoon) {
+  async function slotLoaded(slots, resetTimer = true, callBack) {
     webinarSlots = slots;
-		v_country_code = country;
-		called_c_timezoon = c_timezoon;
     document.dispatchEvent(webNearLoadedEv);
     if (!is_webinar_1o1_eligible) {
       populateWebinarSlots(slots);
@@ -119,7 +117,7 @@
       if (resobj.length == 0) {
         throw new Error(`P0: The Uplevel Webinar Slots API Returned No Data. (webinarType: ${webinarType}, timezone: ${c_timezoon}, country: ${country})`);
       }
-      slotLoaded(resobj, true, callBack, country, c_timezoon);
+      slotLoaded(resobj, true, callBack);
       api_status = "completed";
     } catch (err) {
       api_status = "failed";

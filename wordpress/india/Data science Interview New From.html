@@ -107,7 +107,7 @@
       userAgent: "",
       li_fat_id: "",
       user_timezone: "",
-      l_page_url: "",
+      l_page_url: window?.LANDING_PAGE_URL ? LANDING_PAGE_URL :  "",
       cta_page_url: "",
       webinar_type: "",
       eventname: "",
@@ -202,8 +202,7 @@
 
       webNearInfo2.user_id = visitor_id;
       webNearInfo2.user_timezone = v_timezone;
-      //     webNearInfo2.l_page_url = "in.ik" + getCookie("ik-landingpage");
-      if ((referrer || '') != "") {
+      if ((referrer || '') != "" && webNearInfo2.l_page_url == "") {
         webNearInfo2.l_page_url = "in.ik/" + (referrer || '').split("/").pop();
       } else {
         webNearInfo2.l_page_url = "in.ik/" + page_url.split("/").pop();

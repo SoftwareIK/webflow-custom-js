@@ -36,7 +36,11 @@
     });
 
     slideFlid.querySelector("span").innerHTML = `${formattedDate}, ${formattedStartTime} - ${formattedEndTime} PST`;
-    document.querySelector(".page_date_show span.elementor-icon-list-text").innerHTML = `${formattedDate}, ${formattedStartTime} - ${formattedEndTime} PST`;
+    // Skip updating .page_date_show if the page slug matches
+    const slug = window.location.pathname.split('/').filter(Boolean).pop();
+    if (slug !== "the-ai-agent-era") {
+      document.querySelector(".page_date_show span.elementor-icon-list-text").innerHTML = `${formattedDate}, ${formattedStartTime} - ${formattedEndTime} PST`;
+    }
     slideFlid.setAttribute("data-start_time", frisWbinar.start_time);
     slideFlid.setAttribute("data-endtime", frisWbinar.end_time);
     slideFlid.setAttribute("data-invitee_starttime", frisWbinar.invitee_start_time);
@@ -60,9 +64,8 @@
     const webNearEmailAddress2 = getThePopupFrom2.querySelector('.fr_email_fl');
     const webNearPhoneNumber2 = getThePopupFrom2.querySelector('.fr_phone_fl');
     const webNearAccepTance = getThePopupFrom2.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
+
     const webNearSlots2 = getThePopupFrom2.querySelector('.slot_sl_con .slot_fild');
-
-
 
     const webNearPhoneNumberWri2 = window.intlTelInput(webNearPhoneNumber2, {
       initialCountry: "auto",
@@ -261,7 +264,7 @@
         "cta_page_url": webNearInfo2.cta_page_url,
         "landing_page_url": webNearInfo2.l_page_url,
         "event_name": webNearInfo2.eventname,
-        "masterclass_instructor_details": instructorDetails,
+				"masterclass_instructor_details": instructorDetails,
         "user_timezone": webNearInfo2.user_timezone,
         "page_url": webNearInfo2.page_url,
         "site_url": webNearInfo2.site_url,
@@ -483,8 +486,8 @@
         let GQLformData = {
           'First Name': webNearInfo2.firstName,
           'Last Name': webNearInfo2.lastName,
-          "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
           'Email Address': webNearEmailAddress2.value,
+          "whatsAppUserConsent": webNearInfo2.whatsAppUserConsent,
           utm_source: webNearInfo2.utm_source,
           utm_medium: webNearInfo2.utm_medium,
           utm_campaign: webNearInfo2.utm_campaign,
@@ -509,6 +512,7 @@
           'Laid Off': v2IsLaidOff,
           'Is Student': v2IsStudent,
           salesforce_uuid: webNearInfo2.salesforce_uuid,
+          GA_event_id: Date.now(),
         };
 
         leadScoreService()
@@ -521,6 +525,7 @@
                 event: "wordpress_form_submitted",
                 formName: "Lead Qualifier Form",
                 expected_revenue: parseFloat(leadScoreData.expected_revenue.replace(/[^0-9.]/g, "")),
+                event_id: GQLformData.GA_event_id,
               })
             } catch (err) {
               console.log("Data Layer add faild");
@@ -587,17 +592,15 @@
         let response = await fetch(url, options);
         if ((window.location.href.includes("event/build-your-own-instagram-masterclass") ||
           window.location.href.includes("event/faang-software-engineering-mastery") ||
-          window.location.href.includes("/event/build-ai-agents-from-scratch-v1") ||
           window.location.href.includes("event/faang-data-engineering-mastery") ||
           window.location.href.includes("event/netflix-system-design-masterclass") ||
-          window.location.href.includes("event/would-you-get-hired-as-a-faang-pm") ||
           window.location.href.includes("event/crack-faang-interviews-in-the-ai-era") ||
-          window.location.href.includes("event/build-your-first-ai-agents-with-mcp") ||
           window.location.href.includes("event/why-do-smart-data-scientists-fail-faang-interviews") ||
-          window.location.href.includes("event/why-do-smart-engineering-managers-fail-faang-interviews") ||
-          window.location.href.includes("event/faang-dsa-coding-masterclass") ||
-          window.location.href.includes("event/faang-ai-observability-masterclass") ||
-          window.location.href.includes("event/vibe-coding-with-google-firebase-studio") ||
+          window.location.href.includes("event/why-do-smart-engineering-managers-fail-faang-interviews") || 
+					window.location.href.includes("event/faang-dsa-coding-masterclass") || 
+					window.location.href.includes("event/build-your-first-ai-agents-with-mcp") || 
+					window.location.href.includes("event/faang-ai-observability-masterclass") ||
+					window.location.href.includes("event/vibe-coding-with-google-firebase-studio") || 
           window.location.href.includes("event/software-architecture-masterclass")) && !sbFrEx) {
           document.querySelector(".pr_yr_exp").setAttribute('show_status', true);
         } else {
