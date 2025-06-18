@@ -187,9 +187,18 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
 
     // Image click event to redirect, close popup, and track activity
     image.onclick = () => {
-      const targetUrl = new URL(
-        "https://ikiq.interviewkickstart.com/resume-analysis"
-      );
+     
+      let targetUrl;
+        if (webinarType === "SWITCH_UP") {
+          targetUrl = new URL(
+            "https://interviewkickstart.com/ai-quotient-analyzer"
+          );
+        } else {
+          targetUrl = new URL(
+            "https://ikiq.interviewkickstart.com/resume-analysis"
+          );
+        }
+      
 
       const appendUTMParams = () => {
         let params = window.location.search;
@@ -264,41 +273,37 @@ function initExitIntentPopup(eagerLoadImage, options = {}) {
     return overlay;
   };
 
-  // add this start -----//KEVAL
   const formClassList = [
-    ".web_near_form",
-    ".data_en_wb",
-    ".elementor-popup-modal"
-  ];
+      ".web_near_form",
+      ".data_en_wb",
+      ".elementor-popup-modal",
+    ];
 
-  // Check if any form element is visible on screen
-  function isAnyFormVisible() {
-    return formClassList.some(selector => {
-      const element = document.querySelector(selector);
-      if (!element) return false;
+    // Check if any form element is visible on screen
+    function isAnyFormVisible() {
+      return formClassList.some((selector) => {
+        const element = document.querySelector(selector);
+        if (!element) return false;
 
-      const rect = element.getBoundingClientRect();
-      return (
-        rect.width > 0 &&
-        rect.height > 0 &&
-        rect.bottom > 0 &&
-        rect.right > 0 &&
-        rect.top < window.innerHeight &&
-        rect.left < window.innerWidth &&
-        window.getComputedStyle(element).visibility !== "hidden" &&
-        window.getComputedStyle(element).display !== "none"
-      );
-    });
-  }
-  // add this end -----//KEVAL
-
+        const rect = element.getBoundingClientRect();
+        return (
+          rect.width > 0 &&
+          rect.height > 0 &&
+          rect.bottom > 0 &&
+          rect.right > 0 &&
+          rect.top < window.innerHeight &&
+          rect.left < window.innerWidth &&
+          window.getComputedStyle(element).visibility !== "hidden" &&
+          window.getComputedStyle(element).display !== "none"
+        );
+      });
+    }
   const shouldShowPopup = () => {
     let isFormOpened = false;
     let isVideoOpened = false;
     let isHighIntentUser = getCookie(highIntentCookieName) === "true";
 
     try {
-      // Replace this ---- //KEVAL
       isFormOpened = isAnyFormVisible();
       isVideoOpened = !!document.querySelector('.video_popup') && document.querySelector('.video_popup').classList.contains("open");
     } catch (error) {
@@ -485,13 +490,32 @@ if (!ignorePath()) {
   AB_BUCKET = isVariant ? "variant" : "control";
   if (isVariant) {
     const eagerLoadImage = new Image();
-    if (mobileDevice()) {
-      eagerLoadImage.src =
-        "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6735d41ebced5e2946456b47_Mobile.webp";
-    } else {
-      eagerLoadImage.src =
-        "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6736c3bbc05aac9dc828b94f_exit-intent-web.webp";
-    }
+    let imageSrc;
+      console.log("eagerLoadImage", eagerLoadImage, webinarType);
+      switch (true) {
+        case mobileDevice() && webinarType === "SWITCH_UP":
+          imageSrc =
+            "https://interviewkickstart.com/wp-content/uploads/2025/06/Exit-Popup-Mobile.webp";
+          break;
+
+        case mobileDevice():
+          imageSrc =
+            "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6735d41ebced5e2946456b47_Mobile.webp";
+          break;
+
+        // Desktop Image
+        case webinarType === "SWITCH_UP":
+          imageSrc =
+            "https://interviewkickstart.com/wp-content/uploads/2025/06/Exit-Popup-SwitchUp.webp";
+          break;
+
+        default:
+          imageSrc =
+            "https://cdn.prod.website-files.com/65b0a8bbe7894a07737a1710/6736c3bbc05aac9dc828b94f_exit-intent-web.webp";
+          break;
+      }
+
+      eagerLoadImage.src = imageSrc;
 
     initExitIntentPopup(eagerLoadImage, {
       downScrollThreshold: 1,
