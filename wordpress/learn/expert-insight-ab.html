@@ -1,0 +1,109 @@
+<!-- expert-insight-ab -->
+<script>
+  /*
+   * - Define AB thresholds across domain‐groups, ignore paths, and cookie settings.
+   * - Decide variant vs. control by persisting a 0–99 bucket in a cookie.
+   */
+  const expertInsightConfigs = {
+    groups: [{
+      domains: ['www.interviewkickstart.com', 'staging-07b2-interviewkickstart.wpcomstaging.com'],
+      thresholds: {
+        REGULAR: 20,
+        SWITCH_UP: 20
+      }
+    }, {
+      domains: ['learn.interviewkickstart.com', 'staging-e036-learninterviewkickstartcom.wpcomstaging.com'],
+      thresholds: {
+        REGULAR: 50,
+        SWITCH_UP: 50
+      }
+    }, {
+      domains: ['in.interviewkickstart.com', 'staging-4eb7-ininterviewkickstart.wpcomstaging.com'],
+      thresholds: {
+        REGULAR: 40,
+        SWITCH_UP: 40
+      }
+    }],
+    ignorePaths: [
+      '/webinar-registration',
+      '/career-session-webinar-registration'
+    ],
+    cookieName: 'expert_insight_ab_value',
+    cookieExpiryDays: 30
+  };
+
+  (function (window) {
+    const domainThresholdMap = expertInsightConfigs.groups.flatMap(({ domains, thresholds }) =>
+      domains.map(domainName => [domainName, thresholds])
+    ).reduce((thresholdMap, [domainName, thresholds]) =>
+      thresholdMap.set(domainName, thresholds),
+      new Map()
+    );
+
+    const cookieUtil = {
+      get(cookieName) {
+        const match = document.cookie.match(
+          new RegExp('(?:^|; )' + cookieName + '=([^;]*)')
+        );
+        if (!match) return null;
+
+        const rawValue = decodeURIComponent(match[1]);
+        const parsedValue = parseInt(rawValue, 10);
+        return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue < 100
+          ? parsedValue
+          : null;
+      },
+      set(cookieName, value) {
+        const expiryDate = new Date(
+          Date.now() + expertInsightConfigs.cookieExpiryDays * 864e5
+        ).toUTCString();
+        document.cookie = `${cookieName}=${encodeURIComponent(
+          value
+        )}; expires=${expiryDate}; path=/`;
+      },
+      getOrSet() {
+        let cookieName = expertInsightConfigs.cookieName;
+        const existingValue = this.get(cookieName);
+        if (existingValue !== null) return existingValue;
+
+        const newValue = Math.floor(Math.random() * 100);
+        this.set(cookieName, newValue);
+        return newValue;
+      }
+    };
+
+    function isIgnoredPath(currentPath) {
+      return expertInsightConfigs.ignorePaths.some(ignorePath =>
+        currentPath.startsWith(ignorePath)
+      );
+    }
+
+    function getThresholdForDomain(domainName, webinar) {
+      const thresholds = domainThresholdMap.get(domainName);
+      return thresholds?.[webinar] ?? null;
+    }
+
+    function shouldShowExpertInsight(webinar = webinarType) {
+      const { hostname, pathname } = window.location;
+
+      if (isIgnoredPath(pathname)) {
+        window.expertInsightABValue = '';
+        return false;
+      }
+
+      const threshold = getThresholdForDomain(hostname, webinar);
+      if (threshold === null) {
+        window.expertInsightABValue = '';
+        return false;
+      }
+
+      const bucketValue = cookieUtil.getOrSet();
+      const isVariant = bucketValue < threshold;
+
+      window.expertInsightABValue = isVariant ? 'VARIANT' : 'CONTROL';
+      return isVariant;
+    }
+
+    window.shouldShowExpertInsight = shouldShowExpertInsight;
+  }(window));
+</script>

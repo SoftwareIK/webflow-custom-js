@@ -368,6 +368,7 @@
       "Event End Time": webNearInfo.eventEndTime,
       "Invitee Start Time": webNearInfo.inviteStartTime,
       "Invitee End Time": webNearInfo.inviteEndTime,
+      "expertInsightABValue": typeof expertInsightABValue !== "undefined" ? expertInsightABValue : "",
     };
 
     try {
@@ -546,7 +547,7 @@
           }
           secondStepSecondRequest(getCheckWebnear)
             .then(function () {
-              if (gqlPopUpValue && webinarType === 'REGULAR' && !window.location.pathname.startsWith("/webinar-registration")  && !window.location.pathname.startsWith("/career-session-webinar-registration")) {
+              if (window?.shouldShowExpertInsight()) {
                 getWebNearForm.setAttribute('gql_status', true);
               } else {
                 location.href = finalurl;
