@@ -2,11 +2,15 @@
 <script>
   const timestampOfUserVisit = new Date();
 
+  /**
+   * @returns {string} variant or control
+   */
+  
   function getExpertInsightAB(params) {
     try {
-      return gqlPopUpValue ? "variant" : "control"
+      return typeof expertInsightABValue !== "undefined" ? expertInsightABValue : ""
     } catch (error) {
-      return "control"
+      return ""
     }
   }
 
@@ -27,7 +31,7 @@
         ab_bucket_json = {
           ...ab_bucket_json,
           exit_intent: AB_BUCKET,
-          expert_insight_ab: getExpertInsightAB()
+          expert_insight_ab: getExpertInsightAB()?.toLowerCase()
         }
       }
 

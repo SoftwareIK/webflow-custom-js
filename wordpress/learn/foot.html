@@ -84,9 +84,8 @@
     }
     resetTimer && TimerHandler(slots, v_timezone);
   }
-
-  async function loadSlot(c_timezoon = "America/New_York") {
-		let countryCode = window.location.pathname.includes("/event/build-ai-agents-from-scratch") && (v_country === "India");
+ async function loadSlot(c_timezoon = "America/New_York") {
+	 	let countryCode = window.location.pathname.includes("/event/build-ai-agents-from-scratch") && (v_country === "India");
     let api_url = `https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=${ countryCode ? "IND" : "USA"  }&program=Backend&timezone=${c_timezoon.replace("+", "%2B")}&type=${(webinarType === "SWITCH_UP") || (webinarType === "CAREER_SESSION") || (webinarType === "MASTERCLASS_EVENT_AI") || (webinarType === "MASTERCLASS_EVENT_AI_1") || (webinarType === "MASTERCLASS_EVENT") || (webinarType === "MASTERCLASS_EVENT_2") || (webinarType === "Agentic_AI") || (webinarType === "MASTERCLASS_EVENT_DATA") ? webinarType : "REGULAR"}`;
 
     const option = {
@@ -222,15 +221,15 @@
   }
 
   try {
-    document.querySelectorAll('#Whatsapp-User-Consent').forEach(checkbox => {
-      checkbox.addEventListener('change', function() {
+    if(webNearAccepTance) {
+      webNearAccepTance?.addEventListener('change', function() {
         if (this.checked) {
-          this.setAttribute("data-click-id", "whatsapp-user-consent-checked");
+          this.setAttribute("data-click-id", "whatsapp-user-consent-checked")
         } else {
-          this.setAttribute("data-click-id", "whatsapp-user-consent-unchecked");
+          this.setAttribute("data-click-id", "whatsapp-user-consent-unchecked")
         }
       });
-    });
+    }
   } catch (error) {
     console.error("Error while adding event listener to webNearAccepTance", error); 
   }
@@ -368,6 +367,7 @@
       "Event End Time": webNearInfo.eventEndTime,
       "Invitee Start Time": webNearInfo.inviteStartTime,
       "Invitee End Time": webNearInfo.inviteEndTime,
+      "expertInsightABValue": typeof expertInsightABValue !== "undefined" ? expertInsightABValue : "",
     };
 
     try {
@@ -546,7 +546,7 @@
           }
           secondStepSecondRequest(getCheckWebnear)
             .then(function () {
-              if (gqlPopUpValue && webinarType === 'REGULAR' && !window.location.pathname.startsWith("/webinar-registration")  && !window.location.pathname.startsWith("/career-session-webinar-registration")) {
+              if (window?.shouldShowExpertInsight()) {
                 getWebNearForm.setAttribute('gql_status', true);
               } else {
                 location.href = finalurl;
