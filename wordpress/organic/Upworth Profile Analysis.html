@@ -6,9 +6,8 @@
   }
 
   if (!upWorthData.domain || !upWorthData.workexp) {
-    console.error("Domain or work experience is missing. Redirecting to /upworth");
     location.href = "/upworth";
-    return;
+    throw new Error("Redirecting to /upworth due to missing data");
   }
 
   function firstStepCompletFun() {
