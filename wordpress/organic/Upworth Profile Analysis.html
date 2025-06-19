@@ -5,6 +5,12 @@
     upWorthData[i] = decodeURIComponent(upWorthData[i]);
   }
 
+  if (!upWorthData.domain || !upWorthData.workexp) {
+    console.error("Domain or work experience is missing. Redirecting to /upworth");
+    location.href = "/upworth";
+    return;
+  }
+
   function firstStepCompletFun() {
     if (upWorthData.fname && upWorthData.lname && upWorthData.email) {
       webNearFirstName.value = upWorthData.fname;
