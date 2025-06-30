@@ -1,0 +1,39 @@
+<script>
+    jQuery(document).ready(function(){
+        jQuery('[data-showme="elite"]').addClass('add');
+        jQuery('[data-showme]').on('click', function(){
+                    jQuery('[data-showme]').removeClass('add');
+            var showme = jQuery(this).attr('data-showme')
+            jQuery('.all-content').hide()
+            jQuery('#' + showme).show()
+                    jQuery(this).addClass('add');
+        })
+    
+        jQuery('[data-showfaq="general"]').addClass('add');
+        jQuery('[data-showfaq]').on('click', function(){
+                    jQuery('[data-showfaq]').removeClass('add');
+            var showme = jQuery(this).attr('data-showfaq')
+            jQuery('.all-content-ac').hide()
+            jQuery('#' + showme).show()
+                    jQuery(this).addClass('add');
+        })
+    })
+        document.addEventListener("DOMContentLoaded", function () {
+        // Select all buttons that have an ID following the course slug format
+        const enrollButtons = document.querySelectorAll("[id^='1-mock-interview-with-faang-experts'], [id^='3-mock-interviews-with-faang-experts']");
+    
+        enrollButtons.forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault(); 
+                
+                const courseSlug = this.id; 
+    
+                if (courseSlug) {
+                    localStorage.setItem("selectedCourseSlug", courseSlug); 
+                }
+                        window.location.href = "/complete-your-payment";
+            });
+        });
+    });
+    
+    </script>

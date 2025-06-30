@@ -1,0 +1,43 @@
+<!-- thumbmarkjs-implementation -->
+<script>
+  let FINGERPRINT_ID = ""
+  ThumbmarkJS.getFingerprint().then(
+    function (fp) {
+      FINGERPRINT_ID = fp;
+
+      try {
+        let data = [{
+          Lead_Created_Time: new Date(),
+          User_ID: webNearInfo.user_id,
+          Page_URL: webNearInfo.page_url,
+          User_Agent: encodeURIComponent(navigator?.userAgent || ""),
+          fingerprint_id: FINGERPRINT_ID,
+          step: "s1_fingerprint_id"
+        }];
+
+        (async function (params) {
+          let url = "https://nlhtyrnugl.execute-api.us-west-1.amazonaws.com/prod";
+          let option = {
+            method: "POST",
+            headers: {
+              "x-api-key": "fm0X61U99b80d5SlGjrxFaWjgxIBylhX3LkfYGPN",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              dataset_id: "Marketing_data_new_logic",
+              table_id: "Leads_Click_history",
+              data: data,
+            }),
+          };
+          try {
+            await fetch(url, option);
+          } catch (err) {
+            console.error("error while sending s1_fingerprint_id", err);
+          }
+        })()
+      } catch (error) {
+        console.error("Error in thumbmarkjs implementation:", error);
+      }
+    }
+  );
+</script>

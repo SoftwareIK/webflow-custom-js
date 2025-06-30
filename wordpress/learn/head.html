@@ -182,6 +182,11 @@
     await setCookie("v_country", country);
     v_country = country;
     v_timezone = data.timezone;
+		if(window.location.pathname.includes("/event/build-ai-agents-from-scratch")){
+      if (v_country === "India"){
+        webinarType = "REGULAR";
+      }
+    }
   }
 
   let v_country = getCookie('v_country');
@@ -289,7 +294,8 @@
 </script>
 
 
-<script>
+<!-- Note: Movved this logic to expert-insight-ab file -->
+<!-- <script>
   let gqlPopUpValue = parseInt(getCookie("gql_popup_value"));
 
   if(!gqlPopUpValue){
@@ -299,7 +305,7 @@
 
   gqlPopUpValue = gqlPopUpValue <= 20;
 
-</script>
+</script> -->
 
 <script>
   // Ip address
@@ -412,9 +418,9 @@
       }
     })
   }
-	
-	
-	  // WhatsApp button Cokkie
+
+
+  // WhatsApp button Cokkie
   let whatsappConsentABTestFlag = parseInt(getCookie("whatsapp_consent_ab"));
   if(!whatsappConsentABTestFlag){
       whatsappConsentABTestFlag = Math.floor(Math.random() * 100);

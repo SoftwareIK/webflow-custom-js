@@ -175,6 +175,27 @@
   }
   setClarityContext(visitor_id);
   // set the visitor id end-------------------------------
+  
+  /**
+   * This function is used to get the India website redirect URL
+   * @returns {string} The India website redirect URL
+   */
+	function getIndiaWebsiteRedirectUrl() {
+		// Clone the existing params object
+		const finalParams = { ...currentURlPrms };
+
+		// Set default utm_source if it's missing
+		if (!finalParams.utm_source) {
+			finalParams.utm_source = "IK-US_Organic";
+		}
+
+		// Convert to query string
+		const queryString = new URLSearchParams(finalParams).toString();
+
+		// Build and return the final URL
+    const redirectUrl = window.location.host.includes("wpcomstaging") ? "staging-4eb7-ininterviewkickstart.wpcomstaging.com" : "in.interviewkickstart.com";
+    return `https://${redirectUrl}/?${queryString}`;
+	}
 
   // set the visitor Country start-------------------------------
   async function getCountry() {
@@ -186,7 +207,7 @@
     v_timezone = data.timezone;
     if (v_country === "India" && webinarType != "ONE_TO_ONE_CONNECT") webinarType = "REGULAR";
     if (v_country === "India" && location.pathname == "/" && currentURlPrms["stayhere"] != "1") {
-      location.href = "https://in.interviewkickstart.com/?utm_source=IK-US_Organic";
+      location.href = getIndiaWebsiteRedirectUrl();
     }
   }
 
@@ -196,7 +217,7 @@
   if (v_country === "India" && webinarType != "ONE_TO_ONE_CONNECT") webinarType = "REGULAR";
 
   if (v_country === "India" && location.pathname == "/" && currentURlPrms["stayhere"] != "1") {
-    location.href = "https://in.interviewkickstart.com/?utm_source=IK-US_Organic";
+    location.href = getIndiaWebsiteRedirectUrl();
   }
   // set the visitor Country End-------------------------------
 
