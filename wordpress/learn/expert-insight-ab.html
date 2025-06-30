@@ -84,6 +84,11 @@
     }
 
     function shouldShowExpertInsight(webinar = webinarType) {
+      if (location.search.includes('testbot')) {
+        window.expertInsightABValue = '';
+        return false;
+      }
+
       const { hostname, pathname } = window.location;
 
       if (isIgnoredPath(pathname)) {
