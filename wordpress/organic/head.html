@@ -21,7 +21,6 @@
   )(window, document, 'script', 'dataLayer', 'GTM-P335R9N');
 </script>
 <!-- End Google Tag Manager -->
-
 <script>
   // Get all URl Params
   function getAllUrlParams(url) {
@@ -56,7 +55,7 @@
     }
     return utmobj;
   }
-
+	
   function getEventTitle(webinarType, event) {
     // If the event exists, decode it and return
     if (event) {
@@ -212,6 +211,8 @@
   }
 
   let v_country = getCookie('v_country');
+	let v_country_code = "";
+	let called_c_timezoon = "";
   getCountry();
 
   if (v_country === "India" && webinarType != "ONE_TO_ONE_CONNECT") webinarType = "REGULAR";
@@ -326,7 +327,18 @@
   let webinarSlots = [];
   const webNearLoadedEv = new CustomEvent("webNearLoaded");
 </script>
+<!-- GQL popup value -->
+<script>
+  let gqlPopUpValue = parseInt(getCookie("gql_popup_value"));
 
+  if(!gqlPopUpValue){
+    gqlPopUpValue = Math.floor(Math.random() * 100);
+    setCookie("gql_popup_value", gqlPopUpValue);
+  }
+
+  gqlPopUpValue = gqlPopUpValue <= 20;
+
+</script>
 
 
 
@@ -402,9 +414,9 @@
       return new Promise((res, rej) => res());
     }
   }
-	
-	
-	// WhatsApp button Cokkie
+
+
+  // WhatsApp button Cokkie
   let whatsappConsentABTestFlag = parseInt(getCookie("whatsapp_consent_ab"));
   if(!whatsappConsentABTestFlag){
       whatsappConsentABTestFlag = Math.floor(Math.random() * 100);
