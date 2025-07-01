@@ -8,8 +8,8 @@
       try {
         let data = [{
           Lead_Created_Time: new Date(),
-          User_ID: webNearInfo.user_id,
-          Page_URL: webNearInfo.page_url,
+          User_ID: visitor_id,
+          Page_URL: location.href,
           User_Agent: encodeURIComponent(navigator?.userAgent || ""),
           fingerprint_id: FINGERPRINT_ID,
           step: "s1_fingerprint_id"
