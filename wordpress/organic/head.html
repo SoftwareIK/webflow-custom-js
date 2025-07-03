@@ -327,19 +327,6 @@
   let webinarSlots = [];
   const webNearLoadedEv = new CustomEvent("webNearLoaded");
 </script>
-<!-- GQL popup value -->
-<script>
-  let gqlPopUpValue = parseInt(getCookie("gql_popup_value"));
-
-  if(!gqlPopUpValue){
-    gqlPopUpValue = Math.floor(Math.random() * 100);
-    setCookie("gql_popup_value", gqlPopUpValue);
-  }
-
-  gqlPopUpValue = gqlPopUpValue <= 20;
-
-</script>
-
 
 
 <script>

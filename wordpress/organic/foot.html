@@ -390,6 +390,7 @@
       "Event End Time": webNearInfo.eventEndTime,
       "Invitee Start Time": webNearInfo.inviteStartTime,
       "Invitee End Time": webNearInfo.inviteEndTime,
+      "expertInsightABValue": typeof expertInsightABValue !== "undefined" ? expertInsightABValue : "",
     };
 
 
@@ -554,12 +555,12 @@
           track("slot");
           secondStepSecondRequest(getCheckWebnear)
             .then(function () {
-                if (gqlPopUpValue) {
+              if (window?.shouldShowExpertInsight()) {
                 getWebNearForm.setAttribute('gql_status', true);
-								return;
+                return;
               }
-               location.href = finalurl;
-              
+              location.href = finalurl;
+
             }).catch(function () {
               track("slot-e", "flow-bq");
             });

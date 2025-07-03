@@ -1,5 +1,5 @@
 <script>
-  if (gqlPopUpValue) {
+  if (window?.shouldShowExpertInsight()) {
     const gqlRgPopup = document?.querySelector(".gql_registration_popup");
 
     // 1st step
@@ -97,7 +97,7 @@
         "linkedin_url": gqlLinkdinUrl.value.trim() || null,
         "resume": gqlResumeBase64String || null,
         "slot": gqlRgPopup?.querySelector(".preferred_time_slot:checked").value,
-        "test_group": gqlPopUpValue ? "B" : "A",
+        "test_group": "B", // will always be B because this code is only for expert insight.
       }
 
       let options = {
