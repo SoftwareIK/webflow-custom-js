@@ -348,7 +348,7 @@
 
     //check regex
     let name_regex = new RegExp("^[a-zA-Z ]+$");
-    let email_regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    let email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(?!con$)[a-zA-Z]{2,}$/;
     let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
 
@@ -553,7 +553,16 @@
             getThePopupFrom.setAttribute("loader_status", false);
             track("info-e", "validation-name");
             return;
-        } else if (!email_regex.test(wEmail) || wEmail.length == 0) {
+        } 
+				else if (fullname.length > 31) {
+								const errMsgElement = getFnErrMsg?.querySelector(".err_msg");
+								getFnErrMsg?.setAttribute("err_status", true);
+								errMsgElement.innerHTML = "Full name cannot exceed 31 characters.";
+								getThePopupFrom?.setAttribute("loader_status", false); // Reset loader
+								track("info-e", "validation-name-length");
+								return;
+						}
+					else if (!email_regex.test(wEmail) || wEmail.length == 0) {
             getEmErrMsg.setAttribute('err_status', true);
             getThePopupFrom.setAttribute("loader_status", false);
             track("info-e", "validation-email");
@@ -661,7 +670,7 @@
 
     let LeadCreatedTime = null;
     // second step second request fun
-    async function secondStepSecondRequest(getCheckWebnear) {
+     async function secondStepSecondRequest(getCheckWebnear) {
         //lead LeadCreatedTime
         const currentDateTime = new Date();
         LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
@@ -679,6 +688,11 @@
 
         const formattedStartDateTime = formatDateTime(getCheckWebnear.value);
         const formattedEndDateTime = formatDateTime(getCheckWebnear.getAttribute('data-endtime'));
+        
+        let getGqlYoeDropdownABValue = "";
+        if(typeof(getGqlYoeDropdownAB) != "undefined" && getGqlYoeDropdownAB != null){
+            getGqlYoeDropdownABValue = getGqlYoeDropdownAB ? "variant" : "control";
+        }
 
         let data = [{
             "Lead_Created_Time": LeadCreatedTime,
@@ -715,6 +729,9 @@
             "Refferer": encodeURIComponent(webNearInfo.wr__referrer),
             "Region": webNearInfo.wr__region,
             "step": "s4",
+            "ab_bucket_json": JSON.stringify({
+              gql_yoe_dropdown_ab: getGqlYoeDropdownABValue,
+            }),
             "whatsapp_user_consent": webNearInfo.whatsAppUserConsent,
         }];
 
@@ -738,6 +755,7 @@
             console.error(err);
         };
     }
+
 
 
     // get wn from btns
