@@ -2,8 +2,67 @@
   let api_status = "pending"; // "pending" | "on-going" | "completed" | "failed"
   let staticSlots = [];
 
-  function generateWebinarSlots({ count, country, targetTimezone, webinarType }) {
-    const getSlotConfigs = (region) => {
+  function generateDualWebinarSlots({ count, country, targetTimezone }) {
+    const switchUpSlots = generateWebinarSlots({
+      count,
+      country,
+      targetTimezone,
+      config: {
+        skipDay: 0, // Skip Sunday
+        timeSlots: {
+          0: null, // Skip Sunday
+          1: null, // Skip Monday
+          2: "18:00:00", // Tuesday
+          3: null, // Skip Wednesday
+          4: "18:00:00", // Thursday
+          5: null, // Skip Friday
+          6: null, // Skip Saturday
+        },
+        timeZone: "Asia/Kolkata",
+        utcOffset: 5.5, // Offset in hours
+      },
+    });
+    const regularSlots = generateWebinarSlots({
+      count,
+      country,
+      targetTimezone,
+      config: {
+        skipDay: 0, // Skip Sunday
+        timeSlots: {
+          0: null, // Skip Sunday
+          1: "18:00:00", // Monday
+          2: null, // Skip Tuesday
+          3: "18:00:00", // Wednesday
+          4: null, // Skip Thursday
+          5: "18:00:00", // Friday
+          6: "11:00:00", // Saturday
+        },
+        timeZone: "Asia/Kolkata",
+        utcOffset: 5.5, // Offset in hours
+      },
+    })
+    const switchUpSlotsWithType = switchUpSlots.slice(0, 2).map((slot) => ({
+      ...slot,
+      webinar_lead_type: "SWITCH_UP",
+      webinar_type: "SWITCH_UP",
+      event_name: "AI Switch: Discover Your AI/ML/GenAI Career",
+    }));
+
+    const regularSlotsWithType = regularSlots.slice(0, 4).map((slot) => ({
+      ...slot,
+      webinar_lead_type: "REGULAR",
+      webinar_type: "REGULAR",
+      event_name: "AI Edgeup : Rethink Interview-Readiness in 2025",
+    }));
+
+    // Combine both arrays
+    const combinedSlots = [...regularSlotsWithType, ...switchUpSlotsWithType];
+
+    return combinedSlots;
+  }
+
+  function generateWebinarSlots({ count, country, targetTimezone, webinarType, config }) {
+    const getSlotConfigs = (region, webinarType) => {
       switch (region) {
         case "IND":
           return {
@@ -145,7 +204,7 @@
       }
     };
 
-    const slotConfig = getSlotConfigs(country);
+    const slotConfig = config || getSlotConfigs(country);
 
     if (!slotConfig) {
       throw new Error("Invalid country.");
@@ -250,7 +309,13 @@
             if (timezone == 'Asia/Calcutta' || timezone == 'Asia/Kolkata') {
               timezone = 'Asia/Kolkata';
             }
-            staticSlots = generateWebinarSlots({ count: 13, country: "IND", targetTimezone: timezone, webinarType: webinar_type });
+            // Dual webinar means we have to fetch slots for both webinar type regular & swtichup and combnine them in to sigle object
+            const isDualWebinar = typeof (IS_DUAL_WEBINAR_TYPE) !== "undefined" && IS_DUAL_WEBINAR_TYPE == "true";
+            if (isDualWebinar) {
+              staticSlots = generateDualWebinarSlots({ count: 13, country: "IND", targetTimezone: timezone });
+            } else {
+              staticSlots = generateWebinarSlots({ count: 13, country: "IND", targetTimezone: timezone });
+            }
             if (["pending", "failed"].includes(api_status)) {
               TimerHandler(staticSlots, timezone);
             }
@@ -388,7 +453,7 @@
 
   // set the next webnear value
   function updateTimerUI(day, hrs, min, sec) {
-    if(document.querySelectorAll('.webinar__timer--days h2').length === 0) {
+    if (document.querySelectorAll('.webinar__timer--days h2').length === 0) {
       return;
     }
     document.querySelectorAll('.webinar__timer--days h2').forEach((timer) => {
