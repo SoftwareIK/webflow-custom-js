@@ -268,7 +268,7 @@
       //check regex
       let name_regex2 = new RegExp("^[a-zA-Z ]+$");
       let email_regex2 =
-        /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(?!con$)[a-zA-Z]{2,}$/;
       let phone_regex2 =
         /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
   
@@ -514,7 +514,15 @@
           getFnErrMsg2.setAttribute("err_status", true);
           track("info-e", "validation-name");
           return;
-        } else if (!email_regex2.test(wEmail) || wEmail.length == 0) {
+        } 
+        else if (fullname.length > 31) {
+                const errMsgElement = getFnErrMsg2.querySelector(".err_fild");
+                getFnErrMsg2.setAttribute("err_status", true); 
+                errMsgElement.innerHTML = `<b>ⓘ</b> Full Name cannot exceed 31 characters.`; 
+                track("info-e", "validation-name-length"); 
+                return;
+			}
+        else if (!email_regex2.test(wEmail) || wEmail.length == 0) {
           getEmErrMsg2.setAttribute("err_status", true);
           track("info-e", "validation-email");
           return;

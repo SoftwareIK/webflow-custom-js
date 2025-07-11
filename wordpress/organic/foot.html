@@ -224,7 +224,7 @@
 
   //check regex
   let name_regex = new RegExp("^[a-zA-Z ]+$");
-  let email_regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  let email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(?!con$)[a-zA-Z]{2,}$/;
   let phone_regex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
 
@@ -454,12 +454,30 @@
       getThePopupFrom.setAttribute("loader_status", false);
       track("info-e", "validation-fname");
       return;
-    } else if (!name_regex.test(l_name) || l_name.length == 0) {
+    } 
+    else if (f_name.length > 31) {
+ 			const errMsgElement = getFiErrMsg.querySelector('.err_msg'); 
+        getFiErrMsg.setAttribute('err_status', true);
+        errMsgElement.innerHTML = "First name cannot exceed 31 characters.";
+        getThePopupFrom.setAttribute("loader_status", false);
+        track("info-e", "validation-fname-length");
+        return;
+    } 
+    else if (!name_regex.test(l_name) || l_name.length == 0) {
       getLaErrMsg.setAttribute('err_status', true);
       getThePopupFrom.setAttribute("loader_status", false);
       track("info-e", "validation-lname");
       return;
-    } else if (!email_regex.test(wEmail) || wEmail.length == 0) {
+    } 
+    else if (l_name.length > 31) {
+				const errMsgElement = getLaErrMsg.querySelector('.err_msg'); 
+        getLaErrMsg.setAttribute('err_status', true);
+        errMsgElement.innerHTML = "Last name cannot exceed 31 characters.";
+        getThePopupFrom.setAttribute("loader_status", false);
+        track("info-e", "validation-lname-length");
+        return;
+    }
+    else if (!email_regex.test(wEmail) || wEmail.length == 0) {
       getEmErrMsg.setAttribute('err_status', true);
       getThePopupFrom.setAttribute("loader_status", false);
       track("info-e", "validation-email");
