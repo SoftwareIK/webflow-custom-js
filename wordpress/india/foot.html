@@ -37,6 +37,7 @@
             data-invitee_endtime="${slot.invitee_end_time}" 
             data-name="${slot.start_time}" 
             data-webinar_lead_type="${slot.webinar_lead_type}" 
+            ${index === 0 ? "checked" : ""}
             data-webinar_type="${slot.webinarType}"
             data-event_name="${slot.event_name}"
             slot-index="${index}"
@@ -286,6 +287,7 @@
     }
     // get all from fild
     const getThePopupFrom = document.querySelector('.webnear_regitration_fr');
+		getThePopupFrom.setAttribute("dual_mood", isDualWebinar);
 
     const webNearFullName = getThePopupFrom.querySelector('.web_full_name input#Full-Name');
     const webNearEmailAddress = getThePopupFrom.querySelector('.web_em_address input#Email-Address-7');
