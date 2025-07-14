@@ -38,7 +38,7 @@
             data-name="${slot.start_time}" 
             data-webinar_lead_type="${slot.webinar_lead_type}" 
             ${index === 0 ? "checked" : ""}
-            data-webinar_type="${slot.webinarType}"
+            data-webinar_type="${slot.webinar_type}"
             data-event_name="${slot.event_name}"
             slot-index="${index}"
           >
@@ -62,9 +62,24 @@
           slotWrapper.innerHTML = `${slotInputAndButton}${slotAlert}`
           if(slot.webinar_type == "REGULAR"){
             regularSlotContainer.appendChild(slotWrapper);
-          } else if(slot.webinar_type == "SWITCH_UP") {
+          } else if(slot.webinar_type == "SWITCH_UP_INDIA") {
             switchUpSlotContainer.appendChild(slotWrapper);
           }
+      });
+
+      const slotButtons = document.querySelectorAll('.web_dual input[type="radio"]');
+      slotButtons.forEach((radio) => {
+          radio.addEventListener('click', function () {
+              const slotIndex = this.getAttribute('slot-index');
+              const selectedSlot = slots[slotIndex];
+              if (selectedSlot) {
+                webinarType = selectedSlot.webinar_type;
+                eventName = selectedSlot.event_name;
+                webNearInfo.webinar_type = selectedSlot.webinar_type;
+                webNearInfo.webinar_lead_type = selectedSlot.webinar_lead_type;
+                webNearInfo.eventname = selectedSlot.event_name;
+              }
+          });
       });
     }
 
@@ -118,27 +133,6 @@
         }
     }
 
-
-    // webnear time
-    // let api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=" + webinarType;
-
-    // (async function () {
-    //   const option = {
-    //     method: "GET",
-    //     headers: {
-    //       "Authorization": "1Cgx6oYXkOlWkNDn7_tXO",
-    //     }
-    //   }
-
-    //   const request = await fetch(api_url, option);
-    //   let resobj = await request.json();
-    //   if (webinarType == "REGULAR") {
-    //     resobj = resobj.map(item => ({ ...item, webinar_lead_type: "REGULAR" }));
-    //   }
-    //   populateWebinarSlots(resobj);
-    //   TimerHandler(resobj);
-    // })()
-
     async function fallbackSlots() {
         if (!slotFetchedTwice) {
             let initialTimezone = v_timezone;
@@ -166,7 +160,7 @@
 
     async function loadDualWebinarSlots() {
       let regular_slot_api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=REGULAR";
-      let switch_up_slot_api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=SWITCH_UP";
+      let switch_up_slot_api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=SWITCH_UP_INDIA";
 
       function fetchSlots(api_url, type) {
         const option = {
@@ -176,7 +170,7 @@
           }
         }
         let webinarEventName = "AI Edgeup : Rethink Interview-Readiness in 2025";
-        if(type == "SWITCH_UP") {
+        if(type == "SWITCH_UP_INDIA") {
           webinarEventName = "AI Switch: Discover Your AI/ML/GenAI Career";
         }
 
@@ -194,7 +188,7 @@
       try {
         api_status = "on-going";
         const regularSlotsPromise = fetchSlots(regular_slot_api_url, "REGULAR");
-        const switchUpSlotsPromise = fetchSlots(switch_up_slot_api_url, "SWITCH_UP");
+        const switchUpSlotsPromise = fetchSlots(switch_up_slot_api_url, "SWITCH_UP_INDIA");
 
         const [regularSlots, switchUpSlots] = await Promise.all([regularSlotsPromise, switchUpSlotsPromise]);
 
@@ -232,7 +226,7 @@
         }
 
         if(filteredSwitchUpSlots.length == 0) {
-          filteredSwitchUpSlots = staticSlots.filter(slot => slot.webinar_lead_type === "SWITCH_UP");
+          filteredSwitchUpSlots = staticSlots.filter(slot => slot.webinar_lead_type === "SWITCH_UP_INDIA");
         }
       
         if (filteredRegularSlots.length == 0 && filteredSwitchUpSlots.length == 0) {
@@ -293,7 +287,10 @@
     const webNearEmailAddress = getThePopupFrom.querySelector('.web_em_address input#Email-Address-7');
     const webNearPhoneNumber = getThePopupFrom.querySelector('.web_phone_number input#webinar_pnumber');
     const webNearAccepTance = getThePopupFrom.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
-    const webNearSlots = getThePopupFrom.querySelector('.web_near_slot');
+    let webNearSlots = getThePopupFrom.querySelector('.web_near_slot');
+    if(isDualWebinar) {
+      webNearSlots = getThePopupFrom.querySelector(".web_dual");
+    }
 
     const webNearPhoneNumberWri = window.intlTelInput(webNearPhoneNumber, {
         initialCountry: "auto",
@@ -615,7 +612,7 @@
                     getThePopupFrom.setAttribute("ac_step", 2);
                     getThePopupFrom.setAttribute("loader_status", false);
                     track("info");
-                  }).catch(() => {
+                  }).catch((e) => {
                     track("info-e", "flow-general");
                   });
         }
@@ -646,10 +643,15 @@
         };
 
         let finalurl = "/signup-final-step";
-        if (location.pathname.startsWith("/applied-generative-ai-for-software-engineers-course") || location.pathname.startsWith("/applied-generative-ai-for-tech-leaders-engineering-managers-course") || location.pathname.startsWith("/applied-generative-ai-for-technical-program-managers-course")) {
+        if(isDualWebinar){
+          if(getCheckWebnear.getAttribute('data-webinar_type') == "SWITCH_UP_INDIA") {
             finalurl += "-switchup";
+          }
+        } else {
+          if (location.pathname.startsWith("/applied-generative-ai-for-software-engineers-course") || location.pathname.startsWith("/applied-generative-ai-for-tech-leaders-engineering-managers-course") || location.pathname.startsWith("/applied-generative-ai-for-technical-program-managers-course")) {
+            finalurl += "-switchup";
+          }
         }
-
         pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34xpujj/")
             .then(() => {
                 track("slot");

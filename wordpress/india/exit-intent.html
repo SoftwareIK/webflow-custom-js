@@ -276,7 +276,7 @@
         console.error("Failed to check if form or video is opened:", error);
       }
 
-      const isSwitchup = webinarType === "SWITCH_UP";
+      const isSwitchup = webinarType === "SWITCH_UP" || webinarType === "SWITCH_UP_INDIA";
 
       const shouldShow = !getCookie(COOKIE_NAME) && !popupShown && !isFormOpened && !isVideoOpened && !isSwitchup && !isHighIntentUser;
       if (shouldShow && window.location.pathname.includes("/blogs/") && typeof (blogPopupShown) != undefined) {
