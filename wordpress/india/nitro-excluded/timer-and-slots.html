@@ -194,8 +194,8 @@
             ?.value?.replace("GMT", "") || "+00:00";
 
         // Add padding to hours if needed
-        if (offset.match(/^[+-]\d:/)) {
-          offset = offset.replace(/^([+-])(\d):/, "$10$2:");
+        if (offset.match(/^[+-]d:/)) {
+          offset = offset.replace(/^([+-])(d):/, "$10$2:");
         }
 
         return `${dateString}${offset}`;
