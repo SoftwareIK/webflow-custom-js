@@ -167,7 +167,7 @@
 
     //check regex
     let name_regex2 = new RegExp("^[a-zA-Z ]+$");
-    let email_regex2 = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    let email_regex2 = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(?!con$)[a-zA-Z]{2,}$/;
     let phone_regex2 = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
     // getlocation json
@@ -656,7 +656,15 @@
         document.getElementById("form-multistep").querySelector('input.fr_name_fl').closest('.form-group').querySelector('.error-message').classList.add('visible');
         track("info-e", "validation-name");
         return;
-      } else if (!email_regex2.test(wEmail) || wEmail.length == 0) {
+      } 
+      else if (fullname.length > 31) {
+        const errMsgElement = document.querySelector(".error-message");
+        errMsgElement.innerHTML =  "Full Name cannot exceed 31 characters.";
+				errMsgElement.classList.add('visible');
+        track("info-e", "validation-name-length");
+        return;
+      }
+      else if (!email_regex2.test(wEmail) || wEmail.length == 0) {
         document.getElementById("form-multistep").querySelector('.fr_email_fl').closest('.form-group').querySelector('.error-message').classList.add('visible');
         track("info-e", "validation-email");
         return;
