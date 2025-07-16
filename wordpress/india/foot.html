@@ -6,6 +6,7 @@
     let no_of_webinar_slots = 6;
     let slotFetchedTwice = false;
     let initialTimezone = v_timezone;
+    const isDualWebinar = typeof (IS_DUAL_WEBINAR_TYPE) !== "undefined" && IS_DUAL_WEBINAR_TYPE == "true";
     try {
         if (typeof (staticSlots) != undefined && staticSlots.length == 0) {
             slotLoaded(staticSlots, false)
@@ -14,7 +15,79 @@
         console.error("Error while loading static slots", error);
     }
 
+    function populateDualWebinarSlots(slots) {
+      const regularSlotContainer = document.querySelector('.regular-slot-container .slot_fild');
+      const switchUpSlotContainer = document.querySelector('.switch-slot-container .slot_fild');
+
+      regularSlotContainer.innerHTML = "";
+      switchUpSlotContainer.innerHTML = "";
+      
+      slots.forEach((slot, index) => {
+          let slotWrapper = document.createElement("label");
+          slotWrapper.classList.add("slot");
+
+          let slotInputAndButton = `
+          <input 
+            type="radio" 
+            name="v2_slot" 
+            class="v2_slot_radio" 
+            value="${slot.start_time}" 
+            data-endtime="${slot.end_time}" 
+            data-invitee_starttime="${slot.invitee_start_time}" 
+            data-invitee_endtime="${slot.invitee_end_time}" 
+            data-name="${slot.start_time}" 
+            data-webinar_lead_type="${slot.webinar_lead_type}" 
+            ${index === 0 ? "checked" : ""}
+            data-webinar_type="${slot.webinar_type}"
+            data-event_name="${slot.event_name}"
+            slot-index="${index}"
+          >
+          <div class="time_slot_wrapper">
+            <div class="v2_day">${slot.weekday.slice(0, 3).toUpperCase()}</div>
+            <div class="v2_date">${slot.day}</div> 
+            <hr>
+            <div class="v2_time">${slot.hour}:${slot.minute} ${slot.am_or_pm}</div>
+          </div>
+          `;
+          let slotAlert = ``;
+          if (index === 0) {
+            slotAlert = `<div class="v2_timer_alart" alart_type="danger">
+                Almost full
+            </div>`;
+          } else if (index === slots.length - 1) {
+            slotAlert = `<div class="v2_timer_alart" alart_type="warning">
+                Filling fast
+            </div>`;
+          }
+          slotWrapper.innerHTML = `${slotInputAndButton}${slotAlert}`
+          if(slot.webinar_type == "REGULAR"){
+            regularSlotContainer.appendChild(slotWrapper);
+          } else if(slot.webinar_type == "SWITCH_UP_INDIA") {
+            switchUpSlotContainer.appendChild(slotWrapper);
+          }
+      });
+
+      const slotButtons = document.querySelectorAll('.web_dual input[type="radio"]');
+      slotButtons.forEach((radio) => {
+          radio.addEventListener('click', function () {
+              const slotIndex = this.getAttribute('slot-index');
+              const selectedSlot = slots[slotIndex];
+              if (selectedSlot) {
+                webinarType = selectedSlot.webinar_type;
+                eventName = selectedSlot.event_name;
+                webNearInfo.webinar_type = selectedSlot.webinar_type;
+                webNearInfo.webinar_lead_type = selectedSlot.webinar_lead_type;
+                webNearInfo.eventname = selectedSlot.event_name;
+              }
+          });
+      });
+    }
+
+
     function populateWebinarSlots(resobj) {
+        if (isDualWebinar) {
+          return populateDualWebinarSlots(resobj);
+        }
         const t_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
         if (resobj.length == 0) {
@@ -60,27 +133,6 @@
         }
     }
 
-
-    // webnear time
-    // let api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=" + webinarType;
-
-    // (async function () {
-    //   const option = {
-    //     method: "GET",
-    //     headers: {
-    //       "Authorization": "1Cgx6oYXkOlWkNDn7_tXO",
-    //     }
-    //   }
-
-    //   const request = await fetch(api_url, option);
-    //   let resobj = await request.json();
-    //   if (webinarType == "REGULAR") {
-    //     resobj = resobj.map(item => ({ ...item, webinar_lead_type: "REGULAR" }));
-    //   }
-    //   populateWebinarSlots(resobj);
-    //   TimerHandler(resobj);
-    // })()
-
     async function fallbackSlots() {
         if (!slotFetchedTwice) {
             let initialTimezone = v_timezone;
@@ -90,7 +142,11 @@
             slotFetchedTwice = true;
         } else {
             v_timezone = initialTimezone;
-            staticSlots = generateWebinarSlots({ count: 13, country: "IND", targetTimezone: v_timezone, webinarType: webinarType });
+            if(isDualWebinar) {
+              staticSlots = generateDualWebinarSlots({ count: 13, country: "IND", targetTimezone: v_timezone });
+            } else {
+              staticSlots = generateWebinarSlots({ count: 13, country: "IND", targetTimezone: v_timezone, webinarType: webinarType });
+            }
             slotLoaded(staticSlots);
         }
     }
@@ -102,7 +158,93 @@
         document.dispatchEvent(webNearLoadedEv);
     }
 
+    async function loadDualWebinarSlots() {
+      let regular_slot_api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=REGULAR";
+      let switch_up_slot_api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=SWITCH_UP_INDIA";
+
+      function fetchSlots(api_url, type) {
+        const option = {
+          method: "GET",
+          headers: {
+            "Authorization": "1Cgx6oYXkOlWkNDn7_tXO",
+          }
+        }
+        let webinarEventName = "AI Edgeup : Rethink Interview-Readiness in 2025";
+        if(type == "SWITCH_UP_INDIA") {
+          webinarEventName = "AI Switch: Discover Your AI/ML/GenAI Career";
+        }
+
+        return fetch(api_url, option)
+          .then(request => request.json())
+          .then(resobj => {
+            return resobj.map(item => ({ 
+              ...item, 
+              webinar_lead_type: type,
+              webinar_type: type,
+              event_name: webinarEventName,
+            }));
+          });
+      }
+      try {
+        api_status = "on-going";
+        const regularSlotsPromise = fetchSlots(regular_slot_api_url, "REGULAR");
+        const switchUpSlotsPromise = fetchSlots(switch_up_slot_api_url, "SWITCH_UP_INDIA");
+
+        const [regularSlots, switchUpSlots] = await Promise.all([regularSlotsPromise, switchUpSlotsPromise]);
+
+        const switchUpSlotCongig = {
+          0: false, // Skip Sunday
+          1: false, // Skip Monday
+          2: true, // Tuesday
+          3: false, // Wednesday
+          4: true, // Thursday
+          5: false, // Skip Friday
+          6: false, // Skip Saturday
+        }
+
+        const regularSlotCongig = {
+          0: false, // Skip Sunday
+          1: true, // Monday
+          2: false, // Skip Tuesday
+          3: true, // Wednesday
+          4: false, // Skip Thursday
+          5: true, // Friday
+          6: true, // Saturday
+        }
+        // Filter out slots based on the configuration
+        let filteredSwitchUpSlots = switchUpSlots.slice(0, 2).filter(slot => {
+          const slotDate = new Date(slot.start_time);
+          return switchUpSlotCongig[slotDate.getDay()];
+        });
+        let filteredRegularSlots = regularSlots.slice(0, 4).filter(slot => {
+          const slotDate = new Date(slot.start_time);
+          return regularSlotCongig[slotDate.getDay()];
+        });
+
+        if(filteredRegularSlots.length == 0) {
+          filteredRegularSlots = staticSlots.filter(slot => slot.webinar_lead_type === "REGULAR");
+        }
+
+        if(filteredSwitchUpSlots.length == 0) {
+          filteredSwitchUpSlots = staticSlots.filter(slot => slot.webinar_lead_type === "SWITCH_UP_INDIA");
+        }
+      
+        if (filteredRegularSlots.length == 0 && filteredSwitchUpSlots.length == 0) {
+          throw new Error(`P0: The Uplevel Webinar Slots API Returned No Data. (webinarType: both, timezone: ${v_timezone})`);
+        }
+
+        slotLoaded([...filteredRegularSlots, ...filteredSwitchUpSlots]);
+        api_status = "completed";
+      } catch (err) {
+        api_status = "failed";
+        fallbackSlots();
+      }
+    }
+
     async function loadSlot(c_timezoon = "Asia/Kolkata") {
+        if (isDualWebinar) {
+          return loadDualWebinarSlots();
+        }
         let api_url = "https://uplevel.interviewkickstart.com/api/webinar-slot/upcoming-slots/?country=IND&program=Backend&timezone=" + v_timezone + "&type=" + webinarType;
 
         const option = {
@@ -139,12 +281,16 @@
     }
     // get all from fild
     const getThePopupFrom = document.querySelector('.webnear_regitration_fr');
+		getThePopupFrom.setAttribute("dual_mood", isDualWebinar);
 
     const webNearFullName = getThePopupFrom.querySelector('.web_full_name input#Full-Name');
     const webNearEmailAddress = getThePopupFrom.querySelector('.web_em_address input#Email-Address-7');
     const webNearPhoneNumber = getThePopupFrom.querySelector('.web_phone_number input#webinar_pnumber');
     const webNearAccepTance = getThePopupFrom.querySelector('.fr_acceptance input#Whatsapp-User-Consent');
-    const webNearSlots = getThePopupFrom.querySelector('.web_near_slot');
+    let webNearSlots = getThePopupFrom.querySelector('.web_near_slot');
+    if(isDualWebinar) {
+      webNearSlots = getThePopupFrom.querySelector(".web_dual");
+    }
 
     const webNearPhoneNumberWri = window.intlTelInput(webNearPhoneNumber, {
         initialCountry: "auto",
@@ -466,7 +612,7 @@
                     getThePopupFrom.setAttribute("ac_step", 2);
                     getThePopupFrom.setAttribute("loader_status", false);
                     track("info");
-                  }).catch(() => {
+                  }).catch((e) => {
                     track("info-e", "flow-general");
                   });
         }
@@ -497,10 +643,15 @@
         };
 
         let finalurl = "/signup-final-step";
-        if (location.pathname.startsWith("/applied-generative-ai-for-software-engineers-course") || location.pathname.startsWith("/applied-generative-ai-for-tech-leaders-engineering-managers-course") || location.pathname.startsWith("/applied-generative-ai-for-technical-program-managers-course")) {
+        if(isDualWebinar){
+          if(getCheckWebnear.getAttribute('data-webinar_type') == "SWITCH_UP_INDIA") {
             finalurl += "-switchup";
+          }
+        } else {
+          if (location.pathname.startsWith("/applied-generative-ai-for-software-engineers-course") || location.pathname.startsWith("/applied-generative-ai-for-tech-leaders-engineering-managers-course") || location.pathname.startsWith("/applied-generative-ai-for-technical-program-managers-course")) {
+            finalurl += "-switchup";
+          }
         }
-
         pushToEndPoint("https://hooks.zapier.com/hooks/catch/11068981/34xpujj/")
             .then(() => {
                 track("slot");
@@ -523,7 +674,7 @@
 
     let LeadCreatedTime = null;
     // second step second request fun
-    async function secondStepSecondRequest(getCheckWebnear) {
+     async function secondStepSecondRequest(getCheckWebnear) {
         //lead LeadCreatedTime
         const currentDateTime = new Date();
         LeadCreatedTime = currentDateTime.toISOString().replace(/T/, ' ').replace(/\.\d+Z$/, ' UTC');
@@ -600,6 +751,7 @@
             console.error(err);
         };
     }
+
 
 
     // get wn from btns
